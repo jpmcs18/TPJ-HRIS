@@ -12,18 +12,24 @@ namespace WebTemplate.Controllers.RequestsApproval
         // GET: HighRiskRequest
         public ActionResult Index(Index model)
         {
-            model.Page = model.Page > 1 ? model.Page : 1;
-            model.HighRiskRequests = HighRiskRequestProcess.Instance.GetApprovingList(model.Personnel, model.IsExpired, model.IsPending, model.IsApproved, model.IsCancelled, model.StartDateTime, model.EndingDateTime, model.Page, model.GridCount, out int PageCount);
-            model.PageCount = PageCount;
+            try { 
+                model.Page = model.Page > 1 ? model.Page : 1;
+                model.HighRiskRequests = HighRiskRequestProcess.Instance.GetApprovingList(model.Personnel, model.IsExpired, model.IsPending, model.IsApproved, model.IsCancelled, model.StartDateTime, model.EndingDateTime, model.Page, model.GridCount, out int PageCount);
+                model.PageCount = PageCount;
 
-            if (Request.IsAjaxRequest())
-            {
-                ModelState.Clear();
-                return PartialViewCustom("_HighRiskRequests", model);
+                if (Request.IsAjaxRequest())
+                {
+                    ModelState.Clear();
+                    return PartialViewCustom("_HighRiskRequests", model);
+                }
+                else
+                {
+                    return ViewCustom("_HighRiskRequestsIndex", model);
+                }
             }
-            else
+            catch
             {
-                return ViewCustom("_HighRiskRequestsIndex", model);
+                return View("~/Views/Security/Unauthorized.cshtml");
             }
         }
 

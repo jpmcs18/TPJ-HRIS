@@ -32,7 +32,7 @@ namespace ProcessLayer.Processes
 
             if (!IsKioskApproverOnly)
             {
-                k._Personnel = PersonnelProcess.GetByUserId((int)(k.ApproverID ?? 0), true);
+                k._Personnel = PersonnelProcess.Get((int)(k.ApproverID ?? 0), true);
                 if (k._Personnel != null)
                 {
                     k._Personnel._Departments = PersonnelDepartmentProcess.GetList(k._Personnel.ID);

@@ -13,20 +13,27 @@ namespace WebTemplate.Controllers.RequestsApproval
         // GET: LeaveRequest
         public ActionResult Index(Index model)
         {
-            model.Page = model.Page > 1 ? model.Page : 1;
-            model.LeaveRequests = LeaveRequestProcess.Instance.GetApprovingList(model.Personnel, model.LeaveTypeID, model.IsExpired, model.IsPending, model.IsApproved, model.IsCancelled, model.StartDateTime, model.EndingDateTime, model.Page, model.GridCount, out int PageCount, User.UserID);
-            model._LeaveType = LeaveTypeProcess.GetLeaveType(model.LeaveTypeID);
-            model.LeaveTypes = LeaveTypeProcess.GetLeaveType();
-            model.PageCount = PageCount;
+            try
+            {
+                model.Page = model.Page > 1 ? model.Page : 1;
+                model.LeaveRequests = LeaveRequestProcess.Instance.GetApprovingList(model.Personnel, model.LeaveTypeID, model.IsExpired, model.IsPending, model.IsApproved, model.IsCancelled, model.StartDateTime, model.EndingDateTime, model.Page, model.GridCount, out int PageCount, User.UserID);
+                model._LeaveType = LeaveTypeProcess.GetLeaveType(model.LeaveTypeID);
+                model.LeaveTypes = LeaveTypeProcess.GetLeaveType();
+                model.PageCount = PageCount;
 
-            if (Request.IsAjaxRequest())
-            {
-                ModelState.Clear();
-                return PartialViewCustom("_LeaveRequests", model);
+                if (Request.IsAjaxRequest())
+                {
+                    ModelState.Clear();
+                    return PartialViewCustom("_LeaveRequests", model);
+                }
+                else
+                {
+                    return ViewCustom("_LeaveRequestsIndex", model);
+                }
             }
-            else
+            catch
             {
-                return ViewCustom("_LeaveRequestsIndex", model);
+                return View("~/Views/Security/Unauthorized.cshtml");
             }
         }
 

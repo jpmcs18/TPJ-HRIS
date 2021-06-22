@@ -15,18 +15,25 @@ namespace WebTemplate.Controllers.RequestsApproval
         // GET: TimeEditRequest
         public ActionResult Index(Index model)
         {
-            model.Page = model.Page > 1 ? model.Page : 1;
-            model.TimeEditRequests = TimeEditRequestProcess.Instance.GetApprovingList(model.Personnel, model.IsPending, model.IsApproved, model.IsCancelled, model.LoginDateTime, model.LogoutDateTime, model.Page, model.GridCount, out int PageCount, User.UserID);
-            model.PageCount = PageCount;
+            try
+            {
+                model.Page = model.Page > 1 ? model.Page : 1;
+                model.TimeEditRequests = TimeEditRequestProcess.Instance.GetApprovingList(model.Personnel, model.IsPending, model.IsApproved, model.IsCancelled, model.LoginDateTime, model.LogoutDateTime, model.Page, model.GridCount, out int PageCount, User.UserID);
+                model.PageCount = PageCount;
 
-            if (Request.IsAjaxRequest())
-            {
-                ModelState.Clear();
-                return PartialViewCustom("_TimeEditRequests", model);
+                if (Request.IsAjaxRequest())
+                {
+                    ModelState.Clear();
+                    return PartialViewCustom("_TimeEditRequests", model);
+                }
+                else
+                {
+                    return ViewCustom("_TimeEditRequestsIndex", model);
+                }
             }
-            else
+            catch
             {
-                return ViewCustom("_TimeEditRequestsIndex", model);
+                return View("~/Views/Security/Unauthorized.cshtml");
             }
         }
 
