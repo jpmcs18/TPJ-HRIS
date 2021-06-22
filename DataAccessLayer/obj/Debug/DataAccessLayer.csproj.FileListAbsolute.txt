@@ -32,3 +32,20 @@ D:\Applications\Repositories\TPJ HR System\DataAccessLayer\obj\Debug\DataAccessL
 D:\Applications\Repositories\TPJ HR System\DataAccessLayer\obj\Debug\DataAccessLayer.csproj.CopyComplete
 D:\Applications\Repositories\TPJ HR System\DataAccessLayer\obj\Debug\DataAccessLayer.dll
 D:\Applications\Repositories\TPJ HR System\DataAccessLayer\obj\Debug\DataAccessLayer.pdb
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\DataAccessLayer\bin\Debug\DataAccessLayer.dll.config
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\DataAccessLayer\bin\Debug\DataAccessLayer.dll
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\DataAccessLayer\bin\Debug\DataAccessLayer.pdb
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\DataAccessLayer\bin\Debug\DataLayer.dll
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\DataAccessLayer\bin\Debug\EntityFramework.dll
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\DataAccessLayer\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\DataAccessLayer\bin\Debug\SecurityLib.dll
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\DataAccessLayer\bin\Debug\DataLayer.pdb
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\DataAccessLayer\bin\Debug\DataLayer.dll.config
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\DataAccessLayer\bin\Debug\SecurityLib.pdb
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\DataAccessLayer\bin\Debug\EntityFramework.xml
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\DataAccessLayer\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\DataAccessLayer\obj\Debug\DataAccessLayer.csproj.AssemblyReference.cache
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\DataAccessLayer\obj\Debug\DataAccessLayer.csproj.CoreCompileInputs.cache
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\DataAccessLayer\obj\Debug\DataAccessLayer.csproj.CopyComplete
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\DataAccessLayer\obj\Debug\DataAccessLayer.dll
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\DataAccessLayer\obj\Debug\DataAccessLayer.pdb

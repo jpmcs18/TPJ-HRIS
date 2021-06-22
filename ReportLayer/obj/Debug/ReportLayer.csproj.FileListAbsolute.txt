@@ -40,3 +40,25 @@ D:\Applications\Repositories\TPJ HR System\ReportLayer\obj\Debug\ReportLayer.dll
 D:\Applications\Repositories\TPJ HR System\ReportLayer\obj\Debug\ReportLayer.pdb
 D:\Applications\Repositories\TPJ HR System\ReportLayer\bin\Debug\Newtonsoft.Json.dll
 D:\Applications\Repositories\TPJ HR System\ReportLayer\bin\Debug\Newtonsoft.Json.xml
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ReportLayer\bin\Debug\ReportLayer.dll
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ReportLayer\bin\Debug\ReportLayer.pdb
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ReportLayer\bin\Debug\BouncyCastle.Crypto.dll
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ReportLayer\bin\Debug\GemBox.Document.dll
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ReportLayer\bin\Debug\GemBox.Pdf.dll
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ReportLayer\bin\Debug\GemBox.Spreadsheet.dll
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ReportLayer\bin\Debug\itextsharp.dll
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ReportLayer\bin\Debug\ProcessLayer.dll
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ReportLayer\bin\Debug\DBUtilities.dll
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ReportLayer\bin\Debug\Newtonsoft.Json.dll
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ReportLayer\bin\Debug\ProcessLayer.pdb
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ReportLayer\bin\Debug\GemBox.Document.xml
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ReportLayer\bin\Debug\GemBox.Pdf.xml
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ReportLayer\bin\Debug\GemBox.Spreadsheet.xml
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ReportLayer\bin\Debug\itextsharp.xml
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ReportLayer\bin\Debug\DBUtilities.pdb
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ReportLayer\bin\Debug\Newtonsoft.Json.xml
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ReportLayer\obj\Debug\ReportLayer.csproj.AssemblyReference.cache
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ReportLayer\obj\Debug\ReportLayer.csproj.CoreCompileInputs.cache
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ReportLayer\obj\Debug\ReportLayer.csproj.CopyComplete
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ReportLayer\obj\Debug\ReportLayer.dll
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ReportLayer\obj\Debug\ReportLayer.pdb

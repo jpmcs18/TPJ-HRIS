@@ -10,3 +10,9 @@ D:\Applications\Repositories\TPJ HR System\SecurityLib\obj\Debug\SecurityLib.csp
 D:\Applications\Repositories\TPJ HR System\SecurityLib\obj\Debug\SecurityLib.csproj.CoreCompileInputs.cache
 D:\Applications\Repositories\TPJ HR System\SecurityLib\obj\Debug\SecurityLib.dll
 D:\Applications\Repositories\TPJ HR System\SecurityLib\obj\Debug\SecurityLib.pdb
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\SecurityLib\bin\Debug\SecurityLib.dll
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\SecurityLib\bin\Debug\SecurityLib.pdb
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\SecurityLib\obj\Debug\SecurityLib.csproj.AssemblyReference.cache
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\SecurityLib\obj\Debug\SecurityLib.csproj.CoreCompileInputs.cache
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\SecurityLib\obj\Debug\SecurityLib.dll
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\SecurityLib\obj\Debug\SecurityLib.pdb

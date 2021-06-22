@@ -36,3 +36,9 @@ D:\Applications\Repositories\TPJ HR System\DBUtilities\obj\Debug\DBUtilities.csp
 D:\Applications\Repositories\TPJ HR System\DBUtilities\obj\Debug\DBUtilities.csproj.CoreCompileInputs.cache
 D:\Applications\Repositories\TPJ HR System\DBUtilities\obj\Debug\DBUtilities.dll
 D:\Applications\Repositories\TPJ HR System\DBUtilities\obj\Debug\DBUtilities.pdb
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\DBUtilities\bin\Debug\DBUtilities.dll
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\DBUtilities\bin\Debug\DBUtilities.pdb
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\DBUtilities\obj\Debug\DBUtilities.csproj.AssemblyReference.cache
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\DBUtilities\obj\Debug\DBUtilities.csproj.CoreCompileInputs.cache
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\DBUtilities\obj\Debug\DBUtilities.dll
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\DBUtilities\obj\Debug\DBUtilities.pdb

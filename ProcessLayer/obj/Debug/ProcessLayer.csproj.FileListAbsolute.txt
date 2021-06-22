@@ -63,3 +63,14 @@ D:\Applications\Repositories\TPJ HR System\ProcessLayer\obj\Debug\ProcessLayer.d
 D:\Applications\Repositories\TPJ HR System\ProcessLayer\obj\Debug\ProcessLayer.pdb
 D:\Applications\Repositories\TPJ HR System\ProcessLayer\bin\Debug\Newtonsoft.Json.dll
 D:\Applications\Repositories\TPJ HR System\ProcessLayer\bin\Debug\Newtonsoft.Json.xml
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ProcessLayer\bin\Debug\ProcessLayer.dll
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ProcessLayer\bin\Debug\ProcessLayer.pdb
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ProcessLayer\bin\Debug\DBUtilities.dll
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ProcessLayer\bin\Debug\Newtonsoft.Json.dll
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ProcessLayer\bin\Debug\DBUtilities.pdb
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ProcessLayer\bin\Debug\Newtonsoft.Json.xml
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ProcessLayer\obj\Debug\ProcessLayer.csproj.AssemblyReference.cache
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ProcessLayer\obj\Debug\ProcessLayer.csproj.CoreCompileInputs.cache
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ProcessLayer\obj\Debug\ProcessLayer.csproj.CopyComplete
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ProcessLayer\obj\Debug\ProcessLayer.dll
+C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ProcessLayer\obj\Debug\ProcessLayer.pdb
