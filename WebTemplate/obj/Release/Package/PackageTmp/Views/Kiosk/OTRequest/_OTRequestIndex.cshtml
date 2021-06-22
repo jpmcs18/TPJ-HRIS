@@ -1,0 +1,505 @@
+﻿@model WebTemplate.Models.Kiosk.OT_Request.Index
+
+@{
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var PageAccess = credential.GetPage("Kiosk/OTRequest") ?? new DataAccessLayer.System.Page();
+    var CreatorAccess = credential.GetPage("Creator Request Over Time") ?? new DataAccessLayer.System.Page();
+    var OtRequestApprover = credential.GetPage("Approver Request Over Time") ?? new DataAccessLayer.System.Page();
+
+    ViewBag.title = PageAccess.PageName;
+}
+
+<div class="wrapper wrapper-content">
+    <div class="page-heading">
+        <div class="col-lg-8">
+            <h1>@Html.Raw(PageAccess.PageName ?? "&nbsp;")</h1>
+            <ol class="breadcrumb">
+                <li>
+                    <a href='@Url.Action("Index", "Home")'>Home</a>
+                </li>
+                <li>Kiosk</li>
+                <li class="active">
+                    <strong>@Html.Raw(PageAccess.PageName ?? "&nbsp;")</strong>
+                </li>
+            </ol>
+        </div>
+        <div class="col-lg-4">
+            <div class="title-action">
+                @if (PageAccess.Insert)
+                {
+                    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        @*<h1><b>My Over Time Requests</b></h1>*@
+                        <button type="button" id="CreateNewRequest" onclick="NewRequest();" tpj-show-tab="#tab-1" class="btn btn-primary font-bold pull-right" title="Create"><i class="fa fa-plus"></i>&nbsp;&nbsp;New OT Request</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="" style="margin-top: 85px;">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 animated fadeInLef">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 m-b-sm" style="padding: 0px;">
+                <div class="tabs-container" style="border: 1px solid #009688;">
+                    <div class="tab-content" style="margin-top: 0px; max-height: unset; overflow-y: hidden; overflow-x: hidden; height: 770px;">
+                        @if (CreatorAccess.View)
+                        {
+                            <div id="tab-2" class="tab-pane active" style="height: 850px;">
+                                <div id="OTRequestsForm" class="panel-body" style="padding: 10px; max-height: 100%; border: 1px solid #e5e6e7; overflow-y: hidden;">
+                                    @Html.Partial("~/Views/Kiosk/OTRequest/_MyOTRequests.cshtml")
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal inmodal custom-modal" id="ApprovalModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="vertical-alignment-helper">
+        <div class="modal-center vertical-align-center">
+            <div class="modal-content animated fadeInDown modal-width-60">
+                <div class="modal-header">
+                    <h5 class="modal-title">Hours to Approve</h5>
+                    <button type="button" class="close" aria-label="Close" data-dismiss="modal">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="max-height: 750px; background-color: #fff; overflow: hidden;">
+                    <div class="chat-view">
+                        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <label class="control-label">Indicate how many hours is allowed to this request.</label>
+                            @*<input type="number" name="ApprovedHours" value="@Model.OTRequest.ApprovedHours" class="form-control text-transform-none" placeholder="Approved Hours..." />*@
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    @*<button type="button" name="CancelMemoArchive" class="btn btn-outline btn-w-m btn-danger CancelMemoArchive" value="0" title="Clear"><i class="fa fa-times"></i> &nbsp;Cancel</button>*@
+                    <button type="button" name="Proceed" class="btn btn-info btn-w-m Proceed" value="0" title="Proceed Approval">Proceed</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal inmodal custom-modal" id="CancellationModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="vertical-alignment-helper">
+        <div class="modal-center vertical-align-center">
+            <div class="modal-content animated fadeInDown modal-width-60">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cancellation Remarks</h5>
+                    <button type="button" class="close" aria-label="Close" data-dismiss="modal">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="max-height: 750px; background-color: #fff; overflow: hidden;">
+                    <div class="chat-view">
+                        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <label class="control-label">Indicate why you are cancelling this request.</label>
+                            <textarea name="CancellationRemarks" value="@Model.OTRequest.Remarks" style="resize: none;" class="form-control text-transform-none" placeholder="Cancellation Remarks..." rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    @*<button type="button" name="CancelMemoArchive" class="btn btn-outline btn-w-m btn-danger CancelMemoArchive" value="0" title="Clear"><i class="fa fa-times"></i> &nbsp;Cancel</button>*@
+                    <button type="button" name="Proceed" class="btn btn-info btn-w-m Proceed" value="0" title="Proceed Cancellation">Proceed</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal inmodal custom-modal" id="OTRequestModal" data-backdrop="static" data-keyboard="false" tabindex="" role="dialog" aria-hidden="true">
+    <div class="vertical-alignment-helper">
+        <div class="modal-center vertical-align-center">
+            <div class="modal-content animated fadeInDown modal-width-30">
+                <div class="modal-header">
+                    <h5 class="modal-title" style="text-align: center;">New Over Time Request</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div id="OTRequestForm" class="modal-body" style="max-height: 750px; background-color: #fff; overflow: hidden;">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        Events();
+    });
+
+    function Events() {
+        $_SelectedRows = [];
+
+        SetRowLoadingDisplayColSpan();
+        SearchTabEvents();
+
+        $(document).off('keydown').on('keydown', function () {
+            if (event.keyCode == 13) {
+                if ($('div.showSweetAlert button.confirm').length > 0)
+                    $('div.showSweetAlert button.confirm').trigger('click');
+            }
+
+            if (event.keyCode == 27) {
+                if ($('div.showSweetAlert button.confirm').length > 0)
+                    $('div.showSweetAlert button.cancel').trigger('click');
+            }
+        });
+
+        $(".modal").on('shown.bs.modal', function () {
+            var id = $(this).attr('id');
+            $('#' + id + '.form-control:first').select();
+            $(this).find('span.select2').css('width', '100%');
+        });
+
+        $('input.chkRow').off('ifClicked').on('ifClicked', EnableDelete);
+        $('button#MultipleDelete').off('click').on('click', MultipleDelete);
+        $('input#SelectAll').off('ifClicked').on('ifClicked', SelectAllRows);
+    }
+
+    function StatusFilter() {
+        var name = $(this).attr('name');
+
+        if (name == 'All') {
+            if ($(this).is(':checked')) {
+                $('.status-checkbox').each(function (e) {
+                    if ($(this).attr('name') !== 'All') {
+                        $(this).iCheck('uncheck');
+                    }
+                });
+            }
+            else {
+                $('.status-checkbox').each(function (e) {
+                    if ($(this).attr('name') !== 'All') {
+                        $(this).iCheck('check');
+                    }
+                });
+            }
+
+            $('.status-checkbox[name="IsPending"]').iCheck('check');
+        }
+        else {
+            $('.status-checkbox[name="All"]').iCheck('uncheck');
+        }
+
+        setTimeout(SearchRequest, 500);
+    }
+
+    function SearchTabEvents() {
+        $('#Btn_Search').off('click').on('click', SearchRequest);
+        $('select').select2();
+        //$('#OTRequestModal select').select2();
+
+        $('.status-checkbox').off('ifClicked').on('ifClicked', StatusFilter);
+
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green',
+        });
+
+        $('#Btn_Search').off('click').on('click', function () {
+            $('#hid_search').val($('.txt_search').val());
+            $('#hid_page').val(1);
+            SearchRequest();
+        });
+
+        $('.pages').off('click').on('click', function () {
+            $('#hid_page').val($(this).val())
+            SearchRequest();
+        });
+    }
+
+    function ModalEvents(modal, title, response) {
+        $(modal + ' .modal-body').html(response);
+        $(modal + ' .modal-title').html(title + ' OT Request');
+        $(modal + ' .i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green',
+        });
+        $(modal).appendTo('body').modal('show');
+    }
+
+    function NewRequest() {
+        var formdata = new FormData();
+        var url = '@Url.Action("New", "OTRequest")';
+        formdata.append('__RequestVerificationToken', $('@Html.AntiForgeryToken()').val());
+
+        $.ajax({
+            url: url,
+            data: formdata,
+            type: "POST",
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function () {
+                ShowLoadingScreen();
+            },
+            complete: function () {
+                RemoveLoadingScreen();
+            },
+            success: function (response) {
+                if (response.msg == null) {
+                    ModalEvents('#OTRequestModal', 'New', response);
+                    //$('#ShowAllOTRequest').off('click').on('click', ShowCreateOTRequest);
+                } else {
+                    toastr.error(response.res);
+                }
+            },
+            error: function () {
+                toastr.error('AJAX backend error', 'An error has occured.');
+            }
+        });
+    }
+
+    function SearchRequest() {
+        var formdata = new FormData();
+        var url = '@Url.Action("Index", "OTRequest")';
+
+        $('#form_search_params .form-control').each(function () {
+            formdata.append($(this).attr('name'), $(this).val());
+        });
+        $('#status_search_params input.i-checks').each(function () {
+            formdata.append($(this).attr('name'), $(this).is(':checked'));
+        });
+        formdata.append('__RequestVerificationToken', $('@Html.AntiForgeryToken()').val());
+
+        $.ajax({
+            url: url,
+            data: formdata,
+            type: "POST",
+            datatype: 'JSON',
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function () {
+                //ShowLoadingScreen();
+                ShowHideRowLoadingDisplay('OTRequestsTable', true);
+            },
+            complete: function () {
+                //RemoveLoadingScreen();
+                //ShowHideRowLoadingDisplay('OTRequestsTable', false);
+            },
+            success: function (response) {
+                if (response.msg == null) {
+                    $('#OTRequestsForm').html(response);
+                    SearchTabEvents();
+                    //Events();
+                } else {
+                    toastr.error(response.res);
+                }
+            },
+            error: function () {
+                toastr.error('AJAX backend error', 'An error has occured.');
+            }
+        });
+    }
+
+    function SaveRequest() {
+        var formdata = new FormData();
+        var url = '@Url.Action("Save", "OTRequest")';
+        $('#OTRequestForm .form-control').each(function () {
+            formdata.append($(this).attr('name'), $(this).val());
+        });
+        formdata.append('__RequestVerificationToken', $('@Html.AntiForgeryToken()').val());
+
+        $.ajax({
+            url: url,
+            data: formdata,
+            type: 'POST',
+            datatype: 'JSON',
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function () {
+                ShowLoadingScreen()
+            },
+            complete: function () {
+                RemoveLoadingScreen()
+            },
+            success: function (response) {
+                if (response.msg == null) {
+                    toastr.success('Success', 'Request saved!');
+                    var modal = '#OTRequestForm';
+                    ModalEvents(modal, 'View', response);
+                    SearchRequest();
+                } else {
+                    toastr.error(response.res);
+                }
+            },
+            error: function (response) {
+                toastr.error(response.res);
+            }
+        });
+    }
+
+    function EditRequest(id) {
+        var formdata = new FormData();
+        var url = '@Url.Action("EditOrNew", "OTRequest")';
+        formdata.append('id', id);
+        formdata.append('__RequestVerificationToken', $('@Html.AntiForgeryToken()').val());
+
+        $.ajax({
+            url: url,
+            data: formdata,
+            type: "POST",
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function () {
+                ShowLoadingScreen()
+            },
+            complete: function () {
+                RemoveLoadingScreen()
+            },
+            success: function (response) {
+                if (response.msg == null) {
+                    ModalEvents('#OTRequestModal', 'View', response);
+                } else {
+                    toastr.warning(response.res, "Warning");
+                }
+            },
+            error: function () {
+                toastr.error('AJAX backend error', 'An error has occured.');
+            }
+        });
+    }
+
+    function DeleteOTRequest() {
+        var id = $(this).val();
+
+        swal({
+            title: 'Continue to delete<br/>OT Request?',
+            text: '', //'Choose from the actions below or<br/>Press Esc to Cancel, Enter to Continue.',
+            type: 'warning',
+            showConfirmButton: true,
+            showCancelButton: true,
+            confirmButtonColor: "#1ab394",
+            cancelButtonColor: "#f27474", //"f27474",
+            confirmButtonText: 'Continue',
+            cancelButtonText: 'Cancel',
+            closeOnConfirm: true,
+            closeOnCancel: true,
+            html: true
+        },
+        function (isConfirm) {
+            if (isConfirm) {
+                var params = 'id=' + id +
+                    '&__RequestVerificationToken=' +
+                    $('@Html.AntiForgeryToken()').val();
+
+                $.ajax({
+                    data: params,
+                    type: 'POST',
+                    url: '@Url.Action("Delete", "OTRequest")',
+                    cache: false,
+                    beforeSend: function () {
+                        ShowLoadingScreen()
+                    },
+                    complete: function () {
+                        RemoveLoadingScreen()
+                    },
+                    success: function (response) {
+                        if (response.msg == true) {
+                            toastr.success('OT Request Deleted!');
+
+                            SearchRequest();
+                        } else {
+                            toastr.error(response.res);
+                        }
+                    },
+                    error: function (response) {
+                        toastr.error(response.res);
+                    }
+                });
+            }
+        });
+    }
+
+    function EnableDelete() {
+        var id = parseFloat($(this).val() ? $(this).val() : 0);
+        var description = $(this).closest('tr').find('.clickable-text').text().trim();
+
+        if ($(this).is(':checked')) {
+            $_SelectedRows = $_SelectedRows.filter(function (e) { return e.ID !== id; });
+        }
+        else {
+            if ($_SelectedRows.filter(function (e) { return e.ID == id; }).length == 0)
+                $_SelectedRows.push({ ID: id, Description: description });
+        }
+
+    var rowCount = $(this).closest('table').find('tbody tr.Row-Display .chkRow').length;
+        $('#SelectAll').iCheck(($_SelectedRows.length == rowCount ? '' : 'un') + 'check');
+        $('#MultipleDelete').attr('disabled', $_SelectedRows.length > 0 ? false : true);
+    }
+
+    function MultipleDelete() {
+        var pagetitle = $('.page-heading h2').text().trim().toLowerCase();
+        var message = $_SelectedRows.length + ' ' + pagetitle + ($_SelectedRows.length > 1 ? 's' : '');
+
+        swal({
+            title: 'Delete ' + message + '?',
+            text: "",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Yes",
+            cancelButtonText: "No",
+            closeOnConfirm: true,
+            closeOnCancel: true
+        },
+        function(confirm) {
+            if (confirm) {
+                $.ajax({
+                    data: {
+                        'ids': JSON.stringify($_SelectedRows),
+                        '__RequestVerificationToken': $('@Html.AntiForgeryToken()').val()
+                    },
+                    type: 'POST',
+                    datatype: 'JSON',
+                    url: '@Url.Action("DeleteMultiple", "OTRequest")',
+                    async: true,
+                    cache: false,
+                    beforeSend: function(x) {
+                        ShowLoadingScreen()
+                    },
+                    complete: function() {
+                        RemoveLoadingScreen()
+                    },
+                    success: function(response) {
+                        if (response.msg) {
+                            toastr.success(message + ' deleted!');
+                            SearchRequest();
+                        } else {
+                            toastr.error(response.res);
+                        }
+                    },
+                    error: function(x) {
+                    }
+                })
+            }
+        });
+    }
+
+    function SelectAllRows() {
+        $checkRows = $(this).closest('table').find('input.chkRow');
+
+        if ($(this).is(':checked')) {
+            $checkRows.iCheck('uncheck');
+            $_SelectedRows = [];
+        }
+        else {
+            $checkRows.iCheck('check');
+
+            $checkRows.each(function (e) {
+                var id = parseFloat($(this).val() ? $(this).val() : 0);
+                var description = $(this).closest('tr').find('.clickable-text').text().trim();
+
+                if ($_SelectedRows.filter(function (e) { return e.ID == id; }).length == 0)
+                    $_SelectedRows.push({ ID: id, Description: description });
+            });
+        }
+
+        $('#MultipleDelete').attr('disabled', $_SelectedRows.length > 0 ? false : true);
+    }
+</script>

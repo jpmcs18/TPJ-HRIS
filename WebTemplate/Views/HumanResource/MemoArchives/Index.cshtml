@@ -1,0 +1,1303 @@
+@model WebTemplate.Models.MemoArchive.Index
+
+@{
+    var MemoArchivePageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("HumanResource/MemoArchive");
+    var memoTypes = ProcessLayer.Processes.LookupProcess.GetMemoType().Where(m => !m.Description.Contains("-"));
+
+    ViewBag.title = MemoArchivePageAccess.PageName;
+}
+
+<div class="wrapper wrapper-content">
+    <div class="page-heading">
+        <div class="col-lg-8">
+            <h1>@Html.Raw(MemoArchivePageAccess.PageName ?? "&nbsp;")</h1>
+            <ol class="breadcrumb">
+                <li>
+                    <a href='@Url.Action("Index", "Home")'>Home</a>
+                </li>
+                <li class="active">
+                    <strong>@Html.Raw(MemoArchivePageAccess.PageName ?? "&nbsp;")</strong>
+                </li>
+            </ol>
+        </div>
+        <div class="col-lg-4">
+            <div class="title-action">
+                @if (MemoArchivePageAccess.Insert)
+                {
+                    @*<a class="btn btn-primary compose-mail" href="#">New Memo</a>*@
+                }
+            </div>
+        </div>
+    </div>
+    <div class="" style="margin-top: 85px;">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 animated fadeInLef">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 m-b-sm" style="padding: 0px;">
+                <div class="tabs-container" style="border: 1px solid #009688;">
+                    <div id="No-Internet" class="text-white bg-danger text-center" style="font-size: 15px; padding: 4px; display: none;/* margin: 0 4px; */">
+                        No Internet  Connection
+                    </div>
+                    <div class="tab-content" style=" height: 800px; margin-top: 0px; overflow: hidden; background-color: #ffffff;">
+                        @if (MemoArchivePageAccess.View)
+                        {
+                            <div class="col-lg-2" style="padding: 0;">
+                                <div class="ibox" style=" box-shadow: unset;">
+                                    <div class="ibox-content mailbox-content">
+                                        <div class="file-manager">
+                                            @if (MemoArchivePageAccess.Insert)
+                                            {
+                                                <a id="btnadd" class="btn btn-block btn-primary compose-mail" onclick="New()">Compose</a>
+                                            }
+                                            <div class="space-25"></div>
+                                            <h5>Folders</h5>
+                                            <ul id="Folders" class="folder-list m-b-md" style="padding: 0">
+                                                <li>
+                                                    <input hidden name="MemoTypeID" value="0" />
+                                                    <a href="#" onclick="FoldersClick(0)"> <i class="fa fa-send"></i> Sent @*<span class="label label-danger float-right">2</span>*@</a>
+                                                </li>
+                                                @foreach (var m in memoTypes)
+                                                {
+                                                    <li><a href="#" onclick="FoldersClick(@m.ID)"> <i class="fa fa-file-text-o"></i> @m.Description</a></li>
+                                                }
+                                                @*<li><a href="#"> <i class="fa fa fa-files-o"></i> Memo</a></li>
+                                                    <li><a href="#"> <i class="fa fa-exclamation-circle"></i> Infraction</a></li>*@
+                                                <li><a href="#" onclick="FoldersClick(-1);"> <i class="fa fa-trash-o"></i> Trash</a></li>
+                                            </ul>
+                                            <h5>Categories</h5>
+                                            <ul class="category-list" style="padding: 0">
+                                                <li>
+                                                    <input hidden name="MemoStatusID" value="0" />
+                                                    <a href="#" onclick="StatusClick(1);"> <i class="fa fa-circle text-info"></i> Pending </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" onclick="StatusClick(0);"> <i class="fa fa-circle text-navy"></i> Open </a>
+                                                </li>
+                                                <li><a href="#" onclick="StatusClick(2);"> <i class="fa fa-circle text-danger"></i> Closed</a></li>
+                                                @*<li><a href="#"> <i class="fa fa-circle text-primary"></i> Written Explanation</a></li>
+                                                    <li><a href="#"> <i class="fa fa-circle text-info"></i> Advertising</a></li>
+                                                    <li><a href="#"> <i class="fa fa-circle text-warning"></i> Clients</a></li>*@
+                                            </ul>
+
+                                            @*<h5 class="tag-title">Labels</h5>
+                                                <ul class="tag-list" style="padding: 0">
+                                                    <li><a href=""><i class="fa fa-tag"></i> Family</a></li>
+                                                    <li><a href=""><i class="fa fa-tag"></i> Work</a></li>
+                                                    <li><a href=""><i class="fa fa-tag"></i> Home</a></li>
+                                                    <li><a href=""><i class="fa fa-tag"></i> Children</a></li>
+                                                    <li><a href=""><i class="fa fa-tag"></i> Holidays</a></li>
+                                                    <li><a href=""><i class="fa fa-tag"></i> Music</a></li>
+                                                    <li><a href=""><i class="fa fa-tag"></i> Photography</a></li>
+                                                    <li><a href=""><i class="fa fa-tag"></i> Film</a></li>
+                                                </ul>*@
+                                            <div class="clearfix"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="MemoArchivesSearch" class="col-lg-3">
+                                @Html.Partial("~/Views/HumanResource/MemoArchives/_Search.cshtml")
+                            </div>
+                            <div id="MemoArchivesForm" class="col-lg-7 animated fadeInRight" style="overflow-y: auto; padding-right: 0;/*overflow-y: auto; height: 800px; max-height: 800px;*/"></div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .col-form-label {
+        padding-top: calc(.375rem + 1px);
+        padding-bottom: calc(.375rem + 1px);
+        margin-bottom: 0;
+        font-size: inherit;
+        line-height: 1.5;
+    }
+</style>
+
+<script type="text/javascript">
+    var CurrAjaxCall = null;
+    var IsSendAndSave = false;
+    var $_PersonnelIds = [];
+    var isSendingEmail = false;
+    var MemoArchivePageAccess = @Html.Raw(Json.Encode(MemoArchivePageAccess));
+    var interval = null;
+    var $_SelectedRows = [];
+
+    $(document).ready(function() {
+        Events();
+    });
+
+    window.onbeforeunload = function(e) {
+        if (isSendingEmail == true)
+            return "Sending email in progress. Unable to reload page.";
+    }
+
+    $(function() {
+        $(document).keydown(function(e) {
+            if (((e.which || e.keyCode) == 116 ||
+                    (e.which || e.keyCode) == 82 ||
+                    (((e.which || e.keyCode) == 65) && e.ctrlKey)) &&
+                isSendingEmail == true) {
+                e.preventDefault();
+                toastr.error('Sending email in progress. Unable to reload page.', 'Error');
+            }
+        });
+    });
+
+    function Events() {
+        $_SelectedRows = [];
+
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green',
+        });
+        $('.pages').off('click').on('click',
+            function () {
+                $('#hid_page').val($(this).val());
+                Search();
+            });
+        $('.txt_search').off('keydown').on('keydown',
+            function () {
+                if (event.keyCode == 13) {
+                    $('#btn_search').click();
+                }
+            })
+        $('#btn_search').off('click').on('click',
+            function () {
+                $('#hid_search').val($('.txt_search').val());
+                $('#hid_page').val(1);
+                $('#hid_empStat').val($('#EmploymentStatusID').val());
+                Search();
+            });
+
+        //$('tr.Row-Display').off('click').on('click', ViewReplies);
+        $('input.chkRow').off('ifClicked').on('ifClicked', EnableDelete);
+        $('button#MultipleDelete').off('click').on('click', MultipleDelete);
+        $('button#MultipleForward').off('click').on('click', MultipleForward);
+        //$('button#MultipleClose').off('click').on('click', MultipleClose);
+        $('input#SelectAll').off('ifClicked').on('ifClicked', SelectAllRows);
+        interval = setInterval(CheckInternetConnection, 1000); //start checking internet connection
+
+        AjaxEvents();
+    }
+
+    function AjaxEvents() {
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green',
+        });
+        $('#SearchPersonnelDiv .searchinput').off('keyup').on('keyup', KeyUp);
+
+        $('select#Recipient').change(function (e) {
+            var value = $(this).val();
+            if (CurrAjaxCall != null)
+                CurrAjaxCall.abort();
+
+            if (value == 0) {
+                $('#SearchPersonnelDiv').show();
+                $('#SearchPersonnelDiv .searchinput').off('keyup').on('keyup', KeyUp);
+                $('#SearchGroupDiv').hide();
+            }
+            else if (value == 1) {
+                $('#SearchPersonnelDiv').hide();
+                $('#SearchGroupDiv').show();
+                $('#SearchGroupDiv .searchinput').off('keyup').on('keyup', KeyUp);
+            }
+        });
+        $('.close').off('click').on('click', function () {
+            $(this).parent().find('input').val('').focus();
+            $(this).parent().find('.searchresults').remove();
+        });
+        $('.Send').off('click').on('click', Save);
+        $('.Save').off('click').on('click', Save);
+        $('.Resend').off('click').on('click', Resend);
+        $('.DiscardMemoArchive').off('click').on('click', Discard);
+        $('.result').off('mouseover').on('mouseover', ResultsHover);
+        $('.searchresults').off('mouseleave').on('mouseleave', ResultsLeave);
+        InitDatePicker();
+        Select2();
+    }
+
+    var $_TypedSearch = '';
+    function ResultsHover() {
+        var isPersonnel = $('select#Recipient').val() == 0;
+        var name = $(this).find('input.' + (isPersonnel ? 'FullName' : 'Name')).val().trim() || '';
+        var email = ($(this).find('input.Email').val() || '').trim() || '';
+        var id = $(this).find('input.ID').val() || 0;
+        $_TypedSearch = $_TypedSearch == '' ? $('#Personnel').val() : $_TypedSearch;
+
+        $('#Personnel').val(name).addClass('result-hover');//.css('background-color', '#d7f0ff');
+    }
+
+    function ResultsLeave() {
+        $('#Personnel').val($_TypedSearch);
+        $('#Personnel').val(name).removeClass('result-hover');//.css('background-color', '');
+    }
+
+    function New() {
+        if (CurrAjaxCall != null)
+            CurrAjaxCall.abort();
+
+        CurrAjaxCall = $.ajax({
+            data: {
+                filter: "",
+                __RequestVerificationToken: $('@Html.AntiForgeryToken()').val()
+            },
+            type: 'POST',
+            datatype: 'JSON',
+            url: '@Url.Action("New", "MemoArchive")',
+            cache: false,
+            beforeSend: function() {
+                ShowLoadingScreen();
+            },
+            complete: function() {
+                RemoveLoadingScreen();
+            },
+            success: function(response) {
+                if (response.msg == false) {
+                    toastr.error(response.res);
+                } else {
+                    $('#MemoArchivesForm').html(response);
+                    AjaxEvents();
+                }
+            },
+            error: function (x) {
+                if (CurrAjaxCall != null)
+                    toastr.error('AJAX backend error', 'An error has occured.');
+                }
+        });
+
+        CurrAjaxCall = null;
+    }
+
+    function View(MemoId) {
+        if (CurrAjaxCall != null)
+            CurrAjaxCall.abort();
+
+        CurrAjaxCall = $.ajax({
+                data: {
+                    MemoId: MemoId,
+                    __RequestVerificationToken: $('@Html.AntiForgeryToken()').val()
+                },
+                type: 'POST',
+                datatype: 'JSON',
+                url: '@Url.Action("View", "MemoArchive")',
+                cache: false,
+                beforeSend: function() {
+                    ShowLoadingScreen();
+                },
+                complete: function() {
+                    RemoveLoadingScreen();
+                },
+                success: function(response) {
+                    if (response.msg == false) {
+                        toastr.error(response.res);
+                    } else {
+                        $('#MemoArchivesForm').html(response);
+                        Events();
+                    }
+                },
+            error: function (x) {
+                if (CurrAjaxCall != null)
+                    toastr.error('AJAX backend error', 'An error has occured.');
+                }
+        });
+
+        CurrAjaxCall = null;
+    }
+
+    function CheckInternetConnection() {
+        try {
+            var isOnline = navigator.onLine;
+            $('#No-Internet').css('display', isOnline ? 'none' : 'block');
+            $('.Send').attr('disabled', !isOnline);
+            $('.Resend').attr('disabled', !isOnline);
+        } catch {
+        }
+    }
+
+    function EnableDelete() {
+        var id = parseFloat($(this).val() ? $(this).val() : 0);
+        var description = $(this).closest('tr').find('.clickable-text').text().trim();
+
+        if ($(this).is(':checked')) {
+            $_SelectedRows = $_SelectedRows.filter(function (e) { return e.ID !== id; });
+        }
+        else {
+            if ($_SelectedRows.filter(function (e) { return e.ID == id; }).length == 0)
+                $_SelectedRows.push({ ID: id, Description: description });
+        }
+
+        var rowCount = $(this).closest('table').find('tbody tr.Row-Display .chkRow').length;
+        $('#SelectAll').iCheck(($_SelectedRows.length == rowCount ? '' : 'un') + 'check');
+        $('#MultipleDelete').attr('disabled', $_SelectedRows.length > 0 ? false : true);
+        $('#MultipleForward').attr('disabled', $_SelectedRows.length > 0 ? false : true);
+        //$('#MultipleClose').attr('disabled', $_SelectedRows.length > 0 ? false : true);
+    }
+
+    function MultipleDelete() {
+        var pagetitle = $('.page-heading h2').text().trim().toLowerCase();
+        var message = $_SelectedRows.length + ' ' + pagetitle + ($_SelectedRows.length > 1 ? 's' : '');
+
+        swal({
+            title: 'Delete ' + message + '?',
+            text: "",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Yes",
+            cancelButtonText: "No",
+            closeOnConfirm: true,
+            closeOnCancel: true
+        },
+        function(confirm) {
+            if (confirm) {
+                if (CurrAjaxCall != null)
+                    CurrAjaxCall.abort();
+
+                CurrAjaxCall = $.ajax({
+                    data: {
+                        'ids': JSON.stringify($_SelectedRows),
+                        '__RequestVerificationToken': $('@Html.AntiForgeryToken()').val()
+                    },
+                    type: 'POST',
+                    datatype: 'JSON',
+                    url: '@Url.Action("DeleteMultiple", "MemoArchive")',
+                    async: true,
+                    cache: false,
+                    beforeSend: function(x) {
+                        ShowLoadingScreen()
+                    },
+                    complete: function() {
+                        RemoveLoadingScreen()
+                    },
+                    success: function(response) {
+                        if (response.msg == false) {
+                            toastr.error(response.res);
+                        } else {
+                            toastr.success(message + ' deleted!');
+                            Search();
+                        }
+                    },
+                    error: function (x) {
+                        if (CurrAjaxCall != null)
+                            toastr.error('AJAX backend error', 'An error has occured.');
+                    }
+                })
+            }
+            });
+
+        CurrAjaxCall = null;
+    }
+
+    function MultipleForward() {
+        var pagetitle = $('.page-heading h2').text().trim().toLowerCase();
+        var message = $_SelectedRows.length + ' ' + pagetitle + ($_SelectedRows.length > 1 ? 's' : '');
+
+        swal({
+            title: 'Forward ' + message + '?',
+            text: "",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Yes",
+            cancelButtonText: "No",
+            closeOnConfirm: true,
+            closeOnCancel: true
+        },
+        function(confirm) {
+            if (confirm) {
+                if (CurrAjaxCall != null)
+                    CurrAjaxCall.abort();
+
+                CurrAjaxCall = $.ajax({
+                    data: {
+                        'ids': JSON.stringify($_SelectedRows),
+                        '__RequestVerificationToken': $('@Html.AntiForgeryToken()').val()
+                    },
+                    type: 'POST',
+                    datatype: 'JSON',
+                    url: '@Url.Action("ForwardMultiple", "MemoArchive")',
+                    async: true,
+                    cache: false,
+                    beforeSend: function(x) {
+                        ShowLoadingScreen()
+                    },
+                    complete: function() {
+                        RemoveLoadingScreen()
+                    },
+                    success: function(response) {
+                        if (response.msg == false) {
+                            toastr.error(response.res);
+                        } else {
+                            toastr.success(message + ' deleted!');
+                            Search();
+                        }
+                    },
+                    error: function (x) {
+                        if (CurrAjaxCall != null)
+                            toastr.error('AJAX backend error', 'An error has occured.');
+                    }
+                })
+            }
+            });
+
+        CurrAjaxCall = null;
+    }
+
+    function SelectAllRows() {
+        $checkRows = $(this).closest('table').find('input.chkRow');
+
+        if ($(this).is(':checked')) {
+            $checkRows.iCheck('uncheck');
+            $_SelectedRows = [];
+        }
+        else {
+            $checkRows.iCheck('check');
+
+            $checkRows.each(function (e) {
+                var id = parseFloat($(this).val() ? $(this).val() : 0);
+                var description = $(this).closest('tr').find('.clickable-text').text().trim();
+
+                if ($_SelectedRows.filter(function (e) { return e.ID == id; }).length == 0)
+                    $_SelectedRows.push({ ID: id, Description: description });
+            });
+        }
+
+        $('#MultipleDelete').attr('disabled', $_SelectedRows.length > 0 ? false : true);
+        $('#MultipleForward').attr('disabled', $_SelectedRows.length > 0 ? false : true);
+        $('#MultipleClose').attr('disabled', $_SelectedRows.length > 0 ? false : true);
+    }
+
+    function Save() {
+        var rowID = parseFloat($(this).val());
+        IsSendAndSave = $(this).attr('saving-option') == 'ss';
+        var formdata = new FormData();
+
+        $('#Compose *').each(function () {
+            var name = $(this).attr('name');
+            var value = $(this).val();
+            if ((name != null && value != null) && (name != '' && value != ''))
+                formdata.append(name, value);
+
+            if (name == 'MemoTypeID' && $(this).find('option:selected').text().toLowerCase().trim().indexOf('personnel reply') > 0)
+                formdata.append('PersonnelReply', true);
+        });
+
+        formdata.append('MemoDate', new Date($('#MemoDate').val()).toUTCString());
+
+        formdata.append('IsFailed', !IsSendAndSave);
+
+        if ($('#Compose').find(".browsefile")[0].files.length > 0)
+            formdata.append("fileBase", $('#Compose').find(".browsefile")[0].files[0]);
+
+        formdata.append("ID", rowID);
+        formdata.append("__RequestVerificationToken", $('@Html.AntiForgeryToken()').val());
+
+        if (CurrAjaxCall != null)
+            CurrAjaxCall.abort();
+
+        CurrAjaxCall = $.ajax({
+            data: formdata,
+            url: '@Url.Action("Save", "MemoArchive")',
+            type: 'POST',
+            datatype: 'JSON',
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                ShowLoadingScreen()
+            },
+            complete: function() {
+                RemoveLoadingScreen()
+            },
+            success: function(response) {
+                if (response.msg == false) {
+                    toastr.error(response.res, 'Error');
+                } else {
+                    toastr.success('Memo archive saved', "Success!");
+                    $('#MemoArchivesForm').html(response);
+                    Events();
+
+                    if (IsSendAndSave) {
+                        var MemoID = $('#MemoArchivesForm #MemoID').val() || 0;
+                        GetPersonnelIDs(MemoID);
+                    }
+                }
+            },
+            error: function (x) {
+                if (CurrAjaxCall != null)
+                    toastr.error('AJAX backend error', 'An error has occured.');
+            }
+        });
+
+        CurrAjaxCall = null;
+    }
+
+    function Reply() {
+        var rowID = parseFloat($('#Parent #MemoID').val() || 0);
+        var replyoption = $(this).attr('reply-option');
+        var IsForward = replyoption == 0;
+        var formdata = new FormData();
+
+        //$('#Parent *').each(function () {
+        //    var name = $(this).attr('name');
+        //    var value = $(this).val();
+        //    if ((name != null && value != null) && (name != '' && value != ''))
+        //        formdata.append(name, value);
+        //});
+        formdata.append("IsForward", IsForward);
+
+        if (replyoption == 1)
+            formdata.append("personnelId", $('#Emails').val());
+        else if (replyoption == 2)
+            formdata.append("personnelGroupId", $('#PersonnelGroupId').val());
+        //else if (replyoption == 0)
+        //    formdata.append("IsForward", IsForward);
+
+        formdata.append("MemoId", rowID);
+        formdata.append("__RequestVerificationToken", $('@Html.AntiForgeryToken()').val());
+
+        if (CurrAjaxCall != null)
+            CurrAjaxCall.abort();
+
+        CurrAjaxCall = $.ajax({
+                data: formdata,
+                url: '@Url.Action("Reply", "MemoArchive")',
+                type: 'POST',
+                datatype: 'JSON',
+                cache: false,
+                contentType: false,
+                processData: false,
+                beforeSend: function() {
+                    ShowLoadingScreen();
+                },
+                complete: function() {
+                    RemoveLoadingScreen();
+                },
+                success: function(response) {
+                    if (response.msg == false) {
+                        toastr.error(response.res);
+                    } else {
+                        $('#MemoArchivesForm').html(response);
+                        AjaxEvents();
+
+                        $('#MemoTypeID').change(function (e) {
+                            var id = $(this).val() || 0;
+                            console.log(id);
+                            $('.recipientlabel').text(id == 3 && id > 0 ? 'From: ' : 'To: ');
+                        });
+                    }
+                },
+            error: function (x) {
+                if (CurrAjaxCall != null)
+                    toastr.error('AJAX backend error', 'An error has occured.');
+                }
+        });
+
+        CurrAjaxCall = null;
+    }
+
+    function Discard() {
+        var ParentMemoID = $('#ParentMemoID').val() || 0;
+        var title = $(this).attr('title');
+
+        if (title == 'Discard') {
+            swal({
+                title: 'Discard current memo?',
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+                closeOnConfirm: true,
+                closeOnCancel: true
+            },
+                function (confirm) {
+                    if (confirm) {
+                        ViewReplies(ParentMemoID);
+                    }
+                });
+        }
+        else
+            ViewReplies(ParentMemoID);
+    }
+
+    function GetPersonnelIDs(MemoID) {
+        if (CurrAjaxCall != null)
+            CurrAjaxCall.abort();
+
+        CurrAjaxCall = $.ajax({
+                data: {
+                    memoId: MemoID,
+                    __RequestVerificationToken: $('@Html.AntiForgeryToken()').val()
+                },
+                type: 'POST',
+                datatype: 'JSON',
+                url: '@Url.Action("GetPersonnelsCount", "MemoArchive")',
+                cache: false,
+                beforeSend: function() {
+                    //ShowLoadingScreen()
+                },
+                complete: function() {
+                    //RemoveLoadingScreen()
+                },
+                success: function(response) {
+                    if (response.msg) {
+                        swal({
+                            title: 'Preparing to send email' +
+                                (response.res.length > 1 ? 's' : '') +
+                                '...',
+                            text:
+                                '', //'<div class="progress progress-striped active m-t-n-md"><div id="EmailProgress" style="width: 100%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" role="progressbar" class="progress-bar progress-bar-primary"><span class="sr-only"></span></div></div>',
+                            //type: 'success',
+                            imageUrl: '/Images/preparing_email.gif',
+                            imageHeight: 80,
+                            imageAlt: 'preparing_email.gif',
+                            showCancelButton: false,
+                            showConfirmButton: false,
+                            html: true
+                        });
+                        $('.sweet-alert .sa-success').attr('style', 'display: none;');
+                        $('.sweet-alert h2').html();
+                        $('.sweet-alert p').html();
+
+                        isSendingEmail = true;
+                        EmailPersonnel(response.res, 0, MemoID, 0, -1, 0, '', []);
+                    }
+                },
+            error: function (x) {
+                if (CurrAjaxCall != null)
+                    toastr.error('AJAX backend error', 'An error has occured.');
+            }
+        });
+
+        CurrAjaxCall = null;
+        }
+
+    function EmailPersonnel(personnelIds,
+        index,
+        memoid,
+        failedCount,
+        successCount,
+        currPercent,
+        ErrorMsg,
+        failedPersonnelIds) {
+        var percentage = (100 / personnelIds.length) + currPercent;
+        //var percentage = percentageEach * (index + 1);
+
+        if (index == personnelIds.length) {
+            var showCancel = !(personnelIds.length == successCount);
+            var errorMessageDiv = (ErrorMsg.length > 0
+                ? '<div style="color: red;margin-top: -25px;">' + ErrorMsg + '</div><br/>'
+                : '');
+            var swalTitle = (failedCount > 0
+                    ? (personnelIds.length > 1 ? 'Some ' : '')
+                    : (personnelIds.length > 1 ? 'All ' : '')) +
+                'Email' +
+                (personnelIds.length > 1 ? 's ' : ' ') +
+                (failedCount > 0 ? 'not ' : ' ') +
+                'sent!';
+            var swalText = errorMessageDiv +
+                '<div style="font-size: 20px;">' +
+                (failedCount > 0
+                    ? '<b style="color: red;">Failed: ' +
+                    failedCount +
+                    '</b> | '
+                    : '') +
+                (successCount > 0
+                    ? '<b style="color: green;">Sent: ' +
+                    successCount +
+                    '</b> | '
+                    : '') +
+                '<b>Total: ' +
+                personnelIds.length +
+                '</b></div>';
+            var swalType = failedCount > 0 ? 'warning' : 'success';
+            isSendingEmail = false;
+
+            if ($('#ViewReplies').length == 0) {
+                if (failedCount == 0)
+                    $('.Resend').remove();
+
+                swal({
+                        title: swalTitle,
+                        text: swalText,
+                        type: swalType,
+                        showConfirmButton: true,
+                        showCancelButton: showCancel,
+                        confirmButtonColor: "#1ab394",
+                        //cancelButtonColor: "#f27474", //"f27474",
+                        confirmButtonText: 'OK',
+                        cancelButtonText: 'Retry',
+                        closeOnConfirm: true,
+                        closeOnCancel: !showCancel,
+                        html: true
+                }
+                    ,
+                    function(isConfirm) {
+                        if (isConfirm) {
+                            //ShowLoadingScreen();
+                            //location.reload();
+                        } else {
+                            ShowLoadingScreen();
+                            EmailPersonnel(failedPersonnelIds, 0, memoid, 0, -1, 0, '', []);
+                        }
+                    }
+                );
+            } else {
+                swal.close("confirm");
+                toastr.success(swalTitle, '');
+                location.reload();
+            }
+        }
+        else {
+            if (CurrAjaxCall != null)
+                CurrAjaxCall.abort();
+
+            CurrAjaxCall = $.ajax({
+                data: {
+                    personnelId: personnelIds[index],
+                    memoid: memoid,
+                    __RequestVerificationToken: $('@Html.AntiForgeryToken()').val()
+                },
+                type: 'POST',
+                datatype: 'JSON',
+                url: '@Url.Action("SendEmailToPersonnel", "MemoArchive")',
+                cache: false,
+                beforeSend: function() {
+                    //ShowLoadingScreen()
+                },
+                complete: function() {
+                    RemoveLoadingScreen();
+                },
+                success: function(response) {
+                    if (response.msg == false) {
+                        failedCount += 1;
+                        failedPersonnelIds.push(personnelIds[index]);
+                    } else {
+                        successCount += 1;
+
+                        //??
+                        //if ($('#ViewReplies').length > 0) {
+                        //    $('a#Exclamation-' + memoid).remove();
+                        //}
+                    }
+
+                    index += 1;
+                    var swalTitle = 'Sending <text id="EmailCount">' +
+                            index +
+                            '</text> of ' +
+                            personnelIds.length +
+                            ' email' +
+                            (personnelIds.length > 1 ? 's' : '') +
+                            '...<div class="progress progress-striped active m-t-md"><div id="EmailProgress" style="width: ' +
+                            percentage +
+                            '%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" role="progressbar" class="progress-bar progress-bar-primary"><span class="sr-only">' +
+                            percentage +
+                            '% Complete (success)</span></div></div>',
+                        swalText = '<div style="font-size: 20px;">' +
+                            (failedCount > 0
+                                ? '<b style="color: red;">Failed: ' +
+                                failedCount +
+                                '</b>'
+                                : '') +
+                            (failedCount > 0 && successCount > 0 ? ' | ' : '') +
+                            (successCount > 0
+                                ? '<b style="color: green;">Sent: ' +
+                                successCount +
+                                '</b>'
+                                : '') +
+                            '<b></div>';
+
+                    if (index == 1) {
+                        swal({
+                            title: swalTitle,
+                            text: swalText,
+                            imageUrl: '/Images/sending_email.gif',
+                            imageHeight: 80,
+                            imageAlt: 'sending_email.gif',
+                            showCancelButton: false,
+                            showConfirmButton: false,
+                            html: true
+                        });
+                    }
+
+                    $('.sweet-alert h2 #EmailCount').html(index);
+                    $('.sweet-alert h2 #EmailProgress').attr('style', 'width: ' + percentage + '%;');
+                    $('.sweet-alert p').html(swalText);
+
+                    successCount = successCount + (index == personnelIds.length ? 1 : 0);
+
+                    setTimeout(function() {
+                            if (response.msg == false) {
+                                ErrorMsg += ErrorMsg.length > 0 && ErrorMsg != response.res ? '<br/>' : '';
+                            }
+
+                            EmailPersonnel(personnelIds,
+                                index,
+                                memoid,
+                                failedCount,
+                                successCount,
+                                percentage,
+                                ErrorMsg,
+                                failedPersonnelIds)
+                        },
+                        2000);
+                },
+                error: function (x) {
+                    if (CurrAjaxCall != null)
+                        toastr.error('AJAX backend error', 'An error has occured.');
+                }
+            });
+
+            CurrAjaxCall = null;
+        }
+    }
+
+    function ResendEmailPersonnel(personnelId, memoid) {
+        if (isSendingEmail == false) {
+            isSendingEmail = true;
+
+            if (CurrAjaxCall != null)
+                CurrAjaxCall.abort();
+
+            CurrAjaxCall = $.ajax({
+                data: {
+                    personnelId: personnelId,
+                    memoid: memoid,
+                    __RequestVerificationToken: $('@Html.AntiForgeryToken()').val()
+                },
+                type: 'POST',
+                datatype: 'JSON',
+                url: '@Url.Action("SendEmailToPersonnel", "MemoArchive")',
+                cache: false,
+                beforeSend: function() {
+                    //ShowLoadingScreen()
+                    $('a#Exclamation-' + memoid).addClass('hidden');
+                    $('i#Sending-' + memoid).removeClass('hidden');
+                },
+                complete: function() {
+                    RemoveLoadingScreen();
+                },
+                success: function(response) {
+                    if (response.msg == false) {
+                        var isOnline = navigator.onLine;
+                        var errMsg = 'Email not sent!';
+                        errMsg += !isOnline ? ' No Internet  Connection.' : '';
+
+                        toastr.error(response.res, errMsg);
+                        $('a#Exclamation-' + memoid).removeClass('hidden');
+                        $('i#Sending-' + memoid).addClass('hidden');
+                    } else {
+                        $('i#Sending-' + memoid).next('.message').css('opacity', 1);
+                        $('a#Exclamation-' + memoid).remove();
+                        $('i#Sending-' + memoid).remove();
+                    }
+
+                    isSendingEmail = false;
+                    //CountFailedEmails();
+                },
+                error: function (x) {
+                    if (CurrAjaxCall != null)
+                        toastr.error('AJAX backend error', 'An error has occured.');
+                }
+            });
+
+            CurrAjaxCall = null;
+        }
+    }
+
+    function Resend() {
+        var MemoID = $('#MemoID').val();
+        GetPersonnelIDs(MemoID);
+    }
+    //?
+    function CountFailedEmails() {
+        var personnelID = $('#ViewReplies .modal-body .chat-div #DiscusionPersonnelID').val();
+
+        if ($('#ViewReplies .modal-body .chat-discussion table tbody .failed-email').length > 0)
+            $('#ViewReplies .modal-body .users-list button.chat-user[value="' + personnelID + '"] .failed-email')
+                .removeClass('hidden');
+        else
+            $('#ViewReplies .modal-body .users-list button.chat-user[value="' + personnelID + '"] .failed-email')
+                .addClass('hidden');
+    }
+
+    function ViewReplies(rowID) {
+        //var rowID = $(this).attr('id') || 0;
+        //var isCollapsed = $(this).find('.panel-title').attr('aria-expanded');
+        $('#MemoArchivesSearch tbody tr').removeClass('selected-row');
+        $('#MemoArchivesSearch tbody tr#' + rowID).addClass('selected-row'); //$(this).addClass('selected-row');
+        var formdata = new FormData();
+
+        formdata.append('MemoId', rowID);
+        formdata.append("__RequestVerificationToken", $('@Html.AntiForgeryToken()').val());
+
+        if (CurrAjaxCall != null)
+            CurrAjaxCall.abort();
+
+        CurrAjaxCall = $.ajax({
+            data: formdata,
+            url: '@Url.Action("Replies", "MemoArchive")',
+            type: 'POST',
+            datatype: 'JSON',
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                ShowLoadingScreen();
+            },
+            complete: function() {
+                RemoveLoadingScreen();
+            },
+            success: function(response) {
+                if (response.msg == false) {
+                    toastr.error(response.res);
+                } else {
+                    $('#MemoArchivesForm').html(response);
+                    AjaxEvents();
+
+                    $('button.ReplyOption').off('click').on('click', Reply);
+                }
+            },
+            error: function (x) {
+                if (CurrAjaxCall != null)
+                    toastr.error('AJAX backend error', 'An error has occured.');
+            }
+        });
+
+        CurrAjaxCall = null;
+    }
+    //?
+    function SendReply() {
+        $(this).hide();
+
+        $('.chat-message-form').find(".clearInput").trigger('click');
+
+        var rowID = parseFloat($('#ViewReplies .modal-body .chat-view #Reply').val());
+        var formdata = new FormData();
+        var urlAction = '@Url.Action("Save", "MemoArchive")';
+        var memberCount = $('#ViewReplies .modal-body .chat-view .users-list button').length;
+        var personnelID = $('#ViewReplies .modal-body .chat-view .users-list button.Personnel-Discussion').val();
+
+        if ($('.chat-message-form').find(".browsefile")[0].files.length > 0) {
+            formdata.append("fileBase", $('.chat-message-form').find(".browsefile")[0].files[0]);
+            formdata.append("IsFailed", !$('#SendMemo').is(':checked'));
+            //formdata.append("ID", rowID);
+            formdata.append("personnelId", personnelID);
+            formdata.append("InReplyTo", rowID);
+            formdata.append("__RequestVerificationToken", $('@Html.AntiForgeryToken()').val());
+
+            if (CurrAjaxCall != null)
+                CurrAjaxCall.abort();
+
+            CurrAjaxCall = $.ajax({
+                data: formdata,
+                type: 'POST',
+                datatype: 'JSON',
+                url: urlAction,
+                cache: false,
+                contentType: false,
+                processData: false,
+                beforeSend: function() {
+                    //ShowLoadingScreen()
+                },
+                complete: function() {
+                    //RemoveLoadingScreen()
+                },
+                success: function(response) {
+                    $('.chat-message-form').find(".browsefile")
+                        .replaceWith($('.chat-message-form').find(".browsefile").val('').clone(true));
+
+                    if ($('#ViewReplies .modal-body .chat-discussion table tbody tr.no-message-td')
+                        .hasClass('hidden') ==
+                        false) {
+                        $('#ViewReplies .modal-body .chat-discussion table tbody tr.no-message-td')
+                            .addClass('hidden');
+                    }
+
+                    if (response.msg == false) {
+                        toastr.error(response.res);
+                    } else {
+                        $('#ViewReplies .modal-body .chat-discussion table tbody').append(response);
+                        var memoID = parseFloat($('#ViewReplies .chat-discussion table tbody tr:last').attr('id')
+                            .replace('MemoArchive-', ''));
+                        var personnelID = $('#ViewReplies .modal-body .chat-div #DiscusionPersonnelID').val();
+                        var personnelIds = [personnelID];
+
+                        if ($('#ViewReplies #SendMemo').is(':checked'))
+                            ResendEmailPersonnel(personnelIds, memoID);
+                        else {
+                            $('a#Exclamation-' + memoID).removeClass('hidden');
+                            $('i#Sending-' + memoID).addClass('hidden');
+                        }
+                    }
+                },
+                error: function (x) {
+                    if (CurrAjaxCall != null)
+                        toastr.error('AJAX backend error', 'An error has occured.');
+                }
+            });
+
+            CurrAjaxCall = null;
+        } else {
+            toastr.error('File is empty!');
+        }
+    }
+
+    function ButtonGroupClick() {
+        var type = $(this).attr('title');
+        $(this).parent().find('button').removeClass('active');
+        $(this).addClass('active');
+        $(this).parent().parent().parent('#ReplyBox').find('.formgroup').hide();
+        $(this).parent().parent().parent('#ReplyBox').find('#' + type).show();
+    }
+
+    function InitDatePicker() {
+        $('.inputgroup.date input').datepicker({
+            todayBtn: "linked",
+            keyboardNavigation: false,
+            //forceParse: false,
+            calendarWeeks: true,
+            autoclose: true,
+            //clearBtn: true,
+        });
+        //$('.inputgroup.date input').tpjdatetime({
+        //    withtime: false
+        //});
+        //$('.inputgroup.date').next('.clearInput').hide();
+        //$('.clearInput').off('click').on('click', ClearField);
+    }
+
+    function ClearField() {
+        $input = $(this).prev('input');
+        $inputHidden = $(this).closest('td').find('input[type="hidden"]');
+        $input.val('');
+        $inputHidden.val('');
+        InputClear($input);
+        $('.send').hide();
+
+        if ($(this).parent().parent().find('input.form-control').attr('id') == 'browseImage' &&
+            $('#ImageCanvasImg').attr('src') != '\Images\default.jpg') {
+            $('#ImageCanvasImg').attr('src', '\\Images\\default.jpg');
+            $input.val('default.jpg');
+        }
+    }
+
+    function InputClear() {
+        var value = $(this).val();
+        var $clearBtn = $(this).parent().find('.clear');
+
+        if (value == "") {
+            $clearBtn.hide();
+        } else {
+            $clearBtn.show();
+        }
+    }
+
+    function KeyUp(e) {
+        var filter = $(this).val();
+        $resultdiv = $(this).closest('.searchresults');
+        //$searchinput = $(this)//.closest('.searchinput');
+
+        if (e.keyCode == 13) {
+            if ($(this).attr('id') == 'SearchPersonnelInput')
+                SearchPersonnel(filter);
+            else if ($(this).attr('id') == 'SearchGroupInput')
+                SearchPersonnel(filter);
+            else if ($(this).attr('id').substr(0, $(this).attr('id').length - 2) == 'Row-Input-Group') {
+                $(this).closest('tr').find('button[name="SaveGroup"]').trigger('click');
+            }
+        }
+        else {
+            $selected = $('.formgroup.search :visible').find('.result.selected');
+
+            if (e.keyCode == 8 || e.keyCode == 46)
+                $selected.remove();
+
+            var name = $(this).find('input.FullName').val() || $(this).find('input.Description').val() || '';
+            if (filter.trim().replace(' ', '').length > 0 && $selected.length == 0 && name != filter) {
+                //if (CurrAjaxCall != null)
+                //    CurrAjaxCall.abort();
+
+                if ($(this).attr('id') == 'Personnel')
+                    SearchPersonnel(filter);
+                else if ($(this).attr('id') == 'PersonnelGroup')
+                    SearchGroup(filter);
+            }
+        }
+    }
+
+    function Select2() {
+        $('select').select2();
+        $('.select2').css('width', '100%');
+    }
+
+    function SearchPersonnel(filter) {
+        if (CurrAjaxCall != null)
+            CurrAjaxCall.abort();
+
+            CurrAjaxCall = $.ajax({
+                url: '@Url.Action("SearchPersonnel", "MemoArchive")',
+                data: {
+                    filter: filter,
+                    '__RequestVerificationToken': $('@Html.AntiForgeryToken()').val()
+                },
+                type: "POST",
+                cache: false,
+                beforeSend: function () {
+                    //$('.formgroup.search :visible').find('.searchinput').blur();
+                    //$('.formgroup.search :visible').find('.searchresults').css('display', 'none');
+                    //('.formgroup.search :visible').find('.searchresults').removeAttr('style');
+                    $('.formgroup.search :visible').find('.fa.rotate').show();
+                },
+                complete: function () {
+                    //$('.formgroup.search :visible').find('.searchinput').focus();
+                    $('.formgroup.search :visible').find('.fa.rotate').hide();
+                },
+                success: function(response) {
+                    if (response.msg == null) {
+                        $('.formgroup.search :visible').find('.searchresults').remove();
+                        $('.formgroup.search :visible').find('.searchinput').after(response);
+                        //$('.formgroup.search :visible').find('.searchresults').show();
+                        AjaxEvents();
+                        $('.formgroup.search :visible').find('.result').off('click').on('click', SearchResultClick);
+                    } else {
+                        toastr.error(response.res);
+                    }
+                },
+                error: function () {
+                    if (CurrAjaxCall != null)
+                        toastr.error('AJAX backend error', 'An error has occured.');
+                }
+            });
+
+            CurrAjaxCall = null;
+    }
+
+    function SearchResultClick() {
+        var isPersonnel = $('select#Recipient').val() == 0;
+        var name = $(this).find('input.' + (isPersonnel ? 'FullName' : 'Name')).val().trim() || '';
+        var email = ($(this).find('input.Email').val() || '').trim() || '';
+        var id = $(this).find('input.ID').val() || 0;
+
+        if ((isPersonnel && email.replace(' ', '').length > 0) || !isPersonnel) {
+            $(this).addClass('selected');
+            $(this).closest('.searchresults').find('.result:not(.selected)').remove();
+            $(this).closest('.searchinputgroup').find('.searchinput').val(name);
+            //$(this).closest('.searchinputgroup').find('.searchinput').attr('id', id);
+            $(this).closest('.searchinputgroup').find('.searchinput').blur();
+            $(this).closest('.searchresults').css('display', 'none');
+            $(this).closest('.searchresults').removeAttr('style');
+        }
+        else {
+            toastr.warning(name + ' has no email!', 'Warning');
+            $(this).closest('.searchinputgroup').find('.searchinput').focus();
+        }
+    }
+
+    function SearchGroup(filter) {
+        if (filter.trim().replace(' ', '').length > 0) {
+            if (CurrAjaxCall != null)
+                CurrAjaxCall.abort();
+
+            CurrAjaxCall = $.ajax({
+                url: '@Url.Action("SearchGroup", "MemoArchive")',
+                data: {
+                    filter: filter,
+                    '__RequestVerificationToken': $('@Html.AntiForgeryToken()').val()
+                },
+                type: "POST",
+                cache: false,
+                beforeSend: function () {
+                    //$('.formgroup.search :visible').find('.searchinput').blur();
+                    $('.formgroup.search :visible').find('.searchresults').css('display', 'none');
+                    $('.formgroup.search :visible').find('.searchresults').removeAttr('style');
+                    $('.formgroup.search :visible').find('.fa.rotate').show();
+                },
+                complete: function () {
+                    //$('.formgroup.search :visible').find('.searchinput').focus();
+                    $('.formgroup.search :visible').find('.fa.rotate').hide();
+                },
+                success: function (response) {
+                    if (response.msg == null) {
+                        AjaxEvents();
+
+                        $('.formgroup.search :visible').find('.searchresults').remove();
+                        $('.formgroup.search :visible').find('.searchinput').after(response);
+                        $('.formgroup.search :visible').find('.searchresults').show();
+                        $('.formgroup.search :visible').find('.result').off('click').on('click', SearchResultClick);
+                    } else {
+                        toastr.error(response.res);
+                    }
+                },
+                error: function () {
+                    if (CurrAjaxCall != null)
+                    toastr.error('AJAX backend error', 'An error has occured.');
+                }
+            });
+        }
+
+        CurrAjaxCall = null;
+    }
+
+    function FoldersClick(memotypeid) {
+        $('#Folders input[name="MemoTypeID"]').val(memotypeid);
+        Search();
+    }
+
+    function StatusClick(statustypeid) {
+        $('.category-list input[name="MemoStatusID"]').val(statustypeid);
+        //Search();
+    }
+
+    function Search() {
+        var MemoTypeID = $('#Folders #MemoID').val() || 0;
+        var MemoStatusID = $('.category-list input[name="MemoStatusID"]').val() || 0;
+        var params = '';
+
+        if (MemoTypeID == -1)
+            toastr.warning('Action not available.', 'Warning!');
+        else {
+            params = $('#Folders *').serialize() + '&' +
+                $('.category-list *').serialize() + '&' +
+                $('#form_search_params *').serialize();
+
+            if (CurrAjaxCall != null) CurrAjaxCall.abort();
+
+            CurrAjaxCall = $.ajax({
+                url: '@Url.Action("Index", "MemoArchive")',
+                data: params,
+                type: "GET",
+                cache: false,
+                beforeSend: function () {
+                    //ShowLoadingScreen();
+                    ShowHideRowLoadingDisplay('MemoArchivesTable', true);
+                },
+                complete: function () {
+                    //RemoveLoadingScreen();
+                    //ShowHideRowLoadingDisplay('MemoArchivesTable', false);
+                },
+                success: function(response) {
+                    if (response.msg == null) {
+                        $("#MemoArchivesSearch").html(response);
+                        Events();
+
+                        $('.txt_search').focus();
+                    } else {
+                        toastr.error(response.res);
+                    }
+                },
+                error: function () {
+                    if (CurrAjaxCall != null)
+                    toastr.error('AJAX backend error', 'An error has occured.');
+                }
+            });
+
+            CurrAjaxCall = null;
+        }
+    }
+</script>

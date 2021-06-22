@@ -1,0 +1,128 @@
+﻿@model WebTemplate.Models.Personnel.MemoReplies
+
+@{
+    var c = User as WebTemplate.Models.CustomPrincipal;
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var MemoPageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("Memo");
+
+    var isOpen = Model.ParentMemo._MemoStatus.ID != 2;
+}
+@functions{
+    public bool IsImage(string str)
+    {
+        var imageExtensions = new string[] { ".jpg", ".jpeg", ".bmp", ".gif", ".png" };
+        return imageExtensions.Contains(Path.GetExtension(str));
+    }
+}
+
+<div class="col-md-12 col-lg-offset-3 col-lg-6" style="padding: 0px;">
+    <div class="chat-discussion">
+        @* Replies *@
+        <table style="width: 100%;">
+            <tbody>
+                @if (Model.Memos.Count() > 0)
+                {
+                    for (int i = 0; i < Model.Memos.Count(); i++)
+                    {
+                        if (Model.Memos[i].PersonnelReply == false)
+                        {
+                            if (i > 0)
+                            {
+                                if (String.Format("{0:dd MMM yyyy} AT {0:h:mm}", Model.Memos[i - 1].CreatedOn) != String.Format("{0:dd MMM yyyy} AT {0:h:mm}", Model.Memos[i].CreatedOn))
+                                {
+                                    <tr><td colspan="3" class="message-date">@(String.Format("{0:dd MMM yyyy} AT {0:h:mm tt}", Model.Memos[i].CreatedOn).ToUpper())</td></tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr><td colspan="3" class="message-date">@(String.Format("{0:dd MMM yyyy} AT {0:h:mm tt}", Model.Memos[i].CreatedOn).ToUpper())</td></tr>
+                            }
+
+                            <tr id="MemoArchive-@Model.Memos[i].ID" class="message-row">
+                                <td class="message-td message-td-left" colspan="2" style="">
+                                    <div data-toggle="" class="message dropdown-toggle" type="button" style="text-align: left">
+                                        <span class="message-content">
+                                            <a id="raff" href="@Model.Memos[i].File" target="_blank" title="@Model.Memos[i].File.Replace("\\Memos\\", "")">@Model.Memos[i].File.Replace("\\Memos\\", "")<br></a>
+                                            @if (IsImage(Model.Memos[i].File))
+                                            {
+                                                <img src="@Model.Memos[i].File" class="" style="position: fixed; border: 2px solid rgb(85, 85, 85); z-index: 1000; display: none; height: 300px;" />
+                                            }
+                                        </span>
+                                    </div>
+                                    <ul class="dropdown-menu">
+                                        <li><a id="DeleteMessage" href="#">Delete</a></li>
+                                        <li class="divider"></li>
+                                    </ul>
+                                </td>
+                                <td style="width: 20%"></td>
+                            </tr>
+                        }
+                        else
+                        {
+                            if (i > 0)
+                            {
+                                if (String.Format("{0:dd MMM yyyy} AT {0:h:mm}", Model.Memos[i - 1].CreatedOn) != String.Format("{0:dd MMM yyyy} AT {0:h:mm}", Model.Memos[i].CreatedOn))
+                                {
+                                    <tr><td colspan="3" class="message-date">@(String.Format("{0:dd MMM yyyy} AT {0:h:mm tt}", Model.Memos[i].CreatedOn).ToUpper())</td></tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr><td colspan="3" class="message-date">@(String.Format("{0:dd MMM yyyy} AT {0:h:mm tt}", Model.Memos[i].CreatedOn).ToUpper())</td></tr>
+                            }
+
+                            <tr id="MemoArchive-@Model.Memos[i].ID" class="message-row">
+                                <td style="width: 20%"></td>
+                                <td class="message-td message-td-right" colspan="2" style="">
+                                    <div data-toggle="" class="message dropdown-toggle" type="button" style="">
+                                        <span class="message-content">
+                                            <a id="raff" href="@Model.Memos[i].File" target="_blank" title="@Model.Memos[i].File.Replace("\\Memos\\", "")">@Model.Memos[i].File.Replace("\\Memos\\", "")<br></a>
+                                            @if (IsImage(Model.Memos[i].File))
+                                            {
+                                                <img src="@Model.Memos[i].File" class="" style="position: fixed; border: 2px solid rgb(85, 85, 85); z-index: 1000; display: none; height: 300px;" />
+                                            }
+                                        </span>
+                                    </div>
+                                    <ul class="dropdown-menu">
+                                        <li><a id="DeleteMessage" href="#">Delete</a></li>
+                                        <li class="divider"></li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        }
+                    }
+                }
+                else
+                {
+                    <tr class="no-message-td" style="margin:auto">
+                        <td style="text-align: center;">
+                            No Messages...
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    @if ((c.PersonnelID == Model.PersonnelID || Model.ParentMemo._Groups.Any()) && isOpen)
+    {
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="chat-message-form">
+                    <div class="form-group">
+                        <input type="file" id="browseFile" name="" class="browsefile form-control">
+                        @*<input class="messsage m-l-xs" style="" placeholder="Message..." />*@
+                        <button id="Reply" class="btn btn-primary m-l-xs send" type="button"><i class="fa fa-send"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+        });
+    </script>
+}
+

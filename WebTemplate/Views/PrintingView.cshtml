@@ -1,0 +1,35 @@
+﻿<html>
+@{
+    //ViewBag.Title = ViewBag.PrintTitle; // "Print Preview";
+    Layout = null;
+}
+<title>
+    @ViewBag.Title
+</title>
+<body>
+    <object type="application/pdf"
+            data="@ViewBag.Content"
+            id="pdfDocument"
+            height="1200"
+            width="100%"
+            title="100">
+    </object>
+    @section Styles {}
+    @section Scripts {
+
+        <script>
+
+            (function () {
+                var doc = document.getElementById(documentId);
+                //Wait until PDF is ready to print
+                if (typeof doc.print !== 'undefined') {
+                    doc.print();
+                }
+                $("#title").attr("title", "Sample");
+
+            })();
+
+        </script>
+    }
+</body>
+</html>

@@ -1,0 +1,38 @@
+C:\Users\manlangit.johnpaul\source\repos\TPJ HR System\DBUtilities\bin\Debug\DBUtilities.dll
+C:\Users\manlangit.johnpaul\source\repos\TPJ HR System\DBUtilities\bin\Debug\DBUtilities.pdb
+C:\Users\manlangit.johnpaul\source\repos\TPJ HR System\DBUtilities\obj\Debug\DBUtilities.csproj.CoreCompileInputs.cache
+C:\Users\manlangit.johnpaul\source\repos\TPJ HR System\DBUtilities\obj\Debug\DBUtilities.dll
+C:\Users\manlangit.johnpaul\source\repos\TPJ HR System\DBUtilities\obj\Debug\DBUtilities.pdb
+C:\Users\manlangit.johnpaul\source\repos\HR System\DBUtilities\bin\Debug\DBUtilities.dll
+C:\Users\manlangit.johnpaul\source\repos\HR System\DBUtilities\bin\Debug\DBUtilities.pdb
+C:\Users\manlangit.johnpaul\source\repos\HR System\DBUtilities\obj\Debug\DBUtilities.csproj.CoreCompileInputs.cache
+C:\Users\manlangit.johnpaul\source\repos\HR System\DBUtilities\obj\Debug\DBUtilities.dll
+C:\Users\manlangit.johnpaul\source\repos\HR System\DBUtilities\obj\Debug\DBUtilities.pdb
+C:\Users\manlangit.johnpaul\Documents\Repositories\TPJ HR System\DBUtilities\bin\Debug\DBUtilities.dll
+C:\Users\manlangit.johnpaul\Documents\Repositories\TPJ HR System\DBUtilities\bin\Debug\DBUtilities.pdb
+C:\Users\manlangit.johnpaul\Documents\Repositories\TPJ HR System\DBUtilities\obj\Debug\DBUtilities.csproj.CoreCompileInputs.cache
+C:\Users\manlangit.johnpaul\Documents\Repositories\TPJ HR System\DBUtilities\obj\Debug\DBUtilities.dll
+C:\Users\manlangit.johnpaul\Documents\Repositories\TPJ HR System\DBUtilities\obj\Debug\DBUtilities.pdb
+C:\Users\martinez.raff\source\repos\TPJ HR System\DBUtilities\bin\Debug\DBUtilities.dll
+C:\Users\martinez.raff\source\repos\TPJ HR System\DBUtilities\bin\Debug\DBUtilities.pdb
+C:\Users\martinez.raff\source\repos\TPJ HR System\DBUtilities\obj\Debug\DBUtilities.csproj.CoreCompileInputs.cache
+C:\Users\martinez.raff\source\repos\TPJ HR System\DBUtilities\obj\Debug\DBUtilities.dll
+C:\Users\martinez.raff\source\repos\TPJ HR System\DBUtilities\obj\Debug\DBUtilities.pdb
+C:\Users\johnp\source\repos\TPJ HR System\DBUtilities\bin\Debug\DBUtilities.dll
+C:\Users\johnp\source\repos\TPJ HR System\DBUtilities\bin\Debug\DBUtilities.pdb
+C:\Users\johnp\source\repos\TPJ HR System\DBUtilities\obj\Debug\DBUtilities.csprojAssemblyReference.cache
+C:\Users\johnp\source\repos\TPJ HR System\DBUtilities\obj\Debug\DBUtilities.csproj.CoreCompileInputs.cache
+C:\Users\johnp\source\repos\TPJ HR System\DBUtilities\obj\Debug\DBUtilities.dll
+C:\Users\johnp\source\repos\TPJ HR System\DBUtilities\obj\Debug\DBUtilities.pdb
+F:\Applications\Repositories\TPJ HR System\DBUtilities\bin\Debug\DBUtilities.dll
+F:\Applications\Repositories\TPJ HR System\DBUtilities\bin\Debug\DBUtilities.pdb
+F:\Applications\Repositories\TPJ HR System\DBUtilities\obj\Debug\DBUtilities.csprojAssemblyReference.cache
+F:\Applications\Repositories\TPJ HR System\DBUtilities\obj\Debug\DBUtilities.dll
+F:\Applications\Repositories\TPJ HR System\DBUtilities\obj\Debug\DBUtilities.pdb
+F:\Applications\Repositories\TPJ HR System\DBUtilities\obj\Debug\DBUtilities.csproj.CoreCompileInputs.cache
+D:\Applications\Repositories\TPJ HR System\DBUtilities\bin\Debug\DBUtilities.dll
+D:\Applications\Repositories\TPJ HR System\DBUtilities\bin\Debug\DBUtilities.pdb
+D:\Applications\Repositories\TPJ HR System\DBUtilities\obj\Debug\DBUtilities.csprojAssemblyReference.cache
+D:\Applications\Repositories\TPJ HR System\DBUtilities\obj\Debug\DBUtilities.csproj.CoreCompileInputs.cache
+D:\Applications\Repositories\TPJ HR System\DBUtilities\obj\Debug\DBUtilities.dll
+D:\Applications\Repositories\TPJ HR System\DBUtilities\obj\Debug\DBUtilities.pdb

@@ -1,0 +1,156 @@
+﻿@model WebTemplate.Models.DynamicLookup.Index
+@using WebTemplate.Models.DynamicLookup
+@{
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var PageAccess = credential.GetPage("DynamicLookup/DynamicLookup") ?? new DataAccessLayer.System.Page();
+    List<LookupSetting> lookupSettings = LookupHelper.LookupListItems.Where(x => x.Key == Model.LookupName).Select(x => x.Value).FirstOrDefault() ?? LookupHelper.DefaultLookupListItems;
+    LookupActions lookupActions = LookupHelper.LookupActions.Where(x => x.Key == Model.LookupName).Select(x => x.Value).FirstOrDefault() ?? new LookupActions();
+    //string key = LookupHelper.Keys.Where(x => x.Key == Model.LookupName).Select(x => x.Value).FirstOrDefault();
+}
+
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 animated fadeInLef" style="padding: 0px;">
+    <div class="tabs-container" style="border: 1px solid #009688;">
+        <div class="tab-content" style="margin-top: 0px; overflow-y: hidden; overflow-x: hidden;">
+            <div class="panel-body" style="padding: 10px; border: 1px solid #e5e6e7; overflow-y: hidden; max-height: 100%;">
+                <div id="form_search_params" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
+                    <input type="hidden" id="hid_page" value="@Model.Page" />
+                    <input type="hidden" id="hid_key" value="@Model.Key" />
+                    <input type="hidden" id="hid_lookupname" value="@Model.LookupName" />
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                        @Html.DropDownListFor(m => m.LookupName, new SelectList(LookupHelper.LookupLists, "Key", "Value", Model.LookupName), new { @class = "form-control", @id = "lookupname" })
+                    </div>
+                   
+                    <div class="form-group col-xs-12 col-sm-6 col-md-7 col-lg-8">
+                        @if (lookupActions.Search)
+                        {@Html.TextBoxFor(m => m.Key, Model.Key, new { @class = "form-control", @placeHolder = "Search..." })   }
+                    </div>
+
+                    <div class="form-group col-xs-12 col-sm-3 col-md-2 col-lg-1">
+                        @if (lookupActions.Search)
+                        {<button type="button" id="btn_search" class="btn btn-primary font-bold"><i class="fa fa-search"></i> Search</button>}
+                    </div>
+                 
+                    @if (lookupActions.Add)
+                    {
+                        <div class="form-group col-xs-12 col-sm-1 col-md-1 col-lg-1">
+                            <button class="btn btn-primary btn-sm" id="btn_add" title="Add"> <i class="fa fa-plus"></i></button>
+                        </div>
+                    }
+                </div>
+                <div class="table-responsive" style=" height: 600px;">
+                    <table id="PayrollBaseTable" class="table table-hover table-mail">
+                        <thead>
+                            @if (Model.DynamicList != null && Model.DynamicList.Count > 0)
+                            {
+                                <tr>
+                                    @if (lookupSettings != null)
+                                    {
+                                        foreach (var settings in lookupSettings)
+                                        {
+                                            <th style="text-align: center;">@settings.Display</th>
+                                        }
+                                    }
+
+                                    <th style="text-align: center;">Actions</th>
+                                </tr>
+                            }
+                        </thead>
+                        <tbody>
+                            @if (Model.DynamicList != null && Model.DynamicList.Count > 0)
+                            {
+                                for (int i = 0; i < Model.DynamicList.Count; i++)
+                                {
+                                    if (lookupSettings != null)
+                                    {
+                            <tr tpj-key="@Model.DynamicList[i].ID" class="Row-Display Row-Display-Payrolls" style="cursor: pointer">
+                                @foreach (var settings in lookupSettings)
+                                {
+                                    var data = LookupHelper.GetData(Model.DynamicList[i], settings);
+                                    switch (settings.Type)
+                                    {
+                                        case LookupDataType.date:
+                                            <td style="text-align: center;">
+                                                @(data == null ? "" : data.ToString("MM/dd/yyyy"))
+                                            </td>
+                                            break;
+                                        case LookupDataType.amount:
+                                            <td style="text-align: center;">
+                                                @(data == null ? "" : data.ToString("N2"))
+                                            </td>
+                                            break;
+                                        default:
+                                            <td style="text-align: center;">
+                                                @data
+                                            </td>
+                                            break;
+                                    }
+                                }
+
+
+                                <td class="text-center">
+                                    <div class="btn-group">
+                                        @if (lookupActions.Edit)
+                                        {
+                                            <button class="btn btn-primary btn-sm btn_edit" title="Edit"> <i class="fa fa-pencil"></i></button>
+                                        }
+                                        @if (lookupActions.Delete)
+                                        {
+                                            <button class="btn btn-danger btn-sm btn_delete" title="Delete"><i class="fa fa-trash"></i></button>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                                    }
+
+                                }
+
+                            }
+
+                            else
+                            {
+                                <tr id="No-Row-Display"><td style="text-align: center;" colspan="10">No item found...</td></tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            @if(lookupActions.Pagination)
+                            {
+                                <tr>
+                                    <td colspan="@(lookupSettings.Count + 2)">
+                                        <div class="btn-group pull-right">
+                                            @if (Model.Page > 0)
+                                            {
+                                                <button type="button" name="@Html.NameFor(m => m.Page)" value="1" class="btn btn-white @(Model.Page == 1 ? "active" : "pages")">1 @*<i class="fa fa-angle-double-left"></i>*@</button>
+                                            }
+                                            @if (Model.Page - 1 > 2)
+                                            {
+                                                <button type="button" name="@Html.NameFor(m => m.Page)" value="@(Model.Page - 2)" class="btn btn-white pages">...@*<i class="fa fa-angle-left"></i>*@</button>
+                                            }
+                                            @for (int i = Model.Page - 1; i <= Model.Page + 1; i++)
+                                            {
+                                                if (i > 1 && i < Model.PageCount)
+                                                {
+                                                    <button type="button" name="@Html.NameFor(m => m.Page)" value="@(i)" class="btn btn-white @(i == Model.Page ? " active" : "pages")">@(i)</button>
+                                                }
+                                            }
+                                            @if (Model.Page + 1 < Model.PageCount - 1)
+                                            {
+                                                <button type="button" name="@Html.NameFor(m => m.Page)" value="@(Model.Page + 2)" class="btn btn-white pages">...@*<i class="fa fa-angle-right"></i>*@</button>
+                                            }
+                                            @if (Model.Page <= Model.PageCount && Model.PageCount > 1)
+                                            {
+                                                <button type="button" name="@Html.NameFor(m => m.Page)" value="@Model.PageCount" class="btn btn-white @(Model.Page == Model.PageCount ? "active" : "pages")">@Model.PageCount @*<i class="fa fa-angle-double-right"></i>*@</button>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+
+                            }
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

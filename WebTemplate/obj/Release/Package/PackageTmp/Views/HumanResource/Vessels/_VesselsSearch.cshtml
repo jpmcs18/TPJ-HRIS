@@ -1,0 +1,103 @@
+﻿@model WebTemplate.Models.Vessel.Vessel.Index
+
+@{
+    var VesselPageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("HumanResource/Vessels");
+
+    ViewBag.title = VesselPageAccess.PageName;
+}
+
+<div class="table-responsive">
+    <table id="VesselsTable" class="table table-stripped table-bordered">
+        <thead>
+            <tr>
+                <th style="text-align: center;">Code</th>
+                <th style="text-align: center;">Description</th>
+                <th style="text-align: center;">Gross Ton</th>
+                <th style="text-align: center;">Net Ton</th>
+                <th style="text-align: center;">HP</th>
+                @if (VesselPageAccess.Update || VesselPageAccess.Delete)
+                {
+                    <th style="text-align: center; min-width: 140px;" scope="col">Action</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Vessels.Count() > 0)
+            {
+                for (int i = 0; i < Model.Vessels.Count(); i++)
+                {
+                    @Html.Partial("~/Views/HumanResource/Vessels/_Vessel.cshtml", Model.Vessels[i])
+                }
+            }
+            else
+            {
+                <tr id="No-Row-Display"><td style="text-align: center;" colspan="8">No @VesselPageAccess.PageName found....</td></tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr id="Row-Input-Vessel-0" class="Row-Input">
+                <td style="text-align: center;">
+                    <input type="text" name="Code" class="form-control text-transform-none" placeholder="Code..." />
+                </td>
+                <td style="text-align: center;">
+                    <input type="text" name="Description" class="form-control text-transform-none" placeholder="Description..." />
+                </td>
+                <td style="text-align: center;">
+                    <input type="text" name="GrossTon" class="form-control text-transform-none" placeholder="Gross Tons..." />
+                </td>
+                <td style="text-align: center;">
+                    <input type="text" name="NetTon" class="form-control text-transform-none" placeholder="Net Tons..." />
+                </td>
+                <td style="text-align: center;">
+                    <input type="text" name="HP" class="form-control text-transform-none" placeholder="HP..." />
+                </td>
+                <td style="text-align: center; width: 168px;">
+                    <div class="btn-group" style="">
+                        <button type="button" name="CancelVessel" class="btn btn-outline btn-warning btn-sm btn-rounded CancelVessel" value="0" title="Clear"><i class="fa fa-times"></i></button>
+                        <button type="button" name="SaveVessel" class="btn btn-info btn-sm btn-rounded SaveVessel" value="0" title="Save"><i class="fa fa-save"></i></button>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right" colspan="8">
+                    <div class="btn-group">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" id="hid_search" name="@Html.NameFor(m => m.Filter)" value="@Html.ValueFor(m => m.Filter)" />
+                        <input type="hidden" id="hid_page" name="@Html.NameFor(m => m.Page)" value="@Html.ValueFor(m => m.Page)" />
+
+                        @if (Model.Page > 0)
+                        {
+                            <button type="button" name="@Html.NameFor(m => m.Page)" value="1" class="btn btn-white @(Model.Page == 1 ? "active" : "pages")">1 @*<i class="fa fa-angle-double-left"></i>*@</button>
+                        }
+                        @if (Model.Page - 1 > 2)
+                        {
+                            <button type="button" name="@Html.NameFor(m => m.Page)" value="@(Model.Page - 2)" class="btn btn-white pages">...@*<i class="fa fa-angle-left"></i>*@</button>
+                        }
+                        @for (int i = Model.Page - 1; i <= Model.Page + 1; i++)
+                        {
+                            if (i > 1 && i < Model.PageCount)
+                            {
+                                <button type="button" name="@Html.NameFor(m => m.Page)" value="@(i)" class="btn btn-white @(i == Model.Page ? " active" : "pages" )">@(i)</button>
+                            }
+                        }
+                        @if (Model.Page + 1 < Model.PageCount - 1)
+                        {
+                            <button type="button" name="@Html.NameFor(m => m.Page)" value="@(Model.Page + 2)" class="btn btn-white pages">...@*<i class="fa fa-angle-right"></i>*@</button>
+                        }
+                        @if (Model.Page <= Model.PageCount && Model.PageCount > 1)
+                        {
+                            <button type="button" name="@Html.NameFor(m => m.Page)" value="@Model.PageCount" class="btn btn-white @(Model.Page == Model.PageCount ? "active" : "pages")">@Model.PageCount @*<i class="fa fa-angle-double-right"></i>*@</button>
+                        }
+                    </div>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+        });
+    </script>
+}

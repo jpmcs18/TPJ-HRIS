@@ -1,0 +1,12 @@
+D:\Applications\Repositories\TPJ HR System\DataLayer\bin\Release\DataLayer.dll.config
+D:\Applications\Repositories\TPJ HR System\DataLayer\bin\Release\DataLayer.dll
+D:\Applications\Repositories\TPJ HR System\DataLayer\bin\Release\DataLayer.pdb
+D:\Applications\Repositories\TPJ HR System\DataLayer\bin\Release\EntityFramework.dll
+D:\Applications\Repositories\TPJ HR System\DataLayer\bin\Release\EntityFramework.SqlServer.dll
+D:\Applications\Repositories\TPJ HR System\DataLayer\bin\Release\EntityFramework.xml
+D:\Applications\Repositories\TPJ HR System\DataLayer\bin\Release\EntityFramework.SqlServer.xml
+D:\Applications\Repositories\TPJ HR System\DataLayer\obj\Release\DataLayer.csprojAssemblyReference.cache
+D:\Applications\Repositories\TPJ HR System\DataLayer\obj\Release\DataLayer.csproj.CoreCompileInputs.cache
+D:\Applications\Repositories\TPJ HR System\DataLayer\obj\Release\DataLayer.csproj.CopyComplete
+D:\Applications\Repositories\TPJ HR System\DataLayer\obj\Release\DataLayer.dll
+D:\Applications\Repositories\TPJ HR System\DataLayer\obj\Release\DataLayer.pdb

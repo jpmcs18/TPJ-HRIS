@@ -1,0 +1,60 @@
+﻿@model ProcessLayer.Entities.PersonnelLicense
+@{
+    var licenseTypes = ProcessLayer.Processes.LookupProcess.GetLicenseType();
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var LicensePageAccess = credential.GetPage("License") ?? new DataAccessLayer.System.Page();
+}
+
+<tr id="Row-Display-License-@Model.ID" class="Row-Display">
+    <td class="hidden">
+        <input type="hidden" value="@Model.PersonnelID" name="PersonnelID" />
+    </td>
+    <td class="hidden">
+        <input type="hidden" value="@Model.LicenseTypeID" class="licenseTypeID" />
+    </td>
+    <td style="text-align: center;">@(Model._LicenseType == null ? "" : (string.IsNullOrEmpty(Model._LicenseType.Description) ? "" : Model._LicenseType.Description))</td>
+    <td style="text-align: center;">@Model.LicenseNo</td>
+    <td style="text-align: center;">@(!String.IsNullOrEmpty(Model.ExpirationDate.ToString()) ? Model.ExpirationDate.Value.ToString("MMMM dd, yyyy") : "N/A")</td>
+    @if (LicensePageAccess.Update || LicensePageAccess.Delete)
+    {
+        <td style="text-align: center; width: 14.6%;">
+            <div class="btn-group">
+                @if (LicensePageAccess.Delete)
+                {
+                    <button type="button" name="DeleteLicense" class="btn btn-outline btn-danger btn-sm btn-rounded DeleteLicense TableDeleteButton" value="@Model.ID" title="Delete"><i class="fa fa-trash"></i></button>
+                }
+                @if (LicensePageAccess.Update)
+                {
+                    <button type="button" name="EditLicense" class="btn btn-info btn-sm btn-rounded EditLicense TableEditButton" value="@Model.ID" title="Edit"><i class="fa fa-pencil"></i></button>
+                }
+            </div>
+        </td>
+    }
+</tr>
+<tr id="Row-Input-License-@Model.ID" class="Row-Input hidden">
+    <td class="hidden">
+        <input type="hidden" value="@Model.PersonnelID" name="PersonnelID"/>
+    </td>
+    <td style="text-align: center;">
+        @Html.DropDownList("LicenseTypeID", new SelectList(licenseTypes, "ID", "Description", Model.LicenseTypeID), "N/A", new { @class = "form-control licenseTypes" })
+    </td>
+    <td style="text-align: center;">
+        @Html.TextBoxFor(m => m.LicenseNo, new { @class = "form-control text-transform-none" })
+    </td>
+    <td style="text-align: center;">
+        <div class="input-group date">
+            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+            @Html.TextBoxFor(m => m.ExpirationDate, "{0:MM/dd/yyyy}", new { @class = "form-control text-transform-none" })
+            <span id="" class="clearInput" title="Clear"><i class="fa fa-times"></i></span>
+        </div>
+    </td>
+    @if (LicensePageAccess.Update)
+    {
+        <td style="text-align: center; width: 14.2%;">
+            <div class="btn-group">
+                <button type="button" name="CancelLicense" class="btn btn-outline btn-danger btn-sm btn-rounded CancelLicense TableCancelButton" value="@Model.ID" title="Cancel"><i class="fa fa-times"></i></button>
+                <button type="button" name="SaveLicense" class="btn btn-info btn-sm btn-rounded SaveLicense TableSaveButton" value="@Model.ID" title="Save"><i class="fa fa-save"></i></button>
+            </div>
+        </td>
+    }
+</tr>

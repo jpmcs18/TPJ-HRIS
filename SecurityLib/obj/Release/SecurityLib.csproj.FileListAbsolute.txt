@@ -1,0 +1,5 @@
+D:\Applications\Repositories\TPJ HR System\SecurityLib\bin\Release\SecurityLib.dll
+D:\Applications\Repositories\TPJ HR System\SecurityLib\bin\Release\SecurityLib.pdb
+D:\Applications\Repositories\TPJ HR System\SecurityLib\obj\Release\SecurityLib.csproj.CoreCompileInputs.cache
+D:\Applications\Repositories\TPJ HR System\SecurityLib\obj\Release\SecurityLib.dll
+D:\Applications\Repositories\TPJ HR System\SecurityLib\obj\Release\SecurityLib.pdb

@@ -1,0 +1,51 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="WebTemplate.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="GridCount" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">10</Value>
+    </Setting>
+    <Setting Name="MaxPassLength" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">5</Value>
+    </Setting>
+    <Setting Name="WebPrefix" Type="System.String" Scope="Application">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="PH_MOBILE_PREFIX" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">+63</Value>
+    </Setting>
+    <Setting Name="MobileVerification" Type="System.Boolean" Scope="Application">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="DEFAULT_ROLES" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="VERIFICATIONCODE_EXPIRATION_MINUTES" Type="System.Double" Scope="Application">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="isDevMode" Type="System.Boolean" Scope="Application">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="ApplicationName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Human Resource</Value>
+    </Setting>
+    <Setting Name="ImageSaveLocation" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">~/Images</Value>
+    </Setting>
+    <Setting Name="ImageFolder" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">\\Images</Value>
+    </Setting>
+    <Setting Name="MemoSaveLocation" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">~/Memos</Value>
+    </Setting>
+    <Setting Name="MemoFolder" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">\\Memos</Value>
+    </Setting>
+    <Setting Name="LegislationSaveLocation" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">~/Legislations</Value>
+    </Setting>
+    <Setting Name="LegislationFolder" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">\\Legislations</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

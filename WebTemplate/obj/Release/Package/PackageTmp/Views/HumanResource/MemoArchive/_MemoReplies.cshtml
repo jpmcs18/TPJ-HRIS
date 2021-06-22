@@ -1,0 +1,81 @@
+﻿@model WebTemplate.Models.MemoArchive.MemoPersonnels
+
+@{
+    var entity = new DataAccessLayer.System.User();
+    var MemoArchivePageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("HumanResource/MemoArchive");
+
+    ViewBag.title = MemoArchivePageAccess.PageName;
+}
+@functions{
+    public bool IsImage(string str)
+    {
+        var imageExtensions = new string[] { ".jpg", ".jpeg", ".bmp", ".gif", ".png" };
+        return imageExtensions.Contains(Path.GetExtension(str));
+    }
+}
+<div class="col-md-4" style="padding: 0px;">
+    <div class="chat-users" style="">
+        <div class="users-list" style="">
+            @*if (MemoArchivePageAccess.Insert)
+            {
+                <a class="btn btn-block btn-primary compose-mail" href="#" id="btnadd">New Memo</a>
+                <div class="space-25"></div>
+            }*@
+
+            <div id="MainMemoArchive" class="hidden" style="border-bottom: 1px solid #e7eaec; padding: 5px;">
+                <b>Memo No.: </b>0
+                <br />
+                <b>Description: </b>Sample
+                <br />
+                <b>Memo Date: </b>Mon Jan 06, 2019
+                <br />
+                <b>File:</b>
+                <a id="raff" href="~/Images/default.jpg" target="_blank" title="~/Images/default.jpg">/Images/default.jpg</a>
+                @if (IsImage("/Images/default.jpg"))
+                {
+                    <img src="~/Images/default.jpg" class="hidden" style="" />
+                }
+            </div>
+            @if (Model.Personnels.Count() > 0)
+            {
+                for (int i = 0; i < Model.Personnels.Count(); i++)
+                {
+                    @*<div class="chat-user">
+                <img class="chat-avatar" src="@(!String.IsNullOrEmpty(Model.Personnels[i].ImagePath) ? Model.Personnels[i].ImagePath : "\\Images\\default.jpg")" alt="">
+                <div class="chat-user-name">
+                    @String.Format("{0}, {1} {2}", Model.Personnels[i].LastName, Model.Personnels[i].FirstName, Model.Personnels[i].MiddleName)
+                </div>
+            </div>*@
+                <button class="btn btn-block chat-user" value="@Model.Personnels[i].ID">
+                    <img class="gray-bg" src="@(String.IsNullOrEmpty(Model.Personnels[i].ImagePath) ? "\\Images\\default.jpg" : Model.Personnels[i].ImagePath)" style="" title="" />
+                    <div class="chat-user-name">
+                        <text class="text-primary font-bold-700">@String.Format("{0}, {1} {2}", Model.Personnels[i].LastName, Model.Personnels[i].FirstName, Model.Personnels[i].MiddleName)</text>
+                        <br />
+                        <text class="@(String.IsNullOrEmpty(Model.Personnels[i].Email) ? "text-danger" : "")" style="text-transform: none; font-size: 12px; line-height: 0;">
+                            @(String.IsNullOrEmpty(Model.Personnels[i].Email) ? "No Email" : Model.Personnels[i].Email)
+                            <i class="text-danger fa fa-exclamation-circle failed-email @(Model.Personnels[i].HasFailedEmail ? "" : "hidden")" title="Some files not sent"></i>
+                        </text>
+                    </div>
+                </button>
+                        
+                }
+            }
+            else
+            {
+                <div class="chat-user">
+                    No Member(s) found...
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<div class="col-md-8" style="padding: 0px;">
+<div id="No-Chat-Internet" class="text-white bg-danger text-center hidden" style="font-size: 15px; padding: 4px;; margin: 0 4px;">
+    No internet connection
+</div>
+<div class="chat-div" style="">
+
+</div>
+
+<input type="hidden" id="Reply"/>
+</div>

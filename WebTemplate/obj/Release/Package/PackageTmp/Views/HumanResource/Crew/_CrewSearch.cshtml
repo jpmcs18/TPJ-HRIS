@@ -1,0 +1,37 @@
+﻿@model WebTemplate.Models.Vessel.Crew.Index
+
+@{
+    var CrewPageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("HumanResource/Crew");
+
+    ViewBag.title = CrewPageAccess.PageName;
+}
+<div class="modal-header">
+    <h5 class="modal-title" style="text-align: center;">Search Crew</h5>
+    @*<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">×</span>
+    </button>*@
+</div>
+<div class="modal-body" style="max-height: 750px; background-color: #fff; overflow: hidden;">
+    <div class="row" style="">
+        <div id="SearchTable" class="tablediv" style="">
+            @if (CrewPageAccess.View)
+            {
+                <div id="SearchCrewDiv" class="input-group m-b-sm" style="width: 100%;">
+                    <input id="SearchCrewInput" class="form-control" placeholder="Search Crew..." />
+                    <span class="input-group-addon" id="SearchCrew" style="cursor: pointer;"><i class="fa fa-search"></i></span>
+                </div>
+
+            }
+            <div id="SearchTableDiv">
+                @*Html.Partial("~/Views/HumanResource/Crew/_SearchTable.cshtml")*@
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+        });
+    </script>
+}

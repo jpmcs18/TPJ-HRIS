@@ -1,0 +1,103 @@
+﻿@model ProcessLayer.Entities.Kiosk.OuterPortRequest
+
+@{
+    var c = User as WebTemplate.Models.CustomPrincipal;
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var locations = ProcessLayer.Processes.LocationProcess.Instance.GetList();
+    var PageAccess = credential.GetPage("Kiosk/OuterPortRequest") ?? new DataAccessLayer.System.Page();
+    var ApproverAccess = credential.GetPage("Approver OuterPort Request ") ?? new DataAccessLayer.System.Page();
+    var CreatorAccess = credential.GetPage("Creator OuterPort Request") ?? new DataAccessLayer.System.Page();
+}
+
+
+<div id="form_save" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    @Html.Hidden("PersonnelID", Model.PersonnelID, new { @class = "save-values" })
+    @Html.Hidden("ID", Model.ID, new { @class = "save-values" })
+
+    <div class="form-group col-xs-12 col-sm-12 col-md-4 col-lg-4">
+        <label class="control-label">OuterPort Type</label>
+        @Html.DropDownList("LocationID", new SelectList(locations, "ID", "Description"), "N/A", new { @class = "form-control" })
+    </div>
+
+    <div class="form-group col-xs-12 col-sm-12 col-md-4 col-lg-4">
+        <label class="control-label">Start Date & Time</label>
+        @Html.TextBox("StartDate", String.Format("{0:yyyy'-'MM'-'dd}", Model.StartDate), "N/A", new { @type = "date", @class = "form-control" })
+        @*@Html.TextBox("StartDate", String.Format("{0:MM/dd/yyyy}", Model.StartDate), new { @class = "form-control js-datetimepicker", @placeholder = "" })
+            <span id="" class="clearInput" title="Clear"><i class="fa fa-times"></i></span>*@
+    </div>
+
+    <div class="form-group col-xs-12 col-sm-12 col-md-4 col-lg-4">
+        <label class="control-label">End Date & Time</label>
+        @Html.TextBox("EndDate", String.Format("{0:yyyy'-'MM'-'dd}", Model.EndDate), new { @type = "date", @class = "form-control" })
+        @*@Html.TextBox("EndDate", String.Format("{0:MM/dd/yyyy}", Model.EndDate), new { @class = "form-control js-datetimepicker", @placeholder = "" })
+            <span id="" class="clearInput" title="Clear"><i class="fa fa-times"></i></span>*@
+    </div>
+
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <label class="control-label">Purpose</label>
+        <input type="text" name="Purpose" value="@Model.Purpose" class="form-control text-transform-none" placeholder="Purpose..." />
+    </div>
+
+    @if (Model.Cancelled == null || Model.Cancelled == false)
+    {
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <label class="control-label" style="width: 100%; color: #fff;">Search</label>
+            <button type="button" id="CreateOuterPortRequest" class="btn btn-primary font-bold pull-right" title="@(Model.ID > 0 ? "Update" : "Save")"><i class="fa fa-save"></i>&nbsp;&nbsp;@(Model.ID > 0 ? "Update" : "Save")</button>
+        </div>
+    }
+
+    @if (CreatorAccess.Update)
+    {
+        var Logs = new Dictionary<string, DateTime?>(){
+        { "Created By:" + Model._Creator, Model.CreatedOn },
+        { "Modified By:" + Model._Modifier, Model.ModifiedOn },
+        //{ "Approved By:" + Model._Approver, Model.ApprovedOn },
+        { "Cancelled By:" + Model._Cancel, Model.CancelledOn }
+    };
+
+        foreach (var l in Logs)
+        {
+            if (!String.IsNullOrEmpty(l.Key.Split(':')[1]))
+            {
+                <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3 m-t-lg">
+                    <div class='md-step-optional'>@l.Key.Split(':')[0]</div>
+                    <div class='md-step-optional'><b>@Html.Raw(l.Key.Split(':')[1] ?? "&nbsp;")</b></div>
+                    <div class='md-step-optional'>@Html.Raw(String.Format("{0:MM/dd/yyyy hh:mm tt}", l.Value) ?? "&nbsp;")</div>
+                </div>
+            }
+        }
+
+        @*@if (!String.IsNullOrEmpty(Model._Creator))
+        {
+            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3 m-t-lg">
+                <div class='md-step-optional'>Created By:</div>
+                <div class='md-step-optional'><b>@Html.Raw(Model._Creator ?? "&nbsp;")</b></div>
+                <div class='md-step-optional'>@Html.Raw(String.Format("{0:MM/dd/yyyy}", Model.CreatedOn) ?? "&nbsp;")</div>
+            </div>
+        }
+        @if (!String.IsNullOrEmpty(Model._Modifier))
+        {
+            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3 m-t-lg">
+                <div class='md-step-optional'>Modified By:</div>
+                <div class='md-step-optional'><b>@Html.Raw(Model._Modifier ?? "&nbsp;")</b></div>
+                <div class='md-step-optional'>@Html.Raw(String.Format("{0:MM/dd/yyyy}", Model.ModifiedOn) ?? "&nbsp;")</div>
+            </div>
+        }
+        @if (!String.IsNullOrEmpty(Model._Approver))
+            {
+                <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3 m-t-lg">
+                    <div class='md-step-optional'>Approved By:</div>
+                    <div class='md-step-optional'><b>@Html.Raw(Model._Approver ?? "&nbsp;")</b></div>
+                    <div class='md-step-optional'>@Html.Raw(String.Format("{0:MM/dd/yyyy}", Model.ApprovedOn) ?? "&nbsp;")</div>
+                </div>
+            }
+        @if (!String.IsNullOrEmpty(Model._Cancel))
+        {
+            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3 m-t-lg">
+                <div class='md-step-optional'>Cancelled By:</div>
+                <div class='md-step-optional'><b>@Html.Raw(Model._Cancel ?? "&nbsp;")</b></div>
+                <div class='md-step-optional'>@Html.Raw(String.Format("{0:MM/dd/yyyy}", Model.CancelledOn) ?? "&nbsp;")</div>
+            </div>
+        }*@
+    }
+</div>

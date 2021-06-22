@@ -1,0 +1,17 @@
+D:\Applications\Repositories\TPJ HR System\DataAccessLayer\bin\Release\DataAccessLayer.dll.config
+D:\Applications\Repositories\TPJ HR System\DataAccessLayer\bin\Release\DataAccessLayer.dll
+D:\Applications\Repositories\TPJ HR System\DataAccessLayer\bin\Release\DataAccessLayer.pdb
+D:\Applications\Repositories\TPJ HR System\DataAccessLayer\bin\Release\DataLayer.dll
+D:\Applications\Repositories\TPJ HR System\DataAccessLayer\bin\Release\EntityFramework.dll
+D:\Applications\Repositories\TPJ HR System\DataAccessLayer\bin\Release\EntityFramework.SqlServer.dll
+D:\Applications\Repositories\TPJ HR System\DataAccessLayer\bin\Release\SecurityLib.dll
+D:\Applications\Repositories\TPJ HR System\DataAccessLayer\bin\Release\DataLayer.pdb
+D:\Applications\Repositories\TPJ HR System\DataAccessLayer\bin\Release\DataLayer.dll.config
+D:\Applications\Repositories\TPJ HR System\DataAccessLayer\bin\Release\SecurityLib.pdb
+D:\Applications\Repositories\TPJ HR System\DataAccessLayer\bin\Release\EntityFramework.xml
+D:\Applications\Repositories\TPJ HR System\DataAccessLayer\bin\Release\EntityFramework.SqlServer.xml
+D:\Applications\Repositories\TPJ HR System\DataAccessLayer\obj\Release\DataAccessLayer.csprojAssemblyReference.cache
+D:\Applications\Repositories\TPJ HR System\DataAccessLayer\obj\Release\DataAccessLayer.csproj.CoreCompileInputs.cache
+D:\Applications\Repositories\TPJ HR System\DataAccessLayer\obj\Release\DataAccessLayer.csproj.CopyComplete
+D:\Applications\Repositories\TPJ HR System\DataAccessLayer\obj\Release\DataAccessLayer.dll
+D:\Applications\Repositories\TPJ HR System\DataAccessLayer\obj\Release\DataAccessLayer.pdb

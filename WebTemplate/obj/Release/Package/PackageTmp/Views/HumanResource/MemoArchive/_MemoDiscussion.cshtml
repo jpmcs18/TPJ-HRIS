@@ -1,0 +1,161 @@
+﻿@model WebTemplate.Models.MemoArchive.MemoReplies
+
+@{
+    var MemoArchivePageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("HumanResource/MemoArchive");
+    var c = User as WebTemplate.Models.CustomPrincipal;
+
+    var isOpen = Model.ParentMemo._MemoStatus.ID != 2;
+
+    ViewBag.title = MemoArchivePageAccess.PageName;
+}
+@functions{
+    public bool IsImage(string str)
+    {
+        var imageExtensions = new string[] { ".jpg", ".jpeg", ".bmp", ".gif", ".png" };
+        return imageExtensions.Contains(Path.GetExtension(str));
+    }
+}
+
+@* Replies *@
+<div class="row chat-discussion" style="margin: 1px">
+    <input type="hidden" id="DiscusionPersonnelID" value="0"/>
+    <table style="width: 100%;">
+        <tbody>
+            @if (Model.MemoArchives.Count() > 0)
+            {
+                for (int i = 0; i < Model.MemoArchives.Count(); i++)
+                {
+                    var file = Model.MemoArchives[i].File;
+                    var filename = Path.GetFileName(file);
+
+                    if (Model.MemoArchives[i].PersonnelReply == true)
+                    {
+                        if (i > 0)
+                        {
+                            if (String.Format("{0:dd MMM yyyy} AT {0:h:mm}", Model.MemoArchives[i - 1].CreatedOn) != String.Format("{0:dd MMM yyyy} AT {0:h:mm}", Model.MemoArchives[i].CreatedOn))
+                            {
+                                <tr><td colspan="3" class="message-date">@(String.Format("{0:dd MMM yyyy} AT {0:h:mm tt}", Model.MemoArchives[i].CreatedOn).ToUpper())</td></tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="3" class="message-date">@(String.Format("{0:dd MMM yyyy} AT {0:h:mm tt}", Model.MemoArchives[i].CreatedOn).ToUpper())</td></tr>
+                        }
+
+                        <tr id="MemoArchive-@Model.MemoArchives[i].ID" class="message-row">
+                            <td class="message-td message-td-left" colspan="2" style="">
+                                <div data-toggle="" class="message dropdown-toggle" type="button" style="text-align: left; opacity: @((Model.MemoArchives[i].IsFailed && Model.MemoArchives[i].IsExistFile == true) || Model.MemoArchives[i].IsExistFile == false ? 0.5 : 1)" title="">
+                                    <span class="message-content">
+                                        @if (Model.MemoArchives[i].IsExistFile == true)
+                                        {
+                                            if (IsImage(file))
+                                            {
+                                                <img src="@file" class="attached-file" style="" />
+                                            }
+                                            else
+                                            {
+                                                <a id="raff" href="@file" target="_blank" title="@(!String.IsNullOrEmpty(file) ? filename : "")">
+                                                    @(!String.IsNullOrEmpty(file) ? filename : "")
+                                                </a>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            @Html.Raw("<div>" + filename + "<br/>File not found!</div>")
+                                        }
+                                    </span>
+                                </div>
+                                <ul class="dropdown-menu">
+                                    <li><a id="DeleteMessage" href="#">Delete</a></li>
+                                    <li class="divider"></li>
+                                </ul>
+                            </td>
+                            <td style="width: 5%"></td>
+                        </tr>
+                    }
+                    else
+                    {
+                        if (i > 0)
+                        {
+                            if (String.Format("{0:dd MMM yyyy} AT {0:h:mm}", Model.MemoArchives[i - 1].CreatedOn) != String.Format("{0:dd MMM yyyy} AT {0:h:mm}", Model.MemoArchives[i].CreatedOn))
+                            {
+                                <tr><td colspan="3" class="message-date">@(String.Format("{0:dd MMM yyyy} AT {0:h:mm tt}", Model.MemoArchives[i].CreatedOn).ToUpper())</td></tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="3" class="message-date">@(String.Format("{0:dd MMM yyyy} AT {0:h:mm tt}", Model.MemoArchives[i].CreatedOn).ToUpper())</td></tr>
+                        }
+
+                        <tr id="MemoArchive-@Model.MemoArchives[i].ID" class="message-row">
+                            <td style="width: 5%"></td>
+                            <td class="message-td message-td-right" colspan="2" style="" nowrap>
+                                @if (Model.MemoArchives[i].IsFailed == true && Model.MemoArchives[i].IsExistFile == true)
+                                {
+                                    <a id="Exclamation-@Model.MemoArchives[i].ID" class="text-danger fa fa-exclamation-circle failed-email" title="File not sent. Click here to resend." onclick="ResendFromDiscussion(@Model.MemoArchives[i].ID)"></a>
+                                    <i id="Sending-@Model.MemoArchives[i].ID" class="fa fa-rotate-left rotate hidden" style="padding: 8px; font-size: 20px; text-align: right;"></i>
+                                }
+                                <div data-toggle="" class="message dropdown-toggle" type="button" style="text-align: right; opacity: @((Model.MemoArchives[i].IsFailed && Model.MemoArchives[i].IsExistFile == true) || Model.MemoArchives[i].IsExistFile == false ? 0.5 : 1)" title="">
+                                    <span class="message-content">
+                                        @if (Model.MemoArchives[i].IsExistFile == true)
+                                        {
+                                            if (IsImage(file))
+                                            {
+                                                <img src="@file" class="attached-file" style="" />
+                                            }
+                                            else
+                                            {
+                                                <a id="raff" href="@file" target="_blank" title="@(!String.IsNullOrEmpty(file) ? filename : "")">
+                                                    @(!String.IsNullOrEmpty(file) ? filename : "")
+                                                </a>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            @Html.Raw("<div>" + filename + "<br/>File not found!</div>")
+                                        }
+                                    </span>
+                                </div>
+                                <ul class="dropdown-menu">
+                                    <li><a id="DeleteMessage" href="#">Delete</a></li>
+                                    <li class="divider"></li>
+                                </ul>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+            else
+            {
+                <tr class="no-message-td" style="margin:auto">
+                    <td style="text-align: center;">
+                        No Messages...
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@if (isOpen) { 
+    <div>
+        <div class="chat-message-form">
+            <div class="pull-left" style="padding: 5px 10px;">
+                <input id="SendMemo" type="checkbox" class="i-checks"> &nbsp;
+                <label for="SendMemo"> &nbsp;Send Email on save</label>
+            </div>
+            <div class="form-group">
+                <input type="file" id="browseFile" name="" class="browsefile form-control">
+                <button id="" class="btn btn-primary m-l-xs send" type="button" style="display: none;"><i class="fa fa-send"></i></button>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            ImageLinkHoverEvents();
+        });
+    </script>
+}

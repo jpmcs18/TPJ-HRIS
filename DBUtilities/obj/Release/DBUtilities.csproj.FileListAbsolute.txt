@@ -1,0 +1,12 @@
+C:\Users\martinez.raff\source\repos\TPJ HR System\DBUtilities\bin\Release\DBUtilities.dll
+C:\Users\martinez.raff\source\repos\TPJ HR System\DBUtilities\bin\Release\DBUtilities.pdb
+C:\Users\martinez.raff\source\repos\TPJ HR System\DBUtilities\obj\Release\DBUtilities.csprojAssemblyReference.cache
+C:\Users\martinez.raff\source\repos\TPJ HR System\DBUtilities\obj\Release\DBUtilities.csproj.CoreCompileInputs.cache
+C:\Users\martinez.raff\source\repos\TPJ HR System\DBUtilities\obj\Release\DBUtilities.dll
+C:\Users\martinez.raff\source\repos\TPJ HR System\DBUtilities\obj\Release\DBUtilities.pdb
+D:\Applications\Repositories\TPJ HR System\DBUtilities\bin\Release\DBUtilities.dll
+D:\Applications\Repositories\TPJ HR System\DBUtilities\bin\Release\DBUtilities.pdb
+D:\Applications\Repositories\TPJ HR System\DBUtilities\obj\Release\DBUtilities.csprojAssemblyReference.cache
+D:\Applications\Repositories\TPJ HR System\DBUtilities\obj\Release\DBUtilities.csproj.CoreCompileInputs.cache
+D:\Applications\Repositories\TPJ HR System\DBUtilities\obj\Release\DBUtilities.dll
+D:\Applications\Repositories\TPJ HR System\DBUtilities\obj\Release\DBUtilities.pdb

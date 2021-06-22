@@ -1,0 +1,29 @@
+﻿@model WebTemplate.Models.Maintenance.Organization.Position.Management
+
+<div class="modal-header">
+    <h5 class="modal-title">@ViewBag.Page.PageName Management</h5>
+</div>
+<div class="modal-body">
+    <div class="row">
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.Position.ID)
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            @Html.LabelFor(m => m.Position.ShortDescription, new { @class = "control-label" })
+            @Html.TextBoxFor(m => m.Position.ShortDescription, new { @class = "form-control text-transform-none" })
+            <div class="text-danger">
+                @Html.ValidationMessageFor(m => m.Position.ShortDescription)
+            </div>
+        </div>
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            @Html.LabelFor(m => m.Position.Description, new { @class = "control-label" })
+            @Html.TextBoxFor(m => m.Position.Description, new { @class = "form-control text-transform-none" })
+            <div class="text-danger">
+                @Html.ValidationMessageFor(m => m.Position.Description)
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default btn-outline btn-w-m font-bold-700" id="btnclose_pos">Close</button>
+    <button type="button" class="btn btn-primary btn-w-m font-bold-700" id="btnsave_pos">Save</button>
+</div>

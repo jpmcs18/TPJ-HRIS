@@ -1,0 +1,32 @@
+﻿@model WebTemplate.Models.Maintenance.Lookup.LicenseType.Management
+
+@if (Model != null)
+{
+    using (Ajax.BeginForm("CreateOrUpdate", "Maintenance/Lookup/LicenseType",
+        new AjaxOptions { HttpMethod = "POST", OnBegin = "ShowLoadingScreen()", OnComplete = "RemoveLoadingScreen()", OnSuccess = "createupdate_item_success", OnFailure = "toastr.error('Potentially dangerous value was detected', 'Saving failed')" }, new { @id = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="modal-header">
+            <div class="row">
+                <div class="col-xs-10">
+                    <h5 class="modal-title">@(Model.LicenseType.ID == 0 ? "Add New Item" : "Update Existing Item")</h5>
+                </div>
+                <div class="col-xs-2">
+                    <button type="button" class="modal-tools" data-dismiss="modal" title="Left click to close"><i class="fa fa-times"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="m-t-sm m-b-sm">
+                @Html.HiddenFor(m => m.LicenseType.ID)
+                @Html.Label("Description")
+                @Html.TextBoxFor(m => m.LicenseType.Description, new { @class = "form-control" })
+                <br />
+                <label>Perpetual @Html.CheckBoxFor(m => m.LicenseType.Perpetual, new { @class = "i-checks" })</label>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary btn-outline btn-w-m" type="submit"><i class="fa fa-save"></i>&nbsp; Save</button>
+        </div>
+    }
+}

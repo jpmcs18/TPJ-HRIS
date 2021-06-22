@@ -1,0 +1,34 @@
+﻿@model String
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>500 Server Error</title>
+
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet">
+    <link href="~/Fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="~/Content/style.css" rel="stylesheet">
+</head>
+
+<body>
+    <br /><br /><br /><br /><br /><br /><br />
+    <div class="middle-box text-center animated fadeInDown">
+        <h1>500</h1>
+        <h3 class="font-bold">Internal Server Error</h3>
+        <p class="m-t-lg">@Model</p>
+        <p class="m-t-xs text-danger">Error ID: @ViewBag.ErrorID</p>
+        <div class="m-t-lg">
+            <a href="javascript:close_window();" class="btn btn-primary btn-outline btn-sm btn-w-m m-r-sm">Close</a>
+            @*<a href="@Url.Action("Index", "Home")" class="btn btn-primary btn-outline btn-sm btn-w-m m-r-sm">Go to home</a>
+            <a href="@Url.Action("Logout", "Security")" class="btn btn-primary btn-outline btn-sm btn-w-m m-r-sm">Logout</a>*@
+        </div>
+    </div>
+</body>
+
+</html>
+
+

@@ -1,0 +1,87 @@
+﻿@model ProcessLayer.Entities.HR.PersonnelLoan
+@{
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var LoansPageAccess = credential.GetPage("Loans") ?? new DataAccessLayer.System.Page();
+
+    var whenToDeduct = ProcessLayer.Processes.LookupProcess.GetWhenToDeduct();
+    var payrollDeductible = new Dictionary<bool, string> { { true, "Yes" }, { false, "No" } };
+    var govLoan = new Dictionary<bool, string> { { true, "Yes" }, { false, "No" } };
+    var loanDescription = ProcessLayer.Processes.LookupProcess.GetLoans(HasDefault: true);
+}
+
+    <tr id="Row-Display-Loan-@Model.ID" class="Row-Display clickable" onclick="GetLoanDeductions(@Model.ID);" tpjattr="PersonnelLoan" style="cursor: pointer" title="">
+        <td class="hidden">
+            <input type="hidden" value="@Model.ID" name="ID" />
+            <input type="hidden" value="@Model.LoanID" name="LoanID" />
+            <input type="hidden" value="@Model.PersonnelID" name="PersonnelID" />
+        </td>
+        <td style="text-align: center;"><i class="fa fa-angle-right"></i></td>
+        <td style="text-align: center;">@Model._Loan.Description</td>
+        <td style="text-align: center;">
+            @(Model._Loan.GovernmentLoan == false ? "NO" : "YES")
+        </td>
+        <td style="text-align: center;">
+            @whenToDeduct.Where(x => x.Key == Model.WhenToDeduct).Select(x => x.Value).FirstOrDefault()
+        </td>
+        <td style="text-align: center;">
+            @(Model.PayrollDeductible == false ? "NO" : "YES")
+        </td>
+        <td style="text-align: center;">@Model.PaymentTerms</td>
+        <td style="text-align: center;">@((Model.Amount ?? 0).ToString("N2"))</td>
+        <td style="text-align: center;">@((Model.Amortization ?? 0).ToString("N2"))</td>
+        <td style="text-align: center;">@Model.Remarks</td>
+        @if (LoansPageAccess.Update || LoansPageAccess.Delete)
+        {
+            <td style="text-align: center;">
+                <div class="btn-group">
+                    @if (LoansPageAccess.Delete)
+                    {
+                        <button type="button" name="DeleteLoan" class="btn btn-outline btn-danger btn-sm btn-rounded TableDeleteButton" value="@Model.ID" title="Delete"><i class="fa fa-trash"></i></button>
+                    }
+                    @if (LoansPageAccess.Update)
+                    {
+                        <button type="button" name="EditLoan" class="btn btn-info btn-sm btn-rounded EditLoan TableEditButton" value="@Model.ID" title="Edit"><i class="fa fa-pencil"></i></button>
+                    }
+                </div>
+            </td>
+        }
+    </tr>
+    <tr id="Row-Input-Loan-@Model.ID" class="Row-Input hidden">
+        <td style="text-align: center;"></td>
+        <td style="text-align: center;">
+            @Html.DropDownList("LoanID", new SelectList(loanDescription, "ID", "Description"), "N/A", new { @class = "form-control text-transform-none", @style = "" })
+        </td>
+        <td style="text-align: center;">
+            @Html.DropDownList("_Loan.GovernmentLoan", new SelectList(govLoan, "Key", "Value", Model._Loan.GovernmentLoan), "N/A", new { @class = "form-control text-transform-none", @style = "" })
+        </td>
+        <td style="text-align: center;">
+            @Html.DropDownList("WhenToDeduct", new SelectList(whenToDeduct, "Key", "Value", Model.WhenToDeduct), "N/A", new { @class = "form-control text-transform-none", @style = "" })
+        </td>
+        <td style="text-align: center;">
+            @Html.DropDownList("PayrollDeductible", new SelectList(payrollDeductible, "Key", "Value", Model.PayrollDeductible), "N/A", new { @class = "form-control text-transform-none", @style = "" })
+        </td>
+        <td style="text-align: center;">
+            @Html.TextBoxFor(m => m.PaymentTerms, new { @class = "form-control text-transform-none", @Placeholder = "Payment Terms..." })
+        </td>
+        <td style="text-align: center;">
+            <input type="hidden" value="@Model.PersonnelID" name="PersonnelID" />
+            <input type="hidden" value="@Model.LoanID" name="HiddenLoanID" />
+            @Html.TextBoxFor(m => m.Amount, new { @class = "form-control text-transform-none", @Placeholder = "Amount..." })
+        </td>
+        <td style="text-align: center;">
+            @Html.TextBoxFor(m => m.Amortization, new { @class = "form-control text-transform-none", @Placeholder = "Amortization..." })
+        </td>
+        <td style="text-align: center;">
+            @Html.TextBoxFor(m => m.Remarks, new { @class = "form-control text-transform-none", @Placeholder = "Remarks..." })
+        </td>
+        @if (LoansPageAccess.Update)
+        {
+            <td style="text-align: center;">
+                <div class="btn-group">
+                    <button type="button" name="CancelLoan" class="btn btn-outline btn-danger btn-sm btn-rounded CancelLoan TableCancelButton" value="@Model.ID" title="Cancel"><i class="fa fa-times"></i></button>
+                    <button type="button" name="SaveLoan" class="btn btn-info btn-sm btn-rounded SaveLoan TableSaveButton" value="@Model.ID" title="Save"><i class="fa fa-save"></i></button>
+                </div>
+            </td>
+        }
+    </tr>
+

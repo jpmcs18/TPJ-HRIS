@@ -1,0 +1,198 @@
+﻿@model WebTemplate.Models.Maintenance.Lookup.CutoffSchedule.Index
+@{
+    List<Tuple<int, string>> MonthList = new List<Tuple<int, string>>() {
+        new Tuple<int, string>(1, "January"), new Tuple<int, string>(2, "February"),
+        new Tuple<int, string>(3, "March"), new Tuple<int, string>(4, "April"),
+        new Tuple<int, string>(5, "May"), new Tuple<int, string>(6, "June"),
+        new Tuple<int, string>(7, "July"), new Tuple<int, string>(8, "August"),
+        new Tuple<int, string>(9, "September"), new Tuple<int, string>(10, "October"),
+        new Tuple<int, string>(11, "November"), new Tuple<int, string>(12, "December")
+    };
+}
+
+<div class="wrapper wrapper-content">
+    <div class="page-heading">
+        <div class="col-lg-8">
+            <h1>@ViewBag.Page.PageName</h1>
+            <ol class="breadcrumb">
+                <li>
+                    <a href='@Url.Action("Index", "Home")'>Home</a>
+                </li>
+                <li>Maintenance</li>
+                <li>Lookup</li>
+                <li class="active"><strong>@Html.Raw(ViewBag.Page.PageName ?? "&nbsp;")</strong></li>
+            </ol>
+        </div>
+        <div class="col-lg-4">
+            <div class="title-action">
+                <a class="btn btn-primary compose-mail" href="#" id="btnadd" onclick="manage_item()">Add @ViewBag.Page.PageName</a>
+            </div>
+        </div>
+    </div>
+    <div class="" style="margin-top: 85px;">
+        <div class="col-xs-12 col-sm-12 col-md-push-2 col-md-8 col-lg-push-3 col-lg-6 animated fadeInLef">
+            <div class="file-manager">
+                @Html.AntiForgeryToken()
+
+                <form id="form_search_params" class="m-t-md" enctype="multipart/form-data" style="margin: 0 -15px;">
+                    <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-4">
+                        <select class="form-control" id="view-select-month" onchange="get_items()">
+                            <option value="">All</option>
+                            @for (int x = 0; x < MonthList.Count; x++)
+                            {
+                                <option value="@MonthList[x].Item1">@MonthList[x].Item2</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-4">
+                        <button type="button" class="btn btn-primary btn-w-m" onclick="get_items()"><i class="fa fa-search"></i> Search</button>
+                    </div>
+                </form>
+            </div>
+            <form id="view-table-lookup" enctype="multipart/form-data" class="pull-left" style="width: 100%;">
+                @Html.Partial("~/Views/Maintenance/Lookup/CutoffSchedule/_Search.cshtml")
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal inmodal custom-modal" id="modal-lookup" data-backdrop="static" data-keyboard="false" tabindex="" role="dialog" aria-hidden="true">
+    <div class="vertical-alignment-helper">
+        <div class="modal-center vertical-align-center">
+            <div class="modal-content animated fadeInDown modal-width-20">
+                <div id="modal-lookup-body"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="floating-buttons" class="menu pmd-floating-action" role="navigation">
+    <button type="button" class="btn btn-lg btn-circle pmd-floating-action-btn pmd-btn-fab pmd-btn-raised pmd-ripple-effect btn-primary" data-title="Create New" onclick="manage_item()">
+        <i class="fa fa-plus"></i>
+    </button>
+</div>
+
+<script type="text/javascript">
+
+        function get_items() {
+            $.ajax({
+                url: '@Url.Action("Index", "Maintenance/Lookup/CutoffSchedule")',
+                data: { filtermonth: $('#view-select-month').val() },
+                type: "POST",
+                cache: false,
+                beforeSend: function () {
+                    ShowLoadingScreen()
+                },
+                complete: function () {
+                    RemoveLoadingScreen()
+                },
+                success: function (response) {
+                    if (response.ErrorMsg != null) {
+                        toastr.error(response.ErrorMsg, "Backend Error");
+                    }
+                    else {
+                        $('#view-table-lookup').html(response);
+                    }
+                },
+                error: function () {
+                    toastr.error('AJAX backend error', 'An error has occured.');
+                }
+            });
+        }
+        function manage_item(id) {
+            $.ajax({
+                url: '@Url.Action("Management", "Maintenance/Lookup/CutoffSchedule")',
+                data: { uid: id },
+                type: "POST",
+                cache: false,
+                beforeSend: function () {
+                    ShowLoadingScreen()
+                },
+                complete: function () {
+                    RemoveLoadingScreen()
+                },
+                success: function (response) {
+                    if (response.ErrorMsg != null) {
+                        toastr.error(response.ErrorMsg, "Backend Error");
+                    }
+                    else {
+                        $('#modal-lookup-body').html(response);
+
+                        select2Override();
+                        $('#modal-lookup').appendTo("body").modal('show');
+                    }
+                },
+                error: function () {
+                    toastr.error('AJAX backend error', 'An error has occured.');
+                }
+            });
+        }
+        function delete_item(id) {
+            swal({
+                title: "Are you sure?",
+                text: "Delete this Item?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+                closeOnConfirm: true,
+                closeOnCancel: true
+            },
+                function (isConfirm) {
+                    if (isConfirm)
+                        $.ajax({
+                            url: '@Url.Action("Delete", "Maintenance/Lookup/CutoffSchedule")',
+                            data: { uid: id },
+                            type: "POST",
+                            cache: false,
+                            beforeSend: function () {
+                                ShowLoadingScreen()
+                            },
+                            complete: function () {
+                                RemoveLoadingScreen()
+                            },
+                            success: function (response) {
+                                if (response.IsSuccess) {
+                                    toastr.success("Item has been successfully deleted!");
+                                    get_items();
+                                }
+                                else {
+                                    toastr.error(response.ErrorMsg, "Backend Error");
+                                }
+                            },
+                            error: function () {
+                                toastr.error('AJAX backend error', 'An error has occured.');
+                            }
+                        });
+            });
+
+        }
+        function search_item_success(response) {
+            if (response != null) {
+                if (response.ErrorMsg != null) {
+                    toastr.error(response.ErrorMsg, "Backend Error");
+                }
+                else {
+                    $('#view-table-lookup').html(response);
+                }
+            }
+            else {
+                toastr.error('AJAX backend error', 'An error has occured.');
+            }
+        }
+        function createupdate_item_success(response) {
+            if (response != null) {
+                if (response.IsSuccess) {
+                    toastr.success("Item has been successfully saved!", "Success");
+                    get_items();
+                    $('#modal-lookup').modal('hide');
+                }
+                else {
+                    toastr.error(response.ErrorMsg, "Backend Error");
+                }
+            }
+            else {
+                toastr.error('AJAX backend error', 'An error has occured.');
+            }
+        }
+</script>

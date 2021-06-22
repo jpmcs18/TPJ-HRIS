@@ -1,0 +1,166 @@
+﻿@model WebTemplate.Models.Report.Index
+
+@{
+    var PageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("HumanResource/Report");
+    var reportTypes = from ProcessLayer.Helpers.Enumerable.ReportType e in Enum.GetValues(typeof(ProcessLayer.Helpers.Enumerable.ReportType))
+                      select new
+                      {
+                          ID = (int)e,
+                          Description = e.ToString()
+                      };
+
+    var monno = DateTime.Now.Month;
+    var months = new List<string> { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
+    var cols = 0;
+
+    switch (Model.ReportType)
+    {
+        case ProcessLayer.Helpers.Enumerable.ReportType.SALARY:
+            cols = 1;
+            break;
+        case ProcessLayer.Helpers.Enumerable.ReportType.TAX:
+            cols = 1;
+            break;
+        case ProcessLayer.Helpers.Enumerable.ReportType.HDMFLOAN:
+            cols = 1;
+            break;
+        case ProcessLayer.Helpers.Enumerable.ReportType.SSSLOAN:
+            cols = 1;
+            break;
+        case ProcessLayer.Helpers.Enumerable.ReportType.PHILHEALTH:
+            cols = 2;
+            break;
+        case ProcessLayer.Helpers.Enumerable.ReportType.SSSPREMIUM:
+            cols = 3;
+            break;
+        case ProcessLayer.Helpers.Enumerable.ReportType.HDMFPREMIUM:
+            cols = 2;
+            break;
+        default:
+            break;
+    }
+}
+
+<div class="vertical-alignment-helper">
+    <div class="modal-center vertical-align-center">
+        <div class="modal-content animated fadeInDown modal-width-60">
+            <div class="modal-header">
+                <h5 class="modal-title">@Model.ReportType Report</h5>
+                <button type="button" class="close" aria-label="Close" data-dismiss="modal">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body" style="max-height: 750px; background-color: #fff; overflow: hidden;">
+                <!--<div class="file-manager">
+                    <form id="form_search_params" class="m-t-md" enctype="multipart/form-data" style="margin: 0 -15px;">
+                        Html.AntiForgeryToken()
+
+                        <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-2">-->
+                @*<label class="control-label">Report Type</label>*@
+                <!--Html.DropDownList("ReportType", new SelectList(reportTypes, "ID", "Description"), "--Report Type--", new { class = "form-control" })
+                </div>
+
+                <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-2">-->
+                @*<label class="control-label">Year</label>*@
+                <!--<input type="text" id="txt_year" name="year" class="form-control tpj-year" placeholder="Year" value="($"{DateTime.Now:yyyy}" )" />
+                </div>
+
+                <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-2">-->
+                @*<label class="control-label">Month</label>*@
+                <!--<select id="select-month" class="form-control" name="month">
+                                for (int i = 0; i < months.Count; i++)
+                                {
+                                    <option value="(i+1)" (i + 1 == monno ? "selected" : "")>months[i]</option>
+                                }
+                            </select>
+                        </div>
+                    </form>
+
+                    <div class="form-group" style="">
+                        <button type="button" id="btn_search" class="btn btn-primary font-bold"><i class="fa fa-search"></i> Search</button>
+                    </div>
+                </div>-->
+                <form id="form_search" class="pull-left" style="width: 100%;">
+                    <div class="table-responsive" style="">
+                        <div class="mail-box">
+                            <table id="ReportTable" class="table table-hover table-mail">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align: left;">Name</th>
+                                        @if (cols == 1)
+                                        {
+                                            <th style="text-align: center;">Amount</th>
+                                        }
+                                        @if (cols > 1)
+                                        {
+                                            <th style="text-align: center;">PS</th>
+                                            <th style="text-align: center;">ES</th>
+                                        }
+                                        @if (cols == 3)
+                                        {
+                                            <th style="text-align: center;">EC</th>
+                                        }
+                                        @if (cols > 1)
+                                        {
+                                            <th style="text-align: center;">Sum</th>
+                                        }
+                                        @*@if (PageAccess.Update || PageAccess.Delete)
+        {
+            <th style="text-align: center;">Action</th>
+        }*@
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr id="Row-Loading-Display" class="hidden">
+                                        <td style="text-align: center;" colspan="6">
+                                            <i id="" class="fa fa-rotate-left rotate" style="padding: 8px; font-size: 20px; text-align: right;"></i>
+                                        </td>
+                                    </tr>
+                                    @if (Model.Personnels?.Count() > 0)
+                                    {
+                                        for (int i = 0; i < Model.Personnels.Count(); i++)
+                                        {
+                                <tr id="Personnel-@i" class="Row-Display Row-Display-Report" style="cursor: pointer">
+                                    <td style="text-align: left">@Model.Personnels[i].FullName</td>
+                                    @if (cols == 1)
+                                    {
+                                        <td style="text-align: center">@Model.Personnels[i].Amount</td>
+                                    }
+                                    @if (cols > 1)
+                                    {
+                                        <td style="text-align: center">@Model.Personnels[i].PS</td>
+                                        <td style="text-align: center">@Model.Personnels[i].ES</td>
+                                    }
+                                    @if (cols == 3)
+                                    {
+                                        <td style="text-align: center">@Model.Personnels[i].EC</td>
+                                    }
+                                    @if (cols > 1)
+                                    {
+                                        <td style="text-align: center">@Model.Personnels[i].Sum</td>
+                                    }
+                                </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr id="No-Row-Display"><td style="text-align: center;" colspan="10">No @Model.ReportType report found...</td></tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                @using (Html.BeginForm("PrintReport", "Report", FormMethod.Post, new { @target = "_blank" }))
+                {
+                    <button class="btn btn-primary compose-mail pull-right" type="submit" id="Print" title="Print" @(Model.Personnels.Count() > 0 ? "" : "disabled")><i class="fa fa-print"></i> Print</button>
+                    <input type="hidden" value="@Model.ReportType" name="ReportType" />
+                    <input type="hidden" value="@Model.Year" name="year" />
+                    <input type="hidden" value="@Model.Month" name="month" />
+                }
+            </div>
+        </div>
+    </div>
+</div>

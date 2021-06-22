@@ -1,0 +1,103 @@
+﻿@model WebTemplate.Models.Personnel.WorkExperiences
+@{
+    var months = ProcessLayer.Helpers.Web.MonthList();
+    var years = ProcessLayer.Helpers.Web.YearList();
+
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var WorkExperiencesPageAccess = credential.GetPage("Work Experiences") ?? new DataAccessLayer.System.Page();
+}
+
+<div class="table-responsive table-scroll" style="">
+    <table id="WorkExperiencesTable" class="table table-stripped table-bordered">
+        <thead>
+            <tr>
+                <th class="text-center">Position</th>
+                <th class="text-center">Company</th>
+                <th class="text-center">Employment Type</th>
+                <th class="text-center">From</th>
+                <th class="text-center">To</th>
+                @if (WorkExperiencesPageAccess.Update || WorkExperiencesPageAccess.Delete)
+                {
+                    <th class="text-center">Action</th>
+                }
+                </tr>
+        </thead>
+        <tbody>
+            @if (Model.WorkExperience.Count() > 0)
+            {
+                for (int i = 0; i < Model.WorkExperience.Count(); i++)
+                {
+                    @Html.Partial("~/Views/HumanResource/Personnel/_PersonnelWorkExperience.cshtml", Model.WorkExperience[i])
+                }
+            }
+            else
+            {
+                <tr id="No-Row-Display"><td style="text-align: center;" colspan="6">No Work Experiences found...</td></tr>
+            }
+        </tbody>
+        <tfoot>
+            @if (WorkExperiencesPageAccess.Insert)
+            {
+            <tr id="Row-Input-WorkExperience-0" class="Row-Input">
+                <td style="text-align: center;">
+                    <input type="hidden" name="PersonnelID" class="PersonnelID" value="@Model.PersonnelID" />
+                    <input type="text" name="Position" class="form-control text-transform-none" placeholder="Position" />
+                </td>
+                <td style="text-align: center;">
+                    <input type="text" name="Company" class="form-control text-transform-none" placeholder="Company" />
+                </td>
+                <td style="text-align: center;">
+                    <input type="text" name="EmploymentType" class="form-control text-transform-none" placeholder="EmploymentType" />
+                </td>
+                <td style="text-align: center;">
+                    @Html.DropDownList("FromMonth", new SelectList(months, "ID", "Description", new DateTime().Month), "N/A", new { @class = "form-control text-transform-none", @style = "float: left; width: 50%;" })
+                    @Html.DropDownList("FromYear", new SelectList(years, "ID", "Description", new DateTime().Year), "N/A", new { @class = "form-control text-transform-none", @style = "width: 50%;" })
+                </td>
+                <td style="text-align: center;">
+                    @Html.DropDownList("ToMonth", new SelectList(months, "ID", "Description", new DateTime().Month), "N/A", new { @class = "form-control text-transform-none", @style = "float: left; width: 50%;" })
+                    @Html.DropDownList("ToYear", new SelectList(years, "ID", "Description", new DateTime().Year), "N/A", new { @class = "form-control text-transform-none", @style = "width: 50%;" })
+                </td>
+                <td style="text-align: center; width: 168px;">
+                    <div class="btn-group" style="">
+                        <button type="button" name="CancelWorkExperience" class="btn btn-outline btn-danger btn-sm btn-rounded CancelWorkExperience TableCancelButton" value="0" title="Clear"><i class="fa fa-times"></i></button>
+                        <button type="button" name="SaveWorkExperience" class="btn btn-info btn-sm btn-rounded SaveWorkExperience TableSaveButton" value="0" title="Add"><i class="fa fa-plus"></i></button>
+                    </div>
+                </td>
+            </tr>
+            }
+                @*<tr>
+                <td class="text-right" colspan="6">
+                    <div class="btn-group">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" id="hid_search" name="@Html.NameFor(m => m.Filter)" value="@Html.ValueFor(m => m.Filter)" />
+                        <input type="hidden" id="hid_page" name="@Html.NameFor(m => m.Page)" value="@Html.ValueFor(m => m.Page)" />
+
+                        @if (Model.PageCount > 1)
+                        {
+                            <button type="button" name="@Html.NameFor(m => m.Page)" value="1" class="btn btn-white pages"><i class="fa fa-angle-double-left"></i></button>
+                        }
+                        @if (Model.Page - 1 >= 1)
+                        {
+                            <button type="button" name="@Html.NameFor(m => m.Page)" value="@(Model.Page - 1)" class="btn btn-white pages"><i class="fa fa-angle-left"></i></button>
+                        }
+                        @for (int i = Model.Page - 2; i <= Model.Page + 2; i++)
+                        {
+                            if (i >= 1 && i <= Model.PageCount)
+                            {
+                                <button type="button" name="@Html.NameFor(m => m.Page)" value="@(i)" class="btn btn-white @(i == Model.Page ? " active" : "pages" )">@(i)</button>
+                            }
+                        }
+                        @if (Model.Page + 1 <= Model.PageCount)
+                        {
+                            <button type="button" name="@Html.NameFor(m => m.Page)" value="@(Model.Page + 1)" class="btn btn-white pages"><i class="fa fa-angle-right"></i></button>
+                        }
+                        @if (Model.Page < Model.PageCount)
+                        {
+                            <button type="button" name="@Html.NameFor(m => m.Page)" value="@Model.PageCount" class="btn btn-white pages"><i class="fa fa-angle-double-right"></i></button>
+                        }
+                    </div>
+                </td>
+            </tr>*@
+            </tfoot>
+    </table>
+</div>

@@ -1,0 +1,679 @@
+﻿@model WebTemplate.Models.RequestsApproval.Time_Edit_Request.Index
+
+@{
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var OuterPortRequestPageAccess = credential.GetPage("RequestsApproval/OuterPortRequests") ?? new DataAccessLayer.System.Page();
+    var OuterPortRequestApprover = credential.GetPage("Approver OuterPort Request") ?? new DataAccessLayer.System.Page();
+
+    ViewBag.title = OuterPortRequestPageAccess.PageName;
+
+}
+
+<div class="wrapper wrapper-content">
+    <div class="page-heading">
+        <div class="col-lg-8">
+            <h1>@Html.Raw(OuterPortRequestPageAccess.PageName ?? "&nbsp;")</h1>
+            <ol class="breadcrumb">
+                <li>
+                    <a href='@Url.Action("Index", "Home")'>Home</a>
+                </li>
+                <li>Movement</li>
+                <li class="active">
+                    <strong>@Html.Raw(OuterPortRequestPageAccess.PageName ?? "&nbsp;")</strong>
+                </li>
+            </ol>
+        </div>
+        <div class="col-lg-4">
+            <div class="title-action">
+                @if (OuterPortRequestPageAccess.Insert)
+                {
+                    @*<a class="btn btn-primary compose-mail" href="#" id="btnadd">New Request</a>*@
+                }
+            </div>
+        </div>
+    </div>
+    <div class="" style="margin-top: 85px;">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 animated fadeInLef">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 m-b-sm" style="padding: 0px;">
+                <div class="tabs-container" style="border: 1px solid #009688;">
+                    @*<ul class="nav nav-tabs">
+                            @if (OuterPortRequestCreator.Insert)
+                            {
+                            <li class="active" style="width: 50%;"><a data-toggle="tab" href="#tab-1" style="text-align: center; padding: 10px 5px;" title="Create">Create Request</a></li>
+                            }
+                            @if (OuterPortRequestApprover.Approve)
+                            {
+                            <li class="@(!OuterPortRequestCreator.Insert ? " active": "" )" style="width: 50%;"><a data-toggle="tab" href="#tab-2" style="text-align: center; padding: 10px 5px;" title="">OuterPort Requests</a></li>
+                            }
+                        </ul>*@
+                    <div class="tab-content" style="margin-top: 0px; max-height: unset; overflow-y: hidden; overflow-x: hidden; height: 770px;">
+                        @if (OuterPortRequestApprover.Approve)
+                        {
+                            <div id="tab-2" class="tab-pane active" style="height: 850px;">
+                                <div id="OuterPortRequestsForm" class="panel-body" style="padding: 10px; max-height: 100%; border: 1px solid #e5e6e7; overflow-y: hidden;">
+                                    @Html.Partial("~/Views/RequestsApproval/OuterPortRequests/_OuterPortRequests.cshtml")
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal inmodal custom-modal" id="CancellationModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="vertical-alignment-helper">
+        <div class="modal-center vertical-align-center">
+            <div class="modal-content animated fadeInDown modal-width-60">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cancellation Remarks</h5>
+                    <button type="button" class="close" aria-label="Close" data-dismiss="modal">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="max-height: 750px; background-color: #fff; overflow: hidden;">
+                    <div class="chat-view">
+                        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <label class="control-label">Indicate why you are cancelling this request.</label>
+                            <textarea name="CancellationRemarks" value="Remarks" style="resize: none;" class="form-control text-transform-none" placeholder="Cancellation Remarks..." rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    @*<button type="button" name="CancelMemoArchive" class="btn btn-outline btn-w-m btn-danger CancelMemoArchive" value="0" title="Clear"><i class="fa fa-times"></i> &nbsp;Cancel</button>*@
+                    <button type="button" name="Proceed" class="btn btn-info btn-w-m Proceed" value="0" title="Proceed Cancellation">Proceed</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal inmodal custom-modal" id="OuterPortRequestModal" data-backdrop="static" data-keyboard="false" tabindex="" role="dialog" aria-hidden="true">
+    <div class="vertical-alignment-helper">
+        <div class="modal-center vertical-align-center">
+            <div class="modal-content animated fadeInDown modal-width-60">
+                <div class="modal-header">
+                    <h5 class="modal-title" style="text-align: center;">New Time Edit Request</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div id="OuterPortRequestForm" class="modal-body" style="max-height: 750px; background-color: #fff; overflow: hidden;">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+            $(document).ready(function () {
+                Events();
+
+                $('#OuterPortRequestModal').on('hidden.bs.modal', function () {
+                    var title = $('#OuterPortRequestModal .modal-title').text();
+
+                    if (title.indexOf('View') == -1)
+                        SearchOuterPortRequests();
+                });
+            });
+
+            function Events() {
+                SetRowLoadingDisplayColSpan();
+                $_SelectedRows = [];
+
+                $('.i-checks').iCheck({
+                    checkboxClass: 'icheckbox_square-green',
+                    radioClass: 'iradio_square-green',
+                });
+
+                $('.status-checkbox').off('ifClicked').on('ifClicked', StatusFilter);
+
+                $(".modal").on('shown.bs.modal', function () {
+                    var id = $(this).attr('id');
+                    $('#' + id + '.form-control:first').select();
+                });
+
+                $('.pages').off('click').on('click', function () {
+                    $('#hid_page').val($(this).val())
+                    SearchOuterPortRequests();
+                });
+
+               $(document).off('keydown').on('keydown', function () {
+                    if (event.keyCode == 13) {
+                        if ($('div.showSweetAlert button.confirm').length > 0)
+                            $('div.showSweetAlert button.confirm').trigger('click');
+                    }
+
+                    if (event.keyCode == 27) {
+                        if ($('div.showSweetAlert button.confirm').length > 0)
+                            $('div.showSweetAlert button.cancel').trigger('click');
+                    }
+                });
+
+                $('.txt_search').off('keydown').on('keydown', function () {
+                    if (event.keyCode == 13) {
+                        $('#btn_search').click();
+                    }
+                });
+
+                //$('#btn_search').off('click').on('click', function () {
+                //    $('#hid_search').val($('.txt_search').val());
+                //    $('#hid_page').val(1);
+                //    SearchOuterPortRequests();
+                //});
+
+                $('.clearInput').off('click').on('click', ClearField);
+
+                $('#txt_description').off('keydown').on('keydown', function () {
+                    if (event.keyCode == 13) {
+                        $('#btn_search').click();
+                    }
+                });
+
+                $('ul.nav-tabs li a[href="#tab-2"]').off('click').on('click', SearchOuterPortRequests);
+
+                InitDateTimePicker();
+                SearchTabEvents();
+
+                $('input.chkRow').off('ifClicked').on('ifClicked', EnableDelete);
+                $('button#MultipleApprove, button#MultipleCancel').off('click').on('click', MultipleAction);
+                $('input#SelectAll').off('ifClicked').on('ifClicked', SelectAllRows);
+            }
+
+            function StatusFilter() {
+                var name = $(this).attr('name');
+
+                if (name == 'All') {
+                    if ($(this).is(':checked')) {
+                        $('.status-checkbox').each(function (e) {
+                            if ($(this).attr('name') !== 'All') {
+                                $(this).iCheck('uncheck');
+                            }
+                        });
+                    }
+                    else {
+                        $('.status-checkbox').each(function (e) {
+                            if ($(this).attr('name') !== 'All') {
+                                $(this).iCheck('check');
+                            }
+                        });
+                    }
+
+                    $('.status-checkbox[name="IsPending"]').iCheck('check');
+                }
+                else {
+                    $('.status-checkbox[name="All"]').iCheck('uncheck');
+                }
+            }
+
+            function SearchOuterPortRequests() {
+                $('#form_search_params input[name="Page"]').val(1);
+
+                var params = $('#form_search_params *').serialize() +
+                    '&All=' + $('#All').is(':checked') +
+                    '&IsExpired=' + $('#IsExpired').is(':checked') +
+                    '&IsPending=' + $('#IsPending').is(':checked') +
+                    '&IsCancelled=' + $('#IsCancelled').is(':checked') +
+                    '&IsApproved=' + $('#IsApproved').is(':checked');
+
+                $.ajax({
+                    url: '@Url.Action("Index", "OuterPortRequests")',
+                    data: params,
+                    type: "GET",
+                    cache: false,
+                    beforeSend: function () {
+                        //ShowLoadingScreen();
+                        ShowHideRowLoadingDisplay('OuterPortRequestsTable', true);
+                    },
+                    complete: function () {
+                        //RemoveLoadingScreen();
+                        //ShowHideRowLoadingDisplay('OuterPortRequestsTable', false);
+                    },
+                    success: function (response) {
+                        if (response.msg == null) {
+                            $("#OuterPortRequestsForm").html(response);
+                            Events();
+                            $('.txt_search').focus()
+                        } else {
+                            toastr.error(response.res);
+                        }
+                    },
+                    error: function (response) {
+                        toastr.error(response.res);
+                    }
+                });
+            }
+
+            function SearchTabEvents() {
+                $('#form_search_params input.form-control').off('keydown').on('keydown', SearchOnKeyDown);
+                $('#btn_search').off('click').on('click', SearchOuterPortRequests);
+                $('.ApproveOuterPortRequest').off('click').on('click', ApproveOuterPortRequest);
+                $('.CancelOuterPortRequest').off('click').on('click', CancelOuterPortRequest);
+
+                //$('#ShowAllOuterPortRequest').off('click').on('click', ShowCreateOuterPortRequest);
+                //$('.ViewOuterPortRequest').off('click').on('click', ShowCreateOuterPortRequest);
+
+                select2Override();
+                $('#OuterPortRequestModal select').select2();
+            }
+
+            function SearchOnKeyDown(e) {
+                if (e.keyCode === 13)
+                    SearchOuterPortRequests();
+            }
+
+            function ShowCreateOuterPortRequest() {
+                var id = $(this).val();
+                var tabID = $(this).attr('tpj-show-tab');
+
+                if (tabID == '#tab-2') {
+                    $('div.tab-content .tab-pane').removeClass('active');
+                    $('div.tab-content ' + tabID).addClass('active');
+                }
+
+                if (tabID == '#tab-1') {
+                    $('#ToClearWhenNew *').val('');
+                    $('.md-step-optional').text('');
+                    $('#CreateOuterPortRequest').attr('title', 'Save');
+                    $('#CreateOuterPortRequest').empty().html('<i class="fa fa-save"></i>&nbsp;&nbsp;Save');
+                    NewOuterPortRequest();
+                }
+                else if (tabID == '#tab-2') {
+                    SearchOuterPortRequests();
+                }
+                else if (tabID == '#tab-3') {
+                    EditOrNewOuterPortRequest(id);
+                }
+            }
+
+            function NewOuterPortRequest() {
+                var params = '__RequestVerificationToken=' +
+                    $('@Html.AntiForgeryToken()').val();
+
+                $.ajax({
+                    url: '@Url.Action("New", "OuterPortRequests")',
+                    data: params,
+                    type: "POST",
+                    cache: false,
+                    beforeSend: function () {
+                        ShowLoadingScreen()
+                    },
+                    complete: function () {
+                        RemoveLoadingScreen()
+                    },
+                    success: function (response) {
+                        if (response.msg == null) {
+                            $('#OuterPortRequestModal .modal-body').html(response);
+                            $('#OuterPortRequestModal .modal-title').html('New Time Edit Request');
+                            $('#OuterPortRequestModal').appendTo('body').modal('show');
+
+                            //$('#ShowAllOuterPortRequest').off('click').on('click', ShowCreateOuterPortRequest);
+                            SearchTabEvents();
+                            InitDateTimePicker();
+                        } else {
+                            toastr.error(response.res);
+                        }
+                    },
+                    error: function () {
+                        toastr.error('AJAX backend error', 'An error has occured.');
+                    }
+                });
+            }
+
+            function SearchOuterPortRequests() {
+                $('#form_search_params input[name="Page"]').val(1);
+
+                var params = $('#form_search_params *').serialize() +
+                    '&All=' + $('#All').is(':checked') +
+                    '&IsExpired=' + $('#IsExpired').is(':checked') +
+                    '&IsPending=' + $('#IsPending').is(':checked') +
+                    '&IsCancelled=' + $('#IsCancelled').is(':checked') +
+                    '&IsApproved=' + $('#IsApproved').is(':checked');
+
+                $.ajax({
+                    url: '@Url.Action("Index", "OuterPortRequests")',
+                    data: params,
+                    type: "GET",
+                    cache: false,
+                    beforeSend: function () {
+                        //ShowLoadingScreen();
+                        ShowHideRowLoadingDisplay('OuterPortRequestsTable', true);
+                    },
+                    complete: function () {
+                        //RemoveLoadingScreen();
+                        //ShowHideRowLoadingDisplay('OuterPortRequestsTable', false);
+                    },
+                    success: function (response) {
+                        if (response.msg == null) {
+                            $('#OuterPortRequestsForm').html(response);
+
+                            Events();
+                            InitDateTimePicker();
+                        } else {
+                            toastr.error(response.res);
+                        }
+                    },
+                    error: function () {
+                        toastr.error('AJAX backend error', 'An error has occured.');
+                    }
+                });
+            }
+
+            function EditOrNewOuterPortRequest(id) {
+                var params = $('#Row-Display-OuterPortRequests-' + id + ' *').serialize() +
+                    '&__RequestVerificationToken=' +
+                    $('@Html.AntiForgeryToken()').val();
+
+                $.ajax({
+                    url: '@Url.Action("EditOrNew", "OuterPortRequest")',
+                    data: params,
+                    type: "POST",
+                    cache: false,
+                    beforeSend: function () {
+                        ShowLoadingScreen();
+                    },
+                    complete: function () {
+                        RemoveLoadingScreen();
+                    },
+                    success: function (response) {
+                        if (response.msg == null) {
+                            $('#OuterPortRequestModal .modal-body').html(response);
+                            $('#OuterPortRequestModal .modal-title').html('View Time Edit Request');
+                            $('#OuterPortRequestModal').appendTo('body').modal('show');
+
+                            SearchTabEvents();
+                            InitDateTimePicker();
+                        } else {
+                            toastr.error(response.res);
+                        }
+                    },
+                    error: function () {
+                        toastr.error('AJAX backend error', 'An error has occured.');
+                    }
+                });
+            }
+
+            function Proceed() {
+                $proceedBtn = $(this).closest('div.modal').find('.Proceed');
+
+                if (event.keyCode == 13)
+                    $proceedBtn.trigger('click');
+            }
+
+            function ApproveOuterPortRequest() {
+                var id = $(this).val();
+
+                //swal({
+                //    title: 'Continue to approve<br/>Time Edit Request?',
+                //    text: '', //'Choose from the actions below or<br/>Press Esc to Cancel, Enter to Continue.',
+                //    type: 'warning',
+                //    showConfirmButton: true,
+                //    showCancelButton: true,
+                //    confirmButtonColor: "#1ab394",
+                //    cancelButtonColor: "#f27474", //"f27474",
+                //    confirmButtonText: 'Continue',
+                //    cancelButtonText: 'Cancel',
+                //    closeOnConfirm: true,
+                //    closeOnCancel: true,
+                //    html: true
+                //},
+                //    function (isConfirm) {
+                //        if (isConfirm) {
+                //            $('#ApprovalModal').appendTo("body").modal('show');
+                //            $('#ApprovalModal .Proceed').val(id);
+                //            $('#ApprovalModal .Proceed').off('click').on('click', Approve);
+                //            $('#ApprovalModal .form-control').off('keydown').on('keydown', Proceed);
+                //        }
+                //    });
+                Approve(id);
+            }
+
+            function Approve(id) {
+                //var approveBtn = $(this);
+                //var cancelBtn = $(this).next('button.CancelOuterPortRequest');
+                //var id = $(this).val();
+                var approvedHours = $('#ApprovalModal input').val();
+                //var row = $('#Row-Display-OuterPortRequest-' + id);
+
+                var params = 'id=' + id +
+                    '&ApprovedHours=' + approvedHours +
+                    '&__RequestVerificationToken=' +
+                    $('@Html.AntiForgeryToken()').val();
+
+                $.ajax({
+                    data: params,
+                    type: 'POST',
+                    url: '@Url.Action("Approve", "OuterPortRequests")',
+                    cache: false,
+                    beforeSend: function () {
+                        ShowLoadingScreen()
+                    },
+                    complete: function () {
+                        RemoveLoadingScreen()
+                    },
+                    success: function (response) {
+                        if (response.msg == true) {
+                            $('#ApprovalModal').modal('hide');
+                            toastr.success('Time Edit Request Approved!');
+
+                            SearchOuterPortRequests();
+                        } else {
+                            toastr.error(response.res);
+                        }
+                    },
+                    error: function (response) {
+                        toastr.error(response.res);
+                    }
+                });
+            }
+
+            function CancelOuterPortRequest() {
+                var id = $(this).val();
+
+                swal({
+                    title: 'Continue to cancell<br/>Time Edit Request?',
+                    text: '', //'Choose from the actions below or<br/>Press Esc to Cancel, Enter to Continue.',
+                    type: 'warning',
+                    showConfirmButton: true,
+                    showCancelButton: true,
+                    confirmButtonColor: "#1ab394",
+                    cancelButtonColor: "#f27474", //"f27474",
+                    confirmButtonText: 'OK',
+                    cancelButtonText: 'Cancel',
+                    closeOnConfirm: true,
+                    closeOnCancel: true,
+                    html: true
+                },
+                    function (isConfirm) {
+                        if (isConfirm) {
+                            $('#CancellationModal').appendTo("body").modal('show');
+                            $('#CancellationModal .Proceed').val(id);
+                            $('#CancellationModal .Proceed').off('click').on('click', Cancel);
+                            $('#CancellationModal .form-control').off('keydown').on('keydown', Proceed);
+                        }
+                    });
+            }
+
+            function Cancel() {
+                var remarks = $('#CancellationModal textarea').val();
+                var id = $(this).val();
+                //var row = $('#Row-Display-OuterPortRequest-' + id);
+
+                if (remarks.length > 0) {
+                    var params = 'id=' + id +
+                        '&CancellationRemarks=' + remarks +
+                        '&__RequestVerificationToken=' +
+                        $('@Html.AntiForgeryToken()').val();
+
+                    $.ajax({
+                        data: params,
+                        type: 'POST',
+                        url: '@Url.Action("Cancel", "OuterPortRequests")',
+                        cache: false,
+                        beforeSend: function () {
+                            ShowLoadingScreen()
+                        },
+                        complete: function () {
+                            RemoveLoadingScreen()
+                        },
+                        success: function (response) {
+                            if (response.msg == true) {
+                                $('#CancellationModal').modal('hide');
+                                toastr.success('Time Edit Request cancelled!');
+
+                                SearchOuterPortRequests();
+                            } else {
+                                toastr.error(response.res);
+                            }
+                        },
+                        error: function (response) {
+                            toastr.error(response.res);
+                        }
+                    });
+                }
+                else {
+                    toastr.error('Remarks is required!');
+                }
+            }
+
+            function EnableDelete() {
+                var id = parseFloat($(this).val() ? $(this).val() : 0);
+                var description = $(this).closest('tr').find('.clickable-text').text().trim();
+
+                if ($(this).is(':checked')) {
+                    $_SelectedRows = $_SelectedRows.filter(function (e) { return e.ID !== id; });
+                }
+                else {
+                    if ($_SelectedRows.filter(function (e) { return e.ID == id; }).length == 0)
+                        $_SelectedRows.push({ ID: id, Description: description });
+                }
+
+                var rowCount = $(this).closest('table').find('tbody tr.Row-Display .chkRow').length;
+                $('#SelectAll').iCheck(($_SelectedRows.length == rowCount ? '' : 'un') + 'check');
+                $('#MultipleApprove, #MultipleCancel').attr('disabled', $_SelectedRows.length > 0 ? false : true);
+            }
+
+            function MultipleAction() {
+                var action = $(this).attr('id').replace('Multiple', '');
+                var url = action == 'Approve' ? '@Url.Action("ApproveMultiple", "OuterPortRequests")' : '@Url.Action("CancelMultiple", "OuterPortRequests")';
+                var pagetitle = $('.page-heading h2').text().trim().toLowerCase().replace('s ', ' ');
+                var message = $_SelectedRows.length + ' ' + pagetitle + ($_SelectedRows.length > 1 ? 's' : '');
+
+                swal({
+                    title: action + ' ' + message + '?',
+                    text: "",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes",
+                    cancelButtonText: "No",
+                    closeOnConfirm: true,
+                    closeOnCancel: true
+                },
+                function(confirm) {
+                    if (confirm) {
+                        $.ajax({
+                            data: {
+                                'ids': JSON.stringify($_SelectedRows),
+                                '__RequestVerificationToken': $('@Html.AntiForgeryToken()').val()
+                            },
+                            type: 'POST',
+                            datatype: 'JSON',
+                            url: url,
+                            async: true,
+                            cache: false,
+                            beforeSend: function(x) {
+                                ShowLoadingScreen()
+                            },
+                            complete: function() {
+                                RemoveLoadingScreen()
+                            },
+                            success: function(response) {
+                                if (response.msg) {
+                                    toastr.success(message + ' ' + action.toLowerCase() + 'd !');
+                                    SearchOuterPortRequests();
+                                } else {
+                                    toastr.error(response.res);
+                                }
+                            },
+                            error: function(x) {
+                            }
+                        })
+                    }
+                });
+            }
+
+            function SelectAllRows() {
+                $checkRows = $(this).closest('table').find('input.chkRow');
+
+                if ($(this).is(':checked')) {
+                    $checkRows.iCheck('uncheck');
+                    $_SelectedRows = [];
+                }
+                else {
+                    $checkRows.iCheck('check');
+
+                    $checkRows.each(function (e) {
+                        var id = parseFloat($(this).val() ? $(this).val() : 0);
+                        var description = $(this).closest('tr').find('.clickable-text').text().trim();
+
+                        if ($_SelectedRows.filter(function (e) { return e.ID == id; }).length == 0)
+                            $_SelectedRows.push({ ID: id, Description: description });
+                    });
+                }
+
+                $('#MultipleApprove, #MultipleCancel').attr('disabled', $_SelectedRows.length > 0 ? false : true);
+            }
+
+            function ShowHideTab(id, btnTitle) {
+                $('ul.nav-tabs li').removeClass('active');
+                $('div.tab-content .tab-pane').removeClass('active');
+
+                $('ul.nav-tabs li a[href="' + id + '"]').text(btnTitle + ' Request').attr('title', btnTitle);
+                $('ul.nav-tabs li a[href="' + id + '"]').parent('li').addClass('active');
+                $('div.tab-content ' + id).addClass('active');
+            }
+
+            function InitDateTimePicker() {
+                //jQuery('input.datetimepicker').datetimepicker({
+                //    format : 'Y/m/d H:i'
+                //}).trigger('change');
+                $('input.js-datetimepicker').tpjdatetime();
+
+                //$('input.js-datetimepicker').each(function () {
+                //    showClearInput($(this));
+                //}).off("mouseup").on("mouseup",
+                //    function () {
+                //        showClearInput($(this));
+                //    });
+                $('input.js-datetimepicker').next('.clearInput').hide();
+
+                $('.clearInput').off('click').on('click', ClearField);
+            }
+
+            function ClearField() {
+                $input = $(this).prev('input');
+                $inputHidden = $(this).closest('td').find('input[type="hidden"]');
+                $input.val('');
+                $inputHidden.val('');
+                showClearInput($input);
+                $('.send').hide();
+
+                if ($(this).parent().parent().find('input.form-control').attr('id') == 'browseImage' &&
+                    $('#ImageCanvasImg').attr('src') != '\Images\default.jpg') {
+                    $('#ImageCanvasImg').attr('src', '\\Images\\default.jpg');
+                    $input.val('default.jpg');
+                }
+            }
+
+            function showClearInput($this) {
+                var $input = $('#' + $this.attr('id'))
+                var $clearBtn = $input.next('.clearInput');
+                //$clearBtn.css("display", $input.val() == "" ? "none" : "block");
+
+                if ($input.val() == "") {
+                    $clearBtn.hide();
+                } else {
+                    $clearBtn.show();
+                }
+            }
+</script>

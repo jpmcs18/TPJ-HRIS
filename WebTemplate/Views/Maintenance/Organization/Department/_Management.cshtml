@@ -1,0 +1,29 @@
+﻿@model WebTemplate.Models.Maintenance.Organization.Department.Management
+
+<div class="modal-header">
+    <h5 class="modal-title">@ViewBag.Page.PageName Management</h5>
+</div>
+<div class="modal-body">
+    <div class="row">
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.Department.ID)
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            @Html.LabelFor(m => m.Department.ShortDescription, new { @class = "control-label" })
+            @Html.TextBoxFor(m => m.Department.ShortDescription, new { @class = "form-control text-transform-none" })
+            <div class="text-danger">
+                @Html.ValidationMessageFor(m => m.Department.ShortDescription)
+            </div>
+        </div>
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            @Html.LabelFor(m => m.Department.Description, new { @class = "control-label" })
+            @Html.TextBoxFor(m => m.Department.Description, new { @class = "form-control text-transform-none" })
+            <div class="text-danger">
+                @Html.ValidationMessageFor(m => m.Department.Description)
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-primary btn-outline btn-w-m font-bold-700" id="btnclose_dept">Close</button>
+    <button type="button" class="btn btn-primary btn-w-m font-bold-700" id="btnsave_dept">Save</button>
+</div>

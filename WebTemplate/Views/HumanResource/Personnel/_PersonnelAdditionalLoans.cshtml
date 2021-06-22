@@ -1,0 +1,164 @@
+﻿@model WebTemplate.Models.Personnel.PersonnelLoans
+@{
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var LoanPageAccess = credential.GetPage("Loans") ?? new DataAccessLayer.System.Page();
+
+    var whenToDeduct = ProcessLayer.Processes.LookupProcess.GetWhenToDeduct();
+    var payrollDeductible = new Dictionary<bool, string> { { true, "Yes" }, { false, "No" } };
+    var govLoan = new Dictionary<bool, string> { { true, "Yes" }, { false, "No" } };
+    var loanDescription = ProcessLayer.Processes.LookupProcess.GetLoans();
+}
+
+<div class="table-responsive table-scroll" style=" margin: auto;">
+    <table id="LoansTable" class="table table-hover table-mail">
+        <thead>
+            <tr>
+                <th style="text-align: center;"></th>
+                <th style="text-align: center;">Loan Type</th>
+                <th style="text-align: center;">Government Loan</th>
+                <th style="text-align: center;">When To Deduct</th>
+                <th style="text-align: center;">Payroll Deductible</th>
+                <th style="text-align: center;">Payment Terms (months)</th>
+                <th style="text-align: center;">Amount</th>
+                <th style="text-align: center;">Amortization</th>
+                <th style="text-align: center;">Remarks</th>
+                @if (LoanPageAccess.Update || LoanPageAccess.Delete)
+                {
+                    <th style="text-align: center; min-width: 100px;">Action</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.PersonnelLoan.Count() > 0)
+            {
+                for (int i = 0; i < Model.PersonnelLoan.Count(); i++)
+                {
+                    @Html.Partial("~/Views/HumanResource/Personnel/_PersonnelLoan.cshtml", Model.PersonnelLoan[i])
+                }
+            }
+            else
+            {
+                <tr id="No-Row-Display"><td style="text-align: center;" colspan="15">No @LoanPageAccess.Module found...</td></tr>
+            }
+        </tbody>
+        <tfoot>
+            @if (LoanPageAccess.Insert)
+            {
+                <tr id="Row-Input-Loan-0" class="Row-Input">
+                    <td style="text-align: center;">
+                    </td>
+                    <td style="text-align: center;">
+                        @Html.DropDownList("LoanID", new SelectList(loanDescription, "ID", "Description", 0), "N/A", new { @class = "form-control text-transform-none", @style = "" })
+                    </td>
+                    <td style="text-align: center;">
+                        @*@Html.DropDownList("_Loan.GovernmentLoan", new SelectList(govLoan, "Key", "Value", 0), new { @class = "form-control text-transform-none", @style = "" })*@
+                    </td>
+                    <td style="text-align: center;">
+                        @Html.DropDownList("WhenToDeduct", new SelectList(whenToDeduct, "Key", "Value", 0), "N/A", new { @class = "form-control text-transform-none", @style = "" })
+                    </td>
+                    <td style="text-align: center;">
+                        @*@Html.DropDownList("PayrollDeductible", new SelectList(payrollDeductible, "Key", "Value", 0), new { @class = "form-control text-transform-none", @style = "" })*@
+                    </td>
+                    <td style="text-align: center;">
+                        <input type="number" name="PaymentTerms" class="form-control text-transform-none" placeholder="Payment Terms..." />
+                    </td>
+                    <td style="text-align: center;">
+                        <input type="hidden" name="PersonnelID" class="PersonnelID" value="@Model.PersonnelID" />
+                        @*@Html.DropDownList("LoanID", new SelectList(departments, "ID", "Description", 0), new { @class = "form-control" })*@
+                        <input type="text" name="Amount" class="form-control text-transform-none" placeholder="Amount..." />
+                    </td>
+                    <td style="text-align: center;">
+                        <input type="text" name="Amortization" class="form-control text-transform-none" placeholder="Amortization..." />
+                    </td>
+                    <td style="text-align: center;">
+                        <input type="text" name="Remarks" class="form-control text-transform-none" placeholder="Remarks..." />
+                    </td>
+                    <td style="text-align: center;">
+                        <div class="btn-group" style="">
+                            <button type="button" name="CancelLoan" class="btn btn-outline btn-danger btn-sm btn-rounded CancelLoan TableCancelButton" value="0" title="Clear"><i class="fa fa-times"></i></button>
+                            <button type="button" name="SaveLoan" class="btn btn-info btn-sm btn-rounded SaveLoan TableSaveButton" value="0" title="Add"><i class="fa fa-plus"></i></button>
+                        </div>
+                    </td>
+                </tr>
+            }
+
+        </tfoot>
+    </table>
+</div>
+
+<div class="table-responsive table-scroll" style=" margin: auto;">
+    <table id="AdditionalLoansTable" class="table table-hover table-mail">
+        <thead>
+            <tr>
+                <th style="text-align: center;"></th>
+                <th style="text-align: center;">Loan Type</th>
+                <th style="text-align: center;">Government Loan</th>
+                <th style="text-align: center;">When To Deduct</th>
+                <th style="text-align: center;">Payroll Deductible</th>
+                <th style="text-align: center;">Payment Terms (months)</th>
+                <th style="text-align: center;">Amount</th>
+                <th style="text-align: center;">Amortization</th>
+                <th style="text-align: center;">Remarks</th>
+                @if (LoanPageAccess.Update || LoanPageAccess.Delete)
+                {
+                    <th style="text-align: center; min-width: 100px;">Action</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.PersonnelLoan.Count() > 0)
+            {
+                for (int i = 0; i < Model.PersonnelLoan.Count(); i++)
+                {
+                    @Html.Partial("~/Views/HumanResource/Personnel/_PersonnelLoan.cshtml", Model.PersonnelLoan[i])
+                }
+            }
+            else
+            {
+                <tr id="No-Row-Display"><td style="text-align: center;" colspan="15">No @LoanPageAccess.Module found...</td></tr>
+            }
+        </tbody>
+        <tfoot>
+            @if (LoanPageAccess.Insert)
+            {
+                <tr id="Row-Input-Loan-0" class="Row-Input">
+                    <td style="text-align: center;">
+                    </td>
+                    <td style="text-align: center;">
+                        @Html.DropDownList("LoanID", new SelectList(loanDescription, "ID", "Description", 0), "N/A", new { @class = "form-control text-transform-none", @style = "" })
+                    </td>
+                    <td style="text-align: center;">
+                        @*@Html.DropDownList("_Loan.GovernmentLoan", new SelectList(govLoan, "Key", "Value", 0), new { @class = "form-control text-transform-none", @style = "" })*@
+                    </td>
+                    <td style="text-align: center;">
+                        @Html.DropDownList("WhenToDeduct", new SelectList(whenToDeduct, "Key", "Value", 0), "N/A", new { @class = "form-control text-transform-none", @style = "" })
+                    </td>
+                    <td style="text-align: center;">
+                        @*@Html.DropDownList("PayrollDeductible", new SelectList(payrollDeductible, "Key", "Value", 0), new { @class = "form-control text-transform-none", @style = "" })*@
+                    </td>
+                    <td style="text-align: center;">
+                        <input type="number" name="PaymentTerms" class="form-control text-transform-none" placeholder="Payment Terms..." />
+                    </td>
+                    <td style="text-align: center;">
+                        <input type="hidden" name="PersonnelID" class="PersonnelID" value="@Model.PersonnelID" />
+                        @*@Html.DropDownList("LoanID", new SelectList(departments, "ID", "Description", 0), new { @class = "form-control" })*@
+                        <input type="text" name="Amount" class="form-control text-transform-none" placeholder="Amount..." />
+                    </td>
+                    <td style="text-align: center;">
+                        <input type="text" name="Amortization" class="form-control text-transform-none" placeholder="Amortization..." />
+                    </td>
+                    <td style="text-align: center;">
+                        <input type="text" name="Remarks" class="form-control text-transform-none" placeholder="Remarks..." />
+                    </td>
+                    <td style="text-align: center;">
+                        <div class="btn-group" style="">
+                            <button type="button" name="CancelLoan" class="btn btn-outline btn-danger btn-sm btn-rounded CancelLoan TableCancelButton" value="0" title="Clear"><i class="fa fa-times"></i></button>
+                            <button type="button" name="SaveLoan" class="btn btn-info btn-sm btn-rounded SaveLoan TableSaveButton" value="0" title="Add"><i class="fa fa-plus"></i></button>
+                        </div>
+                    </td>
+                </tr>
+            }
+
+        </tfoot>
+    </table>
+</div>

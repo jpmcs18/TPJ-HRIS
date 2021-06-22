@@ -1,0 +1,90 @@
+﻿@model ProcessLayer.Entities.MemoArchives
+
+@{
+    var MemoArchivePageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("HumanResource/MemoArchive");
+
+    var file = Model.File;
+    var filename = Path.GetFileName(file);
+
+    var MemoTypeDescription = !String.IsNullOrEmpty(Model._MemoType.Description) ? Model._MemoType.Description : "";
+}
+@functions{ 
+    public bool IsImage(string str)
+    {
+        var imageExtensions = new string[] { ".jpg", ".jpeg", ".bmp", ".gif", ".png" };
+        return imageExtensions.Contains(Path.GetExtension(str));
+    }
+}
+
+<tr id="@Model.ID" class="Row-Display Row-Display-MemoArchive read" style="" onclick="ViewReplies(@Model.ID)" title="Click to open record">
+    <td class="text-center">
+        @if (MemoArchivePageAccess.Update || MemoArchivePageAccess.Delete || MemoArchivePageAccess.View)
+        {
+            if (MemoArchivePageAccess.Delete)
+            {
+                <input type="checkbox" class="i-checks chkRow" title="" value="@Model.ID">
+            }
+        }
+        else
+        {
+            <input type="checkbox" class="i-checks" title="" value="">
+        }
+    </td>
+    <td class="hidden">
+        @(string.Format("{0} (No. {1})", MemoTypeDescription, Model.MemoNo))
+    </td>
+    <td class="text-left">
+        <input hidden id="MemoType" value="@MemoTypeDescription" />
+        <input hidden id="MemoNo" value="@Model.MemoNo" />
+        <input hidden id="Subject" value="@Model.Subject" />
+        @Html.Raw("<b class='text-" + (Model.MemoTypeID == 1 ? "info" : "success") + "'>" + MemoTypeDescription + String.Format(" No. {0} ", Model.MemoNo ?? "N/A") + "</b><br />")
+        <b style="font-size: 10px;">@String.Format("Subject: {0} ", Model.Subject ?? "N/A")</b>
+        <br />
+        <text class="font-bold-500" style="font-size: 10px; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;">
+            @String.Format("{0}", !String.IsNullOrEmpty(Model.Description) ? Model.Description : "")
+        </text>
+        @*Html.Raw("<b>" + (!String.IsNullOrEmpty(Model._MemoType.Description) ? Model._MemoType.Description + " " : "") + "</b><br />")*@
+    </td>
+    <td class="mail-contact" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 300px;">
+        <div style="line-height: .9;">
+            <b class="text-primary">@(Model._Persons.Select(x => x.FullName).FirstOrDefault() + Model._Groups.Select(x => x.Description).FirstOrDefault())</b><br />
+        </div>
+    </td>
+    @*<td class="mail-subject" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;"></td>*@
+    <td class="">
+        @if (Model.IsExistFile == true)
+        {
+            <a id="raff" href="@file" target="_blank" title="@(!String.IsNullOrEmpty(file) ? filename : "")" style="text-decoration: underline;">
+                @(!String.IsNullOrEmpty(file) ? filename : "")
+            </a>
+        }
+        else
+        {
+            @Html.Raw("<div class='text-danger'>" + filename + "<br/>File not found!</div>")
+        }
+    </td>
+    <td class="text-center mail-date" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">@String.Format("{0:MMM dd, yyyy}", Model.MemoDate)</td>
+    @if (MemoArchivePageAccess.Update || MemoArchivePageAccess.Delete || MemoArchivePageAccess.View)
+    {
+        <td style="" class="row-actions">
+            <div class="btn-group">
+                @*@if (MemoArchivePageAccess.View)
+        {
+            <button type="button" name="ViewReplies" class="btn btn-primary btn-sm btn-rounded ViewReplies" value="@Model.ID" title="View Replies"><i class="fa fa-eye"></i></button>
+        }
+        @if (MemoArchivePageAccess.Delete)
+        {
+            <button type="button" name="DeleteMemoArchive" class="btn btn-outline btn-danger btn-sm btn-rounded DeleteMemoArchive" value="@Model.ID" title="Delete"><i class="fa fa-trash"></i></button>
+        }*@
+                @if (Model._MemoStatus.Description.ToUpper() != "CLOSED")
+                {
+                    <button type="button" name="CloseMemoArchive" class="btn btn-outline btn-danger btn-sm btn-rounded CloseMemoArchive" value="@Model.ID" title="Close Memo">Close</button>
+                }
+                else
+                {
+                    <span class='label label-default'>Closed</span>
+                }
+            </div>
+    </td>
+    }
+</tr>

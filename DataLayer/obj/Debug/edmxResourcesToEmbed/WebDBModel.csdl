@@ -1,0 +1,490 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="WebDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityContainer Name="WebDBEntities" annotation:LazyLoadingEnabled="true">
+    <FunctionImport Name="sp_SendSMSMessage">
+      <Parameter Name="varNumber" Mode="In" Type="String" />
+      <Parameter Name="varMessage" Mode="In" Type="String" />
+    </FunctionImport>
+    <EntitySet Name="Personnels" EntityType="WebDBModel.Personnel" />
+    <EntitySet Name="Errors" EntityType="WebDBModel.Error" />
+    <EntitySet Name="NavMenus" EntityType="WebDBModel.NavMenu" />
+    <EntitySet Name="PageAccesses" EntityType="WebDBModel.PageAccess" />
+    <EntitySet Name="Pages" EntityType="WebDBModel.Page" />
+    <EntitySet Name="Parameters" EntityType="WebDBModel.Parameter" />
+    <EntitySet Name="Roles" EntityType="WebDBModel.Role" />
+    <EntitySet Name="UserRoles" EntityType="WebDBModel.UserRole" />
+    <EntitySet Name="Users" EntityType="WebDBModel.User" />
+    <EntitySet Name="UserStatus" EntityType="WebDBModel.UserStatu" />
+    <EntitySet Name="VerificationCodes" EntityType="WebDBModel.VerificationCode" />
+    <AssociationSet Name="FK__Users__Personnel__47FBA9D6" Association="WebDBModel.FK__Users__Personnel__47FBA9D6">
+      <End Role="Personnel" EntitySet="Personnels" />
+      <End Role="User" EntitySet="Users" />
+    </AssociationSet>
+    <AssociationSet Name="FK__NavMenu__NavPare__1273C1CD" Association="WebDBModel.FK__NavMenu__NavPare__1273C1CD">
+      <End Role="NavMenu" EntitySet="NavMenus" />
+      <End Role="NavMenu1" EntitySet="NavMenus" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Pages__NavMenuId" Association="WebDBModel.FK__Pages__NavMenuId">
+      <End Role="NavMenu" EntitySet="NavMenus" />
+      <End Role="Page" EntitySet="Pages" />
+    </AssociationSet>
+    <AssociationSet Name="FK__PageAccess__Pages" Association="WebDBModel.FK__PageAccess__Pages">
+      <End Role="Page" EntitySet="Pages" />
+      <End Role="PageAccess" EntitySet="PageAccesses" />
+    </AssociationSet>
+    <AssociationSet Name="FK__PageAccess__Roles" Association="WebDBModel.FK__PageAccess__Roles">
+      <End Role="Role" EntitySet="Roles" />
+      <End Role="PageAccess" EntitySet="PageAccesses" />
+    </AssociationSet>
+    <AssociationSet Name="FK__UserRoles__Roles" Association="WebDBModel.FK__UserRoles__Roles">
+      <End Role="Role" EntitySet="Roles" />
+      <End Role="UserRole" EntitySet="UserRoles" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Users__UserStatus" Association="WebDBModel.FK__Users__UserStatus">
+      <End Role="UserStatu" EntitySet="UserStatus" />
+      <End Role="User" EntitySet="Users" />
+    </AssociationSet>
+    <EntitySet Name="Departments" EntityType="WebDBModel.Department" />
+    <EntitySet Name="Designations" EntityType="WebDBModel.Designation" />
+    <EntitySet Name="Positions" EntityType="WebDBModel.Position" />
+    <AssociationSet Name="FK_Personnel_Department" Association="WebDBModel.FK_Personnel_Department">
+      <End Role="Department" EntitySet="Departments" />
+      <End Role="Personnel" EntitySet="Personnels" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Designati__Depar__32E0915F" Association="WebDBModel.FK__Designati__Depar__32E0915F">
+      <End Role="Department" EntitySet="Departments" />
+      <End Role="Designation" EntitySet="Designations" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Designati__Paren__30F848ED" Association="WebDBModel.FK__Designati__Paren__30F848ED">
+      <End Role="User" EntitySet="Users" />
+      <End Role="Designation" EntitySet="Designations" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Designati__Posit__31EC6D26" Association="WebDBModel.FK__Designati__Posit__31EC6D26">
+      <End Role="Position" EntitySet="Positions" />
+      <End Role="Designation" EntitySet="Designations" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Designati__UserI__300424B4" Association="WebDBModel.FK__Designati__UserI__300424B4">
+      <End Role="User" EntitySet="Users" />
+      <End Role="Designation" EntitySet="Designations" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Personnel">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Employee_No" Type="String" MaxLength="13" FixedLength="false" Unicode="true" />
+    <Property Name="First_Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="Middle_Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="Last_Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="Gender" Type="Boolean" />
+    <Property Name="Date_Hired" Type="DateTime" Precision="0" />
+    <Property Name="Employment_Status_ID" Type="Int32" />
+    <Property Name="Resignation_Date" Type="DateTime" Precision="0" />
+    <Property Name="Resignation_Remarks" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+    <Property Name="Birth_Date" Type="DateTime" Precision="0" />
+    <Property Name="Birth_Place" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="Address" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="Telephone_No" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Mobile_No" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Civil_Status_ID" Type="Int32" />
+    <Property Name="Religion_ID" Type="Int32" />
+    <Property Name="Other_Religion" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="Personnel_Type_ID" Type="Int32" />
+    <Property Name="Personnel_Location_ID" Type="Byte" />
+    <Property Name="Other_Location" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="Position_ID" Type="Int32" />
+    <Property Name="Department_ID" Type="Int32" />
+    <Property Name="Employment_Type_ID" Type="Int32" />
+    <Property Name="Tax_Type_ID" Type="Byte" />
+    <Property Name="SSS" Type="String" MaxLength="12" FixedLength="false" Unicode="true" />
+    <Property Name="Philhealth" Type="String" MaxLength="14" FixedLength="false" Unicode="true" />
+    <Property Name="PAGIBIG" Type="String" MaxLength="14" FixedLength="false" Unicode="true" />
+    <Property Name="TIN" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+    <Property Name="Emergency_Contact_Person" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="Emergency_Contact_Address" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="Emergency_Contact_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="Referred_By" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="Reference_Contact_No" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Walk_In" Type="Boolean" />
+    <Property Name="Deleted" Type="Boolean" Nullable="false" />
+    <Property Name="Created_By" Type="Int32" />
+    <Property Name="Created_On" Type="DateTime" Precision="0" />
+    <Property Name="Modified_By" Type="Int32" />
+    <Property Name="Modified_On" Type="DateTime" Precision="0" />
+    <Property Name="Image_Path" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Users" Relationship="WebDBModel.FK__Users__Personnel__47FBA9D6" FromRole="Personnel" ToRole="User" />
+    <NavigationProperty Name="Department" Relationship="WebDBModel.FK_Personnel_Department" FromRole="Personnel" ToRole="Department" />
+  </EntityType>
+  <EntityType Name="Error">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="HResult" Type="Int32" />
+    <Property Name="Message" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="InnerExceptionMessage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="StackTrace" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Source" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="NavMenu">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="NavTitle" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="NavOrder" Type="Int32" />
+    <Property Name="NavPageID" Type="Int32" />
+    <Property Name="NavParentMenu" Type="Int32" />
+    <Property Name="NavIconClass" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="NavMenu1" Relationship="WebDBModel.FK__NavMenu__NavPare__1273C1CD" FromRole="NavMenu" ToRole="NavMenu1" />
+    <NavigationProperty Name="NavMenu2" Relationship="WebDBModel.FK__NavMenu__NavPare__1273C1CD" FromRole="NavMenu1" ToRole="NavMenu" />
+    <NavigationProperty Name="Pages" Relationship="WebDBModel.FK__Pages__NavMenuId" FromRole="NavMenu" ToRole="Page" />
+  </EntityType>
+  <EntityType Name="PageAccess">
+    <Key>
+      <PropertyRef Name="RoleID" />
+      <PropertyRef Name="PageID" />
+    </Key>
+    <Property Name="RoleID" Type="Int32" Nullable="false" />
+    <Property Name="PageID" Type="Int32" Nullable="false" />
+    <Property Name="EnableView" Type="Boolean" />
+    <Property Name="EnableInsert" Type="Boolean" />
+    <Property Name="EnableUpdate" Type="Boolean" />
+    <Property Name="EnableDelete" Type="Boolean" />
+    <Property Name="AllAccess" Type="Boolean" />
+    <Property Name="Approvable" Type="Boolean" />
+    <Property Name="RoleApprover" Type="Int32" />
+    <Property Name="Deleted" Type="Boolean" />
+    <Property Name="CreatedBy" Type="Int32" />
+    <Property Name="DateCreated" Type="DateTime" Precision="7" />
+    <Property Name="UpdatedBy" Type="Int32" />
+    <Property Name="LastUpdateDate" Type="DateTime" Precision="7" />
+    <NavigationProperty Name="Page" Relationship="WebDBModel.FK__PageAccess__Pages" FromRole="PageAccess" ToRole="Page" />
+    <NavigationProperty Name="Role" Relationship="WebDBModel.FK__PageAccess__Roles" FromRole="PageAccess" ToRole="Role" />
+  </EntityType>
+  <EntityType Name="Page">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="PageName" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="URL" Type="String" MaxLength="512" FixedLength="false" Unicode="true" />
+    <Property Name="Module" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="Remarks" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Deleted" Type="Boolean" />
+    <Property Name="CreatedBy" Type="Int32" />
+    <Property Name="DateCreated" Type="DateTime" Precision="7" />
+    <Property Name="UpdatedBy" Type="Int32" />
+    <Property Name="LastUpdateDate" Type="DateTime" Precision="7" />
+    <Property Name="UserManualURL" Type="String" MaxLength="512" FixedLength="false" Unicode="true" />
+    <Property Name="accessibleByAll" Type="Boolean" />
+    <Property Name="NavMenuId" Type="Int32" />
+    <Property Name="PageOrder" Type="Int32" />
+    <Property Name="Namespace" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="Controller" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="Action" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="Application" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="NavMenu" Relationship="WebDBModel.FK__Pages__NavMenuId" FromRole="Page" ToRole="NavMenu" />
+    <NavigationProperty Name="PageAccesses" Relationship="WebDBModel.FK__PageAccess__Pages" FromRole="Page" ToRole="PageAccess" />
+  </EntityType>
+  <EntityType Name="Parameter">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ParameterName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="ParameterValue" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="Role">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="RoleName" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="RoleDescription" Type="String" MaxLength="2048" FixedLength="false" Unicode="true" />
+    <Property Name="DateCreated" Type="DateTime" Precision="7" />
+    <Property Name="CreatedBy" Type="Int32" />
+    <Property Name="Deleted" Type="Boolean" />
+    <Property Name="UpdatedBy" Type="Int32" />
+    <Property Name="LastUpdateDate" Type="DateTime" Precision="7" />
+    <Property Name="RoleAdmin" Type="Int32" />
+    <NavigationProperty Name="PageAccesses" Relationship="WebDBModel.FK__PageAccess__Roles" FromRole="Role" ToRole="PageAccess" />
+    <NavigationProperty Name="UserRoles" Relationship="WebDBModel.FK__UserRoles__Roles" FromRole="Role" ToRole="UserRole" />
+  </EntityType>
+  <EntityType Name="UserRole">
+    <Key>
+      <PropertyRef Name="UserID" />
+      <PropertyRef Name="RoleID" />
+    </Key>
+    <Property Name="UserID" Type="Int32" Nullable="false" />
+    <Property Name="RoleID" Type="Int32" Nullable="false" />
+    <Property Name="DateCreated" Type="DateTime" Precision="7" />
+    <Property Name="CreatedBy" Type="Int32" />
+    <Property Name="Deleted" Type="Boolean" />
+    <Property Name="UpdatedBy" Type="Int32" />
+    <Property Name="LastUpdateDate" Type="DateTime" Precision="7" />
+    <NavigationProperty Name="Role" Relationship="WebDBModel.FK__UserRoles__Roles" FromRole="UserRole" ToRole="Role" />
+  </EntityType>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserName" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="UserStatusID" Type="Int32" />
+    <Property Name="Prefix" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="LastName" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="FirstName" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="MiddleName" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="Gender" Type="Boolean" />
+    <Property Name="Password" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="EmailAddress" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="MobileNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="Address1" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="Address2" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="Address3" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="CityID" Type="Int32" />
+    <Property Name="Zip" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedBy" Type="Int32" />
+    <Property Name="DateCreated" Type="DateTime" Precision="7" />
+    <Property Name="SignOnAttempts" Type="Int32" />
+    <Property Name="Deleted" Type="Boolean" />
+    <Property Name="LastLoginDate" Type="DateTime" Precision="7" />
+    <Property Name="LastLogoutDate" Type="DateTime" Precision="7" />
+    <Property Name="LastPasswordChange" Type="DateTime" Precision="7" />
+    <Property Name="ForcePasswordChange" Type="Boolean" />
+    <Property Name="LastSessionID" Type="String" MaxLength="1024" FixedLength="false" Unicode="true" />
+    <Property Name="LastInternalIPAddressUsed" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="LastExternalIPAddressUsed" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="LastMacAddressUsed" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="LastWorkstationNameUsed" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="LoggedOn" Type="Boolean" />
+    <Property Name="ExpirationDate" Type="DateTime" Precision="7" />
+    <Property Name="LastModifiedby" Type="Int32" />
+    <Property Name="LastUpdateDate" Type="DateTime" Precision="7" />
+    <Property Name="PasswordSalt" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="isVerifiedEmailAddress" Type="Boolean" />
+    <Property Name="isVerifiedMobileNumber" Type="Boolean" />
+    <Property Name="Personnel_ID" Type="Int64" />
+    <NavigationProperty Name="Personnel" Relationship="WebDBModel.FK__Users__Personnel__47FBA9D6" FromRole="User" ToRole="Personnel" />
+    <NavigationProperty Name="UserStatu" Relationship="WebDBModel.FK__Users__UserStatus" FromRole="User" ToRole="UserStatu" />
+    <NavigationProperty Name="Designations" Relationship="WebDBModel.FK__Designati__Paren__30F848ED" FromRole="User" ToRole="Designation" />
+    <NavigationProperty Name="Designations1" Relationship="WebDBModel.FK__Designati__UserI__300424B4" FromRole="User" ToRole="Designation" />
+  </EntityType>
+  <EntityType Name="UserStatu">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Users" Relationship="WebDBModel.FK__Users__UserStatus" FromRole="UserStatu" ToRole="User" />
+  </EntityType>
+  <EntityType Name="VerificationCode">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserID" Type="Int32" />
+    <Property Name="Code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+    <Property Name="Status" Type="Byte" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="CreatedBy" Type="Int32" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedBy" Type="Int32" />
+  </EntityType>
+  <Association Name="FK__Users__Personnel__47FBA9D6">
+    <End Type="WebDBModel.Personnel" Role="Personnel" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="WebDBModel.User" Role="User" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Personnel">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="User">
+        <PropertyRef Name="Personnel_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__NavMenu__NavPare__1273C1CD">
+    <End Type="WebDBModel.NavMenu" Role="NavMenu" Multiplicity="0..1" />
+    <End Type="WebDBModel.NavMenu" Role="NavMenu1" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="NavMenu">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="NavMenu1">
+        <PropertyRef Name="NavParentMenu" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Pages__NavMenuId">
+    <End Type="WebDBModel.NavMenu" Role="NavMenu" Multiplicity="0..1" />
+    <End Type="WebDBModel.Page" Role="Page" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="NavMenu">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Page">
+        <PropertyRef Name="NavMenuId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__PageAccess__Pages">
+    <End Type="WebDBModel.Page" Role="Page" Multiplicity="1" />
+    <End Type="WebDBModel.PageAccess" Role="PageAccess" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Page">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="PageAccess">
+        <PropertyRef Name="PageID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__PageAccess__Roles">
+    <End Type="WebDBModel.Role" Role="Role" Multiplicity="1" />
+    <End Type="WebDBModel.PageAccess" Role="PageAccess" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Role">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="PageAccess">
+        <PropertyRef Name="RoleID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__UserRoles__Roles">
+    <End Type="WebDBModel.Role" Role="Role" Multiplicity="1" />
+    <End Type="WebDBModel.UserRole" Role="UserRole" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Role">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="UserRole">
+        <PropertyRef Name="RoleID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Users__UserStatus">
+    <End Type="WebDBModel.UserStatu" Role="UserStatu" Multiplicity="0..1" />
+    <End Type="WebDBModel.User" Role="User" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="UserStatu">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="User">
+        <PropertyRef Name="UserStatusID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="Department">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Description" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="ShortDescription" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="CreatedBy" Type="Int32" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedBy" Type="Int32" />
+    <Property Name="Deleted" Type="Boolean" />
+    <NavigationProperty Name="Personnels" Relationship="WebDBModel.FK_Personnel_Department" FromRole="Department" ToRole="Personnel" />
+    <NavigationProperty Name="Designations" Relationship="WebDBModel.FK__Designati__Depar__32E0915F" FromRole="Department" ToRole="Designation" />
+  </EntityType>
+  <EntityType Name="Designation">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserID" Type="Int32" />
+    <Property Name="ParentUserID" Type="Int32" />
+    <Property Name="PositionID" Type="Int32" />
+    <Property Name="DepartmentID" Type="Int32" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="CreatedBy" Type="Int32" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedBy" Type="Int32" />
+    <NavigationProperty Name="Department" Relationship="WebDBModel.FK__Designati__Depar__32E0915F" FromRole="Designation" ToRole="Department" />
+    <NavigationProperty Name="User" Relationship="WebDBModel.FK__Designati__Paren__30F848ED" FromRole="Designation" ToRole="User" />
+    <NavigationProperty Name="Position" Relationship="WebDBModel.FK__Designati__Posit__31EC6D26" FromRole="Designation" ToRole="Position" />
+    <NavigationProperty Name="User1" Relationship="WebDBModel.FK__Designati__UserI__300424B4" FromRole="Designation" ToRole="User" />
+  </EntityType>
+  <EntityType Name="Position">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Description" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="ShortDescription" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="CreatedBy" Type="Int32" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedBy" Type="Int32" />
+    <NavigationProperty Name="Designations" Relationship="WebDBModel.FK__Designati__Posit__31EC6D26" FromRole="Position" ToRole="Designation" />
+  </EntityType>
+  <Association Name="FK_Personnel_Department">
+    <End Type="WebDBModel.Department" Role="Department" Multiplicity="0..1" />
+    <End Type="WebDBModel.Personnel" Role="Personnel" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Department">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Personnel">
+        <PropertyRef Name="Department_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Designati__Depar__32E0915F">
+    <End Type="WebDBModel.Department" Role="Department" Multiplicity="0..1" />
+    <End Type="WebDBModel.Designation" Role="Designation" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Department">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Designation">
+        <PropertyRef Name="DepartmentID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Designati__Paren__30F848ED">
+    <End Type="WebDBModel.User" Role="User" Multiplicity="0..1" />
+    <End Type="WebDBModel.Designation" Role="Designation" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Designation">
+        <PropertyRef Name="ParentUserID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Designati__Posit__31EC6D26">
+    <End Type="WebDBModel.Position" Role="Position" Multiplicity="0..1" />
+    <End Type="WebDBModel.Designation" Role="Designation" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Position">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Designation">
+        <PropertyRef Name="PositionID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Designati__UserI__300424B4">
+    <End Type="WebDBModel.User" Role="User" Multiplicity="0..1" />
+    <End Type="WebDBModel.Designation" Role="Designation" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Designation">
+        <PropertyRef Name="UserID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>

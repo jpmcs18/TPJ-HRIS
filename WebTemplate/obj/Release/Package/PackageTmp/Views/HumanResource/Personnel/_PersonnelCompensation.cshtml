@@ -1,0 +1,65 @@
+﻿    @model ProcessLayer.Entities.PersonnelCompensation
+@{
+    var compensations = ProcessLayer.Processes.LookupProcess.GetCompensations();
+    var currencies = ProcessLayer.Processes.LookupProcess.GetCurrency();
+
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var CompensationsPageAccess = credential.GetPage("Compensations") ?? new DataAccessLayer.System.Page ();
+}
+
+<tr id="Row-Display-Compensation-@Model.ID" class="Row-Display">
+    <td class="hidden">
+        <input type="hidden" value="@Model.PersonnelID" name="PersonnelID" />
+    </td>
+    <td style="text-align: center;">
+        @Model._Compensation.Description
+        <input type="hidden" value="@Model.CompensationID" class="CompensationID" />
+    </td>
+    <td style="text-align: center;">
+        @Model._Currency.Description
+        <input type="hidden" value="@Model.CurrencyID" class="CurrencyID" />
+    </td>
+    <td style="text-align: center;">
+        @((Model.Amount ?? 0).ToString("#,##0.00"))
+        <input type="hidden" value="@Model.Amount" class="CurrencyID" />
+    </td>
+    @if (CompensationsPageAccess.Update || CompensationsPageAccess.Delete)
+    {
+        <td style="text-align: center; width: 14.6%;">
+            <div class="btn-group">
+                @if (CompensationsPageAccess.Delete)
+                {
+                    <button type="button" name="DeleteCompensation" class="btn btn-outline btn-danger btn-sm btn-rounded DeleteCompensation TableDeleteButton" value="@Model.ID" title="Delete"><i class="fa fa-trash"></i></button>
+                }
+                @if (CompensationsPageAccess.Update)
+                {
+                    <button type="button" name="EditCompensation" class="btn btn-info btn-sm btn-rounded EditCompensation TableEditButton" value="@Model.ID" title="Edit"><i class="fa fa-pencil"></i></button>
+                }
+            </div>
+        </td>
+    }
+</tr>
+<tr id="Row-Input-Compensation-@Model.ID" class="Row-Input hidden">
+    <td class="hidden">
+        <input type="hidden" value="@Model.PersonnelID" name="PersonnelID" />
+    </td>
+    <td style="text-align: center;">
+        @Html.DropDownListFor(m => m.CompensationID, new SelectList(compensations, "ID", "Description", Model.CompensationID), "N/A", new { @class = "form-control CompensationIDs" })
+    </td>
+    <td style="text-align: center;">
+        @Html.DropDownListFor(m => m.CurrencyID, new SelectList(currencies, "ID", "Description", Model.CompensationID), "N/A", new { @class = "form-control CompensationIDs" })
+    </td>
+    <td style="text-align: center;">
+        <input name="Amount" value="@Model.Amount" class="form-control text-right" placeholder="0.00" />
+    </td>
+    @if (CompensationsPageAccess.Update)
+    {
+        <td style="text-align: center; width: 14.2%;">
+            <div class="btn-group">
+                <button type="button" name="CancelCompensation" class="btn btn-outline btn-danger btn-sm btn-rounded CancelCompensation TableCancelButton" value="@Model.ID" title="Cancel"><i class="fa fa-times"></i></button>
+                <button type="button" name="SaveCompensation" class="btn btn-info btn-sm btn-rounded SaveCompensation TableSaveButton" value="@Model.ID" title="Save"><i class="fa fa-save"></i></button>
+            </div>
+        </td>
+    }
+</tr>
+

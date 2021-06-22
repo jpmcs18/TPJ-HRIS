@@ -1,0 +1,29 @@
+﻿@model WebTemplate.Models.Maintenance.Lookup.Allowance.Index
+
+<div class="table-responsive">
+    <table class="table table-stripped table-bordered">
+        <thead>
+            <tr>
+                <th class="text-center">Allowance</th>
+                <th class="text-center">Currency</th>
+                <th class="text-center">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.AllowanceList != null)
+            {
+                for (int idx = 0; idx < Model.AllowanceList.Count; idx++)
+                {
+                    <tr>
+                        <td class="text-center text-uppercase autonumeric">@Model.AllowanceList[idx]._Allowance</td>
+                        <td class="text-center text-uppercase">@Model.AllowanceList[idx].Currency.Description</td>
+                        <td class="text-center">
+                            <button class="btn btn-primary btn-sm btn-rounded btn-outline" title="Edit" onclick="manage_allowance(@Model.AllowanceList[idx].ID)"><i class="fa fa-pencil"></i></button>
+                            <button class="btn btn-primary btn-sm btn-rounded btn-outline" title="Delete" onclick="delete_allowance(@Model.AllowanceList[idx].ID)"><i class="fa fa-times"></i></button>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

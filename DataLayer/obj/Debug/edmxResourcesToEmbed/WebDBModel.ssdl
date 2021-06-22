@@ -1,0 +1,466 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="WebDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Personnel">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Employee No" Type="nvarchar" MaxLength="13" />
+    <Property Name="First Name" Type="nvarchar" MaxLength="100" />
+    <Property Name="Middle Name" Type="nvarchar" MaxLength="100" />
+    <Property Name="Last Name" Type="nvarchar" MaxLength="100" />
+    <Property Name="Gender" Type="bit" />
+    <Property Name="Date Hired" Type="date" />
+    <Property Name="Employment Status ID" Type="int" />
+    <Property Name="Resignation Date" Type="date" />
+    <Property Name="Resignation Remarks" Type="nvarchar" MaxLength="1000" />
+    <Property Name="Birth Date" Type="date" />
+    <Property Name="Birth Place" Type="nvarchar" MaxLength="500" />
+    <Property Name="Address" Type="nvarchar" MaxLength="500" />
+    <Property Name="Telephone No" Type="nvarchar" MaxLength="50" />
+    <Property Name="Mobile No" Type="nvarchar" MaxLength="50" />
+    <Property Name="Civil Status ID" Type="int" />
+    <Property Name="Religion ID" Type="int" />
+    <Property Name="Other Religion" Type="nvarchar" MaxLength="100" />
+    <Property Name="Personnel Type ID" Type="int" />
+    <Property Name="Personnel Location ID" Type="tinyint" />
+    <Property Name="Other Location" Type="nvarchar" MaxLength="200" />
+    <Property Name="Position ID" Type="int" />
+    <Property Name="Department ID" Type="int" />
+    <Property Name="Employment Type ID" Type="int" />
+    <Property Name="Tax Type ID" Type="tinyint" />
+    <Property Name="SSS" Type="nvarchar" MaxLength="12" />
+    <Property Name="Philhealth" Type="nvarchar" MaxLength="14" />
+    <Property Name="PAGIBIG" Type="nvarchar" MaxLength="14" />
+    <Property Name="TIN" Type="nvarchar" MaxLength="15" />
+    <Property Name="Emergency Contact Person" Type="nvarchar" MaxLength="200" />
+    <Property Name="Emergency Contact Address" Type="nvarchar" MaxLength="200" />
+    <Property Name="Emergency Contact Number" Type="nvarchar" MaxLength="50" />
+    <Property Name="Email" Type="nvarchar" MaxLength="100" />
+    <Property Name="Referred By" Type="nvarchar" MaxLength="200" />
+    <Property Name="Reference Contact No" Type="nvarchar" MaxLength="50" />
+    <Property Name="Walk In" Type="bit" />
+    <Property Name="Deleted" Type="bit" Nullable="false" />
+    <Property Name="Created By" Type="int" />
+    <Property Name="Created On" Type="date" />
+    <Property Name="Modified By" Type="int" />
+    <Property Name="Modified On" Type="date" />
+    <Property Name="Image Path" Type="nvarchar" MaxLength="500" />
+  </EntityType>
+  <EntityType Name="Department">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Description" Type="nvarchar" MaxLength="200" />
+    <Property Name="ShortDescription" Type="nvarchar" MaxLength="100" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="CreatedBy" Type="int" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="Deleted" Type="bit" />
+  </EntityType>
+  <EntityType Name="Designation">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserID" Type="int" />
+    <Property Name="ParentUserID" Type="int" />
+    <Property Name="PositionID" Type="int" />
+    <Property Name="DepartmentID" Type="int" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="CreatedBy" Type="int" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="Position">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Description" Type="nvarchar" MaxLength="200" />
+    <Property Name="ShortDescription" Type="nvarchar" MaxLength="100" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="CreatedBy" Type="int" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="Errors">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="HResult" Type="int" />
+    <Property Name="Message" Type="nvarchar(max)" />
+    <Property Name="InnerExceptionMessage" Type="nvarchar(max)" />
+    <Property Name="StackTrace" Type="nvarchar(max)" />
+    <Property Name="Source" Type="nvarchar" MaxLength="255" />
+    <Property Name="CreatedDate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="NavMenu">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="NavTitle" Type="nvarchar" MaxLength="50" />
+    <Property Name="NavOrder" Type="int" />
+    <Property Name="NavPageID" Type="int" />
+    <Property Name="NavParentMenu" Type="int" />
+    <Property Name="NavIconClass" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="PageAccess">
+    <Key>
+      <PropertyRef Name="RoleID" />
+      <PropertyRef Name="PageID" />
+    </Key>
+    <Property Name="RoleID" Type="int" Nullable="false" />
+    <Property Name="PageID" Type="int" Nullable="false" />
+    <Property Name="EnableView" Type="bit" />
+    <Property Name="EnableInsert" Type="bit" />
+    <Property Name="EnableUpdate" Type="bit" />
+    <Property Name="EnableDelete" Type="bit" />
+    <Property Name="AllAccess" Type="bit" />
+    <Property Name="Approvable" Type="bit" />
+    <Property Name="RoleApprover" Type="int" />
+    <Property Name="Deleted" Type="bit" />
+    <Property Name="CreatedBy" Type="int" />
+    <Property Name="DateCreated" Type="datetime2" Precision="7" />
+    <Property Name="UpdatedBy" Type="int" />
+    <Property Name="LastUpdateDate" Type="datetime2" Precision="7" />
+  </EntityType>
+  <EntityType Name="Pages">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="PageName" Type="nvarchar" MaxLength="128" />
+    <Property Name="URL" Type="nvarchar" MaxLength="512" />
+    <Property Name="Module" Type="nvarchar" MaxLength="128" />
+    <Property Name="Remarks" Type="nvarchar(max)" />
+    <Property Name="Deleted" Type="bit" />
+    <Property Name="CreatedBy" Type="int" />
+    <Property Name="DateCreated" Type="datetime2" Precision="7" />
+    <Property Name="UpdatedBy" Type="int" />
+    <Property Name="LastUpdateDate" Type="datetime2" Precision="7" />
+    <Property Name="UserManualURL" Type="nvarchar" MaxLength="512" />
+    <Property Name="accessibleByAll" Type="bit" />
+    <Property Name="NavMenuId" Type="int" />
+    <Property Name="PageOrder" Type="int" />
+    <Property Name="Namespace" Type="nvarchar" MaxLength="200" />
+    <Property Name="Controller" Type="nvarchar" MaxLength="200" />
+    <Property Name="Action" Type="nvarchar" MaxLength="200" />
+    <Property Name="Application" Type="nvarchar" MaxLength="200" />
+  </EntityType>
+  <EntityType Name="Parameters">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ParameterName" Type="nvarchar" MaxLength="200" />
+    <Property Name="ParameterValue" Type="nvarchar" MaxLength="200" />
+  </EntityType>
+  <EntityType Name="Roles">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="RoleName" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="RoleDescription" Type="nvarchar" MaxLength="2048" />
+    <Property Name="DateCreated" Type="datetime2" Precision="7" />
+    <Property Name="CreatedBy" Type="int" />
+    <Property Name="Deleted" Type="bit" />
+    <Property Name="UpdatedBy" Type="int" />
+    <Property Name="LastUpdateDate" Type="datetime2" Precision="7" />
+    <Property Name="RoleAdmin" Type="int" />
+  </EntityType>
+  <EntityType Name="UserRoles">
+    <Key>
+      <PropertyRef Name="UserID" />
+      <PropertyRef Name="RoleID" />
+    </Key>
+    <Property Name="UserID" Type="int" Nullable="false" />
+    <Property Name="RoleID" Type="int" Nullable="false" />
+    <Property Name="DateCreated" Type="datetime2" Precision="7" />
+    <Property Name="CreatedBy" Type="int" />
+    <Property Name="Deleted" Type="bit" />
+    <Property Name="UpdatedBy" Type="int" />
+    <Property Name="LastUpdateDate" Type="datetime2" Precision="7" />
+  </EntityType>
+  <EntityType Name="Users">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserName" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="UserStatusID" Type="int" />
+    <Property Name="Prefix" Type="nvarchar" MaxLength="64" />
+    <Property Name="LastName" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="FirstName" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="MiddleName" Type="nvarchar" MaxLength="128" />
+    <Property Name="Gender" Type="bit" />
+    <Property Name="Password" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="EmailAddress" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="MobileNumber" Type="nvarchar" MaxLength="20" />
+    <Property Name="Address1" Type="nvarchar" MaxLength="255" />
+    <Property Name="Address2" Type="nvarchar" MaxLength="255" />
+    <Property Name="Address3" Type="nvarchar" MaxLength="255" />
+    <Property Name="CityID" Type="int" />
+    <Property Name="Zip" Type="nvarchar" MaxLength="10" />
+    <Property Name="CreatedBy" Type="int" />
+    <Property Name="DateCreated" Type="datetime2" Precision="7" />
+    <Property Name="SignOnAttempts" Type="int" />
+    <Property Name="Deleted" Type="bit" />
+    <Property Name="LastLoginDate" Type="datetime2" Precision="7" />
+    <Property Name="LastLogoutDate" Type="datetime2" Precision="7" />
+    <Property Name="LastPasswordChange" Type="datetime2" Precision="7" />
+    <Property Name="ForcePasswordChange" Type="bit" />
+    <Property Name="LastSessionID" Type="nvarchar" MaxLength="1024" />
+    <Property Name="LastInternalIPAddressUsed" Type="nvarchar" MaxLength="128" />
+    <Property Name="LastExternalIPAddressUsed" Type="nvarchar" MaxLength="128" />
+    <Property Name="LastMacAddressUsed" Type="nvarchar" MaxLength="128" />
+    <Property Name="LastWorkstationNameUsed" Type="nvarchar" MaxLength="128" />
+    <Property Name="LoggedOn" Type="bit" />
+    <Property Name="ExpirationDate" Type="datetime2" Precision="7" />
+    <Property Name="LastModifiedby" Type="int" />
+    <Property Name="LastUpdateDate" Type="datetime2" Precision="7" />
+    <Property Name="PasswordSalt" Type="nvarchar" MaxLength="50" />
+    <Property Name="isVerifiedEmailAddress" Type="bit" />
+    <Property Name="isVerifiedMobileNumber" Type="bit" />
+    <Property Name="Personnel ID" Type="bigint" />
+  </EntityType>
+  <EntityType Name="UserStatus">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Description" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="VerificationCode">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserID" Type="int" />
+    <Property Name="Code" Type="nvarchar" MaxLength="10" />
+    <Property Name="Status" Type="tinyint" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="CreatedBy" Type="int" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="int" />
+  </EntityType>
+  <Association Name="FK__Designati__Depar__32E0915F">
+    <End Role="Department" Type="Self.Department" Multiplicity="0..1" />
+    <End Role="Designation" Type="Self.Designation" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Department">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Designation">
+        <PropertyRef Name="DepartmentID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Designati__Paren__30F848ED">
+    <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+    <End Role="Designation" Type="Self.Designation" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Users">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Designation">
+        <PropertyRef Name="ParentUserID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Designati__Posit__31EC6D26">
+    <End Role="Position" Type="Self.Position" Multiplicity="0..1" />
+    <End Role="Designation" Type="Self.Designation" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Position">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Designation">
+        <PropertyRef Name="PositionID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Designati__UserI__300424B4">
+    <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+    <End Role="Designation" Type="Self.Designation" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Users">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Designation">
+        <PropertyRef Name="UserID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__NavMenu__NavPare__1273C1CD">
+    <End Role="NavMenu" Type="Self.NavMenu" Multiplicity="0..1" />
+    <End Role="NavMenu1" Type="Self.NavMenu" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="NavMenu">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="NavMenu1">
+        <PropertyRef Name="NavParentMenu" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__PageAccess__Pages">
+    <End Role="Pages" Type="Self.Pages" Multiplicity="1" />
+    <End Role="PageAccess" Type="Self.PageAccess" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Pages">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="PageAccess">
+        <PropertyRef Name="PageID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__PageAccess__Roles">
+    <End Role="Roles" Type="Self.Roles" Multiplicity="1" />
+    <End Role="PageAccess" Type="Self.PageAccess" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Roles">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="PageAccess">
+        <PropertyRef Name="RoleID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Pages__NavMenuId">
+    <End Role="NavMenu" Type="Self.NavMenu" Multiplicity="0..1" />
+    <End Role="Pages" Type="Self.Pages" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="NavMenu">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Pages">
+        <PropertyRef Name="NavMenuId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__UserRoles__Roles">
+    <End Role="Roles" Type="Self.Roles" Multiplicity="1" />
+    <End Role="UserRoles" Type="Self.UserRoles" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Roles">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="UserRoles">
+        <PropertyRef Name="RoleID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Users__Personnel__47FBA9D6">
+    <End Role="Personnel" Type="Self.Personnel" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Users" Type="Self.Users" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Personnel">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Users">
+        <PropertyRef Name="Personnel ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Users__UserStatus">
+    <End Role="UserStatus" Type="Self.UserStatus" Multiplicity="0..1" />
+    <End Role="Users" Type="Self.Users" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="UserStatus">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Users">
+        <PropertyRef Name="UserStatusID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Personnel_Department">
+    <End Role="Department" Type="Self.Department" Multiplicity="0..1" />
+    <End Role="Personnel" Type="Self.Personnel" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Department">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Personnel">
+        <PropertyRef Name="Department ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Function Name="sp_SendSMSMessage" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="varNumber" Type="nvarchar" Mode="In" />
+    <Parameter Name="varMessage" Type="nvarchar(max)" Mode="In" />
+  </Function>
+  <EntityContainer Name="WebDBModelStoreContainer">
+    <EntitySet Name="Personnel" EntityType="Self.Personnel" Schema="hr" store:Type="Tables" />
+    <EntitySet Name="Department" EntityType="Self.Department" Schema="Organization" store:Type="Tables" />
+    <EntitySet Name="Designation" EntityType="Self.Designation" Schema="Organization" store:Type="Tables" />
+    <EntitySet Name="Position" EntityType="Self.Position" Schema="Organization" store:Type="Tables" />
+    <EntitySet Name="Errors" EntityType="Self.Errors" Schema="System" store:Type="Tables" />
+    <EntitySet Name="NavMenu" EntityType="Self.NavMenu" Schema="System" store:Type="Tables" />
+    <EntitySet Name="PageAccess" EntityType="Self.PageAccess" Schema="System" store:Type="Tables" />
+    <EntitySet Name="Pages" EntityType="Self.Pages" Schema="System" store:Type="Tables" />
+    <EntitySet Name="Parameters" EntityType="Self.Parameters" Schema="System" store:Type="Tables" />
+    <EntitySet Name="Roles" EntityType="Self.Roles" Schema="System" store:Type="Tables" />
+    <EntitySet Name="UserRoles" EntityType="Self.UserRoles" Schema="System" store:Type="Tables" />
+    <EntitySet Name="Users" EntityType="Self.Users" Schema="System" store:Type="Tables" />
+    <EntitySet Name="UserStatus" EntityType="Self.UserStatus" Schema="System" store:Type="Tables" />
+    <EntitySet Name="VerificationCode" EntityType="Self.VerificationCode" Schema="System" store:Type="Tables" />
+    <AssociationSet Name="FK__Designati__Depar__32E0915F" Association="Self.FK__Designati__Depar__32E0915F">
+      <End Role="Department" EntitySet="Department" />
+      <End Role="Designation" EntitySet="Designation" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Designati__Paren__30F848ED" Association="Self.FK__Designati__Paren__30F848ED">
+      <End Role="Users" EntitySet="Users" />
+      <End Role="Designation" EntitySet="Designation" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Designati__Posit__31EC6D26" Association="Self.FK__Designati__Posit__31EC6D26">
+      <End Role="Position" EntitySet="Position" />
+      <End Role="Designation" EntitySet="Designation" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Designati__UserI__300424B4" Association="Self.FK__Designati__UserI__300424B4">
+      <End Role="Users" EntitySet="Users" />
+      <End Role="Designation" EntitySet="Designation" />
+    </AssociationSet>
+    <AssociationSet Name="FK__NavMenu__NavPare__1273C1CD" Association="Self.FK__NavMenu__NavPare__1273C1CD">
+      <End Role="NavMenu" EntitySet="NavMenu" />
+      <End Role="NavMenu1" EntitySet="NavMenu" />
+    </AssociationSet>
+    <AssociationSet Name="FK__PageAccess__Pages" Association="Self.FK__PageAccess__Pages">
+      <End Role="Pages" EntitySet="Pages" />
+      <End Role="PageAccess" EntitySet="PageAccess" />
+    </AssociationSet>
+    <AssociationSet Name="FK__PageAccess__Roles" Association="Self.FK__PageAccess__Roles">
+      <End Role="Roles" EntitySet="Roles" />
+      <End Role="PageAccess" EntitySet="PageAccess" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Pages__NavMenuId" Association="Self.FK__Pages__NavMenuId">
+      <End Role="NavMenu" EntitySet="NavMenu" />
+      <End Role="Pages" EntitySet="Pages" />
+    </AssociationSet>
+    <AssociationSet Name="FK__UserRoles__Roles" Association="Self.FK__UserRoles__Roles">
+      <End Role="Roles" EntitySet="Roles" />
+      <End Role="UserRoles" EntitySet="UserRoles" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Users__Personnel__47FBA9D6" Association="Self.FK__Users__Personnel__47FBA9D6">
+      <End Role="Personnel" EntitySet="Personnel" />
+      <End Role="Users" EntitySet="Users" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Users__UserStatus" Association="Self.FK__Users__UserStatus">
+      <End Role="UserStatus" EntitySet="UserStatus" />
+      <End Role="Users" EntitySet="Users" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Personnel_Department" Association="Self.FK_Personnel_Department">
+      <End Role="Department" EntitySet="Department" />
+      <End Role="Personnel" EntitySet="Personnel" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

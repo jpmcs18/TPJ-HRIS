@@ -1,0 +1,298 @@
+﻿@model ProcessLayer.Entities.CrewMovement
+@using WebTemplate.Extension
+@{
+    var c = User as WebTemplate.Models.CustomPrincipal;
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var CrewPageAccess = credential.GetPage("Movement/CrewMovement") ?? new DataAccessLayer.System.Page();
+    var CrewCreatorAccess = credential.GetPage("Crew Movement Creator") ?? new DataAccessLayer.System.Page();
+    //var CrewModifyAccess = credential.GetPage("Crew Movement Modify") ?? new DataAccessLayer.System.Page();
+    //var CrewCheckAccess = credential.GetPage("Crew Movement Check") ?? new DataAccessLayer.System.Page();
+    //var CrewNoteAccess = credential.GetPage("Crew Movement Note") ?? new DataAccessLayer.System.Page();
+    //var CrewPostAccess = credential.GetPage("Crew Movement Post") ?? new DataAccessLayer.System.Page();
+    var CrewCancelAccess = credential.GetPage("Crew Movement Cancel") ?? new DataAccessLayer.System.Page();
+    var CrewPrintAccess = credential.GetPage("Crew Movement Print") ?? new DataAccessLayer.System.Page();
+    var CrewEditPostedAccess = credential.GetPage("Crew Edit Posted") ?? new DataAccessLayer.System.Page();
+    bool editPosted = ViewBag.EditPosted ?? false;
+}
+
+<div id="NewCrewMovementParameters" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-offset-2 col-lg-8" style="padding: 0; margin-bottom: 0px;">
+    <input type="hidden" value="@Model.ID" name="ID" />
+    <input type="hidden" value="@Model.PersonnelID" name="PersonnelID" />
+
+    <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3 m-b-md">
+        @*<i id="CancelCrewMovement" class="fa fa-arrow-left fa-3x" title="Cancel"></i>*@
+        <button id="BackCrewMovement" type="button" class="btn SaveCrewMovement" title="Back"><i class="fa fa-reply"></i> Back</button>
+    </div>
+    
+    <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3 m-b-md save-crew-movement-sm">
+        @if (CrewCancelAccess.Approve && Model.Status == 2)
+        {
+            <button id="CancelMovementButton" type="button" class="btn btn-danger pull-right CancelMovementButton m-r-sm" title="Cancel"><i class="fa fa-ban"></i> Cancel</button>
+        }
+        @if (Model.Status == 4)
+        {
+            if (CrewPrintAccess.Approve && !editPosted)
+            {
+                <button id="PrintMovementButton" type="button" class="btn btn-primary pull-right PrintMovementButton m-r-sm" title="Print"><i class="fa fa-print"></i> Print</button>
+            }
+            if (CrewEditPostedAccess.Approve)
+            {
+                if (!editPosted)
+                {
+                    <button id="EditMovementButton" type="button" class="btn btn-info pull-right EditMovementButton m-r-sm" title="Edit"><i class="fa fa-pencil"></i> Edit</button>
+                }
+                else
+                {
+                    if (CrewCreatorAccess.Insert || CrewCreatorAccess.Update)
+                    {
+                        <button id="UpdatePostedCrewMovement" tpj-save="Update" type="button" class="btn btn-primary pull-right UpdatePostedCrewMovement m-r-sm" title="Save"><i class="fa fa-save"></i> Save</button>
+                    }
+                    <button id="CancelEditingMovementButton" name="ViewCrewMovement" type="button" class="btn btn-danger pull-right CancelEditingMovementButton m-r-sm" value="@Model.ID" title="Cancel Editing"><i class="fa fa-ban"></i> Cancel Editing</button>
+                }
+            }
+            if (CrewCancelAccess.Approve && ViewBag.IsLast && !editPosted)
+            {
+                <button id="CancelMovementButton" type="button" class="btn btn-danger pull-right CancelMovementButton m-r-sm" title="Cancel"><i class="fa fa-ban"></i> Cancel</button>
+            }
+        }
+    </div>
+
+    <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3 m-t-xs" style="padding: 0;">
+        <label class="control-label">Transaction No:</label>
+        <input type="hidden" id="TransactionNo" value="@Model.TransactionNo" class="form-control" name="TransactionNo" max="6" />
+        <h3><u>@Model.TransactionNo</u></h3>
+    </div>
+
+    <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3 15px m-t-xs" style="">
+        <label class="control-label">Date/Time</label>
+        @*@Html.TextBoxFor(m => m.OnboardDate, String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.OnboardDate), new { @class = "form-control datetimepicker", @placeholder = "", @disabled = "disabled", @data_format = "MM/dd/yyyy HH:mm:ss PP" })*@
+        <input type="hidden" id="OnboardDate" class="form-control" name="OnboardDate" max="6" disabled="disabled" />
+        <h3><u>@(String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.OnboardDate))</u></h3>
+    </div>
+    
+    <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3 m-b-md save-crew-movement-lg">
+        @if (CrewCancelAccess.Approve && Model.Status == 2)
+        {
+            <button id="CancelMovementButton" type="button" class="btn btn-danger pull-right CancelMovementButton m-r-sm" title="Cancel"><i class="fa fa-ban"></i> Cancel</button>
+        }
+        @if (Model.Status == 4)
+        {
+            if (CrewPrintAccess.Approve && !editPosted)
+            {
+                <button id="PrintMovementButton" type="button" class="btn btn-primary pull-right PrintMovementButton m-r-sm" title="Print"><i class="fa fa-print"></i> Print</button>
+            }
+            if (CrewEditPostedAccess.Approve)
+            {
+                if (!editPosted)
+                {
+                    <button id="EditMovementButton" type="button" class="btn btn-info pull-right EditMovementButton m-r-sm" title="Edit"><i class="fa fa-pencil"></i> Edit</button>
+                }
+                else
+                {
+                    if (CrewCreatorAccess.Insert || CrewCreatorAccess.Update)
+                    {
+                        <button id="UpdatePostedCrewMovement" tpj-save="Update" type="button" class="btn btn-primary pull-right UpdatePostedCrewMovement m-r-sm" title="Save"><i class="fa fa-save"></i> Save</button>
+                    }
+                    <button id="CancelEditingMovementButton" name="ViewCrewMovement" type="button" class="btn btn-danger pull-right CancelEditingMovementButton m-r-sm" value="@Model.ID" title="Cancel Editing"><i class="fa fa-ban"></i> Cancel Editing</button>
+                }
+            }
+            if (CrewCancelAccess.Approve && ViewBag.IsLast && !editPosted)
+            {
+                <button id="CancelMovementButton" type="button" class="btn btn-danger pull-right CancelMovementButton m-r-sm" title="Cancel"><i class="fa fa-ban"></i> Cancel</button>
+            }
+        }
+    </div>
+</div>
+
+<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-offset-2 col-lg-8">
+    <input type="hidden" value="@Model.Status"/>
+
+    @if (Model.Status < 5)
+    {
+        <div class="md-stepper-horizontal green">
+            <div class="md-step @(Model.Status >= 1 ? "active" : "") done1">
+                <div class="md-step-circle"></div>
+                <div class="md-step-title">Created</div>
+                <div class='md-step-optional'>@Html.Raw(Model.Status >= 1 ? Model._Creator : "&nbsp;")</div>
+                <div class='md-step-optional'>@Html.Raw(Model.Status >= 1 ? String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.CreatedDate) + "" : "&nbsp;")</div>
+                <div class="md-step-bar-left"></div>
+                <div class="md-step-bar-right"></div>
+            </div>
+            <div class="md-step @(Model.Status >= 2 ? "active" : "")  done2">
+                <div class="md-step-circle"></div>
+                <div class="md-step-title">Checked</div>
+                <div class='md-step-optional'>@Html.Raw(Model.Status >= 2 ? Model._Check : "&nbsp;")</div>
+                <div class='md-step-optional'>@Html.Raw(Model.Status >= 2 ? String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.CheckedDate) + "" : "&nbsp;")</div>
+                <div class="md-step-bar-left"></div>
+                <div class="md-step-bar-right"></div>
+            </div>
+            @*<div class="md-step @(Model.Status >= 3 ? "active" : "")  done3">
+                    <div class="md-step-circle"></div>
+                    <div class="md-step-title">Noted</div>
+                    <div class='md-step-optional'>@Html.Raw(Model.Status >= 3 ? Model._Note : "&nbsp;")</div>
+                    <div class='md-step-optional'>@Html.Raw(Model.Status >= 3 ? String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.NotedDate) + "" : "&nbsp;")</div>
+                    <div class="md-step-bar-left"></div>
+                    <div class="md-step-bar-right"></div>
+                </div>*@
+            <div class="md-step @(Model.Status >= 4 ? "active" : "")  done4">
+                <div class="md-step-circle"></div>
+                <div class="md-step-title">Posted</div>
+                <div class='md-step-optional'>@Html.Raw(Model.Status >= 4 ? Model._Post : "&nbsp;")</div>
+                <div class='md-step-optional'>@Html.Raw(Model.Status >= 4 ? String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.PostedDate) + "" : "&nbsp;")</div>
+                <div class="md-step-bar-left"></div>
+                <div class="md-step-bar-right"></div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="md-stepper-horizontal orange">
+            <div class="md-step active done5">
+                <div class="md-step-circle">
+                </div>
+                <div class="md-step-title">Cancelled</div>
+                <div class='md-step-optional'>@Model._Cancelled</div>
+                <div class='md-step-optional'>@String.Format("{0:MM/dd/yyyy HH:mm tt}", Model.CancelledDate)</div>
+                <div class="md-step-bar-left"></div>
+                @*<div class="md-step-bar-right"></div>*@
+            </div>
+        </div>
+    }
+</div>
+
+@* Previous *@
+<div id="PreviousMovementDiv" class="form-group col-xs-12 col-sm-6 col-md-offset-2 col-md-4 col-lg-4" style="padding: 0; margin-bottom: 0px;">
+    <div style="border: 1px solid #ccc;padding: 5px 0;">
+        <h3 style="margin: 0 0 10px; text-align: center;">Previous</h3>
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="float: none;">
+            <label class="control-label">Department</label>
+            @if (Model._PreviousCrewMovement == null)
+            {
+                <h2 title="">&nbsp;</h2>
+            }
+            else
+            {
+                <h2 title="@Html.Raw(Model._PreviousCrewMovement._Department.CheckIfNull<ProcessLayer.Entities.Department>().Description ?? "")">@Html.Raw(Model._PreviousCrewMovement._Department.CheckIfNull<ProcessLayer.Entities.Department>().Description ?? "&nbsp;")</h2>
+            }
+        </div>
+
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="float: none;">
+            <label class="control-label">Position</label>
+            @if (Model._PreviousCrewMovement == null)
+            {
+                <h2 title="">&nbsp;</h2>
+            }
+            else
+            {
+                <h2 title="@Html.Raw(Model._PreviousCrewMovement._Position.CheckIfNull<ProcessLayer.Entities.Position>().Description ?? "")">@Html.Raw(Model._PreviousCrewMovement._Position.CheckIfNull<ProcessLayer.Entities.Position>().Description ?? "&nbsp;")</h2>
+            }
+        </div>
+
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="float: none;">
+            <label class="control-label">Vessel</label>
+            @if (Model._PreviousCrewMovement == null)
+            {
+                <h2 title="">&nbsp;</h2>
+            }
+            else
+            {
+                <h2 title="@Html.Raw(Model._PreviousCrewMovement._Vessel.CheckIfNull<ProcessLayer.Entities.Vessel>().Description ?? "")">@Html.Raw(Model._PreviousCrewMovement._Vessel.CheckIfNull<ProcessLayer.Entities.Vessel>().Description ?? "&nbsp;")</h2>
+            }
+        </div>
+    </div>
+
+    @* SN *@
+    <div style="border: 1px solid #ccc;padding: 5px 0;">
+        <h3 style="margin: 0 0 10px; text-align: center;">SN</h3>
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="float: none;">
+            <label class="control-label">Position</label>
+            @if (Model._PreviousCrewMovement == null)
+            {
+                <h2 title="">&nbsp;</h2>
+            }
+            else
+            {
+                <h2 title="@Html.Raw(Model._PreviousCrewMovement._SNPosition.CheckIfNull<ProcessLayer.Entities.Position>().Description ?? "")">@Html.Raw(Model._PreviousCrewMovement._SNPosition.CheckIfNull<ProcessLayer.Entities.Position>().Description ?? "&nbsp;")</h2>
+            }
+        </div>
+
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="float: none;">
+            <label class="control-label">Vessel</label>
+            @if (Model._PreviousCrewMovement == null)
+            {
+                <h2 title="">&nbsp;</h2>
+            }
+            else
+            {
+                <h2 title="@Html.Raw(Model._PreviousCrewMovement._SNVessel.CheckIfNull<ProcessLayer.Entities.Vessel>().Description ?? "")">@Html.Raw(Model._PreviousCrewMovement._SNVessel.CheckIfNull<ProcessLayer.Entities.Vessel>().Description ?? "&nbsp;")</h2>
+            }
+        </div>
+    </div>
+</div>
+
+@* Current *@
+<div id="CurrentMovementDiv" class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-4" style="padding: 0;">
+    <div style="border: 1px solid #ccc;padding: 5px 0;">
+        <h3 style="margin: 0 0 10px; text-align: center;">Current</h3>
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="float: none;">
+            <label class="control-label">Department</label>
+            <h2 title="@Html.Raw(Model._Department.CheckIfNull<ProcessLayer.Entities.Department>().Description ?? "")">@Html.Raw(Model._Department.CheckIfNull<ProcessLayer.Entities.Department>().Description ?? "&nbsp;")</h2>
+        </div>
+
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="float: none;">
+            <label class="control-label">Position</label>
+            <h2 title="@Html.Raw(Model._Position.CheckIfNull<ProcessLayer.Entities.Position>().Description ?? "")">@Html.Raw(Model._Position.CheckIfNull<ProcessLayer.Entities.Position>().Description ?? "&nbsp;")</h2>
+        </div>
+
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="float: none;">
+            <label class="control-label">Vessel</label>
+            <h2 title="@Html.Raw(Model._Vessel.CheckIfNull<ProcessLayer.Entities.Vessel>().Description ?? "")">@Html.Raw(Model._Vessel.CheckIfNull<ProcessLayer.Entities.Vessel>().Description ?? "&nbsp;")</h2>
+        </div>
+    </div>
+
+    @* SN *@
+    <div style="border: 1px solid #ccc;padding: 5px 0;">
+        <h3 style="margin: 0 0 10px; text-align: center;">SN</h3>
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="float: none;">
+            <label class="control-label">Position</label>
+            <h2 title="@Html.Raw(Model._SNPosition.CheckIfNull<ProcessLayer.Entities.Position>().Description ?? "")">@Html.Raw(Model._SNPosition.CheckIfNull<ProcessLayer.Entities.Position>().Description ?? "&nbsp;")</h2>
+        </div>
+
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="float: none;">
+            <label class="control-label">Vessel</label>
+            <h2 title="@Html.Raw(Model._SNVessel.CheckIfNull<ProcessLayer.Entities.Vessel>().Description ?? "")">@Html.Raw(Model._SNVessel.CheckIfNull<ProcessLayer.Entities.Vessel>().Description ?? "&nbsp;")</h2>
+        </div>
+    </div>
+</div>
+
+@* Remarks *@
+<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-offset-2 col-lg-8" style="border: 1px solid #ccc;padding: 10px;">
+    <label class="control-label">Remarks</label>
+    @Html.TextAreaFor(m => m.Remarks, new { @class = "form-control", @rows = "1", @placeholder = "Remarks...", @style = "resize: none;", @disabled = "disabled" })
+</div>
+
+@*  *@
+@*<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 m-t-sm">
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+            <label class="control-label">Created By: </label>
+            <b><u></u></b>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+            <label class="control-label">Checked By: </label>
+            <b><u>User Name</u></b>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+            <label class="control-label">Noted By: </label>
+            <b><u>User Name</u></b>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+            <label class="control-label">Posted By: </label>
+            <b><u>User Name</u></b>
+        </div>
+    </div>*@
+
+@using (Html.BeginForm("PrintCrewMovementForm", "CrewMovement", FormMethod.Post, new { @target = "_blank" }))
+{
+    <input type="hidden" value="@Model.ID" name="id" />
+    <button type="submit" id="PrintMovementButtonSubmit" style="display: none;">Print Movement</button>
+}

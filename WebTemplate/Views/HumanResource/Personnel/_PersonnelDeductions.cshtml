@@ -1,0 +1,61 @@
+﻿@model WebTemplate.Models.Personnel.CompensationsAndDeductions
+@{
+    var deductions = ProcessLayer.Processes.LookupProcess.GetDeduction(withGovernmentDeduction: false);
+    var currencies = ProcessLayer.Processes.LookupProcess.GetCurrency();
+
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var DeductionsPageAccess = credential.GetPage("Deductions") ?? new DataAccessLayer.System.Page();
+}
+
+
+<div class="table-responsive table-scroll" style="">
+    <table id="DeductionsTable" class="table table-stripped table-bordered">
+        <thead>
+            <tr>
+                <th style="text-align: center; width: 18%;">Deduction</th>
+                <th style="text-align: center; width: 18%;">Currency</th>
+                <th style="text-align: center; width: 18%;">Amount</th>
+                @if (DeductionsPageAccess.Update || DeductionsPageAccess.Delete)
+                {
+                    <th style="text-align: center; width: 6.44%;">Action</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Deduction.Count() > 0)
+            {
+                for (int i = 0; i < Model.Deduction.Count(); i++)
+                {
+                    @Html.Partial("~/Views/HumanResource/Personnel/_PersonnelDeduction.cshtml", Model.Deduction[i])
+                }
+            }
+            else
+            {
+                <tr id="No-Row-Display"><td style="text-align: center;" colspan="6">No Deductions found...</td></tr>
+            }
+        </tbody>
+        <tfoot>
+            @if (DeductionsPageAccess.Insert)
+            {
+            <tr id="Row-Input-Deduction-0" class="Row-Input">
+                <td style="text-align: center; width: 18%;">
+                    <input type="hidden" name="PersonnelID" class="PersonnelID" value="@Model.PersonnelID" />
+                    @Html.DropDownList("DeductionID", new SelectList(deductions, "ID", "Description"), "N/A", new { @class = "form-control DeductionIDs" })
+                </td>
+                <td style="text-align: center; width: 18%;">
+                    @Html.DropDownList("CurrencyID", new SelectList(currencies, "ID", "Description"), "N/A", new { @class = "form-control CurrencyIDs" })
+                </td>
+                <td style="text-align: center;">
+                    <input value="" name="Amount" class="form-control text-right" placeholder="0.00" />
+                </td>
+                <td style="text-align: center; width: 6.38%;">
+                    <div class="btn-group" style="">
+                        <button type="button" name="CancelDeduction" class="btn btn-outline btn-danger btn-sm btn-rounded CancelDeduction TableCancelButton" value="0" title="Clear"><i class="fa fa-times"></i></button>
+                        <button type="button" name="SaveDeduction" class="btn btn-info btn-sm btn-rounded SaveDeduction TableSaveButton" value="0" title="Add"><i class="fa fa-plus"></i></button>
+                    </div>
+                </td>
+            </tr>
+            }
+            </tfoot>
+    </table>
+</div>

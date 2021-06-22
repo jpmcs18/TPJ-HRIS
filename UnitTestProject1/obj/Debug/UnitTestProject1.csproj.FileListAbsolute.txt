@@ -1,0 +1,2 @@
+C:\Users\johnp\Source\Repos\TPJ HR System\UnitTestProject1\obj\Debug\UnitTestProject1.csprojAssemblyReference.cache
+C:\Users\johnp\Source\Repos\TPJ HR System\UnitTestProject1\obj\Debug\UnitTestProject1.csproj.CoreCompileInputs.cache

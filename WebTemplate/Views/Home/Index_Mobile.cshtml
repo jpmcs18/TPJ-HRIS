@@ -1,0 +1,66 @@
+﻿@model WebTemplate.Models.Personnel.Index
+
+@{
+    ViewBag.Title = "Home";
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var SearchPageAccess = credential.GetPage("Search") ?? new DataAccessLayer.System.Page();
+
+    var BirthdayCelebrantsThisDay = ProcessLayer.Processes.PersonnelProcess.GetBirthdayCelebrantsThisDay().ToList();
+    //var BirthdayCelebrantThisWeek = ProcessLayer.Processes.PersonnelProcess.GetBirthdayCelebrantsThisWeek().ToList();
+    //var BirthdayCelebrantThisMonth = ProcessLayer.Processes.PersonnelProcess.GetBirthdayCelebrantsThisMonth().ToList();
+    var BirthdayCelebrantsThisMonthRecent = ProcessLayer.Processes.PersonnelProcess.GetBirthdayCelebrantsThisMonthRecent().ToList();
+    var BirthdayCelebrantsUpcomingThisMonth = ProcessLayer.Processes.PersonnelProcess.GetBirthdayCelebrantsThisMonthUpcoming().ToList();
+
+    var ExpiringLicensesThisDay = ProcessLayer.Processes.PersonnelLicenseProcess.GetExpiringLicensesThisDay().ToList();
+    //var ExpiringLicencesThisMonthRecent = ProcessLayer.Processes.PersonnelLicenseProcess.GetExpiringLicensesThisMonthRecent().ToList();
+    var ExpiringLicensesThisMonthUpcoming = ProcessLayer.Processes.PersonnelLicenseProcess.GetExpiringLicensesThisMonthUpcoming().ToList();
+
+    var year = String.Format("{0:yyyy}", DateTime.Now);
+    var monthYear = String.Format("{0:MMMM yyyy}", DateTime.Now);
+    var todaysDate = String.Format("{0:dddd, MMMM dd}", DateTime.Now);
+    var todaysDate1 = String.Format("{0:dddd, dd}", DateTime.Now);
+    var todaysDate2 = String.Format("{0:dddd, MMMM dd, yyyy}", DateTime.Now);
+    var lastbdate = "";
+    var lastldate = "";    
+}
+
+
+@section Styles {
+    @Styles.Render("~/plugins/toastrStyles")
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/footableStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/sweetAlertStyles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+
+    <style>
+    </style>
+}
+
+@section scripts{
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/plugins/maskMoney")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/toastr")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/bundles/jquery-unobtrusive")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/sweetAlert")
+    @Scripts.Render("~/plugins/codeEditor")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/footable")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/imagecropper")
+
+    <script type="text/javascript">
+    </script>
+}

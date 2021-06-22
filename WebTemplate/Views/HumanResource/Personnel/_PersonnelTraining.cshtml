@@ -1,0 +1,63 @@
+﻿@model ProcessLayer.Entities.PersonnelTraining
+@{
+    var trainingTypes = ProcessLayer.Processes.LookupProcess.GetTrainingType();
+
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var TrainingsAndSeminarsPageAccess = credential.GetPage("Trainings and Seminars") ?? new DataAccessLayer.System.Page();
+}
+
+<tr id="Row-Display-Training-@Model.ID" class="Row-Display">
+    <td class="hidden">
+        <input type="hidden" value="@Model.PersonnelID" name="PersonnelID" />
+    </td>
+    <td style="text-align: left;">@Model._TrainingType.Description</td>
+    <td style="text-align: left;">@Model.TrainingProvider</td>
+    <td style="text-align: center;">@Model.Title</td>
+    <td style="text-align: left;">@String.Format("{0:MMMM dd, yyyy}", Model.TrainingDate)</td>
+    @if (TrainingsAndSeminarsPageAccess.Update || TrainingsAndSeminarsPageAccess.Delete)
+    {
+        <td style="text-align: center;">
+            <div class="btn-group">
+                @if (TrainingsAndSeminarsPageAccess.Delete)
+                {
+                    <button type="button" name="DeleteTraining" class="btn btn-outline btn-danger btn-sm btn-rounded DeleteTraining TableDeleteButton" value="@Model.ID" title="Delete"><i class="fa fa-trash"></i></button>
+                }
+                @if (TrainingsAndSeminarsPageAccess.Update)
+                {
+                    <button type="button" name="EditTraining" class="btn btn-info btn-sm btn-rounded EditTraining TableEditButton" value="@Model.ID" title="Edit"><i class="fa fa-pencil"></i></button>
+                }
+            </div>
+        </td>
+    }
+</tr>
+<tr id="Row-Input-Training-@Model.ID" class="Row-Input hidden">
+    <td class="hidden">
+        <input type="hidden" value="@Model.PersonnelID" name="PersonnelID" />
+    </td>
+    <td style="text-align: center;">
+        @Html.DropDownList("TrainingTypeID", new SelectList(trainingTypes, "ID", "Description", Model.TrainingTypeID), "N/A", new { @class = "form-control text-transform-none", @style = "" })
+    </td>
+    <td style="text-align: center;">
+        @Html.TextBoxFor(m => m.TrainingProvider, new { @class = "form-control text-transform-none" })
+    </td>
+    <td style="text-align: center;">
+        @Html.TextBoxFor(m => m.Title, new { @class = "form-control text-transform-none" })
+    </td>
+    <td style="text-align: center;">
+        <div class="input-group date">
+            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+            @Html.TextBoxFor(m => m.TrainingDate, "{0:MM/dd/yyyy}", new { @class = "form-control text-transform-none" })
+            <span id="" class="clearInput" title="Clear"><i class="fa fa-times"></i></span>
+        </div>
+    </td>
+    @if (TrainingsAndSeminarsPageAccess.Update)
+    {
+        <td style="text-align: center;">
+            <div class="btn-group">
+                <button type="button" name="CancelTraining" class="btn btn-outline btn-danger btn-sm btn-rounded CancelTraining TableCancelButton" value="@Model.ID" title="Cancel"><i class="fa fa-times"></i></button>
+                <button type="button" name="SaveTraining" class="btn btn-info btn-sm btn-rounded SaveTraining TableSaveButton" value="@Model.ID" title="Save"><i class="fa fa-save"></i></button>
+            </div>
+        </td>
+    }
+</tr>
+

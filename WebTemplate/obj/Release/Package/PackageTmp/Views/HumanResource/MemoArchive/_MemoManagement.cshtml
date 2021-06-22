@@ -1,0 +1,92 @@
+﻿@model WebTemplate.Models.MemoArchive.Management
+
+@{
+    var MemoArchivePageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("HumanResource/MemoArchive");
+
+    ViewBag.title = MemoArchivePageAccess.PageName;
+    var memoTypes = ProcessLayer.Processes.LookupProcess.GetMemoType();
+
+    var currentDate = DateTime.Now;
+}
+
+<div id="No-Chat-Internet" class="text-white bg-danger text-center m-b-xs hidden" style="font-size: 15px; padding: 4px;/* margin: 0 4px; */">
+    No internet connection
+</div>
+<div>
+    <input id="MemoID" type="hidden" name="@Model.MemoArchive.ID" value="@Model.MemoArchive.ID" />
+    <div class="row" id="MemoArchiveFields">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0;">
+            <div class="form-group col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                <label class="control-label">Type</label>
+                @Html.DropDownList("MemoTypeID", new SelectList(memoTypes, "ID", "Description"), "N/A", new { @class = "form-control" })
+            </div>
+
+            <div class="form-group col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                <label class="control-label">Number</label>
+                <input type="text" value="@Model.MemoArchive.MemoNo" name="MemoNo" class="form-control text-transform-none" placeholder="Memo No" />
+            </div>
+
+            <div class="form-group col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                <label class="control-label">Subject</label>
+                <input value="@Model.MemoArchive.Subject" style="resize: none;" name="Subject" class="form-control text-transform-none" placeholder="Subject" />
+            </div>
+
+            <div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                <label class="control-label">Message</label>
+                <input value="@Model.MemoArchive.Description" style="resize: none;" name="Description" class="form-control text-transform-none" placeholder="Message" />
+            </div>
+
+            <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                <label class="control-label">Date</label>
+                <div class="input-group date">
+                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    @Html.TextBox("MemoDate", String.Format("{0:yyyy'-'MM'-'dd}", Model.MemoArchive.MemoDate ?? currentDate), new { @type = "date", @class = "form-control" })
+                    @*<input type="text" name="MemoDate" value="@String.Format("{0:MM/dd/yyyy}", !String.IsNullOrEmpty(Model.MemoArchive.MemoDate.ToString()) ? Model.MemoArchive.MemoDate : currentDate)" class="form-control text-transform-none" />
+                    <span id="" class="clearInput" title="Clear"><i class="fa fa-times"></i></span>*@
+                </div>
+            </div>
+
+            <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                <label class="control-label">File</label>
+                <input type="hidden" id="" name="" value="@Model.MemoArchive.File" class="">
+                <input type="file" id="browseFile" name="" value="@Model.MemoArchive.File" class="browsefile form-control">
+            </div>
+        </div>
+    </div>
+
+    <div id="SearchPersonnelOrGroup">
+        <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="radio i-checks"><label> <input type="radio" class="radioMemberType radio-personnel" checked="" value="Personnel" name="a"> <i></i> Single </label></div>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="radio i-checks"><label> <input type="radio" class="radioMemberType radio-group" value="Group" name="a"> <i></i> Group </label></div>
+            </div>
+        </div>
+        @*<div class="" style="display:flex;">*@
+        <div class="" style="">
+            @*<div id="SearchTable" class="tablediv" style="width: 50%; margin-right: 5px;">*@
+            <div id="SearchTable" class="tablediv">
+                @*<div class="disabler hidden" style="background-color: rgba(0, 0, 0, 0.2);width: 50%;height: 100%;position: absolute;z-index: 10;margin: -5px -25px;"></div>*@
+                <div id="SearchPersonnelDiv" class="input-group m-b-sm" style="width: 100%;">
+                    <input id="SearchPersonnelInput" class="form-control" placeholder="Search Personnel..." />
+                    <span class="input-group-addon" id="SearchPersonnel" style="cursor: pointer;"><i class="fa fa-search"></i></span>
+                </div>
+                <div id="SearchTableDiv">
+                    @Html.Partial("~/Views/HumanResource/MemoArchive/_SearchPersonnel.cshtml")
+                </div>
+            </div>
+            @*<div id="GroupTable" class="tablediv" style="width: 50%; margin-left: 5px;">*@
+            <div id="GroupTable" class="tablediv" style="display: none;">
+                @*<div class="disabler" style="background-color: rgba(0, 0, 0, 0.2);width: 50%;height: 100%;position: absolute;z-index: 10;margin: -5px;"></div>*@
+                <div id="SearchGroupDiv" class="input-group m-b-sm" style="width: 100%;">
+                    <input id="SearchGroupInput" class="form-control" placeholder="Search Group..." />
+                    <span class="input-group-addon" id="SearchGroup" style="cursor: pointer;"><i class="fa fa-search"></i></span>
+                </div>
+                <div id="GroupTableDiv">
+                    @Html.Partial("~/Views/HumanResource/MemoArchive/_SearchGroup.cshtml")
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

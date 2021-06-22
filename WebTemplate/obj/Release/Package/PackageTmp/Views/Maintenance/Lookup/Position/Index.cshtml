@@ -1,0 +1,55 @@
+﻿@model WebTemplate.Models.Maintenance.Lookup.Position.Index
+@{
+    var PageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("Maintenance/Lookup/Position");
+
+    ViewBag.title = PageAccess.PageName;
+}
+
+<div class="wrapper wrapper-content">
+    <div class="page-heading">
+        <div class="col-lg-8">
+            <h1>@Html.Raw(PageAccess.PageName ?? "&nbsp;")</h1>
+            <ol class="breadcrumb">
+                <li>
+                    <a href='@Url.Action("Index", "Home")'>Home</a>
+                </li>
+                <li>Maintenance</li>
+                <li>System</li>
+                <li class="active">
+                    <strong>@Html.Raw(PageAccess.PageName ?? "&nbsp;")</strong>
+                </li>
+            </ol>
+        </div>
+        <div class="col-lg-4">
+            <div class="title-action">
+                @if (PageAccess.Insert)
+                {
+                    <a class="btn btn-primary compose-mail" href="#" id="btnadd">Add Position</a>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="" style="margin-top: 85px;">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 animated fadeInDown">
+            <div class="file-manager">
+                <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                    <input type="text" id="txt_search" class="form-control" placeholder="Search..." value="@Html.ValueFor(m => m.Filter)" />
+                </div>
+
+                <div class="form-group" style="">
+                    <button type="button" id="btn_search" class="btn btn-primary font-bold" onclick="get_items()"><i class="fa fa-search"></i> Search</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal inmodal custom-modal" id="modal-lookup" data-backdrop="static" data-keyboard="false" tabindex="" role="dialog" aria-hidden="true">
+    <div class="vertical-alignment-helper">
+        <div class="modal-center vertical-align-center">
+            <div class="modal-content animated fadeInDown modal-width-30">
+                <div id="modal-lookup-body"></div>
+            </div>
+        </div>
+    </div>
+</div>

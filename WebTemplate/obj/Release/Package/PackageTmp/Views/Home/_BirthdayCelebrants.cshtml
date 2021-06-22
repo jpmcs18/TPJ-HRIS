@@ -1,0 +1,141 @@
+﻿@model WebTemplate.Models.Personnel.Index
+
+@{
+    Layout = null;
+}
+
+<div class="ibox" style="margin-bottom: 10px;">
+    <div class="ibox-title bg-primary">
+        <a href="" target="_blank" style="color: #fff;" title="Go to Birthdays Celebrants">
+            <h3 class="" style="text-align: center; margin: 0px -15px;"><i class="fa fa-birthday-cake" style="font-size: 20px;"></i>&nbsp;&nbsp;&nbsp;Birthday Celebrants</h3>
+        </a>
+    </div>
+    <div class="tabs-container" style="border: 1px solid #009688;">
+        <ul class="nav nav-tabs">
+            <li class="" style="width: 33.33%;"><a data-toggle="tab" href="#bday-tab-1" style="text-align: center; padding: 6px 5px;">Recent </a></li>
+            <li class="active" style="width: 33.33%;"><a data-toggle="tab" href="#bday-tab-2" style="text-align: center; padding: 6px 5px;">Today</a></li>
+            <li class="" style="width: 33.33%;"><a data-toggle="tab" href="#bday-tab-3" style="text-align: center; padding: 6px 5px;">Upcoming</a></li>
+        </ul>
+        <div class="tab-content" style="margin-top: 0px; height: 250px; overflow-y: auto; overflow-x: hidden;">
+            <div id="bday-tab-1" class="tab-pane">
+                <div class="panel-body" style="padding: 0px; ">
+                    <table class="table table-stripped table-bordered" style="margin-bottom: 0px;">
+                        <tbody>
+                            @if (Model.BirthdayCelebrantsRecent.Count() > 0)
+                            {
+                                for (int i = 0; i < Model.BirthdayCelebrantsRecent.Count(); i++)
+                                {
+                                    if (i > 0)
+                                    {
+                                        if (Model.BirthdayCelebrantsRecent[i - 1].BirthDate.Value.Day != Model.BirthdayCelebrantsRecent[i].BirthDate.Value.Day)
+                                        {
+                                            <tr><td style="padding: 4px; background: #ccc; font-weight: 700;">@(new DateTime(DateTime.Now.Year, Model.BirthdayCelebrantsRecent[i].BirthDate.Value.Month, Model.BirthdayCelebrantsRecent[i].BirthDate.Value.Day).ToString("dddd, MMMM dd"))</td></tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr><td style="padding: 4px; background: #ccc; font-weight: 700;">@(new DateTime(DateTime.Now.Year, Model.BirthdayCelebrantsRecent[i].BirthDate.Value.Month, Model.BirthdayCelebrantsRecent[i].BirthDate.Value.Day).ToString("dddd, MMMM dd"))</td></tr>
+                                    }
+                                    <tr title="@String.Format("{0}, {1} {2}", Model.BirthdayCelebrantsRecent[i].LastName, Model.BirthdayCelebrantsRecent[i].FirstName, Model.BirthdayCelebrantsRecent[i].MiddleName)">
+                                        <td style="text-align: left; padding: 5px; border: 1px solid #eee; text-transform: uppercase;">
+                                            <div style="float: left;">
+                                                <img src="@(String.IsNullOrEmpty(Model.BirthdayCelebrantsRecent[i].ImagePath) ? "\\Images\\default.jpg" : Model.BirthdayCelebrantsRecent[i].ImagePath)" style="height: 35px; width: 35px; min-height: 35px; min-width: 35px; border: 3px solid #eaeaea; margin-right: 10px; border-radius: 50px;" />
+                                            </div>
+                                            <div style="line-height: 35px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                @String.Format("{0}, {1} {2}", Model.BirthdayCelebrantsRecent[i].LastName, Model.BirthdayCelebrantsRecent[i].FirstName, Model.BirthdayCelebrantsRecent[i].MiddleName)
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr><td style="text-align: center;">No recent celebrants...</td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="bday-tab-2" class="tab-pane active">
+                <div class="panel-body" style="padding: 0px; ">
+                    <table class="table table-stripped table-bordered" style="margin-bottom: 0px;">
+                        <tbody>
+                            @if (Model.BirthdayCelebrantsToday.Count() > 0)
+                            {
+                                for (int i = 0; i < Model.BirthdayCelebrantsToday.Count(); i++)
+                                {
+                                    if (i > 0)
+                                    {
+                                        if (Model.BirthdayCelebrantsToday[i - 1].BirthDate.Value.Day != Model.BirthdayCelebrantsToday[i].BirthDate.Value.Day)
+                                        {
+                                            <tr><td style="padding: 4px; background: #ccc; font-weight: 700;">@(new DateTime(DateTime.Now.Year, Model.BirthdayCelebrantsToday[i].BirthDate.Value.Month, Model.BirthdayCelebrantsToday[i].BirthDate.Value.Day).ToString("dddd, MMMM dd"))</td></tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr><td style="padding: 4px; background: #ccc; font-weight: 700;">@(new DateTime(DateTime.Now.Year, Model.BirthdayCelebrantsToday[i].BirthDate.Value.Month, Model.BirthdayCelebrantsToday[i].BirthDate.Value.Day).ToString("dddd, MMMM dd"))</td></tr>
+                                    }
+
+                                    <tr title="@String.Format("{0}, {1} {2}", Model.BirthdayCelebrantsToday[i].LastName, Model.BirthdayCelebrantsToday[i].FirstName, Model.BirthdayCelebrantsToday[i].MiddleName)">
+                                        <td style="text-align: left; padding: 5px; border: 1px solid #eee;">
+                                            <div style="float: left; text-transform: uppercase;">
+                                                <img src="@(String.IsNullOrEmpty(Model.BirthdayCelebrantsToday[i].ImagePath) ? "\\Images\\default.jpg" : Model.BirthdayCelebrantsToday[i].ImagePath)" style="height: 35px; width: 35px; min-height: 35px; min-width: 35px; border: 3px solid #eaeaea; margin-right: 10px; border-radius: 50px;" />
+                                            </div>
+                                            <div style="line-height: 35px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                @String.Format("{0}, {1} {2}", Model.BirthdayCelebrantsToday[i].LastName, Model.BirthdayCelebrantsToday[i].FirstName, Model.BirthdayCelebrantsToday[i].MiddleName)
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr><td style="text-align: center;">No celebrants today...</td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="bday-tab-3" class="tab-pane">
+                <div class="panel-body" style="padding: 0px; ">
+                    <table class="table table-stripped table-bordered" style="margin-bottom: 0px;">
+                        <tbody>
+                            @if (Model.BirthdayCelebrantsUpcoming.Count() > 0)
+                            {
+                                for (int i = 0; i < Model.BirthdayCelebrantsUpcoming.Count(); i++)
+                                {
+
+                                    if (i > 0)
+                                    {
+                                        if (Model.BirthdayCelebrantsUpcoming[i - 1].BirthDate.Value.Day != Model.BirthdayCelebrantsUpcoming[i].BirthDate.Value.Day)
+                                        {
+                                            <tr><td style="padding: 4px; background: #ccc; font-weight: 700;">@(new DateTime(DateTime.Now.Year, Model.BirthdayCelebrantsUpcoming[i].BirthDate.Value.Month, Model.BirthdayCelebrantsUpcoming[i].BirthDate.Value.Day).ToString("dddd, MMMM dd"))</td></tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr><td style="padding: 4px; background: #ccc; font-weight: 700;">@(new DateTime(DateTime.Now.Year, Model.BirthdayCelebrantsUpcoming[i].BirthDate.Value.Month, Model.BirthdayCelebrantsUpcoming[i].BirthDate.Value.Day).ToString("dddd, MMMM dd"))</td></tr>
+                                    }
+                                    <tr title="@String.Format("{0}, {1} {2}", Model.BirthdayCelebrantsUpcoming[i].LastName, Model.BirthdayCelebrantsUpcoming[i].FirstName, Model.BirthdayCelebrantsUpcoming[i].MiddleName)">
+                                        <td style="text-align: left; padding: 5px; border: 1px solid #eee; text-transform: uppercase;">
+                                            <div style="float: left;">
+                                                <img src="@(String.IsNullOrEmpty(Model.BirthdayCelebrantsUpcoming[i].ImagePath) ? "\\Images\\default.jpg" : Model.BirthdayCelebrantsUpcoming[i].ImagePath)" style="height: 35px; width: 35px; min-height: 35px; min-width: 35px; border: 3px solid #eaeaea; margin-right: 10px; border-radius: 50px;" />
+                                            </div>
+                                            <div style="line-height: 35px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                @String.Format("{0}, {1} {2}", Model.BirthdayCelebrantsUpcoming[i].LastName, Model.BirthdayCelebrantsUpcoming[i].FirstName, Model.BirthdayCelebrantsUpcoming[i].MiddleName)
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr><td style="text-align: center;">No upcoming celebrants...</td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

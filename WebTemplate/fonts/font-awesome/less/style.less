@@ -1,0 +1,58 @@
+
+@import url(../../../Content/plugins/googleapis/fontfamily.css);
+
+// Variables
+@import "variables.less"; //Colors
+
+// Modal Center
+@import "modal-center.less";
+
+// Login styles
+@import "login.less";
+
+// INSPINIA Theme Elements
+@import "typography.less"; //h1, h2, h3, h4, h5, h6
+@import "navigation.less";
+@import "buttons.less";
+@import "badges_labels.less";
+@import "elements.less";
+@import "base.less";
+@import "pages.less";
+@import "chat.less";
+@import "spinners.less";
+@import "stepper.less";
+
+// Side Navigation styles
+@import "topNavBar.less";
+
+// INSPINIA Skins
+@import "skins.less";
+
+// Media query style
+@import "media.less";
+
+// Custom style
+// Your custom style to override base style
+@import "custom.less";
+
+// Loading Screen
+@import "loading-screen.less";
+
+// Floating Action Button
+@import "FAB.less";
+
+// Security (e.g. Not Found, Server Error ...)
+@import "security.less";
+
+// Clear layout on print mode
+@media print {
+  nav.navbar-static-side {
+    display: none;
+  }
+
+  body { overflow: visible !important; }
+
+  #page-wrapper {
+    margin: 0;
+  }
+}

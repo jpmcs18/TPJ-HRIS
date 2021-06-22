@@ -1,0 +1,70 @@
+﻿@model ProcessLayer.Entities.WorkExperience
+@{
+    var months = ProcessLayer.Helpers.Web.MonthList();
+    var years = ProcessLayer.Helpers.Web.YearList();
+
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var WorkExperiencesPageAccess = credential.GetPage("Work Experiences") ?? new DataAccessLayer.System.Page();
+}
+
+<tr id="Row-Display-WorkExperience-@Model.ID" class="Row-Display">
+    <td class="hidden">
+        <input type="hidden" value="@Model.PersonnelID" name="PersonnelID"/>
+    </td>
+    <td style="text-align: left;">@Model.Position</td>
+    <td style="text-align: left;">@Model.Company</td>
+    <td style="text-align: center;">@Model.EmploymentType</td>
+    <td style="text-align: center;">
+        @String.Format("{0} {1}", Model.FromMonth.HasValue ? months.Where(x => x.ID == Model.FromMonth.Value).Select(x => x.Description).FirstOrDefault() : "", Model.FromYear)
+    </td>
+    <td style="text-align: center;">
+        @String.Format("{0} {1}", Model.ToMonth.HasValue ? months.Where(x => x.ID == Model.ToMonth.Value).Select(x => x.Description).FirstOrDefault() : "", Model.ToYear)
+    </td>
+    @if (WorkExperiencesPageAccess.Update || WorkExperiencesPageAccess.Delete)
+    {
+        <td style="text-align: center;">
+            <div class="btn-group">
+                @if (WorkExperiencesPageAccess.Delete)
+                {
+                    <button type="button" name="DeleteWorkExperience" class="btn btn-outline btn-danger btn-sm btn-rounded DeleteWorkExperience TableDeleteButton" value="@Model.ID" title="Delete"><i class="fa fa-trash"></i></button>
+                }
+                @if (WorkExperiencesPageAccess.Update)
+                {
+                    <button type="button" name="EditWorkExperience" class="btn btn-info btn-sm btn-rounded EditWorkExperience TableEditButton" value="@Model.ID" title="Edit"><i class="fa fa-pencil"></i></button>
+                }
+            </div>
+        </td>
+    }
+</tr>
+<tr id="Row-Input-WorkExperience-@Model.ID" class="Row-Input hidden">
+    <td class="hidden">
+        <input type="hidden" value="@Model.PersonnelID" name="PersonnelID" />
+    </td>
+    <td style="text-align: center;">
+        @Html.TextBoxFor(m => m.Position, new { @class = "form-control text-transform-none" })
+    </td>
+    <td style="text-align: center;">
+        @Html.TextBoxFor(m => m.Company, new { @class = "form-control text-transform-none" })
+    </td>
+    <td style="text-align: center;">
+        @Html.TextBoxFor(m => m.EmploymentType, new { @class = "form-control text-transform-none" })
+    </td>
+    <td style="text-align: center;">
+        @Html.DropDownList("FromMonth", new SelectList(months, "ID", "Description", new DateTime().Month), "N/A", new { @class = "form-control text-transform-none", @style = "float: left; width: 50%;" })
+        @Html.DropDownList("FromYear", new SelectList(years, "ID", "Description", new DateTime().Year), "N/A", new { @class = "form-control text-transform-none", @style = "width: 50%;" })
+    </td>
+    <td style="text-align: center;">
+        @Html.DropDownList("ToMonth", new SelectList(months, "ID", "Description", new DateTime().Month), "N/A", new { @class = "form-control text-transform-none", @style = "float: left; width: 50%;" })
+        @Html.DropDownList("ToYear", new SelectList(years, "ID", "Description", new DateTime().Year), "N/A", new { @class = "form-control text-transform-none", @style = "width: 50%;" })
+    </td>
+    @if (WorkExperiencesPageAccess.Update)
+    {
+        <td style="text-align: center;">
+            <div class="btn-group">
+                <button type="button" name="CancelWorkExperience" class="btn btn-outline btn-danger btn-sm btn-rounded CancelWorkExperience TableCancelButton" value="@Model.ID" title="Cancel"><i class="fa fa-times"></i></button>
+                <button type="button" name="SaveWorkExperience" class="btn btn-info btn-sm btn-rounded SaveWorkExperience TableSaveButton" value="@Model.ID" title="Save"><i class="fa fa-save"></i></button>
+            </div>
+        </td>
+    }
+</tr>
+

@@ -1,0 +1,131 @@
+﻿@model WebTemplate.Models.Personnel.Management
+@{
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var EmploymentTypePageAccess = credential.GetPage("Employment Types") ?? new DataAccessLayer.System.Page();
+
+    var employmentypes = ProcessLayer.Processes.LookupProcess.GetEmploymentType();
+}
+
+<div class="table-responsive table-scroll" style="">
+    <table id="EmploymentTypesTable" class="table table-stripped table-bordered table-fixed">
+        <thead>
+            <tr>
+                <th style="text-align: center;">EmploymentType</th>
+                <th style="text-align: center;">Start Date</th>
+                <th style="text-align: center;">End Date</th>
+                @if (EmploymentTypePageAccess.Update || EmploymentTypePageAccess.Delete)
+                {
+                    <th style="text-align: center;">Action</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Personnel._EmploymentType.Count() > 0)
+            {
+                for (int i = 0; i < Model.Personnel._EmploymentType.Count(); i++)
+                {
+                    //Html.Partial("~/Views/HumanResource/Personnel/_PersonnelEmploymentType.cshtml", Model.Personnel._EmploymentType[i].Personnel._EmploymentType[i])
+                    <tr id="Row-Display-EmploymentType-@Model.Personnel._EmploymentType[i].ID" class="Row-Display">
+                        <td class="hidden">
+                            <input type="hidden" value="@Model.Personnel._EmploymentType[i].PersonnelID " name="PersonnelID" />
+                        </td>
+                        <td style="text-align: center;">@Model.Personnel._EmploymentType[i]._EmploymentType.Description</td>
+                        <td style="text-align: center;">@(String.Format("{0:MMMM dd, yyyy}", Model.Personnel._EmploymentType[i].StartDate))</td>
+                        <td style="text-align: center;">@(String.Format("{0:MMMM dd, yyyy}", Model.Personnel._EmploymentType[i].EndDate))</td>
+                        @if (EmploymentTypePageAccess.Update || EmploymentTypePageAccess.Delete)
+                        {
+                            <td style="text-align: center;">
+                                <div class="">
+                                    @if (EmploymentTypePageAccess.Delete)
+                                    {
+                                        <button type="button" name="DeleteEmploymentType" class="btn btn-outline btn-danger btn-sm btn-rounded DeleteEmploymentType TableDeleteButton hidden" value="@Model.Personnel._EmploymentType[i].ID" title="Delete"><i class="fa fa-trash"></i></button>
+                                    }
+                                    @if (EmploymentTypePageAccess.Update)
+                                    {
+                                        <button type="button" name="EditEmploymentType" class="btn btn-info btn-sm btn-rounded EditEmploymentType TableEditButton" value="@Model.Personnel._EmploymentType[i].ID" title="Edit"><i class="fa fa-pencil"></i></button>
+                                    }
+                                </div>
+                            </td>
+                        }
+                    </tr>
+                    <tr id="Row-Input-EmploymentType-@Model.Personnel._EmploymentType[i].ID" class="Row-Input hidden">
+                        <td style="text-align: center;">
+                            <input type="hidden" value="@Model.Personnel._EmploymentType[i].PersonnelID" name="PersonnelID" />
+                            <input type="hidden" value="@Model.Personnel._EmploymentType[i].EmploymentTypeID" name="HiddenEmploymentTypeID" />
+                            @Html.DropDownListFor(m => m.Personnel._EmploymentType[i].EmploymentTypeID, new SelectList(employmentypes, "ID", "Description", Model.Personnel._EmploymentType[i].EmploymentTypeID), "N/A", new { @class = "form-control" })
+                        </td>
+                        <td style="text-align: center;">
+                            <input type="hidden" value="@Model.Personnel._EmploymentType[i].StartDate" name="HiddenStartDate" />
+                            <div class="input-group date">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                @Html.TextBoxFor(m => m.Personnel._EmploymentType[i].StartDate, "{0:MM/dd/yyyy}", new { @class = "form-control text-transform-none" })
+                                <span id="" class="clearInput" title="Clear"><i class="fa fa-times"></i></span>
+                            </div>
+                        </td>
+                        <td style="text-align: center;">
+                            <input type="hidden" value="@Model.Personnel._EmploymentType[i].EndDate" name="HiddenEndDate" />
+                            <div class="input-group date">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                @Html.TextBoxFor(m => m.Personnel._EmploymentType[i].EndDate, "{0:MM/dd/yyyy}", new { @class = "form-control text-transform-none" })
+                                <span id="" class="clearInput" title="Clear"><i class="fa fa-times"></i></span>
+                            </div>
+                        </td>
+                        @if (EmploymentTypePageAccess.Update)
+                        {
+                            <td style="text-align: center;">
+                                <div class="btn-group">
+                                    <button type="button" name="CancelEmploymentType" class="btn btn-outline btn-danger btn-sm btn-rounded CancelEmploymentType TableCancelButton" value="@Model.Personnel._EmploymentType[i].ID" title="Cancel"><i class="fa fa-times"></i></button>
+                                    <button type="button" name="SaveEmploymentType" class="btn btn-info btn-sm btn-rounded SaveEmploymentType TableSaveButton" value="@Model.Personnel._EmploymentType[i].ID" title="Save"><i class="fa fa-save"></i></button>
+                                </div>
+                            </td>
+                        }
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr id="No-Row-Display"><td style="text-align: center;" colspan="6">No EmploymentTypes found...</td></tr>
+            }
+        </tbody>
+        <tfoot>
+            @if (EmploymentTypePageAccess.Insert)
+            {
+                <tr id="Row-Input-EmploymentType-0" class="Row-Input">
+                    <td style="text-align: center;">
+                        <input type="hidden" name="PersonnelID" class="PersonnelID" value="@Model.Personnel.ID" />
+                        @Html.DropDownList("EmploymentTypeID", new SelectList(employmentypes, "ID", "Description"), "N/A", new { @class = "form-control" })
+                    </td>
+                    <td style="text-align: center;">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="input-group date">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    <input type="text" name="StartDate" class="form-control text-transform-none"/>
+                                    <span id="" class="clearInput" title="Clear"><i class="fa fa-times"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div class="row hidden">
+                            <div class="col-md-12">
+                                <div class="input-group date">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    <input type="text" name="EndDate" class="form-control text-transform-none"/>
+                                    <span id="" class="clearInput" title="Clear"><i class="fa fa-times"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div class="btn-group" style="">
+                            <button type="button" name="CancelEmploymentType" class="btn btn-outline btn-danger btn-sm btn-rounded CancelEmploymentType TableCancelButton" value="0" title="Clear"><i class="fa fa-times"></i></button>
+                            <button type="button" name="SaveEmploymentType" class="btn btn-info btn-sm btn-rounded SaveEmploymentType TableSaveButton" value="0" title="Add"><i class="fa fa-plus"></i></button>
+                        </div>
+                    </td>
+                </tr>
+            }
+
+        </tfoot>
+    </table>
+</div>

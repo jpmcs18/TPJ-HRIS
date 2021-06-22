@@ -1,0 +1,40 @@
+﻿@model ProcessLayer.Entities.MemoArchives
+
+@{
+    var MemoArchivePageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("HumanResource/MemoArchive");
+    var c = User as WebTemplate.Models.CustomPrincipal;
+
+    ViewBag.title = MemoArchivePageAccess.PageName;
+}
+@functions{
+    public bool IsImage(string str)
+    {
+        var imageExtensions = new string[] { ".jpg", ".jpeg", ".bmp", ".gif", ".png" };
+        return imageExtensions.Contains(Path.GetExtension(str));
+    }
+}
+
+<tr>
+    <td colspan="3" class="message-date">
+        <input type="hidden" id="MemoArchiveDate-@Model.ID" value="@Model.CreatedOn" />
+        @(String.Format("{0:dd MMM yyyy} AT {0:h:mm}", Model.CreatedOn).ToUpper())
+    </td>
+</tr>
+<tr id="MemoArchive-@Model.ID" class="message-row">
+    <td style="width: 20%"></td>
+    <td class="message-td message-td-right" colspan="2" style="">
+        <div data-toggle="" class="message dropdown-toggle" type="button" style="text-align: left">
+            <span class="message-content">
+                <a id="raff" href="@Model.File" target="_blank" title="@Model.File.Replace("\\Memos\\", "")">@Model.File.Replace("\\Memos\\", "")<br></a>
+                @if (IsImage(Model.File))
+                {
+                    <img src="@Model.File" class="" style="position: fixed; border: 2px solid rgb(85, 85, 85); z-index: 1000; display: none; height: 300px;" />
+                }
+            </span>
+        </div>
+        <ul class="dropdown-menu">
+            <li><a id="DeleteMessage" href="#">Delete</a></li>
+            <li class="divider"></li>
+        </ul>
+    </td>
+</tr>

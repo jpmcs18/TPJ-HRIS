@@ -1,0 +1,436 @@
+﻿
+@model WebTemplate.Models.Payroll.Index
+
+@{ var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var PayrollPageAccess = credential.GetPage("CnB/PayrollSheetA") ?? new DataAccessLayer.System.Page();
+
+    var monno = DateTime.Now.Month;
+    var months = new List<string> { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" }; }
+
+<div class="wrapper wrapper-content">
+    <div class="page-heading">
+        <div class="col-lg-8">
+            <h1>@Html.Raw(ViewBag.Page.PageName ?? "&nbsp;")</h1>
+            <ol class="breadcrumb">
+                <li>
+                    <a href='@Url.Action("Index", "Home")'>Home</a>
+                </li>
+                <li class="active">
+                    <strong>@Html.Raw(ViewBag.Page.PageName ?? "&nbsp;")</strong>
+                </li>
+            </ol>
+        </div>
+        <div class="col-lg-4">
+            <div class="title-action">
+
+            </div>
+        </div>
+    </div>
+    <div class="" style="margin-top: 85px;">
+        @if (PayrollPageAccess.View)
+        {
+            <div id="PayrollsForm">
+                @Html.Partial("~/Views/CnB/PayrollSheetA/_PayrollSheetASearch.cshtml")
+            </div>}
+    </div>
+</div>
+
+<div class="modal inmodal custom-modal" id="GeneratePayroll" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="vertical-alignment-helper">
+        <div class="modal-center vertical-align-center">
+            <div class="modal-content animated fadeInDown modal-width-60">
+                <div class="modal-header">
+                    <h5 class="modal-title">Generate Payroll</h5>
+                    <button type="button" class="close" aria-label="Close" data-dismiss="modal">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="max-height: 750px; background-color: #fff; overflow: hidden;">
+                    <div class="chat-view">
+                        @Html.AntiForgeryToken()
+                        @*<div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                                <label class="control-label">Cutoff Start Date</label>
+                                <input type="text" id="txt_startdate" name="StartDate" class="form-control js-datetimepicker tpj-startdate" placeholder="Start Date" value="@Html.ValueFor(m => m.StartDate, "{0:MM/dd/yyyy}")" />
+                            </div>
+                            <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                                <label class="control-label">Cutoff End Date</label>
+                                <input type="text" id="txt_enddate" name="EndDate"  class="form-control js-datetimepicker tpj-enddate" placeholder="End Date" value="@Html.ValueFor(m => m.EndDate, "{0:MM/dd/yyyy}")" />
+                            </div>*@
+                        <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                            <label class="control-label">Year</label>
+                            <input type="text" id="txt_year" name="year" class="form-control tpj-year" placeholder="Year" value="@($"{DateTime.Now:yyyy}" )" />
+                        </div>
+                        <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                            <label class="control-label">Month</label>
+                            <select id="select-month" class="form-control" name="month">
+                                @for (int i = 0; i < months.Count; i++)
+                                {
+                                    <option value="@(i+1)" @(i + 1 == monno ? "selected" : "")>@months[i]</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="Generate" name="Generate" class="btn btn-info btn-w-m Proceed" value="0" title="Generate">Generate</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal inmodal custom-modal" id="PayrollModal" data-backdrop="static" data-keyboard="false" tabindex="" role="dialog" aria-hidden="true">
+    <div class="vertical-alignment-helper">
+        <div class="modal-center vertical-align-center">
+            <div class="modal-content animated fadeInDown modal-width-60">
+                <div class="modal-header">
+                    <h5 class="modal-title" style="text-align: center;">New Payroll</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div id="PayrollForm" class="modal-body" style="max-height: 750px; background-color: #fff; overflow: hidden;">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="StoreEditModel" />
+
+<div id="" class="customFileInput hidden">
+    <div class="input-group file-input" style="display: inline-table; width: 100%;">
+        <span class="input-group-addon"><i class="fa fa-file"></i></span>
+        <input type="text" name="File" class="browseFileCustom form-control text-transform-none" placeholder="File..." readonly="readonly" />
+        <span id="" class="clearInput" title="Clear"><i class="fa fa-times"></i></span>
+    </div>
+</div>
+
+<style>
+    .image-crop {
+        overflow: hidden;
+        /*text-align: -webkit-center;*/
+    }
+
+        .image-crop > .cropper-container {
+            width: 150px !important;
+            height: 150px !important;
+            left: 0px !important;
+            top: 0px !important;
+        }
+
+    .select2-results .select2-disabled, .select2-results__option[aria-disabled=true] {
+        display: none;
+    }
+</style>
+
+<script>
+        $(window).resize(function () {
+            ResizeTabContentResponsive();
+        });
+
+        $(document).ready(function () {
+            Events();
+
+            //$('#LeaveRequestModal').on('hidden.bs.modal', function () {
+            //    var title = $('#LeaveRequestModal .modal-title').text();
+
+            //    if (title.indexOf('View') == -1)
+            //        SearchLeaveRequests();
+            //});
+        })
+
+    $(document).resize(function () {
+        ResizeTabContentResponsive();
+    })
+
+        function ResizeTabContentResponsive() {
+            var h = 90;
+            var h0 = $(window).height();
+            var h1 = $('.topNavBar').height();
+            var h2 = $('.page-heading').height();
+            var h3 = $('.footer').height();
+            var h4 = h1 + h2 + h3 + h;
+            var h5 = h0 - h4;
+            var h6 = h5 - h;
+
+            $('.tab-content').height(h5 + 'px');
+            $('.table-responsive').height(h6 + 'px');
+        }
+
+        function Events() {
+            InitDateTimePicker();
+            $('#form_payroll').off('submit').on('submit', GeneratePayroll);
+            $('.title-action').html('<button class="btn btn-primary compose-mail" id="btngenerate">Generate Payroll</button>');
+            $('#btngenerate').off('click').on('click', OpenGeneratePayrollModal);
+            SearchTabEvents();
+            ResizeTabContentResponsive();
+        }
+
+        function OpenGeneratePayrollModal() {
+            $('#GeneratePayroll #Generate').off('click').on('click', GeneratePayroll);
+            $("#GeneratePayroll").appendTo('body').modal('show');
+        }
+
+        function SearchTabEvents() {
+            $('#btn_search').off('click').on('click', SearchPayrolls);
+            //$('.ViewPayrollBase').off('click').on('click', ViewPayrollBase);
+            $('.Row-Display-PayrollBase').off('click').on('click', ViewPayrollBase);
+            $('.EditOrNewPayroll').off('click').on('click', EditOrNewPayroll);
+            $('.DeletePayroll').off('click').on('click', DeletePayroll);
+        }
+
+        function SearchPayrolls() {
+            $('#form_search_params input[name="Page"]').val(1);
+
+            var params = $('#form_search_params *').serialize();
+
+            $.ajax({
+                url: '@Url.Action("Index", "PayrollSheetA")',
+                data: params,
+                type: "GET",
+                cache: false,
+                beforeSend: function () {
+                    //ShowLoadingScreen();
+                    ShowHideRowLoadingDisplay('PayrollBaseTable', true);
+                },
+                complete: function () {
+                    //RemoveLoadingScreen();
+                    //ShowHideRowLoadingDisplay('PayrollBaseTable', false);
+                },
+                success: function (response) {
+                    if (response.msg == null) {
+                        $('#PayrollsForm').html(response);
+
+                        Events();
+                        InitDateTimePicker();
+                    } else {
+                        toastr.error(response.res);
+                    }
+                },
+                error: function () {
+                    toastr.error('AJAX backend error', 'An error has occured.');
+                }
+            });
+        }
+
+        function ViewPayrollBase() {
+            var serialized = $(this).closest('tr').find('input').serialize();
+            GetPayroll(serialized);
+        }
+
+        function GetPayroll(serialized) {
+            var params = serialized +
+                '&__RequestVerificationToken=' +
+                $('@Html.AntiForgeryToken()').val();
+
+            $.ajax({
+                url: '@Url.Action("GetPayroll", "PayrollSheetA")',
+                data: params,
+                type: "POST",
+                cache: false,
+                beforeSend: function () {
+                    ShowLoadingScreen()
+                },
+                complete: function () {
+                    RemoveLoadingScreen()
+                },
+                success: function (response) {
+                    if (response.msg == null) {
+                        $('#PayrollsForm').html(response);
+                        //$('.ViewPayrollDetails').off('click').on('click', ViewPayrollDetails);
+                        $('.Row-Display-Payrolls').off('click').on('click', ViewPayrollDetails);
+                        $('#BackToPayrollBase').off('click').on('click', BackToPayrollBase);
+                        $('.title-action').empty();//.append('<button class="btn btn-primary compose-mail" id="btnprint">Print</button>');
+                        ResizeTabContentResponsive();
+                    } else {
+                        toastr.error(response.res);
+                    }
+                },
+                error: function () {
+                    toastr.error('AJAX backend error', 'An error has occured.');
+                }
+            });
+        }
+
+        function ViewPayrollDetails() {
+            var serialized = $(this).closest('tr').find('input').serialize();
+            GetPayrollDetails(serialized);
+        }
+
+        function GetPayrollDetails(serialized) {
+            var params = serialized +
+                '&__RequestVerificationToken=' +
+                $('@Html.AntiForgeryToken()').val();
+
+            $.ajax({
+                url: '@Url.Action("GetPayrollDetails", "PayrollSheetA")',
+                data: params,
+                type: "POST",
+                cache: false,
+                beforeSend: function () {
+                    ShowLoadingScreen()
+                },
+                complete: function () {
+                    RemoveLoadingScreen()
+                },
+                success: function (response) {
+                    if (response.msg == null) {
+                        $('#PayrollsForm').html(response);
+                        $('#BackToPayrolls').off('click').on('click', BackToPayrolls);
+
+                        //$('.grid').masonry({
+                        //    // options
+                        //    itemSelector: '.grid-item',
+                        //    columnWidth: 250
+                        //});
+
+                        ResizeTabContentResponsive();
+                    } else {
+                        toastr.error(response.res);
+                    }
+                },
+                error: function () {
+                    toastr.error('AJAX backend error', 'An error has occured.');
+                }
+            });
+        }
+
+        function EditOrNewPayroll() {
+
+        }
+
+        function DeletePayroll() {
+
+        }
+
+        function PrintPayroll(id) {
+            var params = 'id=' + id +
+                '&__RequestVerificationToken=' +
+                $('@Html.AntiForgeryToken()').val();
+
+            $.ajax({
+                url: '@Url.Action("PrintPayroll", "PayrollSheetA")',
+                data: params,
+                type: "POST",
+                cache: false,
+                beforeSend: function () {
+                    ShowLoadingScreen()
+                },
+                complete: function () {
+                    RemoveLoadingScreen()
+                },
+                success: function (response) {
+                    if (response.msg == null) {
+                        window.open(response, '_blank');
+                    } else {
+                        toastr.error(response.res);
+                    }
+                },
+                error: function () {
+                    toastr.error('AJAX backend error', 'An error has occured.');
+                }
+            });
+        }
+
+        function GeneratePayroll() {
+            var params = $('#GeneratePayroll *').serialize();
+
+            $.ajax({
+                url: '@Url.Action("GeneratePayroll", "PayrollSheetA")',
+                data: params,
+                type: "POST",
+                cache: false,
+                beforeSend: function () {
+                    ShowLoadingScreen();
+                    //ShowHideRowLoadingDisplay('PayrollBaseTable', true);
+                },
+                complete: function () {
+                    RemoveLoadingScreen();
+                    //ShowHideRowLoadingDisplay('PayrollBaseTable', false);
+                },
+                success: function (response) {
+                    if (response.msg == null) {
+                        //$("#PayrollsForm").html(response);
+                        $('#PayrollBaseTable tbody').prepend(response);
+                        CountRowDisplay();
+                        Events();
+                        $('.txt_search').focus();
+
+                        $('#GeneratePayroll').modal('hide');
+                        toastr.success('Payroll Base generated!');
+                        //$('.ViewPayrollBase').off('click').on('click', ViewPayrollBase);
+                        $('.Row-Display-PayrollBase').off('click').on('click', ViewPayrollBase);
+                    } else {
+                        toastr.error(response.res);
+                    }
+                },
+                error: function (response) {
+                    toastr.error(response.res);
+                }
+            });
+        }
+
+        function BackToPayrollBase() {
+            SearchPayrolls();
+        }
+
+        function BackToPayrolls() {
+            var serialized = $(this).find('input').serialize();
+            GetPayroll(serialized);
+        }
+
+        function CountRowDisplay() {
+            if ($('#PayrollBaseTable tr.Row-Display').length > 0)
+                $('#PayrollBaseTable #No-Row-Display').addClass('hidden');
+            else
+                $('#PayrollBaseTable #No-Row-Display').removeClass('hidden')
+        }
+
+        function InitDateTimePicker() {
+            $('.tpj-startdate').tpjdatetime({
+                withtime: false,
+                monthyearonly: true,
+                startofthemonth: true
+            });
+            $('.tpj-enddate').tpjdatetime({
+                withtime: false,
+                monthyearonly: true,
+                endofthemonth: true
+            });
+
+            $('input.js-datetimepicker').off('change').on('change',
+                function () {
+                    showClearInput($(this));
+                });
+
+            $('input.js-datetimepicker').next('.clearInput').hide();
+
+            $('.clearInput').off('click').on('click', ClearField);
+        }
+
+        function ClearField() {
+            $input = $(this).prev('input');
+            $inputHidden = $(this).closest('td').find('input[type="hidden"]');
+            $input.val('');
+            $inputHidden.val('');
+            showClearInput($input);
+            $('.send').hide();
+
+            if ($(this).parent().parent().find('input.form-control').attr('id') == 'browseImage' &&
+                $('#ImageCanvasImg').attr('src') != '\Images\default.jpg') {
+                $('#ImageCanvasImg').attr('src', '\\Images\\default.jpg');
+                $input.val('default.jpg');
+            }
+        }
+
+        function showClearInput($this) {
+            var $input = $('#' + $this.attr('id'))
+            var $clearBtn = $input.next('.clearInput');
+            $clearBtn.css("display", $input.val() == "" ? "none" : "block");
+
+            if ($input.val() == "") {
+                $clearBtn.hide();
+            } else {
+                $clearBtn.show();
+            }
+        }
+</script>

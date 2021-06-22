@@ -1,0 +1,28 @@
+﻿body > .sk-spinner {
+    display: none;
+}
+
+body.sk-loading {
+    position: unset;
+}
+
+body.sk-loading:after {
+    content: '';
+    background-color: rgba(0,0,0,0);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2681px;
+    z-index: 9999;
+}
+
+body.sk-loading > .sk-spinner {
+    display: block;
+    position: absolute;
+    top: 45%;
+    left: 0;
+    right: 0;
+    z-index: 100000;
+}

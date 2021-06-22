@@ -1,0 +1,94 @@
+﻿@model WebTemplate.Models.DynamicLookup.LookupData
+@using WebTemplate.Models.DynamicLookup
+@{
+    List<LookupSetting> lookupSettings = LookupHelper.LookupListItems.Where(x => x.Key == Model.LookupName).Select(x => x.Value).FirstOrDefault() ?? LookupHelper.DefaultLookupListItems;
+    dynamic lst = null;
+    var yearList = ProcessLayer.Helpers.Web.YearList();
+}
+<div>
+
+    <input type="hidden" id="lookup" value="@Model.LookupName" class="form-control">
+    @if (lookupSettings != null)
+    {
+        foreach (var settings in lookupSettings)
+        {
+<div class="form-group col-xs-12 col-sm-6 col-md-6 col-lg-6" id="lookupdata">
+    <input type="hidden" id="id" name="ID" value="@(Model.Data == null ? null : Model.Data.ID)" class="form-control">
+    <label @(settings.Type == LookupDataType.boolean ? "for=" + settings.Name + " " : "") class="control-label">@settings.Display</label>
+    @if (settings.Type == LookupDataType.model)
+    {
+        lst = settings.LookupSource.GetList(settings.HasDefault);
+    }
+    @{
+        var data = LookupHelper.GetData(Model.Data, settings);
+    }
+    @switch (settings.Type)
+    {
+        case LookupDataType.text:
+        case LookupDataType.number:
+        case LookupDataType.amount:
+            <input type="text" name="@settings.Name" value="@(data == null ? "" : data)" class="form-control" @settings.ReadOnlyText>
+            break;
+        case LookupDataType.year:
+            <select name="@settings.Name" class="form-control" @settings.ReadOnlyText>
+                @foreach (var i in yearList)
+                {
+                    <option value="@i.ID" selected="@(data != null && data == i.ID)">@i.Description</option>
+                }
+            </select>
+            break;
+        case LookupDataType.time:
+            <input type="time" name="@settings.Name" value="@(data == null ? "" : data)" class="form-control" @settings.ReadOnlyText>
+            break;
+        case LookupDataType.date:
+            <input type="date" name="@settings.Name" value="@(data == null ? "" : data.ToString("yyyy'-'MM'-'dd"))" class="form-control" @settings.ReadOnlyText>
+            break;
+        case LookupDataType.boolean:
+            var ischeck = data == null ? "false" : (data ? "checked" : "");
+            <div style=" padding: .45em 0;">
+                <input type="checkbox" id="@settings.Name" name="@settings.Name" @ischeck style="align-self: !important start;" class="i-checks" @settings.ReadOnlyCheck>
+            </div>
+            break;
+        case LookupDataType.model:
+            <select class="form-control" name="@settings.LookupSourceData" @settings.ReadOnlyText>
+                @if (lst != null)
+                {
+                    for (int i = 0; i < lst.Count; i++)
+                    {
+                        var lookupSourceID = LookupHelper.GetData(Model.Data, new LookupSetting(settings.LookupSourceData));
+                        var lookupSourceValue = LookupHelper.GetData(lst[i], settings.ClassSetting);
+                        <option value="@lst[i].ID" selected="@(lookupSourceID != null && lookupSourceID == lst[i].ID)">@(lookupSourceValue == null ? "" : lookupSourceValue)</option>
+                    }
+                }
+            </select>
+            break;
+    }
+</div>
+        }
+    }
+</div>
+
+<script>
+    var lookupSettings = [];
+    //lookupSettings.push('amount', );// { , 'number', 'text', 'boolean', 'model', 'date', 'time', 'year'}; //Html.Raw(Json.Encode(lookupSettings));
+    //console.log(lookupSettings);
+    SetDataTypePattern();
+
+    function SetDataTypePattern() {
+        $('.modal .form-control').each(function (e) {
+            var type = $(this).attr('data-type');
+            var datatype;
+            if (lookupSettings.filter(function (e) { return e == type; }).length > 0) {
+                //console.log('type: ', type);
+                switch (type) {
+                    case 'amount':
+                        $(this).attr('data-type', /^(\d{1,3})(,\d{1,3})*(\.\d{1,})?$/g);
+                        break;
+                    case 'number':
+                        $(this).attr('data-type', /^(\d{1,3})(,\d{1,3})$/g);
+                        break;
+                }
+            }
+        });
+    }
+</script>

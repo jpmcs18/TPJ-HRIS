@@ -1,0 +1,90 @@
+﻿@{
+    var c = User as WebTemplate.Models.CustomPrincipal;
+    var menus = Session["NavMenu"] as List<DataAccessLayer.System.NavMenu>;
+}
+<div class="topNavBar">
+    <div class="navbar-logo col-xs-8 col-sm-8 col-md-8 col-lg-3">
+        <div id="OpenSideNav">
+            @* Menu Button on top left *@
+            <a class="btn pull-left" data-toggle="modal" data-target=".sideNavigation" href="#" title="Menu">
+                <img src="~/Content/patterns/menu button.png" />
+            </a>
+            <img class="logo" title="Trans-Pacific Journey Fishing Corporation Logo" src="~/Content/patterns/TPJ Logo copy.png" />
+            <div class="company-name pull-left" title="Trans-Pacific Journey Fishing Corporation"><b>Trans-Pacific Journey</b><br/>Fishing Corporation</div>
+            <div class="navbar-title-short pull-left"></div>
+        </div>
+    </div>
+    <div class="col-xs-0 col-sm-0 col-md-0 col-lg-6">
+            
+    </div>
+    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-3">
+        <div id="Profile">
+            @* &#xa; == code for NewLine *@
+            <div class="profile-username"><strong>@(string.Format("{0}, {1}", c.LastName, c.FirstName).ToUpper())</strong></div>
+            <div class="profile-picture">
+                <span>
+                    @* clickable user image *@
+                    <img src="~/Images/default.jpg" id="ProfilePic" onclick="$('#ProfileInfo').toggleClass('show').focus()" alt="image" class="img-circle" title="TPJ Domain Account:&#xa;@(string.Format("{0}, {1}", c.LastName, c.FirstName).ToUpper())" />
+                </span>
+            </div>
+            <div id="ProfileInfo" class="profile-information">
+                <div class="profile-pointer"></div>
+                <div class="profile-content">
+                    <div class="profile-content-left">
+                        @* large user image *@
+                        <span><img id="" alt="image" class="img-circle" src="~/Images/default.jpg" title="" /></span>
+                    </div>
+                    <div class="profile-content-right">
+                        <div class="profile-names">
+                            <div class="profile-name">@(string.Format("{0}, {1}", c.LastName, c.FirstName).ToUpper())</div>
+                            <div class="profile-user">@c.EmailAddress</div>
+                        </div>
+                        <div class="profile-buttons" style="margin-top: 45px;">
+                            <a href="@Url.Action("Index", "Maintenance/Systems/UserProfile")" class="btn btn-primary btn-outline">Profile</a>
+                            <a href="@Url.Action("Logout", "Security")" class="btn btn-primary btn-w-m">Sign Out</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="navParent animated hidden" style="">
+    <ul class="nav" id="side-menu">
+        <li class="@Html.IsSelected(controller: "Home") toggleSpinners">
+            <a href="/" class=""><i class="fa fa-home"></i> <span class="side-nav-label">Home</span> </a>
+        </li>
+
+        @helper DisplayMenus(IEnumerable<DataAccessLayer.System.NavMenu> nm, string level)
+        {
+            foreach (DataAccessLayer.System.NavMenu n in nm)
+            {
+                bool active = (n.Pages.Count > 0 && n.Pages.Any(p => Request.Url.AbsolutePath.Trim('/', '\\').StartsWith(p.URL))) || Request.Url.AbsolutePath.Trim('/', '\\').StartsWith(n.NavTitle);
+                <li class="@(active ? "active" : "")">
+                    <a href="#"><i class="fa fa-@n.NavIconClass"></i><span class="side-nav-label"> @n.NavTitle</span><span class="fa arrow"></span> </a>
+                    <ul class="nav @(active ? "in" : "")" aria-expanded="@active">
+                        @if (n.Pages.Count > 0)
+                        {
+                            foreach (DataAccessLayer.System.Page p in n.Pages)
+                            {
+                                <li class="@( Request.Url.AbsolutePath.Trim('/','\\').StartsWith(p.URL) ? "active":"") toggleSpinners">
+                                    <a href="~/@p.URL">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@p.Module</a>
+                                </li>
+                            }
+                        }
+
+                        @if (n.ChildNavMenu != null && n.ChildNavMenu.Count > 0)
+                        {
+                            @DisplayMenus(n.ChildNavMenu, "third")
+                        }
+                    </ul>
+                </li>
+            }
+        }
+        @if (menus != null)
+        {
+            @DisplayMenus(menus, "second")
+        }
+    </ul>
+</div>

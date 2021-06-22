@@ -1,0 +1,76 @@
+﻿@model ProcessLayer.Entities.Personnel
+
+@{
+    var employmentTypes = ProcessLayer.Processes.LookupProcess.GetEmploymentType();
+
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var SearchPageAccess = credential.GetPage("Search") ?? new DataAccessLayer.System.Page();
+}
+
+<tr id="@Model.ID" class="Row-Display Row-Display-Personnel" tpjattr="PersonnelProfile" onclick="OpenProfile(@Model.ID);" style="" title="Click to open record">
+    <td class="text-center">
+        @if (SearchPageAccess.Update || SearchPageAccess.Delete || SearchPageAccess.View)
+        {
+            if (SearchPageAccess.Delete)
+            {
+                <input type="checkbox" class="i-checks chkRow" title="Select" value="@Model.ID">
+            }
+        }
+        else
+        {
+            <input type="checkbox" class="i-checks" title="" value="">
+        }
+    </td>
+    <td style="text-align: left; text-transform: uppercase; max-width: 300px;">
+        <div class="clickable-text">
+            <img class="personnel-pic" src="@(String.IsNullOrEmpty(Model.ImagePath) ? "\\Images\\default.jpg": Model.ImagePath)" style="height: 30px; width: 45px; min-height: 45px; min-width: 30px; border: 3px solid #eaeaea; margin-right: 10px; border-radius: 50px;" title="" />
+            @String.Format("{0}, {1} {2}", Model.LastName, Model.FirstName, Model.MiddleName)
+        </div>
+    </td>
+    <td style="text-align: center; text-transform: uppercase; " nowrap>@Model.EmployeeNo</td>
+    <td style="text-align: left; text-transform: uppercase; white-space: nowrap;">@Model.Address</td>
+    @*<td style="text-align: left; max-width: 200px;">
+            @Html.Raw("<b>" +
+                      String.Format("{0} ",
+                          !String.IsNullOrEmpty(Model._Department.Description) ? Model._Department.Description : ""
+                          ) +
+                      "</b><br />"
+                )
+            <text class="font-bold-500" style="text-align: left; max-width: 200px;">
+                @(String.Format("{0}", !String.IsNullOrEmpty(Model._Position.Description) ? Model._Position.Description : ""))
+            </text>
+        </td>*@
+    <td style="text-align: center;">@Model.Email</td>
+    <td style="text-align: center;" class="client-status">
+        @Model._EmploymentStatus.Description
+        @*<span class="label label-primary">@Model._EmploymentStatus.Description</span>*@
+    </td>
+    @*<td style="text-align: center;" class="client-status">
+        @Html.Raw((Model._Creator ?? "N/A") + "<br/>" + String.Format("{0:MMM dd, yyyy HH:mm tt}", Model.CreatedOn))
+    </td>
+    <td style="text-align: center;" class="client-status">
+        @Html.Raw((Model._Modifier ?? "N/A") + "<br/>" + String.Format("{0:MMM dd, yyyy HH:mm tt}", Model.ModifiedOn))
+    </td>*@
+    @if (SearchPageAccess.Update || SearchPageAccess.Delete || SearchPageAccess.View)
+    {
+        <td style="" class="row-actions">
+            <div class="btn-group">
+                @*@if (SearchPageAccess.Update || SearchPageAccess.View)
+                {
+                    if (SearchPageAccess.Update)
+                    {
+                        <button type="button" name="EditProfile" class="btn btn-outline btn-info btn-sm btn-rounded EditProfile" value="@Model.ID" title="Edit"><i class="fa fa-pencil"></i></button>
+                    }
+                    else if (SearchPageAccess.View)
+                    {
+                        <button type="button" name="EditProfile" class="btn btn-outline btn-info btn-sm btn-rounded EditProfile" value="@Model.ID" title="View"><i class="fa fa-eye"></i></button>
+                    }
+                }*@
+                @*@if (SearchPageAccess.Delete)
+                {
+                    <button type="button" name="DeleteProfile" class="btn btn-outline btn-danger btn-sm btn-rounded DeleteProfile" value="@Model.ID" title="Delete"><i class="fa fa-trash"></i></button>
+                }*@
+            </div>
+        </td>
+    }
+</tr>

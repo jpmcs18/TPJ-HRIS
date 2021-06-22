@@ -1,0 +1,36 @@
+﻿@model WebTemplate.Models.Maintenance.Lookup.PositionSalary.Management
+
+@if (Model != null)
+{
+    using (Ajax.BeginForm("CreateOrUpdate", "Maintenance/Lookup/PositionSalary",
+        new AjaxOptions { HttpMethod = "POST", OnBegin = "ShowLoadingScreen()", OnComplete = "RemoveLoadingScreen()", OnSuccess = "createupdate_item_success", OnFailure = "toastr.error('Potentially dangerous value was detected', 'Saving failed')" }, new { @id = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="modal-header">
+            <h5 class="modal-title">@(Model.PositionSalary.ID == 0 ? "Add New Item" : "Update Existing Item")</h5>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                @Html.HiddenFor(m => m.PositionSalary.ID)
+                <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    @Html.LabelFor(m => m.PositionSalary.PositionID, new { @class = "control-label" })
+                    @Html.DropDownListFor(m => m.PositionSalary.PositionID, new SelectList(Model.PositionList, "ID", "Description"), "N/A", new { @class = "form-control text-transform-none" })
+                    @*<div class="text-danger">
+                            @Html.ValidationMessageFor(m => m.PositionSalary.ID)
+                        </div>*@
+                </div>
+                <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    @Html.LabelFor(m => m.PositionSalary.Salary, new { @class = "control-label" })
+                    @Html.TextBoxFor(m => m.PositionSalary.Salary, new { @class = "form-control text-transform-none" })
+                    @*<div class="text-danger">
+                            @Html.ValidationMessageFor(m => m.Position.Description)
+                        </div>*@
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default btn-outline btn-w-m font-bold-700" id="btn-close" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary btn-w-m font-bold-700" id="btn-save">Save</button>
+        </div>
+    }
+}

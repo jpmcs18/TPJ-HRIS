@@ -1,0 +1,50 @@
+﻿@model ProcessLayer.Entities.Kiosk.HighRiskRequest
+
+@{
+    var c = User as WebTemplate.Models.CustomPrincipal;
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var CreatorAccess = credential.GetPage("Creator High Risk Request") ?? new DataAccessLayer.System.Page();
+}
+
+@Html.Hidden("PersonnelID", Model.PersonnelID, new { @class = "form-control" })
+@Html.Hidden("ID", Model.ID, new { @class = "form-control" })
+
+<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <label class="control-label">Request Date</label>
+    <label class="form-control">@(String.Format("{0:yyyy'-'MM'-'dd}", Model.RequestDate))</label>
+</div>
+
+<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <label class="control-label">Reasons</label>
+    <textarea class="form-control" rows="4" readonly>@Model.Reasons</textarea>
+</div>
+
+@if (!String.IsNullOrEmpty(Model.CancellationRemarks))
+{
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <label class="control-label">Cancellation Remarks</label>
+    <textarea class="form-control" rows="4" readonly>@Model.CancellationRemarks</textarea>
+    </div>
+}
+
+@if (CreatorAccess.View)
+{
+    var Logs = new Dictionary<string, DateTime?>(){
+        { "Created By:" + Model._Creator, Model.CreatedOn },
+        { "Modified By:" + Model._Modifier, Model.ModifiedOn },
+        { "Approved By:" + Model._Approver, Model.ApprovedOn },
+        { "Cancelled By:" + Model._Cancel, Model.CancelledOn }
+    };
+
+    foreach (var l in Logs)
+    {
+        if (!String.IsNullOrEmpty(l.Key.Split(':')[1]))
+        {
+            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3 m-t-lg">
+                <div class='md-step-optional'>@l.Key.Split(':')[0]</div>
+                <div class='md-step-optional'><b>@Html.Raw(l.Key.Split(':')[1] ?? "&nbsp;")</b></div>
+                <div class='md-step-optional'>@Html.Raw(String.Format("{0:MM/dd/yyyy hh:mm tt}", l.Value) ?? "&nbsp;")</div>
+            </div>
+        }
+    }
+}

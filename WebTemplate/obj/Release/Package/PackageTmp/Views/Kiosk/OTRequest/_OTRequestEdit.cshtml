@@ -1,0 +1,70 @@
+﻿@model ProcessLayer.Entities.Kiosk.OTRequest
+
+@{
+    var c = User as WebTemplate.Models.CustomPrincipal;
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var PageAccess = credential.GetPage("Kiosk/OTRequest") ?? new DataAccessLayer.System.Page();
+    var CreatorAccess = credential.GetPage("Creator Request Over Time") ?? new DataAccessLayer.System.Page();
+}
+
+@Html.Hidden("PersonnelID", Model.PersonnelID, new { @class = "form-control" })
+@Html.Hidden("ID", Model.ID, new { @class = "form-control" })
+
+@*<div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <label class="control-label">Start Date & Time</label>
+        @Html.TextBox("StartDateTime", String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.StartDateTime), new { @class = "form-control js-datetimepicker", @placeholder = "" })
+        <span id="" class="clearInput" title="Clear"><i class="fa fa-times"></i></span>
+    </div>
+
+    <div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <label class="control-label">End Date & Time</label>
+        @Html.TextBox("EndDateTime", String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.EndDateTime), new { @class = "form-control js-datetimepicker", @placeholder = "" })
+        <span id="" class="clearInput" title="Clear"><i class="fa fa-times"></i></span>
+    </div>*@
+
+<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <label class="control-label">Request Date</label>
+    @Html.TextBox("RequestDate", String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.RequestDate), new { @class = "form-control js-datetimepicker", @placeholder = "" })
+</div>
+
+<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <label class="control-label">
+        @Html.CheckBox("IsOffice", Model.IsOffice, new { @class = "i-checks status-checkbox form-control" })
+        At Office
+    </label>
+</div>
+
+<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <label class="control-label">Reasons</label>
+    @Html.TextArea("Reasons", Model.Reasons, new { @class = "form-control form-control", @rows = "4", @placeholder = "Reasons..." })
+</div>
+
+@if (((Model.Approved == null || Model.Approved == false) || (Model.Cancelled == null || Model.Cancelled == false)) && Model.IsExpired == false)
+{
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <label class="control-label" style="width: 100%; color: #fff;">Search</label>
+        <button type="button" id="CreateOTRequest" onclick="SaveRequest();" class="btn btn-primary font-bold pull-right" title="Update"><i class="fa fa-save"></i>&nbsp;&nbsp;Update</button>
+    </div>
+}
+
+@if (CreatorAccess.Update)
+{
+    var Logs = new Dictionary<string, DateTime?>(){
+        { "Created By:" + Model._Creator, Model.CreatedOn },
+        { "Modified By:" + Model._Modifier, Model.ModifiedOn },
+        { "Approved By:" + Model._Approver, Model.ApprovedOn },
+        { "Cancelled By:" + Model._Cancel, Model.CancelledOn }
+    };
+
+    foreach (var l in Logs)
+    {
+        if (!String.IsNullOrEmpty(l.Key.Split(':')[1]))
+        {
+            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3 m-t-lg">
+                <div class='md-step-optional'>@l.Key.Split(':')[0]</div>
+                <div class='md-step-optional'><b>@Html.Raw(l.Key.Split(':')[1] ?? "&nbsp;")</b></div>
+                <div class='md-step-optional'>@Html.Raw(String.Format("{0:MM/dd/yyyy hh:mm tt}", l.Value) ?? "&nbsp;")</div>
+            </div>
+        }
+    }
+}
