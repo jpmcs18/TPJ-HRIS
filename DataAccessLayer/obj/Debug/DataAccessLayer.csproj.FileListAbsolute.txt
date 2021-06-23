@@ -49,3 +49,20 @@ C:\Users\MIS 3\Source\Repos\TPJ-HRIS\DataAccessLayer\obj\Debug\DataAccessLayer.c
 C:\Users\MIS 3\Source\Repos\TPJ-HRIS\DataAccessLayer\obj\Debug\DataAccessLayer.csproj.CopyComplete
 C:\Users\MIS 3\Source\Repos\TPJ-HRIS\DataAccessLayer\obj\Debug\DataAccessLayer.dll
 C:\Users\MIS 3\Source\Repos\TPJ-HRIS\DataAccessLayer\obj\Debug\DataAccessLayer.pdb
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\DataAccessLayer\bin\Debug\DataAccessLayer.dll.config
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\DataAccessLayer\bin\Debug\DataAccessLayer.dll
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\DataAccessLayer\bin\Debug\DataAccessLayer.pdb
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\DataAccessLayer\bin\Debug\DataLayer.dll
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\DataAccessLayer\bin\Debug\EntityFramework.dll
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\DataAccessLayer\bin\Debug\EntityFramework.SqlServer.dll
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\DataAccessLayer\bin\Debug\SecurityLib.dll
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\DataAccessLayer\bin\Debug\DataLayer.pdb
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\DataAccessLayer\bin\Debug\DataLayer.dll.config
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\DataAccessLayer\bin\Debug\SecurityLib.pdb
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\DataAccessLayer\bin\Debug\EntityFramework.xml
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\DataAccessLayer\bin\Debug\EntityFramework.SqlServer.xml
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\DataAccessLayer\obj\Debug\DataAccessLayer.csprojAssemblyReference.cache
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\DataAccessLayer\obj\Debug\DataAccessLayer.csproj.CoreCompileInputs.cache
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\DataAccessLayer\obj\Debug\DataAccessLayer.csproj.CopyComplete
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\DataAccessLayer\obj\Debug\DataAccessLayer.dll
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\DataAccessLayer\obj\Debug\DataAccessLayer.pdb

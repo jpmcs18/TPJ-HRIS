@@ -64,6 +64,7 @@
     <Compile Include="Entities\Kiosks\KioskNotification.cs" />
     <Compile Include="Entities\Lookups\Department.cs" />
     <Compile Include="Entities\Lookups\HDMF.cs" />
+    <Compile Include="Entities\Lookups\LeaveType.cs" />
     <Compile Include="Entities\Lookups\NonTaxableDay.cs" />
     <Compile Include="Entities\Lookups\PersonnelType.cs" />
     <Compile Include="Entities\Lookups\SSS.cs" />

@@ -18,3 +18,14 @@ D:\Applications\Repositories\TPJ HR System\ProcessLayer\obj\Release\ProcessLayer
 D:\Applications\Repositories\TPJ HR System\ProcessLayer\obj\Release\ProcessLayer.csproj.CopyComplete
 D:\Applications\Repositories\TPJ HR System\ProcessLayer\obj\Release\ProcessLayer.dll
 D:\Applications\Repositories\TPJ HR System\ProcessLayer\obj\Release\ProcessLayer.pdb
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ProcessLayer\bin\Release\ProcessLayer.dll
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ProcessLayer\bin\Release\ProcessLayer.pdb
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ProcessLayer\bin\Release\DBUtilities.dll
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ProcessLayer\bin\Release\Newtonsoft.Json.dll
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ProcessLayer\bin\Release\DBUtilities.pdb
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ProcessLayer\bin\Release\Newtonsoft.Json.xml
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ProcessLayer\obj\Release\ProcessLayer.csprojAssemblyReference.cache
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ProcessLayer\obj\Release\ProcessLayer.csproj.CoreCompileInputs.cache
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ProcessLayer\obj\Release\ProcessLayer.csproj.CopyComplete
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ProcessLayer\obj\Release\ProcessLayer.dll
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ProcessLayer\obj\Release\ProcessLayer.pdb

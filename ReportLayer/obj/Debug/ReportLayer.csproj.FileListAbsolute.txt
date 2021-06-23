@@ -62,3 +62,25 @@ C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ReportLayer\obj\Debug\ReportLayer.csproj.Co
 C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ReportLayer\obj\Debug\ReportLayer.csproj.CopyComplete
 C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ReportLayer\obj\Debug\ReportLayer.dll
 C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ReportLayer\obj\Debug\ReportLayer.pdb
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ReportLayer\bin\Debug\ReportLayer.dll
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ReportLayer\bin\Debug\ReportLayer.pdb
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ReportLayer\bin\Debug\BouncyCastle.Crypto.dll
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ReportLayer\bin\Debug\GemBox.Document.dll
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ReportLayer\bin\Debug\GemBox.Pdf.dll
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ReportLayer\bin\Debug\GemBox.Spreadsheet.dll
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ReportLayer\bin\Debug\itextsharp.dll
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ReportLayer\bin\Debug\ProcessLayer.dll
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ReportLayer\bin\Debug\DBUtilities.dll
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ReportLayer\bin\Debug\Newtonsoft.Json.dll
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ReportLayer\bin\Debug\ProcessLayer.pdb
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ReportLayer\bin\Debug\GemBox.Document.xml
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ReportLayer\bin\Debug\GemBox.Pdf.xml
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ReportLayer\bin\Debug\GemBox.Spreadsheet.xml
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ReportLayer\bin\Debug\itextsharp.xml
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ReportLayer\bin\Debug\DBUtilities.pdb
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ReportLayer\bin\Debug\Newtonsoft.Json.xml
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ReportLayer\obj\Debug\ReportLayer.csprojAssemblyReference.cache
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ReportLayer\obj\Debug\ReportLayer.csproj.CoreCompileInputs.cache
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ReportLayer\obj\Debug\ReportLayer.csproj.CopyComplete
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ReportLayer\obj\Debug\ReportLayer.dll
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ReportLayer\obj\Debug\ReportLayer.pdb

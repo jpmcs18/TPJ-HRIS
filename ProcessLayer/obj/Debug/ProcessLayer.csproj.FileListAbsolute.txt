@@ -74,3 +74,14 @@ C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ProcessLayer\obj\Debug\ProcessLayer.csproj.
 C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ProcessLayer\obj\Debug\ProcessLayer.csproj.CopyComplete
 C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ProcessLayer\obj\Debug\ProcessLayer.dll
 C:\Users\MIS 3\Source\Repos\TPJ-HRIS\ProcessLayer\obj\Debug\ProcessLayer.pdb
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ProcessLayer\bin\Debug\ProcessLayer.dll
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ProcessLayer\bin\Debug\ProcessLayer.pdb
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ProcessLayer\bin\Debug\DBUtilities.dll
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ProcessLayer\bin\Debug\Newtonsoft.Json.dll
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ProcessLayer\bin\Debug\DBUtilities.pdb
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ProcessLayer\bin\Debug\Newtonsoft.Json.xml
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ProcessLayer\obj\Debug\ProcessLayer.csprojAssemblyReference.cache
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ProcessLayer\obj\Debug\ProcessLayer.csproj.CoreCompileInputs.cache
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ProcessLayer\obj\Debug\ProcessLayer.csproj.CopyComplete
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ProcessLayer\obj\Debug\ProcessLayer.dll
+D:\Applications\TPJ\jpmcs18\TPJ-HRIS\ProcessLayer\obj\Debug\ProcessLayer.pdb

@@ -15,11 +15,4 @@ namespace ProcessLayer.Entities
         public int ID { get; set; }
         public string Description { get; set; }
     }
-    public class LeaveType : Lookup<byte>
-    {
-        public int? MaxAllowedDays { get; set; }
-        public bool? BulkUse { get; set; }
-        public int? DaysBeforeRequest { get; set; }
-        public bool? HasDocumentNeeded { get; set; }
-    }
 }

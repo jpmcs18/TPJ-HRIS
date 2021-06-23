@@ -220,6 +220,22 @@ namespace ProcessLayer.Processes.Kiosk
 
             return Leave;
         }
+
+        public LeaveRequest Get(DBTools db, long id)
+        {
+
+            var Leave = new LeaveRequest();
+            var parameters = new Dictionary<string, object> {
+                { LeaveRequestParameters.Instance.ID, id }
+            };
+
+            using (var ds = db.ExecuteReader(LeaveRequestProcedures.Instance.Get, parameters))
+            {
+                Leave = ds.Get(Converter);
+            }
+
+            return Leave;
+        }
         public bool ValidateLeaveRequest(LeaveRequest leave)
         {
             StringBuilder sb = new StringBuilder();
@@ -239,7 +255,6 @@ namespace ProcessLayer.Processes.Kiosk
             {
                 if (leave.StartDateTime == null)
                 {
-
                     sb.AppendLine("<br/>");
                     sb.AppendLine("- Start date cannot be null.");
                 }
@@ -261,18 +276,47 @@ namespace ProcessLayer.Processes.Kiosk
 
                 if (leave.StartDateTime != null && leave.EndDateTime != null)
                 {
-                    var leaveCreditToUse = (leave.EndDateTime - leave.StartDateTime)?.TotalHours;
-                    if (leaveCreditToUse > 9)
+                    var sched = GlobalHelper.GetSchedule(leave._Personnel._Schedules, leave.StartDateTime.Value);
+                    
+                    var start = sched.TimeIn == null ? leave.StartDateTime : leave.StartDateTime.Value.Date + sched.TimeIn;
+                    var end = sched.TimeOut == null ? leave.EndDateTime : leave.EndDateTime.Value.Date + sched.TimeOut;
+
+                    leave.StartDateTime = start < leave.StartDateTime ? leave.StartDateTime : start;
+                    leave.EndDateTime = end > leave.EndDateTime ? leave.EndDateTime : end;
+
+                    var leaveCreditToUse = (leave.EndDateTime - leave.StartDateTime)?.TotalHours ?? 0;
+                    if (leaveCreditToUse > (sched.TotalWorkingHours + 1))
                     {
                         sb.AppendLine("<br/>");
-                        sb.AppendLine("- Leave must be 1 day per request .");
+                        sb.AppendLine("- Leave must be 1 day or within schedule per request.");
                     }
 
+                    if (sched.BreakTimeHour != null)
+                    {
+                        if (sched.BreakTime == null)
+                        {
+                            if (leaveCreditToUse > (sched.TotalWorkingHours / 2))
+                                leaveCreditToUse -= sched.BreakTimeHour .Value;
+                        }
+                        else
+                        {
+                            var breakStart = leave.StartDateTime.Value.Date + sched.BreakTime;
+                            var breakEnd = breakStart.Value.AddHours(sched.BreakTimeHour.Value);
+                            if (leave.StartDateTime <= breakStart && leave.EndDateTime >= breakEnd)
+                                leaveCreditToUse -= sched.BreakTimeHour.Value;
+                            else if (leave.StartDateTime <= breakStart && leave.EndDateTime < breakEnd)
+                                leaveCreditToUse -= (leave.EndDateTime - breakStart)?.TotalHours ?? 0;
+                            else if (leave.StartDateTime > breakStart && leave.EndDateTime >= breakEnd)
+                                leaveCreditToUse -= (breakEnd - leave.StartDateTime)?.TotalHours ?? 0;
+                            else
+                                leaveCreditToUse = 0;
+                        }
+                    }
                     var leaveCredits = PersonnelLeaveCreditProcess.GetRemainingCredits(leave.PersonnelID ?? 0, leave.LeaveTypeID ?? 0, (short)(leave.StartDateTime?.Year ?? 0));
                     if (leaveCreditToUse > leaveCredits?.LeaveCredits)
                     {
                         sb.AppendLine("<br/>");
-                        sb.AppendLine($"- Not enough credits. You only have {leaveCredits.LeaveCredits} credits and you're request is {leaveCreditToUse}");
+                        sb.AppendLine($"- Not enough credits. You only have {leaveCredits.LeaveCredits} credits and your request is {leaveCreditToUse}");
                     }
                 }
             }
@@ -311,17 +355,103 @@ namespace ProcessLayer.Processes.Kiosk
             return null;
         }
 
+        private void ApprovedRequest(DBTools db, long id, int userid)
+        {
+
+            var parameters = new Dictionary<string, object> {
+                    { "@ID", id }
+                    , { CredentialParameters.LogBy, userid }
+                };
+
+            db.ExecuteNonQuery("kiosk.ApprovedLeaveRequest", parameters);
+        }
+
+        private void UpdateApproveCredits(DBTools db, long id, double leaveUsed, int userid)
+        {
+
+            var parameters = new Dictionary<string, object> {
+                    { "@ID", id }
+                    , { "@LeaveUsed", leaveUsed }
+                    , { CredentialParameters.LogBy, userid }
+                };
+
+            db.ExecuteNonQuery("kiosk.UpdateApprovedLeaveCredits", parameters);
+        }
+
         public void Approve(long id, int userid)
         {
-            var parameters = new Dictionary<string, object> {
-                { LeaveRequestParameters.Instance.ID, id }
-                , { CredentialParameters.LogBy, userid }
-            };
-
             using (var db = new DBTools())
             {
-                db.ExecuteNonQuery(LeaveRequestProcedures.Instance.Approve, parameters);
+                db.StartTransaction();
+                try
+                {
+                    Approve(id, userid, db);
+
+                    db.CommitTransaction();
+                }
+                catch (Exception)
+                {
+                    db.RollBackTransaction();
+                    throw;
+                }
             }
+        }
+
+        private void Approve(long id, int userid, DBTools db)
+        {
+                var leave = Get(db, id);
+                var leaveCredits = PersonnelLeaveCreditProcess.GetRemainingCredits(db, leave.PersonnelID ?? 0, leave.LeaveTypeID ?? 0, (short)(leave.StartDateTime?.Year ?? 0));
+                var sched = GlobalHelper.GetSchedule(leave._Personnel._Schedules, leave.StartDateTime.Value);
+
+                var start = sched.TimeIn == null ? leave.StartDateTime : leave.StartDateTime.Value.Date + sched.TimeIn;
+                var end = sched.TimeOut == null ? leave.EndDateTime : leave.EndDateTime.Value.Date + sched.TimeOut;
+
+                leave.StartDateTime = start < leave.StartDateTime ? leave.StartDateTime : start;
+                leave.EndDateTime = end > leave.EndDateTime ? leave.EndDateTime : end;
+
+                var leaveCreditToUse = (leave.EndDateTime - leave.StartDateTime)?.TotalHours ?? 0;
+
+                if (sched.BreakTimeHour != null)
+                {
+                    if (sched.BreakTime == null)
+                    {
+                        if (leaveCreditToUse > (sched.TotalWorkingHours / 2))
+                            leaveCreditToUse -= sched.BreakTimeHour.Value;
+                    }
+                    else
+                    {
+                        var breakStart = leave.StartDateTime.Value.Date + sched.BreakTime;
+                        var breakEnd = breakStart.Value.AddHours(sched.BreakTimeHour.Value);
+                        if (leave.StartDateTime <= breakStart && leave.EndDateTime >= breakEnd)
+                            leaveCreditToUse -= sched.BreakTimeHour.Value;
+                        else if (leave.StartDateTime <= breakStart && leave.EndDateTime < breakEnd)
+                            leaveCreditToUse -= (leave.EndDateTime - breakStart)?.TotalHours ?? 0;
+                        else if (leave.StartDateTime > breakStart && leave.EndDateTime >= breakEnd)
+                            leaveCreditToUse -= (breakEnd - leave.StartDateTime)?.TotalHours ?? 0;
+                        else
+                            leaveCreditToUse = 0;
+                    }
+                }
+
+                if (leave._LeaveType.BulkUse ?? false)
+                    leaveCreditToUse = leaveCredits.LeaveCredits ?? 0;
+
+                if (leaveCreditToUse > leaveCredits?.LeaveCredits)
+                {
+                    throw new Exception($"- Not enough credits. You only have {leaveCredits.LeaveCredits} credits and your request is {leaveCreditToUse}");
+                }
+
+                if (!(leave.Approved ?? false))
+                {
+                    ApprovedRequest(db, id, userid);
+                    leave.Approved = true;
+                }
+                if (leave.Approved ?? false && (((leave._LeaveType.HasDocumentNeeded ?? false) && !string.IsNullOrEmpty(leave.FilePath)) || !(leave._LeaveType.HasDocumentNeeded ?? false)))
+                {
+                    UpdateApproveCredits(db, id, leaveCreditToUse, userid);
+                    PersonnelLeaveCreditProcess.UpdateCredits(db, leave.LeaveTypeID ?? 0, leave.StartDateTime.Value.Year, leaveCreditToUse, userid);
+                }
+
         }
 
         public void Cancel(LeaveRequest Leave, int userid)
@@ -362,7 +492,21 @@ namespace ProcessLayer.Processes.Kiosk
 
             using (var db = new DBTools())
             {
-                db.ExecuteNonQuery(LeaveRequestProcedures.Instance.UploadDocument, parameters);
+                db.StartTransaction();
+
+                db.StartTransaction();
+                try
+                {
+                    db.ExecuteNonQuery(LeaveRequestProcedures.Instance.UploadDocument, parameters);
+                    Approve(id, userid, db);
+
+                    db.CommitTransaction();
+                }
+                catch (Exception)
+                {
+                    db.RollBackTransaction();
+                    throw;
+                }
             }
 
         }

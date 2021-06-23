@@ -51,6 +51,15 @@ namespace ProcessLayer.Processes.HR
         }
         public static PersonnelLeaveCredit GetRemainingCredits(long personnelID, byte leaveTypeID, short year)
         {
+
+            using (var db = new DBTools())
+            {
+                return GetRemainingCredits(db, personnelID, leaveTypeID, year);
+            }
+        }
+
+        public static PersonnelLeaveCredit GetRemainingCredits(DBTools db, long personnelID, byte leaveTypeID, short year)
+        {
             var eb = new PersonnelLeaveCredit();
             var Parameters = new Dictionary<string, object>
             {
@@ -59,12 +68,9 @@ namespace ProcessLayer.Processes.HR
                 { PersonnelLeaveCreditsParameters.Instance.YearValid, year}
             };
 
-            using (var db = new DBTools())
+            using (var ds = db.ExecuteReader(PersonnelLeaveCreditsProcedures.Instance.GetRemainingCredits, Parameters))
             {
-                using (var ds = db.ExecuteReader(PersonnelLeaveCreditsProcedures.Instance.GetRemainingCredits, Parameters))
-                {
-                    eb = ds.Get(Converter);
-                }
+                eb = ds.Get(Converter);
             }
 
             return eb;
@@ -134,6 +140,17 @@ namespace ProcessLayer.Processes.HR
             {
                 db.ExecuteNonQuery(PersonnelLeaveCreditsProcedures.Instance.Delete, Parameters);
             }
+        }
+        public static void UpdateCredits(DBTools db, byte leaveTypeId, int year, double credits, int userid)
+        {
+            var parameters = new Dictionary<string, object> {
+                { "@LeaveTypeId", leaveTypeId },
+                { "@UsedCredits", credits },
+                { "@YearValid", year },
+                { "@LogBy", userid }
+            };
+            db.ExecuteNonQuery("hr.UpdateLeaveCredits", parameters);
+
         }
     }
 }

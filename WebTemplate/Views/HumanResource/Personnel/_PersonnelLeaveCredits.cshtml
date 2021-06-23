@@ -36,7 +36,7 @@
             {
             <tr id="Row-Input-LeaveCredits-0" class="Row-Input">
                 <td style="text-align: center;">
-                    @Html.DropDownList("LeaveTypeID", new SelectList(leaveList, "ID", "Description"), "N/A", new { @class = "form-control text-transform-none", @style = "" })
+                    @Html.DropDownList("LeaveTypeID", new SelectList(leaveList, "ID", "Display"), "N/A", new { @class = "form-control text-transform-none", @style = "" })
                 </td>
                 <td style="text-align: center;">
                     <input type="hidden" name="PersonnelID" class="PersonnelID" value="@Model.PersonnelID" />

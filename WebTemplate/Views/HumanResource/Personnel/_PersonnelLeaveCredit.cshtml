@@ -11,7 +11,7 @@
             <input type="hidden" value="@Model.LeaveTypeID" name="LeaveTypeID" />
             <input type="hidden" value="@Model.PersonnelID" name="PersonnelID" />
         </td>
-        <td style="text-align: center;">@Model._LeaveType.Description</td>
+        <td style="text-align: center;">@Model._LeaveType.Display</td>
         <td style="text-align: center;">@Model.LeaveCredits</td>
         <td style="text-align: center;">@Model.YearValid</td>
         @if (LeaveCreditsTabAccess.Update || LeaveCreditsTabAccess.Delete)
@@ -32,7 +32,7 @@
     </tr>
     <tr id="Row-Input-LeaveCredits-@Model.ID" class="Row-Input hidden">
         <td style="text-align: center;">
-            @Html.DropDownList("LeaveTypeID", new SelectList(leaveList, "ID", "Description", Model.LeaveTypeID), "N/A", new { @class = "form-control text-transform-none", @style = "" })
+            @Html.DropDownList("LeaveTypeID", new SelectList(leaveList, "ID", "Display", Model.LeaveTypeID), "N/A", new { @class = "form-control text-transform-none", @style = "" })
         </td>
         <td style="text-align: center;">
             @Html.TextBoxFor(m => m.LeaveCredits, new { @class = "form-control text-transform-none", @Placeholder = "Leave Credits..." })
