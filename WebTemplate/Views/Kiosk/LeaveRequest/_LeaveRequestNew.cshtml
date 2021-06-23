@@ -19,6 +19,7 @@
 <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <label class="control-label">Leave Type</label>
     <select id="LeaveTypeID" name="LeaveTypeID" class="form-control save-values">
+        <option isbulk="false">N/A</option>
         @foreach (var l in Model.LeaveTypes)
         {
             <option value="@l.ID" isbulk="@((l.BulkUse ?? false) ? "true" : "false")">@l.Description</option>

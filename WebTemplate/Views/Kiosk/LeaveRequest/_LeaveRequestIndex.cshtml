@@ -98,7 +98,7 @@
 
         $(".modal").on('shown.bs.modal', function () {
             var id = $(this).attr('id');
-            $('#' + id + '.form-control:first').select();
+            //$('#' + id + '.form-control:first').select();
             $(this).find('span.select2').css('width', '100%');
         });
     }
@@ -216,10 +216,8 @@
         $(modal + ' .modal-body').html(response);
         $(modal + ' .modal-title').html(title + ' Leave Request');
         $(modal + ' #LeaveTypeID').off('change').on('change', SetLeaveTypeID);
-        $(modal + ' #LeaveTypeID').select2();
         $(modal).appendTo('body').modal('show');
     }
-
 
     function SearchRequest() {
         var formdata = new FormData();
@@ -290,6 +288,7 @@
             success: function (response) {
                 if (response.msg == null) {
                     ModalEvents('#LeaveRequestModal', 'New', response);
+                    $('#LeaveRequestModal #LeaveTypeID').select2();
                 } else {
                     toastr.warning(response.res, "Warning");
                 }
