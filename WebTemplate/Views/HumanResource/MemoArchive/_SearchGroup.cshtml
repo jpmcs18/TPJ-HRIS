@@ -1,0 +1,58 @@
+﻿@model WebTemplate.Models.MemoArchive.Management
+
+@{
+    var MemoArchivePageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("HumanResource/MemoArchive");
+
+    ViewBag.title = MemoArchivePageAccess.PageName;
+}
+
+<div class="table-responsive" style="max-height: 550px; overflow-y: scroll;">
+    <table id="GroupsTable" class="table table-stripped table-bordered">
+        <thead>
+            <tr>
+                <th style="text-align: center; width: 80%;">Groups</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr id="Row-Loading-Display" class="hidden">
+                <td style="text-align: center;" colspan="6">
+                    <i id="" class="fa fa-rotate-left rotate" style="padding: 8px; font-size: 20px; text-align: right;"></i>
+                </td>
+            </tr>
+            @if (Model.PersonnelGroups.Count() > 0)
+            {
+                <tr id="No-Row-Display" class="hidden"><td style="text-align: center;" colspan="2">No Groups found....</td></tr>
+                for (int i = 0; i < Model.PersonnelGroups.Count; i++)
+                {
+                    <tr id="@Model.PersonnelGroups[i].ID" class="member">
+                        <td class="hidden">
+                            <input class="GroupID" type="hidden" name="model[@i].ID" value="@Model.PersonnelGroups[i].ID" />
+                            <input class="Deleted" type="hidden" name="model[@i].Deleted" value="false" />
+                            <input class="RowIndex" type="hidden" value="0" />
+                        </td>
+                        <td style="padding: 0px;" colspan="2">
+                            <button type="button" class="btn btn-white" style="width: 100%; padding: 18px 12px; cursor: pointer;">
+                                <div style="text-align: left; text-transform: uppercase; white-space: nowrap; display: flex;">
+                                    @if (MemoArchivePageAccess.Delete)
+                                    {
+                                        <label style="margin: 0px; margin: auto 0px;" class="checkbox i-checks pull-right">
+                                            <input type="checkbox" id="SelectGroup" class="form-control pull-right selectGroup" disabled="disabled">
+                                        </label>
+
+                                    }
+                                    <div style="margin-left: 10px;">
+                                        <b class="" style="color: #535353;">@Model.PersonnelGroups[i].Description</b>
+                                    </div>
+                                </div>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr id="No-Row-Display"><td style="text-align: center;" colspan="6">No Groups found....</td></tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,14 @@
+﻿@model WebTemplate.Models.Kiosk.Outer_Port_Request.PersonnelList
+
+<tr>
+    <td>@Model.Personnels.Count() results</td>
+</tr>
+@for (int i = 0; i < Model.Personnels.Count(); i++)
+{
+    <tr tpj-id="@Model.Personnels[i].ID" class="employee" style="cursor: pointer;">
+        <td style="text-align: left; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+            <img src="@(String.IsNullOrEmpty(Model.Personnels[i].ImagePath) ? "\\Images\\default.jpg": Model.Personnels[i].ImagePath)" style="height: 30px; width: 30px; min-height: 30px; min-width: 30px; border: 3px solid #eaeaea; margin-right: 10px; border-radius: 50px;" title="" />
+            @String.Format("{0}, {1} {2}", Model.Personnels[i].LastName, Model.Personnels[i].FirstName, Model.Personnels[i].MiddleName)
+        </td>
+    </tr>   
+}

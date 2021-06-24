@@ -1,0 +1,81 @@
+﻿@model WebTemplate.Models.Maintenance.Organization.Designation.Index
+@{
+    var userlist = (new DataAccessLayer.System.User()).LookupUsers();
+    var positionlist = (new DataAccessLayer.Organization.Position()).GetLookup();
+    var departmentlist = (new DataAccessLayer.Organization.Department()).GetLookup();
+    var PageCount = Math.Ceiling((double)Model.ItemCount / Model.GridCount);
+}
+
+<div class="table-responsive">
+    <table class="table table-stripped table-bordered">
+        <thead>
+            @if (PageCount > 1)
+            {
+                <tr>
+                    <td class="text-right" colspan="9">
+                        <div class="btn-group">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" id="hid_search" name="@Html.NameFor(m => m.Filter)" value="@Html.ValueFor(m => m.Filter)" />
+                            <input type="hidden" id="hid_page" name="@Html.NameFor(m => m.PageNumber)" value="@Html.ValueFor(m => m.PageNumber)" />
+                            @if (Model.PageNumber > 1)
+                            {
+                                <button type="button" name="@Html.NameFor(m => m.PageNumber)" value="1" class="btn btn-white pages"><i class="fa fa-angle-double-left"></i></button>
+                            }
+                            @if (Model.PageNumber - 1 >= 1)
+                            {
+                                <button type="button" name="@Html.NameFor(m => m.PageNumber)" value="@(Model.PageNumber - 1)" class="btn btn-white pages"><i class="fa fa-angle-left"></i></button>
+                            }
+                            @for (int i = Model.PageNumber - 2; i <= Model.PageNumber + 2; i++)
+                            {
+                                if (i >= 1 && i <= PageCount)
+                                {
+                                    <button type="button" name="@Html.NameFor(m => m.PageNumber)" value="@(i)" class="btn btn-white @(i == Model.PageNumber ? "active" : "pages")">@(i)</button>
+                                }
+                            }
+                            @if (Model.PageNumber + 1 <= PageCount)
+                            {
+                                <button type="button" name="@Html.NameFor(m => m.PageNumber)" value="@(Model.PageNumber + 1)" class="btn btn-white pages"><i class="fa fa-angle-right"></i></button>
+                            }
+                            @if (Model.PageNumber < PageCount)
+                            {
+                                <button type="button" name="@Html.NameFor(m => m.PageNumber)" value="@PageCount" class="btn btn-white pages"><i class="fa fa-angle-double-right"></i></button>
+                            }
+                        </div>
+                    </td>
+                </tr>
+            }
+            <tr>
+                <th class="text-center col-lg-1">User Name</th>
+                <th class="text-center col-lg-2">Position</th>
+                <th class="text-center col-lg-2">Department</th>
+                <th class="text-center col-lg-1">Head</th>
+                <th class="text-center col-lg-1">Created By</th>
+                <th class="text-center col-lg-1">Created Date</th>
+                <th class="text-center col-lg-1">Modified By</th>
+                <th class="text-center col-lg-1">Modified Date</th>
+                <th class="text-center col-lg-2">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.ItemList.Count; i++)
+            {
+                <tr>
+                    <td class="text-center">@userlist.Where(u => u.ID == Model.ItemList[i].UserID).Select(u => u.UserName).FirstOrDefault()</td>
+                    <td class="text-center">@(positionlist.Where(p => p.ID == Model.ItemList[i].PositionID).Select(p => p.Description).FirstOrDefault() ?? "N/A")</td>
+                    <td class="text-center">@(departmentlist.Where(d => d.ID == Model.ItemList[i].DepartmentID).Select(d => d.Description).FirstOrDefault() ?? "N/A")</td>
+                    <td class="text-center">@(userlist.Where(u => u.ID == Model.ItemList[i].ParentUserID).Select(u => u.UserName).FirstOrDefault() ?? "N/A")</td>
+                    <td class="text-center">@(userlist.Where(u => u.ID == Model.ItemList[i].CreatedBy).Select(u => u.UserName).FirstOrDefault() ?? "N/A")</td>
+                    <td class="text-center">@(Model.ItemList[i].CreatedDate.HasValue ? Model.ItemList[i].CreatedDate.Value.ToString() : "N/A")</td>
+                    <td class="text-center">@(userlist.Where(u => u.ID == Model.ItemList[i].ModifiedBy).Select(u => u.UserName).FirstOrDefault() ?? "N/A")</td>
+                    <td class="text-center">@(Model.ItemList[i].ModifiedDate.HasValue ? Model.ItemList[i].ModifiedDate.Value.ToString() : "N/A")</td>
+                    <td class="text-center">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-outline btn-primary btn-sm btn-rounded btnsearch" value="@Model.ItemList[i].ID" title="Edit"><i class="fa fa-pencil"></i></button>
+                            <button type="button" class="btn btn-outline btn-primary btn-sm btn-rounded btndelete" value="@Model.ItemList[i].ID" title="Delete"><i class="fa fa-trash"></i></button>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

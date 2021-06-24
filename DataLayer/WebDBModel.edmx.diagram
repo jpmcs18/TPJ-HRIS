@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="56089e1b81a3482d8b13b8ea08728465" Name="Diagram1" ZoomLevel="84">
+        <EntityTypeShape EntityType="WebDBModel.Personnel" Width="1.5" PointX="5.75" PointY="7.25" />
+        <EntityTypeShape EntityType="WebDBModel.Error" Width="1.5" PointX="7.75" PointY="0.75" />
+        <EntityTypeShape EntityType="WebDBModel.NavMenu" Width="1.5" PointX="0.75" PointY="2.125" />
+        <EntityTypeShape EntityType="WebDBModel.PageAccess" Width="1.5" PointX="5.25" PointY="1.5" />
+        <EntityTypeShape EntityType="WebDBModel.Page" Width="1.5" PointX="3" PointY="1.125" />
+        <EntityTypeShape EntityType="WebDBModel.Parameter" Width="1.5" PointX="7.75" PointY="4.75" />
+        <EntityTypeShape EntityType="WebDBModel.Role" Width="1.5" PointX="3" PointY="6.875" />
+        <EntityTypeShape EntityType="WebDBModel.UserRole" Width="1.5" PointX="5.25" PointY="21.25" />
+        <EntityTypeShape EntityType="WebDBModel.User" Width="1.5" PointX="8" PointY="7.625" />
+        <EntityTypeShape EntityType="WebDBModel.UserStatu" Width="1.5" PointX="5.75" PointY="18.125" />
+        <EntityTypeShape EntityType="WebDBModel.VerificationCode" Width="1.5" PointX="9.75" PointY="0.75" />
+        <AssociationConnector Association="WebDBModel.FK__Users__Personnel__47FBA9D6" />
+        <AssociationConnector Association="WebDBModel.FK__NavMenu__NavPare__1273C1CD" />
+        <AssociationConnector Association="WebDBModel.FK__Pages__NavMenuId" />
+        <AssociationConnector Association="WebDBModel.FK__PageAccess__Pages" />
+        <AssociationConnector Association="WebDBModel.FK__PageAccess__Roles" />
+        <AssociationConnector Association="WebDBModel.FK__UserRoles__Roles" />
+        <AssociationConnector Association="WebDBModel.FK__Users__UserStatus" />
+        <EntityTypeShape EntityType="WebDBModel.Department" Width="1.5" PointX="3.5" PointY="11.5" />
+        <EntityTypeShape EntityType="WebDBModel.Designation" Width="1.5" PointX="10.25" PointY="10.375" />
+        <EntityTypeShape EntityType="WebDBModel.Position" Width="1.5" PointX="8" PointY="17.75" />
+        <AssociationConnector Association="WebDBModel.FK_Personnel_Department" />
+        <AssociationConnector Association="WebDBModel.FK__Designati__Depar__32E0915F" />
+        <AssociationConnector Association="WebDBModel.FK__Designati__Paren__30F848ED" />
+        <AssociationConnector Association="WebDBModel.FK__Designati__Posit__31EC6D26" />
+        <AssociationConnector Association="WebDBModel.FK__Designati__UserI__300424B4" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

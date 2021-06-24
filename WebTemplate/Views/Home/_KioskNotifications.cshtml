@@ -1,0 +1,140 @@
+﻿@model List<ProcessLayer.Entities.Kiosk.KioskNotification>
+
+@{
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var LeaveRequestsApprover = credential.GetPage("Approver Leave Request") ?? new DataAccessLayer.System.Page();
+    var OtRequestApprover = credential.GetPage("Approver Request Over Time") ?? new DataAccessLayer.System.Page();
+    var TimeEditRequestApprover = credential.GetPage("Approver Time Edit Request") ?? new DataAccessLayer.System.Page();
+    var HighRIskRequestApprover = credential.GetPage("Approver High Risk Request") ?? new DataAccessLayer.System.Page();
+    var OuterPortRequestApprover = credential.GetPage("Approver Time Edit Request") ?? new DataAccessLayer.System.Page();
+
+    Layout = null;
+}
+
+@if (Model.Any() && (LeaveRequestsApprover.Approve == true || OtRequestApprover.Approve == true || TimeEditRequestApprover.Approve == true || OuterPortRequestApprover.Approve == true))
+{
+    var TotalCount = 0;
+
+    foreach (var k in Model)
+    {
+        TotalCount += k.Count;
+    }
+
+    <div class="ibox" style="margin-bottom: 10px;">
+        <div class="ibox-title bg-info" style="padding: 8px 15px 0px;">
+            <h3 class="" style="text-align: center; margin: 0px -15px"><i class="fa fa-bell" style="font-size: 20px;"></i>&nbsp;&nbsp;&nbsp;Kiosk Notifications</h3>
+        </div>
+        <div class="ibox-content" style="border: 1px solid #009688;">
+            <div class="row">
+                @if (TotalCount > 0)
+                {
+                    for (int i = 0; i < Model.Count(); i++)
+                    {
+                        var k = Model[i];
+
+                        if (k.Count > 0 && (
+                            (k.Type == ProcessLayer.Helpers.Enumerable.KioskNotoficationType.Leave_Request && LeaveRequestsApprover.Approve == true) ||
+                            (k.Type == ProcessLayer.Helpers.Enumerable.KioskNotoficationType.OT_Request && OtRequestApprover.Approve == true) ||
+                            (k.Type == ProcessLayer.Helpers.Enumerable.KioskNotoficationType.Time_Edit_Request && TimeEditRequestApprover.Approve == true) ||
+                            (k.Type == ProcessLayer.Helpers.Enumerable.KioskNotoficationType.High_Risk_Request && OtRequestApprover.Approve == true)
+                            ))
+                        {
+                            var Type = k.Filter.ToString().Replace("_", " ");
+
+                            if (i > 0)
+                            {
+                                if (Model[i - 1].Type != k.Type)
+                                {
+                                    @Html.Raw("<a href='/RequestsApproval/" + (k.Type.ToString().Replace("_", "")) + "s" + "' style='width: 100%;' target='_blank'>")
+                                    @Html.Raw(k.Type.ToString().Replace("_", " "))@(k.Count > 1 ? "s" : "")
+                                }
+
+                                if (i < Model.Count() - 1 && k.Type != Model[i + 1].Type)
+                                {
+                                    @Html.Raw($" (<b>{k.Count}</b> {Type})</br>")
+                                    @Html.Raw("</a></br>")
+                                }
+                                else
+                                {
+                                    @Html.Raw($" (<b>{k.Count}</b> {Type})")
+                                    @Html.Raw("</a></br>")
+                                }
+                            }
+                            else
+                            {
+                                @Html.Raw("<a href='/RequestsApproval/" + (k.Type.ToString().Replace("_", "")) + "s" + "' style='width: 100%;' target='_blank'>")
+                                @Html.Raw(k.Type.ToString().Replace("_", " "))@(k.Count > 1 ? "s" : "")
+                                @Html.Raw($" (<b>{k.Count}</b> {Type})</br>")
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    @Html.Raw("No Pending Requests...")
+                }
+            </div>
+        </div>
+    </div>
+
+    if (TotalCount > 0)
+    {
+        <div class="modal inmodal custom-modal" id="KioskNotificationsModal" data-backdrop="static" data-keyboard="false" tabindex="" role="dialog" aria-hidden="true">
+            <div class="vertical-alignment-helper">
+                <div class="modal-center vertical-align-center">
+                    <div class="modal-content animated fadeInDown modal-width-30">
+                        <div class="modal-header">
+                            <h5 class="modal-title" style="text-align: center;">Kiosk Notifications</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        </div>
+                        <div class="modal-body">
+                            @for (int i = 0; i < Model.Count(); i++)
+                            {
+                                var k = Model[i];
+
+                                if (k.Count > 0 && (
+                                    (k.Type.ToString() == "Leave_Request" && LeaveRequestsApprover.Approve == true) ||
+                                    (k.Type.ToString() == "OT_Request" && OtRequestApprover.Approve == true) ||
+                                    (k.Type.ToString() == "Time_Edit_Request" && OtRequestApprover.Approve == true) ||
+                                    (k.Type.ToString() == "High_Risk_Request" && OtRequestApprover.Approve == true)
+                                    ))
+                                {
+                                    var Type = k.Filter.ToString();
+
+                                    if (i > 0)
+                                    {
+                                        if (Model[i - 1].Type.ToString() != k.Type.ToString())
+                                        {
+                                            @Html.Raw(k.Type.ToString().Replace("_", " "))@(k.Count > 1 ? "s" : "")
+                                        }
+
+                                        if (i < Model.Count() - 1 && k.Type.ToString() != Model[i + 1].Type.ToString())
+                                        {
+                                            @Html.Raw($" (<b>{k.Count}</b> {Type})</br>")
+                                            @Html.Raw("</br>")
+                                        }
+                                        else
+                                        {
+                                            @Html.Raw($" (<b>{k.Count}</b> {Type})")
+                                        }
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw(k.Type.ToString().Replace("_", " "))@(k.Count > 1 ? "s" : "")
+                                        @Html.Raw($" (<b>{k.Count}</b> {Type})</br>")
+                                    }
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            $(document).ready(function () {
+                $('#KioskNotificationsModal').appendTo('body').modal('show');
+            });
+        </script>
+    }
+}

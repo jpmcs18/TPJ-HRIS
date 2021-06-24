@@ -1,0 +1,63 @@
+﻿@model ProcessLayer.Entities.PersonnelDepartment
+@{
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var DepartmentPageAccess = credential.GetPage("Departments") ?? new DataAccessLayer.System.Page();
+
+    var departments = ProcessLayer.Processes.Lookups.DepartmentProcess.Instance.GetList();
+}
+
+<tr id="Row-Display-Department-@Model.ID" class="Row-Display">
+    <td class="hidden">
+        <input type="hidden" value="@Model.PersonnelID " name="PersonnelID" />
+    </td>
+    <td style="text-align: center;">@Model._Department.Description</td>
+    <td style="text-align: center;">@(String.Format("{0:MMMM dd, yyyy}", Model.StartDate))</td>
+    <td style="text-align: center;">@(String.Format("{0:MMMM dd, yyyy}", Model.EndDate))</td>
+    @if (DepartmentPageAccess.Update || DepartmentPageAccess.Delete)
+    {
+        <td style="text-align: center;">
+            <div class="">
+                @if (DepartmentPageAccess.Delete)
+                {
+                    <button type="button" name="DeleteDepartment" class="btn btn-outline btn-danger btn-sm btn-rounded DeleteDepartment hidden TableDeleteButton" value="@Model.ID" title="Delete"><i class="fa fa-trash"></i></button>
+                }
+                @if (DepartmentPageAccess.Update)
+                {
+                    <button type="button" name="EditDepartment" class="btn btn-info btn-sm btn-rounded EditDepartment TableEditButton" value="@Model.ID" title="Edit"><i class="fa fa-pencil"></i></button>
+                }
+            </div>
+        </td>
+    }
+</tr>
+<tr id="Row-Input-Department-@Model.ID" class="Row-Input hidden">
+    <td style="text-align: center;">
+        <input type="hidden" value="@Model.PersonnelID" name="PersonnelID" />
+        <input type="hidden" value="@Model.DepartmentID" name="HiddenDepartmentID" />
+        @Html.DropDownListFor(m => m.DepartmentID, new SelectList(departments, "ID", "Description", Model.DepartmentID), "N/A", new { @class = "form-control" })
+    </td>
+    <td style="text-align: center;">
+        <input type="hidden" value="@Model.StartDate" name="HiddenStartDate" />
+        <div class="input-group date">
+            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+            @Html.TextBoxFor(m => m.StartDate, "{0:MM/dd/yyyy}", new { @class = "form-control text-transform-none" })
+            <span id="" class="clearInput" title="Clear"><i class="fa fa-times"></i></span>
+        </div>
+    </td>
+    <td style="text-align: center;">
+        <input type="hidden" value="@Model.EndDate" name="HiddenEndDate" />
+        <div class="input-group date">
+            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+            @Html.TextBoxFor(m => m.EndDate, "{0:MM/dd/yyyy}", new { @class = "form-control text-transform-none" })
+            <span id="" class="clearInput" title="Clear"><i class="fa fa-times"></i></span>
+        </div>
+    </td>
+    @if (DepartmentPageAccess.Update)
+    {
+        <td style="text-align: center;">
+            <div class="btn-group">
+                <button type="button" name="CancelDepartment" class="btn btn-outline btn-danger btn-sm btn-rounded TableCancelButton TableCancelButton" value="@Model.ID" title="Cancel"><i class="fa fa-times"></i></button>
+                <button type="button" name="SaveDepartment" class="btn btn-info btn-sm btn-rounded SaveDepartment TableSaveButton" value="@Model.ID" title="Save"><i class="fa fa-save"></i></button>
+            </div>
+        </td>
+    }
+</tr>

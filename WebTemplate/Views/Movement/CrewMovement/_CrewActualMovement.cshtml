@@ -1,0 +1,45 @@
+﻿@model WebTemplate.Models.CrewMovement.ActualMovement
+
+@{
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var CrewPageAccess = credential.GetPage("Movement/CrewMovement") ?? new DataAccessLayer.System.Page();
+    var deparments = ProcessLayer.Processes.Lookups.DepartmentProcess.Instance.GetList();
+    var positions = ProcessLayer.Processes.PositionProcess.Instance.GetList();
+    var vessels = ProcessLayer.Processes.VesselProcess.Instance.GetList();
+}
+
+<div class="row">
+    <div id="" class="vertical-timeline vertical-container dark-timeline center-orientation" style="overflow-y: auto; margin: 0 auto; width: 100%; height: 100%;">
+        @if (Model.CrewActualMovement.Any())
+        {
+            for (int i = 0; i < Model.CrewActualMovement.Count(); i++)
+            {
+                <div class="vertical-timeline-block center-orientation animated fadeInUp Row-Display">
+                    <div class="vertical-timeline-icon @(Model.CrewActualMovement[i].DepartmentID == null ? "passenger blue" : " navy")-bg">
+                        <i class="fa fa-ship"></i>
+                    </div>
+
+                    <div class="vertical-timeline-content" style="padding: 10px;">
+                        @if (i == Model.CrewActualMovement.Count() - 1) { 
+                        <button type="button" value="@Model.CrewActualMovement[i].ID" id="DeleteCrewMovement" class="btn btn-outline btn-danger pull-right" title="Delete"><i class="fa fa-trash"></i></button>
+                            <button type="button" value="@Model.CrewActualMovement[i]ID" id="EditCrewMovement" class="btn btn-outline btn-primary pull-right" title="Edit"><i class="fa fa-pencil"></i></button>
+                        }
+                        @Html.Raw("<h3 style='margin: 0 0 2px 0;'><b>" + (Model.CrewActualMovement[i].DepartmentID != null ? deparments.Where(x => x.ID == Model.CrewActualMovement[i].DepartmentID).Select(y => y.Description).FirstOrDefault() : "SN:") + "</b></h3>")
+                        @Html.Raw("<h4 style='margin: 0 0 10px 0;'>" + (Model.CrewActualMovement[i].PositionID != null ? positions.Where(x => x.ID == Model.CrewActualMovement[i].PositionID).Select(y => y.Description).FirstOrDefault() : positions.Where(x => x.ID == Model.CrewActualMovement[i].SNPositionID).Select(y => y.Description).FirstOrDefault()) + "</h4>")
+                        <h4 style="margin: 0;"><i class="fa fa-ship"></i> @(Model.CrewActualMovement[i].VesselID != null ? vessels.Where(x => x.ID == Model.CrewActualMovement[i].VesselID).Select(y => y.Description).FirstOrDefault() : vessels.Where(x => x.ID == Model.CrewActualMovement[i].SNVesselID).Select(y => y.Description).FirstOrDefault())</h4>
+                        <span class="vertical-date text-left">
+                            @{
+                                DateTime? StartDate = Model.CrewActualMovement[i].OnboardDate;
+                                DateTime? EndDate = Model.CrewActualMovement[i].OffboardDate;
+                                DateTime DateTimeNow = DateTime.Now;
+                            }
+                            @Html.Raw(String.Format("{0}{1}", StartDate.ToString() == DateTimeNow.ToString() ? "Today" : String.Format("<b>{0:MMM dd, yyyy}</b>", StartDate), (StartDate.ToString() == "" ? "" : " @ ") + String.Format("<b>{0:HH:mm tt}</b>", StartDate)))
+                            @*Html.Raw(EndDate.ToString() == "" ? "" : "<br/>to<br/>")*@
+                            @*Html.Raw(String.Format("{0}{1}", EndDate.ToString() == DateTimeNow.ToString() ? "Today" : String.Format("<b>{0:MMM dd, yyyy}</b>", EndDate), (EndDate.ToString() == "" ? "" : " @ ") + String.Format("<b>{0:HH:mm tt}</b>", EndDate)))*@
+                        </span>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>

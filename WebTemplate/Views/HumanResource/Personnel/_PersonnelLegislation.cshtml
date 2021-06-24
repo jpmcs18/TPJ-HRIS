@@ -1,0 +1,92 @@
+﻿@model ProcessLayer.Entities.MemoArchives
+
+@{
+
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var LegislationPageAccess = credential.GetPage("Infractions") ?? new DataAccessLayer.System.Page();
+
+    var isOpen = Model._MemoStatus.Description.ToUpper() != "CLOSED";
+    var LastStatus = isOpen ? "<span class='label label-primary'>Open</span>" : "<span class='label label-default'>Closed</span>";
+}
+@functions{
+    public bool IsImage(string str)
+    {
+        var imageExtensions = new string[] { ".jpg", ".jpeg", ".bmp", ".gif", ".png" };
+        return imageExtensions.Contains(Path.GetExtension(str));
+    }
+}
+
+<tr id="Row-Display-Legislation-@Model.ID" class="Row-Display">
+    <td class="hidden">
+        <input type="hidden" value="@*Model.PersonnelID*@" name="PersonnelID" />
+        <input type="hidden" value="@Model." name="LegislationID" />
+    </td>
+    <td style=" max-width: 150px;">
+        <div title="@Model.Description" style="text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+            @Model.Description
+        </div>
+    </td>
+    <td style="text-align: center; overflow: hidden; max-width: 200px;">
+        <div class="browseFileDisplay">
+            <a href="@Model.File" target="_blank" title="@Model.File" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; ">@Model.File</a>
+            @if (IsImage(Model.File))
+            {
+                <img src="@Model.File" alt="@Model.File" class="" style="max-height: 250px; background-color: #fff;" />
+            }
+        </div>
+    </td>
+    <td style="text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;">
+        @String.Format("{0:MMMM dd, yyyy}", Model.MemoDate)
+    </td>
+    <td class="text-center">
+        @Html.Raw(LastStatus)
+    </td>
+    @if (LegislationPageAccess.Update || LegislationPageAccess.Delete)
+    {
+        <td style="text-align: center;">
+            <div class="btn-group">
+                @if (LegislationPageAccess.Delete && isOpen == true)
+                {
+                    <button type="button" name="DeleteLegislation" class="btn btn-outline btn-danger btn-sm btn-rounded DeleteLegislation TableDeleteButton" value="@Model.ID" title="Delete"><i class="fa fa-trash"></i></button>
+                }
+                @if (LegislationPageAccess.View)
+                {
+                    <button type="button" name="ViewReplies" class="btn btn-primary btn-sm btn-rounded ViewReplies" value="@Model.ID" title="View Replies"><i class="fa fa-eye"></i></button>
+                }
+                @if (LegislationPageAccess.Update && isOpen == true)
+                {
+                    @*<button type="button" name="EditLegislation" class="btn btn-info btn-sm btn-rounded EditLegislation" value="@Model.ID" title="Edit"><i class="fa fa-pencil"></i></button>*@
+                }
+            </div>
+        </td>
+    }
+</tr>
+<tr id="Row-Input-Legislation-@Model.ID" class="Row-Input hidden">
+    <td class="hidden">
+        <input type="hidden" value="@*Model.PersonnelID*@" name="PersonnelID" />
+    </td>
+    <td style="text-align: center;">
+        @Html.TextBoxFor(m => m.Description, new { @class = "form-control text-transform-none" })
+    </td>
+    <td style="text-align: center;">
+        <input type="hidden" value="@Model.File" />
+        @Html.TextBoxFor(m => m.File, new { @type = "file", @id = "browseFile", @class = "browsefile form-control text-transform-none" })
+    </td>
+    <td style="text-align: center;">
+        <div class="input-group date">
+            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+            @Html.TextBoxFor(m => m.MemoDate, "{0:MM/dd/yyyy}", new { @class = "form-control text-transform-none" })
+            <span id="" class="clearInput" title="Clear"><i class="fa fa-times"></i></span>
+        </div>
+    </td>
+    @if (LegislationPageAccess.Update)
+    {
+        <td style="text-align: center;">
+            <div class="btn-group">
+                <button type="button" name="CancelLegislation" class="btn btn-outline btn-danger btn-sm btn-rounded CancelLegislation TableCancelButton" value="@Model.ID" title="Cancel"><i class="fa fa-times"></i></button>
+                <button type="button" name="SaveLegislation" class="btn btn-info btn-sm btn-rounded SaveLegislation TableSaveButton" value="@Model.ID" title="Save"><i class="fa fa-save"></i></button>
+            </div>
+        </td>
+    }
+</tr>
+

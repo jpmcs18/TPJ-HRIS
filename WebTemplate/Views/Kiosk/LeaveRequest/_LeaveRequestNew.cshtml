@@ -1,0 +1,58 @@
+﻿@model WebTemplate.Models.Kiosk.Leave_Request.Index
+
+@{
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var CreatorAccess = credential.GetPage("Creator Leave Request") ?? new DataAccessLayer.System.Page();
+}
+
+@Html.Hidden("PersonnelID", Model.Personnel.ID, new { @class = "save-values" })
+
+@*@Html.TextBox("LeaveType", "", new { @class = "form-control save-values", @type = "text", @list = "LeaveTypes" })
+    <datalist id="LeaveTypes">
+        @foreach (var l in leaveTypes)
+        {
+            <option id="" value="@l.ID">@l.Description.Trim()</option>
+        }
+    </datalist>
+    <button type="reset" class="btn btn-default font-bold pull-right m-r-sm">Clear</button>*@
+
+<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <label class="control-label">Leave Type</label>
+    <select id="LeaveTypeID" name="LeaveTypeID" class="form-control save-values">
+        <option isbulk="false">N/A</option>
+        @foreach (var l in Model.LeaveTypes)
+        {
+            <option value="@l.ID" isbulk="@((l.BulkUse ?? false) ? "true" : "false")">@l.Description</option>
+        }
+    </select>
+</div>
+
+<div id="NonBulkUseDatePicker">
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+        <label class="control-label">Start DateTime</label>
+        @Html.TextBox("StartDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", ""), new { @type = "datetime-local", @class = "form-control" })
+    </div>
+        
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+        <label class="control-label">End DateTime</label>
+        @Html.TextBox("EndDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", ""), new { @type = "datetime-local", @class = "form-control" })
+    </div>
+</div>
+<div id="BulkUseDatePicker" class="hidden">
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <label class="control-label">Start Date</label>
+        @Html.TextBox("StartDateTime", String.Format("{0:yyyy'-'MM'-'dd}", ""), new { @type = "date", @class = "form-control" })
+    </div>
+</div>
+
+<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <label class="control-label">Reasons</label>
+    @Html.TextArea("Reasons", new { @class = "form-control save-values", @rows = "4", @placeholder = "Reasons..." })
+</div>
+
+@if (CreatorAccess.Update || CreatorAccess.Insert)
+{
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <button type="button" id="CreateLeaveRequest" onclick="SaveRequest();" class="btn btn-primary font-bold pull-right" title="Save"><i class="fa fa-save"></i>&nbsp;&nbsp;Save</button>
+    </div>
+}

@@ -1,0 +1,53 @@
+﻿@model ProcessLayer.Entities.HR.PersonnelLeaveCredit
+@{
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var LeaveCreditsTabAccess = credential.GetPage("Leave Credits") ?? new DataAccessLayer.System.Page();
+    var leaveList = ProcessLayer.Processes.LeaveTypeProcess.GetLeaveType();
+}
+
+    <tr id="Row-Display-LeaveCredits-@Model.ID" class="Row-Display clickable" tpjattr="PersonnelLeaveCredits" style="cursor: pointer" title="">
+        <td class="hidden">
+            <input type="hidden" value="@Model.ID" name="ID" />
+            <input type="hidden" value="@Model.LeaveTypeID" name="LeaveTypeID" />
+            <input type="hidden" value="@Model.PersonnelID" name="PersonnelID" />
+        </td>
+        <td style="text-align: center;">@Model._LeaveType.Display</td>
+        <td style="text-align: center;">@Model.LeaveCredits</td>
+        <td style="text-align: center;">@Model.YearValid</td>
+        @if (LeaveCreditsTabAccess.Update || LeaveCreditsTabAccess.Delete)
+        {
+            <td style="text-align: center;">
+                <div class="btn-group">
+                    @if (LeaveCreditsTabAccess.Delete)
+                    {
+                        <button type="button" name="DeleteLeaveCredits" class="btn btn-outline btn-danger btn-sm btn-rounded TableDeleteButton" value="@Model.ID" title="Delete"><i class="fa fa-trash"></i></button>
+                    }
+                    @if (LeaveCreditsTabAccess.Update)
+                    {
+                        <button type="button" name="EditLeaveCredits" class="btn btn-info btn-sm btn-rounded EditLeaveCredits TableEditButton" value="@Model.ID" title="Edit"><i class="fa fa-pencil"></i></button>
+                    }
+                </div>
+            </td>
+        }
+    </tr>
+    <tr id="Row-Input-LeaveCredits-@Model.ID" class="Row-Input hidden">
+        <td style="text-align: center;">
+            @Html.DropDownList("LeaveTypeID", new SelectList(leaveList, "ID", "Display", Model.LeaveTypeID), "N/A", new { @class = "form-control text-transform-none", @style = "" })
+        </td>
+        <td style="text-align: center;">
+            @Html.TextBoxFor(m => m.LeaveCredits, new { @class = "form-control text-transform-none", @Placeholder = "Leave Credits..." })
+        </td>
+        <td style="text-align: center;">
+            @Html.TextBoxFor(m => m.YearValid, new { @class = "form-control text-transform-none", @Placeholder = "Year Valid...", @maxlength = "4" })
+        </td>
+        @if (LeaveCreditsTabAccess.Update)
+        {
+            <td style="text-align: center;">
+                <div class="btn-group">
+                    <button type="button" name="CancelLeaveCredits" class="btn btn-outline btn-danger btn-sm btn-rounded CancelLeaveCredits TableCancelButton" value="@Model.ID" title="Cancel"><i class="fa fa-times"></i></button>
+                    <button type="button" name="SaveLeaveCredits" class="btn btn-info btn-sm btn-rounded SaveLeaveCredits TableSaveButton" value="@Model.ID" title="Save"><i class="fa fa-save"></i></button>
+                </div>
+            </td>
+        }
+    </tr>
+

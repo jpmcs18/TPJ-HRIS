@@ -1,0 +1,65 @@
+﻿@model ProcessLayer.Entities.AssumedPersonnelDeduction
+@{
+    var deductions = ProcessLayer.Processes.LookupProcess.GetDeduction(withGovernmentDeduction:false);
+    var currencies = ProcessLayer.Processes.LookupProcess.GetCurrency();
+
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var DeductionsPageAccess = credential.GetPage("Deductions") ?? new DataAccessLayer.System.Page();
+}
+
+<tr id="Row-Display-AssumedDeduction-@Model.ID" class="Row-Display">
+    <td class="hidden">
+        <input type="hidden" value="@Model.PersonnelID" name="PersonnelID" />
+    </td>
+    <td style="text-align: center;">
+        @Model._Deduction.Description
+        <input type="hidden" value="@Model.DeductionID" class="DeductionID" />
+    </td>
+    <td style="text-align: center;">
+        @Model._Currency.Description
+        <input type="hidden" value="@Model.CurrencyID" class="CurrencyID" />
+    </td>
+    <td style="text-align: center;">
+        @((Model.Amount ?? 0).ToString("#,##0.00"))
+        <input type="hidden" value="@Model.Amount" class="CurrencyID" />
+    </td>
+    @if (DeductionsPageAccess.Update || DeductionsPageAccess.Delete)
+    {
+        <td style="text-align: center; width: 14.6%;">
+            <div class="btn-group">
+                @if (DeductionsPageAccess.Delete)
+                {
+                    <button type="button" name="DeleteDeduction" class="btn btn-outline btn-danger btn-sm btn-rounded DeleteDeduction TableDeleteButton" value="@Model.ID" title="Delete"><i class="fa fa-trash"></i></button>
+                }
+                @if (DeductionsPageAccess.Update)
+                {
+                    <button type="button" name="EditDeduction" class="btn btn-info btn-sm btn-rounded EditDeduction TableEditButton" value="@Model.ID" title="Edit"><i class="fa fa-pencil"></i></button>
+                }
+            </div>
+        </td>
+    }
+</tr>
+<tr id="Row-Input-Deduction-@Model.ID" class="Row-Input hidden">
+    <td class="hidden">
+        <input type="hidden" value="@Model.PersonnelID" name="PersonnelID" />
+    </td>
+    <td style="text-align: center;">
+        @Html.DropDownListFor(m => m.DeductionID, new SelectList(deductions, "ID", "Description", Model.DeductionID), new { @class = "form-control DeductionIDs" })
+    </td>
+    <td style="text-align: center;">
+        @Html.DropDownListFor(m => m.CurrencyID, new SelectList(currencies, "ID", "Description", Model.DeductionID), new { @class = "form-control DeductionIDs" })
+    </td>
+    <td style="text-align: center;">
+        <input value="" name="Amount" class="form-control text-right" placeholder="0.00" />
+    </td>
+    @if (DeductionsPageAccess.Update)
+    {
+        <td style="text-align: center; width: 14.2%;">
+            <div class="btn-group">
+                <button type="button" name="CancelDeduction" class="btn btn-outline btn-danger btn-sm btn-rounded CancelDeduction TableCancelButton" value="@Model.ID" title="Cancel"><i class="fa fa-times"></i></button>
+                <button type="button" name="SaveDeduction" class="btn btn-info btn-sm btn-rounded SaveDeduction TableSaveButton" value="@Model.ID" title="Save"><i class="fa fa-save"></i></button>
+            </div>
+        </td>
+    }
+</tr>
+

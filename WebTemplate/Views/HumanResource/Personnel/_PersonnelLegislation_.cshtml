@@ -1,0 +1,80 @@
+﻿@model ProcessLayer.Entities.PersonnelLegislation
+
+@{
+    var legislationStatuses = ProcessLayer.Processes.LookupProcess.GetLegislationStatus();
+
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var InfractionsPageAccess = credential.GetPage("Infractions") ?? new DataAccessLayer.System.Page();
+}
+@functions{
+    public bool IsImage(string str)
+    {
+        var imageExtensions = new string[] { ".jpg", ".jpeg", ".bmp", ".gif", ".png", ".webp" };
+        return imageExtensions.Contains(Path.GetExtension(str));
+    }
+}
+
+<tr id="Row-Display-Legislation-@Model.ID" class="Row-Display">
+    <td class="hidden">
+        <input type="hidden" value="@Model.PersonnelID" name="PersonnelID" />
+    </td>
+    <td style="text-align: left;">@Model.Title</td>
+    <td style="text-align: left; white-space: nowrap;  overflow: hidden; text-overflow: ellipsis;">
+        <div class="browseFileDisplay">
+            <a href="@Model.File" target="_blank" title="@Model.File">@Model.File</a>
+            @if (IsImage(Model.File))
+            {
+                <img src="@Model.File" class="" style="" />
+            }
+        </div>
+    </td>
+    <td style="text-align: center;">@String.Format("{0:MMMM dd, yyyy}", Model.LegislationDate)</td>
+    <td style="text-align: center;">@Model._LegislationStatus.Description</td>
+    @if (InfractionsPageAccess.Update || InfractionsPageAccess.Delete)
+    {
+        <td style="text-align: center; width: 160px;">
+            <div class="btn-group">
+                @if (InfractionsPageAccess.Delete)
+                {
+                    <button type="button" name="DeleteLegislation" class="btn btn-outline btn-danger btn-sm btn-rounded DeleteLegislation" value="@Model.ID" title="Delete"><i class="fa fa-trash"></i></button>
+                }
+                @if (InfractionsPageAccess.Update)
+                {
+                    <button type="button" name="EditLegislation" class="btn btn-info btn-sm btn-rounded EditLegislation" value="@Model.ID" title="Edit"><i class="fa fa-pencil"></i></button>
+                }
+            </div>
+        </td>
+    }
+</tr>
+<tr id="Row-Input-Legislation-@Model.ID" class="Row-Input hidden">
+    <td class="hidden">
+        <input type="hidden" value="@Model.PersonnelID" name="PersonnelID" />
+    </td>
+    <td style="text-align: center;">
+        @Html.TextBoxFor(m => m.Title, new { @class = "form-control text-transform-none" })
+    </td>
+    <td style="text-align: center;">
+        <input type="hidden" value="@Model.File" />
+        @Html.TextBoxFor(m => m.File, new { @type = "file", @id = "browseFile", @class = "browsefile form-control text-transform-none" })
+    </td>
+    <td style="text-align: center;">
+        <div class="input-group date">
+            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+            @Html.TextBoxFor(m => m.LegislationDate, "{0:MM/dd/yyyy}", new { @class = "form-control text-transform-none select2" })
+            <span id="" class="clearInput" title="Clear"><i class="fa fa-times"></i></span>
+        </div>
+    </td>
+    <td style="text-align: center;">
+        @Html.DropDownList("LegislationStatusID", new SelectList(legislationStatuses, "ID", "Description", Model.LegislationStatusID), new { @class = "form-control text-transform-none" })
+    </td>
+    @if (InfractionsPageAccess.Update)
+    {
+        <td style="text-align: center; width: 160px;">
+            <div class="btn-group">
+                <button type="button" name="CancelLegislation" class="btn btn-outline btn-danger btn-sm btn-rounded CancelLegislation" value="@Model.ID" title="Cancel"><i class="fa fa-times"></i></button>
+                <button type="button" name="SaveLegislation" class="btn btn-info btn-sm btn-rounded SaveLegislation" value="@Model.ID" title="Save"><i class="fa fa-save"></i></button>
+            </div>
+        </td>
+    }
+</tr>
+

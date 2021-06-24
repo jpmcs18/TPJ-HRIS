@@ -1,0 +1,334 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6AC531AA-B67A-4A19-A548-054D91C2547F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ProcessLayer</RootNamespace>
+    <AssemblyName>ProcessLayer</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Computation\CnB\PayrollComputation.cs" />
+    <Compile Include="Computation\CnB\TimelogComputation.cs" />
+    <Compile Include="Computation\Kiosk\LeaveComputation.cs" />
+    <Compile Include="Entities\CnBs\AdditionalLoanForApproval.cs" />
+    <Compile Include="Entities\CnBs\LoanDeductions.cs" />
+    <Compile Include="Entities\CnBs\Payroll.cs" />
+    <Compile Include="Entities\CnBs\PayrollDeductions.cs" />
+    <Compile Include="Entities\CnBs\PayrollDetails.cs" />
+    <Compile Include="Entities\CnBs\PayrollPeriod.cs" />
+    <Compile Include="Entities\CnBs\PersonnelTimesheet.cs" />
+    <Compile Include="Entities\CnBs\ComputedTimelog.cs" />
+    <Compile Include="Entities\HRs\AssumedPersonnelDeduction.cs" />
+    <Compile Include="Entities\Kiosks\HighRiskRequest.cs" />
+    <Compile Include="Entities\Kiosks\KioskNotification.cs" />
+    <Compile Include="Entities\Lookups\Department.cs" />
+    <Compile Include="Entities\Lookups\HDMF.cs" />
+    <Compile Include="Entities\Lookups\LeaveType.cs" />
+    <Compile Include="Entities\Lookups\NonTaxableDay.cs" />
+    <Compile Include="Entities\Lookups\PersonnelType.cs" />
+    <Compile Include="Entities\Lookups\SSS.cs" />
+    <Compile Include="Entities\Lookups\WhenToDeduct.cs" />
+    <Compile Include="Entities\Reports\PersonnelReport.cs" />
+    <Compile Include="Entities\Common\ToApplyAction.cs" />
+    <Compile Include="Entities\HRs\ContactNumber.cs" />
+    <Compile Include="Entities\HRs\PersonnelLeaveCredits.cs" />
+    <Compile Include="Entities\HRs\PersonnelLoan.cs" />
+    <Compile Include="Entities\HRs\PersonnelSchedule.cs" />
+    <Compile Include="Entities\Kiosks\KioskBase.cs" />
+    <Compile Include="Entities\Kiosks\KioskBase2.cs" />
+    <Compile Include="Entities\Kiosks\LeaveRequest.cs" />
+    <Compile Include="Entities\Kiosks\OTRequest.cs" />
+    <Compile Include="Entities\Kiosks\OuterPortRequest.cs" />
+    <Compile Include="Entities\Kiosks\TimeEditRequest.cs" />
+    <Compile Include="Entities\Lookups\Compensation.cs" />
+    <Compile Include="Entities\Lookups\Deduction.cs" />
+    <Compile Include="Entities\Lookups\EmploymentType.cs" />
+    <Compile Include="Entities\Lookups\KioskApprovers.cs" />
+    <Compile Include="Entities\Lookups\KioskCandidateApprover.cs" />
+    <Compile Include="Entities\Lookups\LateDeduction.cs" />
+    <Compile Include="Entities\Lookups\Loan.cs" />
+    <Compile Include="Entities\Lookups\Location.cs" />
+    <Compile Include="Entities\Lookups\NonWorkingDays.cs" />
+    <Compile Include="Entities\Lookups\Parameters.cs" />
+    <Compile Include="Entities\Lookups\PayrollType.cs" />
+    <Compile Include="Entities\Lookups\PhilHealth.cs" />
+    <Compile Include="Entities\Lookups\ApproverPosition.cs" />
+    <Compile Include="Entities\Lookups\ScheduleType.cs" />
+    <Compile Include="Entities\Lookups\TaxTable.cs" />
+    <Compile Include="Entities\Lookups\YearsOfService.cs" />
+    <Compile Include="Entities\Vessels\Crew.cs" />
+    <Compile Include="Entities\Vessels\CrewMovement.cs" />
+    <Compile Include="Entities\Vessels\CrewMovement_Old.cs" />
+    <Compile Include="Entities\Lookups\CutoffSchedule.cs" />
+    <Compile Include="Entities\Lookups\DepartmentPosition.cs" />
+    <Compile Include="Entities\HRs\EducationalBackground.cs" />
+    <Compile Include="Entities\Securities\EmailCredential.cs" />
+    <Compile Include="Entities\Securities\EmailLogs.cs" />
+    <Compile Include="Entities\Lookups\LicenseType.cs" />
+    <Compile Include="Entities\Securities\LogDetails.cs" />
+    <Compile Include="Entities\Lookups\Lookup.cs" />
+    <Compile Include="Entities\HRs\MemoArchives.cs" />
+    <Compile Include="Entities\HRs\PersonnelAssignedLocation.cs" />
+    <Compile Include="Entities\HRs\PersonnelBase.cs" />
+    <Compile Include="Entities\HRs\PersonnelCompensation.cs" />
+    <Compile Include="Entities\HRs\PersonnelDeduction.cs" />
+    <Compile Include="Entities\HRs\PersonnelDepartment.cs" />
+    <Compile Include="Entities\HRs\PersonnelDependent.cs" />
+    <Compile Include="Entities\HRs\PersonnelEmploymentType.cs" />
+    <Compile Include="Entities\HRs\PersonnelGroup.cs" />
+    <Compile Include="Entities\HRs\PersonnelGroupMember.cs" />
+    <Compile Include="Entities\HRs\PersonnelHistoryBase.cs" />
+    <Compile Include="Entities\HRs\PersonnelLegislation.cs" />
+    <Compile Include="Entities\HRs\PersonnelLicense.cs" />
+    <Compile Include="Entities\HRs\PersonnelMemo.cs" />
+    <Compile Include="Entities\HRs\PersonnelPosition.cs" />
+    <Compile Include="Entities\HRs\PersonnelTraining.cs" />
+    <Compile Include="Entities\HRs\Personnel.cs" />
+    <Compile Include="Entities\HRs\PersonnelVaccine.cs" />
+    <Compile Include="Entities\Lookups\Position.cs" />
+    <Compile Include="Entities\Lookups\PositionSalary.cs" />
+    <Compile Include="Entities\HRs\TimeLog.cs" />
+    <Compile Include="Entities\Vessels\Vessel.cs" />
+    <Compile Include="Entities\Vessels\VesselCrews.cs" />
+    <Compile Include="Entities\Vessels\VesselMovement.cs" />
+    <Compile Include="Entities\HRs\WorkExperience.cs" />
+    <Compile Include="Helpers\CrewDetails.cs" />
+    <Compile Include="Helpers\DataSetTableExtension.cs" />
+    <Compile Include="Helpers\Enumerable\ComputationType.cs" />
+    <Compile Include="Helpers\Enumerable\KioskNotificationFilter.cs" />
+    <Compile Include="Helpers\Enumerable\KioskNotoficationType.cs" />
+    <Compile Include="Helpers\Enumerable\PayrollSheet.cs" />
+    <Compile Include="Helpers\Enumerable\ReportType.cs" />
+    <Compile Include="Helpers\Enumerable\TaxSchedule.cs" />
+    <Compile Include="Helpers\ExceptionExtension.cs" />
+    <Compile Include="Helpers\GlobalHelper.cs" />
+    <Compile Include="Helpers\ObjectExtension.cs" />
+    <Compile Include="Helpers\ObjectParameter\CredentialParameters.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelLeaveCreditsFields.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelLeaveCreditsParameters.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelLeaveCreditsProcedures.cs" />
+    <Compile Include="Helpers\ObjectParameter\Kiosk\KioskFieldsBase.cs" />
+    <Compile Include="Helpers\ObjectParameter\Kiosk\KioskParametersBase.cs" />
+    <Compile Include="Helpers\ObjectParameter\Kiosk\Leave Request\LeaveRequestFields.cs" />
+    <Compile Include="Helpers\ObjectParameter\Kiosk\Leave Request\LeaveRequestParameters.cs" />
+    <Compile Include="Helpers\ObjectParameter\Kiosk\Leave Request\LeaveRequestProcedures.cs" />
+    <Compile Include="Helpers\ObjectParameter\Kiosk\LogDetailsFieldsBase.cs" />
+    <Compile Include="Helpers\ObjectParameter\Kiosk\OT Request\OTRequestFields.cs" />
+    <Compile Include="Helpers\ObjectParameter\Kiosk\OT Request\OTRequestParameters.cs" />
+    <Compile Include="Helpers\ObjectParameter\Kiosk\OT Request\OTRequestProcedures.cs" />
+    <Compile Include="Helpers\ObjectParameter\Kiosk\Time Edit Request\TimeEditRequestFields.cs" />
+    <Compile Include="Helpers\ObjectParameter\Kiosk\Time Edit Request\TimeEditRequestParameters.cs" />
+    <Compile Include="Helpers\ObjectParameter\Kiosk\Time Edit Request\TimeEditRequestProcedures.cs" />
+    <Compile Include="Helpers\ObjectParameter\Lookup\LookupParameters.cs" />
+    <Compile Include="Helpers\ObjectParameter\Payroll\ParametersTag.cs" />
+    <Compile Include="Helpers\ObjectParameter\Payroll\PayrollParameters.cs" />
+    <Compile Include="Helpers\ObjectParameter\Security\EmailLogs\EmailCredentialFields.cs" />
+    <Compile Include="Helpers\ObjectParameter\Security\EmailLogs\EmailCredentialParameters.cs" />
+    <Compile Include="Helpers\ObjectParameter\Security\EmailLogs\EmailCredentialProcedures.cs" />
+    <Compile Include="Helpers\ObjectParameter\Security\EmailLogs\EmailLogsFields.cs" />
+    <Compile Include="Helpers\ObjectParameter\Security\EmailLogs\EmailLogsParameters.cs" />
+    <Compile Include="Helpers\ObjectParameter\Security\EmailLogs\EmailLogsProcedures.cs" />
+    <Compile Include="Helpers\ObjectParameter\FilterParameters.cs" />
+    <Compile Include="Helpers\ObjectParameter\LogDetailsFields.cs" />
+    <Compile Include="Helpers\ObjectParameter\Lookup\LookupProcedures.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\MemoArchive\MemoArchivesFields.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\MemoArchive\MemoArchivesParameters.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\MemoArchive\MemoArchivesProcedures.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\EducationalBackgroundFields.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\EducationalBackgroundParameters.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\EducationalBackgroundProcedures.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelAssignedLocationFields.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelAssignedLocationParameters.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelAssignedLocationProcedures.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelCompensationFields.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelCompensationParameters.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelCompensationProcedures.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelDeductionFields.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelDeductionParameters.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelDeductionProcedures.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelDepartmentFields.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelDepartmentParameters.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelDepartmentProcedures.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelDependentFields.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelDependentParameters.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelDependentProcedures.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelEmploymentTypeFields.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelEmploymentTypeParameters.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelEmploymentTypeProcedures.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelFields.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelGetExpiringLicenseProcedures.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelGroupFields.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelGroupMemberFields.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelGroupMemberParameters.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelGroupMemberProcedures.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelGroupParameters.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelGroupProcedures.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelLegislationFields.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelLegislationParameters.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelLegislationProcedures.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelLicenseFields.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelLicenseParameters.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelLicenseProcedures.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelMemoFields.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelMemoParameters.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelMemoProcedures.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelParameters.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelGetBirthdayCelebrantsProcedures.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelPositionFields.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelPositionParameters.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelPositionProcedures.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelProcedures.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelTrainingParameters.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelTrainingProcedures.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelVaccineFields.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelVaccineParameters.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\PersonnelVaccineProcedures.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\TrainingFields.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\WorkExperienceFields.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\WorkExperienceParameters.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\Personnel\WorkExperienceProcedures.cs" />
+    <Compile Include="Helpers\ObjectParameter\Schema.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\TimeLog\TimeLogFields.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\TimeLog\TimeLogParameters.cs" />
+    <Compile Include="Helpers\ObjectParameter\HR\TimeLog\TimeLogProcedures.cs" />
+    <Compile Include="Helpers\ObjectParameter\Vessel\VesselCrewMovement\CrewMovementFields.cs" />
+    <Compile Include="Helpers\ObjectParameter\Vessel\VesselCrewMovement\CrewMovementFields_Old.cs" />
+    <Compile Include="Helpers\ObjectParameter\Vessel\VesselCrewMovement\CrewMovementParameters.cs" />
+    <Compile Include="Helpers\ObjectParameter\Vessel\VesselCrewMovement\CrewMovementParameters_Old.cs" />
+    <Compile Include="Helpers\ObjectParameter\Vessel\VesselCrewMovement\CrewMovementProcedures.cs" />
+    <Compile Include="Helpers\ObjectParameter\Vessel\VesselCrewMovement\VesselMovementFields.cs" />
+    <Compile Include="Helpers\ObjectParameter\Vessel\VesselCrewMovement\VesselMovementParameters.cs" />
+    <Compile Include="Helpers\ObjectParameter\Vessel\VesselCrewMovement\VesselMovementProcedures.cs" />
+    <Compile Include="Helpers\ObjectParameter\Vessel\Crew\CrewFields.cs" />
+    <Compile Include="Helpers\ObjectParameter\Vessel\Crew\CrewParameters.cs" />
+    <Compile Include="Helpers\ObjectParameter\Vessel\Vessel\VesselProcedures.cs" />
+    <Compile Include="Helpers\ObjectParameter\Vessel\Crew\CrewProcedures.cs" />
+    <Compile Include="Helpers\ObjectParameter\Vessel\Vessel\VesselFields.cs" />
+    <Compile Include="Helpers\ObjectParameter\Vessel\Vessel\VesselParameters.cs" />
+    <Compile Include="Helpers\OutParameterListExtension.cs" />
+    <Compile Include="Helpers\Web.cs" />
+    <Compile Include="Processes\CnBs\AdditionalLoanProcess.cs" />
+    <Compile Include="Processes\HRs\PersonnelLoanProcess.cs" />
+    <Compile Include="Processes\CnBs\PayrollProcess.cs" />
+    <Compile Include="Processes\HRs\PersonnelLeaveCreditsProcess.cs" />
+    <Compile Include="Processes\HRs\PersonnelScheduleProcess.cs" />
+    <Compile Include="Processes\Kiosks\HighRiskRequestProcess.cs" />
+    <Compile Include="Processes\Kiosks\KioskNotificationProcess.cs" />
+    <Compile Include="Processes\Kiosks\LeaveRequestProcess.cs" />
+    <Compile Include="Processes\Kiosks\OTRequestProcess.cs" />
+    <Compile Include="Processes\Kiosks\OuterPortRequestProcess.cs" />
+    <Compile Include="Processes\Kiosks\TimeEditRequestProcess.cs" />
+    <Compile Include="Processes\Lookups\DeductionProcess.cs" />
+    <Compile Include="Processes\Lookups\DefaultLookupProcess.cs" />
+    <Compile Include="Processes\Lookups\DepartmentPositionProcess.cs" />
+    <Compile Include="Processes\Lookups\DepartmentProcess.cs" />
+    <Compile Include="Processes\Lookups\DynamicLookupProcess.cs" />
+    <Compile Include="Processes\Lookups\HDMFProcess.cs" />
+    <Compile Include="Processes\Lookups\ILookupProcess.cs" />
+    <Compile Include="Processes\Lookups\KioskApproverProcess.cs" />
+    <Compile Include="Processes\Lookups\LeaveTypeProcess.cs" />
+    <Compile Include="Processes\Lookups\LocationProcess.cs" />
+    <Compile Include="Processes\Lookups\NonTaxableDayProcess.cs" />
+    <Compile Include="Processes\Lookups\NonWorkingDaysProcess.cs" />
+    <Compile Include="Processes\Lookups\NonWorkingTypeProcess.cs" />
+    <Compile Include="Processes\Lookups\ParametersProcess.cs" />
+    <Compile Include="Processes\Lookups\PersonnelTypeProcess.cs" />
+    <Compile Include="Processes\Lookups\PhilHealthProcess.cs" />
+    <Compile Include="Processes\Lookups\ApproverPositionProcess.cs" />
+    <Compile Include="Processes\Lookups\PositionProcess.cs" />
+    <Compile Include="Processes\Lookups\ScheduleTypeProcess.cs" />
+    <Compile Include="Processes\Lookups\SSSProcess.cs" />
+    <Compile Include="Processes\Lookups\TaxScheduleProcess.cs" />
+    <Compile Include="Processes\Lookups\TaxTableProcess.cs" />
+    <Compile Include="Processes\Lookups\WhenToDeductProcess.cs" />
+    <Compile Include="Processes\Reports\ReportProcess.cs" />
+    <Compile Include="Processes\Vessels\CrewMovementProcess.cs" />
+    <Compile Include="Processes\Securities\EmailCredentialProcess.cs" />
+    <Compile Include="Processes\Securities\EmailLogsProcess.cs" />
+    <Compile Include="Processes\HRs\PersonnelAssignedLocationProcess.cs" />
+    <Compile Include="Processes\HRs\PersonnelDepartmentProcess.cs" />
+    <Compile Include="Processes\HRs\PersonnelEmploymentTypeProcess.cs" />
+    <Compile Include="Processes\HRs\PersonnelPositionProcess.cs" />
+    <Compile Include="Processes\HRs\TimeLogProcess.cs" />
+    <Compile Include="Processes\Vessels\VesselMovementProcess.cs" />
+    <Compile Include="Processes\Vessels\VesselProcess.cs" />
+    <Compile Include="Processes\Vessels\CrewProcess.cs" />
+    <Compile Include="Processes\Lookups\CutoffScheduleProcess.cs" />
+    <Compile Include="Processes\HRs\EducationalBackgroundProcess.cs" />
+    <Compile Include="Processes\Lookups\LicenseTypeProcess.cs" />
+    <Compile Include="Processes\HRs\PersonnelCompensationProcess.cs" />
+    <Compile Include="Processes\HRs\PersonnelDeductionProcess.cs" />
+    <Compile Include="Processes\HRs\PersonnelDependentProcess.cs" />
+    <Compile Include="Processes\HRs\PersonnelGroupMemberProcess.cs" />
+    <Compile Include="Processes\HRs\PersonnelGroupProcess.cs" />
+    <Compile Include="Processes\HRs\PersonnelLegislationProcess.cs" />
+    <Compile Include="Processes\HRs\PersonnelLicenseProcess.cs" />
+    <Compile Include="Processes\HRs\MemoArchiveProcess.cs" />
+    <Compile Include="Processes\HRs\PersonnelMemoProcess.cs" />
+    <Compile Include="Processes\HRs\PersonnelTrainingProcess.cs" />
+    <Compile Include="Processes\HRs\PersonnelVaccineProcess.cs" />
+    <Compile Include="Processes\Lookups\PositionSalaryProcess.cs" />
+    <Compile Include="Processes\Lookups\LookupProcess.cs" />
+    <Compile Include="Processes\HRs\PersonnelProcess.cs" />
+    <Compile Include="Processes\HRs\WorkExperienceProcess.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DBUtilities\DBUtilities.csproj">
+      <Project>{A25B206F-C2A6-4BD6-8C88-6BB925213239}</Project>
+      <Name>DBUtilities</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="DBUpdates\Scripts 06132020\ALTER PROC [kiosk].[CreateOrUpdateOuterPortRequest].sql" />
+    <Content Include="DBUpdates\Scripts 06132020\OuterPort PageAccess.sql" />
+    <Content Include="DBUpdates\Scripts 06132020\OuterPort Pages.sql" />
+    <Content Include="DBUpdates\Update20200615.sql" />
+    <Content Include="DBUpdates\UpdateQueries.sql" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

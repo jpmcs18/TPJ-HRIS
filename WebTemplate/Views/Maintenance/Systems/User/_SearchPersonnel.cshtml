@@ -1,0 +1,84 @@
+﻿@model WebTemplate.Models.Maintenance.Systems.User.SearchPersonnel
+@{
+    var PageCount = Math.Ceiling((double)Model.ItemCount / Model.GridCount);
+}
+
+<div class="table-responsive" style="">
+    <div class="mail-box">
+        <table class="table table-hover table-mail">
+            <thead>
+                @*<tr>
+            <th class="text-center col-lg-2">Employee Number</th>
+            <th class="text-center col-lg-3">Last Name</th>
+            <th class="text-center col-lg-3">First Name</th>
+            <th class="text-center col-lg-3">Middle Name</th>
+            <th class="text-center col-lg-1">Action</th>
+        </tr>*@
+                @if (PageCount > 1)
+                {
+                    <tr>
+                        <td class="text-right" colspan="10" style="background-color: white;">
+                            <div class="btn-group pull-left">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" id="hid_search_personnel" name="@Html.NameFor(m => m.Filter)" value="@Html.ValueFor(m => m.Filter)" />
+                                <input type="hidden" id="hid_page_personnel" name="@Html.NameFor(m => m.PageNumber)" value="@Html.ValueFor(m => m.PageNumber)" />
+                                @if (Model.PageNumber > 1)
+                                {
+                                    <button type="button" name="@Html.NameFor(m => m.PageNumber)" value="1" class="btn btn-white pages"><i class="fa fa-angle-double-left"></i></button>
+                                }
+                                @if (Model.PageNumber - 1 >= 1)
+                                {
+                                    <button type="button" name="@Html.NameFor(m => m.PageNumber)" value="@(Model.PageNumber - 1)" class="btn btn-white pages"><i class="fa fa-angle-left"></i></button>
+                                }
+                                @for (int i = Model.PageNumber - 2; i <= Model.PageNumber + 2; i++)
+                                {
+                                    if (i >= 1 && i <= PageCount)
+                                    {
+                                        <button type="button" name="@Html.NameFor(m => m.PageNumber)" value="@(i)" class="btn btn-white @(i == Model.PageNumber ? "active" : "pages")">@(i)</button>
+                                    }
+                                }
+                                @if (Model.PageNumber + 1 <= PageCount)
+                                {
+                                    <button type="button" name="@Html.NameFor(m => m.PageNumber)" value="@(Model.PageNumber + 1)" class="btn btn-white pages"><i class="fa fa-angle-right"></i></button>
+                                }
+                                @if (Model.PageNumber < PageCount)
+                                {
+                                    <button type="button" name="@Html.NameFor(m => m.PageNumber)" value="@PageCount" class="btn btn-white pages"><i class="fa fa-angle-double-right"></i></button>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </thead>
+            <tbody>
+            <tr id="Row-Loading-Display" class="hidden">
+                <td style="text-align: center;" colspan="6">
+                    <i id="" class="fa fa-rotate-left rotate" style="padding: 8px; font-size: 20px; text-align: right;"></i>
+                </td>
+            </tr>
+            @if (Model.ItemList.Any()) { 
+                for (int i = 0; i < Model.ItemList.Count; i++)
+                 {
+                     <tr class="Row-Display read">
+                         <td class="text-center empno">@(Model.ItemList[i].Employee_No ?? "N/A")</td>
+                         <td class="text-center lname">@(Model.ItemList[i].Last_Name ?? "N/A")</td>
+                         <td class="text-center fname">@(Model.ItemList[i].First_Name ?? "N/A")</td>
+                         <td class="text-center mname">@(Model.ItemList[i].Middle_Name ?? "N/A")</td>
+                         <td style="" class="row-actions">
+                             <div class="">
+                                 <button type="button" class="btn btn-outline btn-primary btn-rounded btnsearch btn-sm linkemp" value="@Model.ItemList[i].ID" title="Link"><i class="fa fa-link"></i></button>
+                             </div>
+                         </td>
+                     </tr>
+                }
+            }
+            else
+            {
+                <tr id="No-Row-Display"><td style="text-align: center;" colspan="6">No Personnel found...</td></tr>
+            }
+            </tbody>
+            <tfoot>
+            </tfoot>
+        </table>
+    </div>
+</div>

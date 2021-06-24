@@ -1,0 +1,2343 @@
+﻿@model WebTemplate.Models.Personnel.Index
+
+@{
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var SearchPageAccess = credential.GetPage("Search") ?? new DataAccessLayer.System.Page();
+
+    ViewBag.title = SearchPageAccess.PageName;
+    var educationalLevels = ProcessLayer.Processes.LookupProcess.GetEducationalLevel();
+    //var religions = ProcessLayer.Processes.LookupProcess.GetReligion();
+    //var personnelLocations = ProcessLayer.Processes.LocationProcess.Instance.GetList();
+    var licenseTypes = ProcessLayer.Processes.LookupProcess.GetLicenseType();
+    //var vaccineTypes = ProcessLayer.Processes.LookupProcess.GetVaccineType();
+    //var departments = ProcessLayer.Processes.Lookups.DepartmentProcess.Instance.GetList();
+    var positionDepartments = ProcessLayer.Processes.DepartmentPositionProcess.Instance.GetList();
+    var positions = ProcessLayer.Processes.PositionProcess.Instance.GetList();
+    //var employmentStatuses = ProcessLayer.Processes.LookupProcess.GetEmployementStatus();
+    var leaveTypes = ProcessLayer.Processes.LeaveTypeProcess.GetLeaveType();
+
+    var noCourseEducation = ProcessLayer.Helpers.Web.NoCourseIDs(educationalLevels);
+    var perpetualLicenseIDs = ProcessLayer.Helpers.Web.PerpetialLicenseIDs(licenseTypes);
+    var marriedID = 2;
+}
+
+<div class="wrapper wrapper-content">
+    <div class="page-heading">
+        <div class="col-lg-8">
+            <h1>@Html.Raw(ViewBag.Page.PageName ?? "&nbsp;")</h1>
+            <ol class="breadcrumb">
+                <li>
+                    <a href='@Url.Action("Index", "Home")'>Home</a>
+                </li>
+                <li class="active">
+                    <strong>@Html.Raw(ViewBag.Page.PageName ?? "&nbsp;")</strong>
+                </li>
+            </ol>
+        </div>
+        <div class="col-lg-4">
+            <div class="title-action">
+                @if (SearchPageAccess.Insert)
+                {
+                    <a class="btn btn-primary compose-mail" href="#" id="btnadd">Add Personnel</a>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="" style="margin-top: 85px;">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 animated fadeInLef">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 m-b-sm" style="padding: 0px;">
+                <div class="tabs-container" style="border: 1px solid #009688;">
+                    <div class="tab-content" style="margin-top: 0px; max-height: unset; overflow-y: auto; overflow-x: hidden;">
+                        @if (SearchPageAccess.View)
+                        {
+                            <div id="tab-2" class="tab-pane active" style="height: 800px;">
+                                <div id="PersonnelsForm" class="panel-body" style="padding: 10px; max-height: 100%; border: 1px solid #e5e6e7; overflow-y: hidden;">
+                                    @Html.Partial("~/Views/HumanResource/Personnel/_PersonnelSearch.cshtml")
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="file-manager">
+            </div>
+            <form id="" enctype="multipart/form-data" class="pull-left" style="width: 100%;">
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal inmodal custom-modal" id="PersonnelProfile" data-backdrop="static" data-keyboard="false" tabindex="" role="dialog" aria-hidden="true">
+    <div class="vertical-alignment-helper">
+        <div class="modal-center vertical-align-center" style="vertical-align: unset;">
+            <div class="modal-content animated fadeInDown" style=" height: 100%;">
+                <form id="form_personelprofile">
+                    @*@Html.Partial("~/Views/HUmanResource/Personnel/Profile.cshtml")*@
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="floating-buttons" class="menu pmd-floating-action" role="navigation">
+    @if (SearchPageAccess.Insert)
+    {
+        @*<button type="button" id="btnadd" class="btn btn-lg btn-circle pmd-floating-action-btn pmd-btn-fab pmd-btn-raised pmd-ripple-effect btn-primary" data-title="Create New">
+                <i class="fa fa-plus"></i>
+            </button>*@
+    }
+</div>
+
+<input type="hidden" id="StoreEditModel" />
+
+<div id="" class="customFileInput hidden">
+    <div class="input-group file-input" style="display: inline-table; width: 100%;">
+        <span class="input-group-addon"><i class="fa fa-file"></i></span>
+        <input type="text" name="File" class="browseFileCustom form-control text-transform-none" placeholder="File..." readonly="readonly" />
+        <span id="" class="clearInput" title="Clear"><i class="fa fa-times"></i></span>
+    </div>
+</div>
+
+<style>
+    .image-crop {
+        overflow: hidden;
+        /*text-align: -webkit-center;*/
+    }
+
+        .image-crop > .cropper-container {
+            width: 150px !important;
+            height: 150px !important;
+            left: 0px !important;
+            top: 0px !important;
+        }
+
+    .select2-results .select2-disabled, .select2-results__option[aria-disabled=true] {
+        display: none;
+    }
+</style>
+
+<script type="text/javascript">
+        var $_noCourseEducArr = @Html.Raw(Json.Encode(noCourseEducation));
+        var $_perpetualLicenseIds = @Html.Raw(Json.Encode(perpetualLicenseIDs));
+        var $_perpetualLicensesArr = [];
+        var $_positionDeptArr = @Html.Raw(Json.Encode(positionDepartments));
+        var $_positionsArr = @Html.Raw(Json.Encode(positions));
+        var $_leaveTypeArr = @Html.Raw(Json.Encode(leaveTypes));
+        var $_marriedID = @marriedID;
+        var $_SelectedRows = [];
+        var isPersonnelUpdated = false;
+
+        $(document).ready(function() {
+            Events();
+
+            for (var i = 0; i < $_perpetualLicenseIds.length; i++) {
+                $_perpetualLicensesArr.push({ ID: $_perpetualLicenseIds[i] });
+            }
+
+            $("#PersonnelProfile").on("hidden.bs.modal",
+                function () {
+                    if ($('#PersonnelProfile #Personnel_ID').val() > 0 && isPersonnelUpdated == true) {
+                        //ShowLoadingScreen();
+                        //location.reload();
+                        Search();
+                    }
+                });
+
+            $('select#EmploymentStatusID').off('change').on('change', SelectChange);
+        });
+
+        function NewProfile() {
+            $.ajax({
+                data: {
+                    'id': 0
+                },
+                type: 'POST',
+                datatype: 'JSON',
+                url: '@Url.Action("PersonnelProfile", "Personnel")',
+                cache: false,
+                beforeSend: function() {
+                    ShowLoadingScreen();
+                },
+                complete: function() {
+                    RemoveLoadingScreen();
+                },
+                success: function(response) {
+                    if (response.msg == null) {
+                        BindSaveFunction(true, response);
+                        $('#DependentsDiv').attr('hidden', 'true')
+                        $('#DetailsDiv').attr('hidden', 'true')
+                        $('#ResignationDetailsDiv').attr('hidden', 'true')
+                    } else {
+                        toastr.error(response.res);
+                    }
+                },
+                error: function(x) {
+                }
+            })
+        }
+
+        function EditProfile() {
+            var id = $(this).val();
+            OpenProfile(id);
+        }
+
+        function OpenProfile(id) {
+            $.ajax({
+                data: {
+                    'id': id
+                },
+                type: 'POST',
+                datatype: 'JSON',
+                url: '@Url.Action("PersonnelProfile", "Personnel")',
+                cache: false,
+                beforeSend: function() {
+                    ShowLoadingScreen();
+                },
+                complete: function() {
+                    RemoveLoadingScreen();
+                },
+                success: function(response) {
+                    if (response.msg == null) {
+                        BindSaveFunction(false, response);
+
+                        //$('#btnNewWorkExp').val(id);
+                        //$('#btnNewEducBG').val(id);
+                        //$('#btnNewTraining').val(id);
+                        //$('#btnNewMemo').val(id);
+
+                        $('a[href="#tab-2"]').off('click').on('click', GetEmploymentInfos);
+                        $('a[href="#tab-3"]').off('click').on('click', GetEducationalBackgrounds);
+                        $('a[href="#tab-4"]').off('click').on('click', GetWorkExperiences);
+                        $('a[href="#tab-5"]').off('click').on('click', GetTrainingsAndSeminars);
+                        $('a[href="#tab-6"]').off('click').on('click', GetMemoArchives);
+                        $('a[href="#tab-7"]').off('click').on('click', GetMemoArchives);
+                        $('a[href="#tab-8"]').off('click').on('click', GetCompensationsAndDeductions);
+                        $('a[href="#tab-9"]').off('click').on('click', GetLeaveCredits);
+                        $('a[href="#tab-10"]').off('click').on('click', GetLoans);
+                        SelectedDaysEvents();
+
+                        CheckRequiredFields();
+                    } else {
+                        toastr.error(response.res);
+                    }
+                },
+                error: function(x) {
+                }
+            })
+    }
+
+    function SelectedDaysEvents() {
+        $('#tab-2 #Days select').off('change').on('change', function () {
+            var hasSched = false;
+            $('#tab-2 #Days select').each(function () {
+                if ($(this).val()) {
+                    hasSched = true;
+                }
+            });
+
+            if (hasSched) {
+                $('#tab-2 #Days span.select2-selection').removeClass('input-incomplete');
+                $('#tab-2 #Days select').removeClass('required');
+            }
+            else {
+                $('#tab-2 #Days span.select2-selection').addClass('input-incomplete');
+                $('#tab-2 #Days select').addClass('required');
+            }
+        });
+        $('#tab-2 #Days select').trigger('change');
+        $('#tab-2 #Days select').select2();
+    }
+
+        function EnableDelete() {
+            var id = parseFloat($(this).val() ? $(this).val() : 0);
+            var description = $(this).closest('tr').find('.clickable-text').text().trim();
+
+            if ($(this).is(':checked')) {
+                $_SelectedRows = $_SelectedRows.filter(function (e) { return e.ID !== id; });
+            }
+            else {
+                if ($_SelectedRows.filter(function (e) { return e.ID == id; }).length == 0)
+                    $_SelectedRows.push({ ID: id, Description: description });
+            }
+
+            var rowCount = $(this).closest('table').find('tbody tr.Row-Display .chkRow').length;
+            $('#SelectAll').iCheck(($_SelectedRows.length == rowCount ? '' : 'un') + 'check');
+            $('#MultipleDelete').attr('disabled', $_SelectedRows.length > 0 ? false : true);
+        }
+
+        function MultipleDelete() {
+            var pagetitle = $('.page-heading h2').text().trim().toLowerCase();
+            var message = $_SelectedRows.length + ' ' + pagetitle + ($_SelectedRows.length > 1 ? 's' : '');
+
+            swal({
+                title: 'Delete ' + message + '?',
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+                closeOnConfirm: true,
+                closeOnCancel: true
+            },
+            function(confirm) {
+                if (confirm) {
+                    $.ajax({
+                        data: {
+                            'ids': JSON.stringify($_SelectedRows),
+                            '__RequestVerificationToken': $('@Html.AntiForgeryToken()').val()
+                        },
+                        type: 'POST',
+                        datatype: 'JSON',
+                        url: '@Url.Action("DeleteMultiple", "Personnel")',
+                        async: true,
+                        cache: false,
+                        beforeSend: function(x) {
+                            ShowLoadingScreen()
+                        },
+                        complete: function() {
+                            RemoveLoadingScreen()
+                        },
+                        success: function(response) {
+                            if (response.msg) {
+                                toastr.success(message + ' deleted!');
+                                Search();
+                            } else {
+                                toastr.error(response.res);
+                            }
+                        },
+                        error: function(x) {
+                        }
+                    })
+                }
+            });
+        }
+
+        function SelectAllRows() {
+            $checkRows = $(this).closest('table').find('input.chkRow');
+
+            if ($(this).is(':checked')) {
+                $checkRows.iCheck('uncheck');
+                $_SelectedRows = [];
+            }
+            else {
+                $checkRows.iCheck('check');
+
+                $checkRows.each(function (e) {
+                    var id = parseFloat($(this).val() ? $(this).val() : 0);
+                    var description = $(this).closest('tr').find('.clickable-text').text().trim();
+
+                    if ($_SelectedRows.filter(function (e) { return e.ID == id; }).length == 0)
+                        $_SelectedRows.push({ ID: id, Description: description });
+                });
+            }
+
+            $('#MultipleDelete').attr('disabled', $_SelectedRows.length > 0 ? false : true);
+        }
+
+        function GetEmploymentInfos() {
+            $('#form_personelprofile .tab-pane').removeClass('active');
+            $('#form_personelprofile #tab-2').addClass('active');
+        }
+
+        function GetEducationalBackgrounds() { GetDatas(1) }
+
+        function GetWorkExperiences() { GetDatas(2) }
+
+        function GetTrainingsAndSeminars() { GetDatas(3) }
+
+        function GetCompensationsAndDeductions() { GetDatas(4) }
+
+        function GetLoans() { GetDatas(5) }
+
+        function GetLeaveCredits() { GetDatas(6) }
+
+        function GetDatas(key) {
+            var personnelID = $('#tab-1 input.PersonnelID').val();
+            var url = '';
+
+            switch (key) {
+            case 1:
+                url = '@Url.Action("GetEducationalBackgrounds", "Personnel")';
+                break;
+            case 2:
+                url = '@Url.Action("GetWorkExperiences", "Personnel")';
+                break;
+            case 3:
+                url = '@Url.Action("GetTrainings", "Personnel")';
+                break;
+            case 4:
+                url = '@Url.Action("GetCompensationsAndDeductions", "Personnel")';
+                break;
+            case 5:
+                url = '@Url.Action("GetLoans", "Personnel")';
+                break;
+            case 6:
+                url = '@Url.Action("GetLeaveCredits", "Personnel")';
+                break;
+            }
+            $.ajax({
+                data: { PersonnelID: personnelID, __RequestVerificationToken: $('@Html.AntiForgeryToken()').val() },
+                type: 'POST',
+                datatype: 'JSON',
+                url: url,
+                beforeSend: function() {
+                    ShowLoadingScreen()
+                },
+                complete: function() {
+                    RemoveLoadingScreen()
+                },
+                success: function(response) {
+                    if (typeof response.msg == 'undefined') {
+                        switch (key) {
+                        case 1:
+                            $('#form-educbgs').html(response);
+                            //$('a[href="#tab-3"]').off('click');
+                            break;
+                        case 2:
+                            $('#form-workexps').html(response);
+                            //$('a[href="#tab-4"]').off('click');
+                            break;
+                        case 3:
+                            $('#form-trainings').html(response);
+                            //$('a[href="#tab-5"]').off('click');
+                            break;
+                        case 4:
+                            $('#form-compded').html(response);
+                            //$('a[href="#tab-8"]').off('click');
+                            $(".tpj-money").tpjmoneymask();
+                        case 5:
+                            $('#form-loans').html(response)
+                            //$('a[href="#tab-9"]').off('click');
+                            //$('.Row-Display').off('click').on('click', ViewRowDetails);
+                            $(".tpj-money").tpjmoneymask();
+
+                            //$('#form-compded input[name="Amount"]').maskMoney();
+                            break;
+                        case 6:
+                            $('#form-leavecredits').html(response);
+                            //$('a[href="#tab-8"]').off('click');
+                            $(".tpj-money").tpjmoneymask();
+                        }
+                        Events2();
+                    } else
+                        toastr.error(response.res)
+                },
+                error: function() {
+                }
+            })
+        }
+
+        function ViewRowDetails() {
+            var tableRow = $(this).attr('tpjattr');
+
+            switch (tableRow) {
+                case 'PersonnelLoan':
+                    var id = $(this).find('input[name="ID"]').val();
+                    var loanid = $(this).find('input[name="LoanID"]').val();
+                    var personnelid = $(this).find('input[name="PersonnelID"]').val();
+
+                    GetLoanDeductions(loanid);
+                    break;
+                case 'PersonnelProfile':
+                    break;
+            }
+    }
+
+        function GetLoanDeductions(loanid) {
+            var params = 'PersonnelLoanID=' + loanid +
+                '&__RequestVerificationToken=' +
+                $('@Html.AntiForgeryToken()').val();
+
+            $.ajax({
+                url: '@Url.Action("GetLoanDeductions", "Personnel")',
+                data: params,
+                type: "POST",
+                cache: false,
+                beforeSend: function () {
+                    ShowLoadingScreen()
+                },
+                complete: function () {
+                    RemoveLoadingScreen()
+                },
+                success: function (response) {
+                    if (response.msg == null) {
+                        $('#form-loan-details').html(response);
+
+                        //$('.grid').masonry({
+                        //    // options
+                        //    itemSelector: '.grid-item',
+                        //    columnWidth: 250
+                        //});
+
+                        //ResizeTabContentResponsive();
+                    } else {
+                        toastr.error(response.res);
+                    }
+                },
+                error: function (response) {
+                    toastr.error('AJAX backend error', 'An error has occured.');
+                }
+            });
+    }
+
+        function DeleteProfile() {
+            var id = parseFloat($(this).val());
+            SingleDeleteProfile(id, $(this));
+        }
+
+        function SingleDeleteProfile(id, btn) {
+            //var id = parseFloat($(this).val());
+            var divName = btn.attr('name').replace('Delete', '');
+            var tr = btn.closest('tr');
+
+            swal({
+                    title: 'Do you want to delete \n"' + tr.find('td:eq(0)').text().trim() + "\" ?",
+                    text: "",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes",
+                    cancelButtonText: "No",
+                    closeOnConfirm: true,
+                    closeOnCancel: true
+            },
+            function(confirm) {
+                if (confirm) {
+                    $.ajax({
+                        data: {
+                            'id': id,
+                            '__RequestVerificationToken': $('@Html.AntiForgeryToken()').val()
+                        },
+                        type: 'POST',
+                        datatype: 'JSON',
+                        url: '@Url.Action("DeletePersonnel", "Personnel")',
+                        async: true,
+                        cache: false,
+                        beforeSend: function(x) {
+                            ShowLoadingScreen()
+                        },
+                        complete: function() {
+                            RemoveLoadingScreen()
+                        },
+                        success: function(response) {
+                            if (response.msg) {
+                                toastr.success(tr.find('td:eq(0)').text() + "'s Profile deleted!");
+                                tr.remove();
+                                location.reload();
+
+                                if ($('#' + divName + 'sTable tbody tr.Row-Input').length == 0) {
+                                    $('#' + divName + 'sTable tbody tr#No-Row-Display').hide();
+                                }
+                            } else {
+                                toastr.error(response.res);
+                            }
+                        },
+                        error: function(x) {
+                        }
+                    })
+                }
+            });
+        }
+
+        function SaveProfileInfo() {
+            var formdata = new FormData();
+            var tabID = $(this).closest('.tab-pane').attr('id');
+            var urlAction = "",
+                tabName = $('ul.nav-tabs').find('li a[href="' + tabID + '"]').text().trim();
+
+            @*switch (tabID) {
+            case 'tab-1':
+                    $("#BasicDiv *").each(function() {
+                        formdata.append($(this).attr('name'), $(this).val());
+                    });
+                    $("#ContactsDiv *").each(function() {
+                        formdata.append($(this).attr('name'), $(this).val());
+                    });
+                    $("#GovtIDsDiv *").each(function() {
+                        formdata.append($(this).attr('name'), $(this).val());
+                    });
+                    $("#EmergencyDiv *").each(function() {
+                        formdata.append($(this).attr('name'), $(this).val());
+                    });
+
+                    $("#DetailsDiv *").each(function () {
+                        formdata.append($(this).attr('name'), $(this).val());
+                    });
+                    $('#DetailsDiv input.i-checks').each(function () {
+                        formdata.append($(this).attr('name'), $(this).is(':checked'));
+                    });
+                    $("#ResignationDetailsDiv *").each(function () {
+                        formdata.append($(this).attr('name'), $(this).val());
+                    });
+                    if ($("#browseImage")[0].files.length > 0)
+                        formdata.append("fileBase", $("#browseImage")[0].files[0])
+
+                    urlAction = '@Url.Action("SavePersonalInfo", "Personnel")';
+                    break;
+            case 'tab-2':
+                    $("#ReferenceDiv *").each(function() {
+                        formdata.append($(this).attr('name'), $(this).val());
+                    });
+
+                    $("#SchedDiv *").each(function () {
+                        formdata.append($(this).attr('name'), $(this).val());
+                    });
+
+                urlAction = '@Url.Action("SaveEmployementInfo", "Personnel")';
+                break;
+            case 'tab-5':
+                $("#tab-5 *").each(function() {
+                    formdata.append($(this).attr('name'), $(this).val());
+                });
+
+                urlAction = '@Url.Action("SaveTraining", "Personnel")';
+                break;
+            }*@
+
+
+            if (tabID == 'tab-1') {
+                if ($("#browseImage")[0].files.length > 0)
+                    formdata.append("fileBase", $("#browseImage")[0].files[0]);
+
+                urlAction = '@Url.Action("SavePersonalInfo", "Personnel")';
+            }
+            if (tabID == 'tab-2') {
+                urlAction = '@Url.Action("SaveEmployementInfo", "Personnel")';
+            }
+            if (tabID == 'tab-5') {
+                urlAction = '@Url.Action("SaveTraining", "Personnel")';
+            }
+
+            $('#' + tabID + ' .panel-body .form-control').each(function (f) {
+                if ($(this).attr('name') && $(this).attr('name').indexOf('.') > -1)
+                    formdata.append($(this).attr('name'), $(this).val());
+            });
+            $('#' + tabID + ' input.i-checks').each(function (f) {
+                if ($(this).attr('name'))
+                    formdata.append($(this).attr('name'), $(this).is(':checked'));
+            });
+            $('#' + tabID + ' input.js-switch').each(function (f) {
+                if ($(this).attr('name'))
+                    formdata.append($(this).attr('name'), $(this).is(':checked'));
+            });
+
+            formdata.append("__RequestVerificationToken", $('@Html.AntiForgeryToken()').val());
+            formdata.append("Personnel.ID", $('#Personnel_ID').val());
+
+            var requiredFields = CheckRequiredFields().join(', ');
+
+            if ($('#' + tabID + ' .input-incomplete').length == 0) {
+                $.ajax({
+                    data: formdata,
+                    type: 'POST',
+                    datatype: 'JSON',
+                    url: urlAction,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function() {
+                        ShowLoadingScreen()
+                    },
+                    complete: function() {
+                        RemoveLoadingScreen()
+                    },
+                    success: function(response) {
+                        if (response.msg) {
+                            if (tabID == 'tab-1') {
+                                $('#Personnel_ID').val(response.res);
+                            }
+                            $('.PersonnelID').val(response.res);
+                            //$('#btnNewWorkExp').val(response.res);
+                            //$('#btnNewEducBG').val(response.res);
+                            //$('#btnNewTraining').val(response.res);
+                            //$('#btnNewMemo').val(response.res);
+                            $('#DependentsDiv').removeAttr('hidden');
+                            $('#DetailsDiv').removeAttr('hidden');
+                            $('#ResignationDetailsDiv').removeAttr('hidden');
+                            $('#PositionID').val($("#Personnel_PositionID").val());
+
+                            ShowTabs(false);
+
+                            $('a[href="#tab-2"]').off('click').on('click', GetEmploymentInfos);
+                            $('a[href="#tab-3"]').off('click').on('click', GetEducationalBackgrounds);
+                            $('a[href="#tab-4"]').off('click').on('click', GetWorkExperiences);
+                            $('a[href="#tab-5"]').off('click').on('click', GetTrainingsAndSeminars);
+                            $('a[href="#tab-6"]').off('click').on('click', GetMemoArchives);
+                            $('a[href="#tab-7"]').off('click').on('click', GetMemoArchives);
+                            $('a[href="#tab-8"]').off('click').on('click', GetCompensationsAndDeductions);
+                            $('a[href="#tab-9"]').off('click').on('click', GetLeaveCredits);
+                            $('a[href="#tab-10"]').off('click').on('click', GetLoans);
+
+                            isPersonnelUpdated = true;
+
+                            toastr.success(tabName + ' saved!', 'Success');
+                        } else {
+                            toastr.error(response.res);
+                        }
+                    },
+                    error: function(x) {
+                    }
+                });
+            } else {
+                toastr.warning('Please check incomplete fields/tables highlighted in orange. (' + requiredFields + ')', 'Warning');
+            }
+        }
+
+        function New() {
+            var personnelID = $(this).val();
+            $panel = $(this).closest('.tab-pane').find('.tab-panel-body');
+            var divName = $(this).attr('id').replace('btnNew', '');
+            var tabID = $(this).closest('.tab-pane').attr('id');
+            var urlAction = '',
+                tabName = $('ul.nav-tabs').find('li a[href="' + tabID + '"]').text().trim(),
+                params = '&__RequestVerificationToken=' +
+                    $('@Html.AntiForgeryToken()').val() +
+                    '&PersonnelID=' +
+                    personnelID;
+
+            switch (divName) {
+            case 'EducBG':
+                urlAction = '@Url.Action("NewEducationalBackground", "Personnel")';
+                break;
+            case 'WorkExp':
+                urlAction = '@Url.Action("NewWorkExperience", "Personnel")';
+                break;
+            case 'Memo':
+                urlAction = '@Url.Action("NewPersonnelMemo", "Personnel")';
+                break;
+            case 'Training':
+                urlAction = '@Url.Action("NewTraining", "Personnel")';
+                break;
+            }
+
+            if ($('#' + divName + '-0').length == 0 &&
+                $panel.closest('.tab-pane').find('.DivDisplay.hidden').length == 0) {
+                $.ajax({
+                    data: params,
+                    type: 'POST',
+                    datatype: 'JSON',
+                    url: urlAction,
+                    cache: false,
+                    beforeSend: function() {
+                        ShowLoadingScreen()
+                    },
+                    complete: function() {
+                        RemoveLoadingScreen()
+                    },
+                    success: function(response) {
+                        if (response.msg == null) {
+                            $panel.prepend('<div>' + response + '</div>').animate({ scrollTop: 0 }, '100');
+                            Events2();
+                            InitDatePicker();
+                            InitInputFileBrowse();
+                            $panel.find('div #' + divName + '-0 .edit' + divName).trigger('click');
+                        } else {
+                            toastr.error(response.res);
+                        }
+                    },
+                    error: function(x) {
+                    }
+                });
+            } else {
+            }
+        }
+
+        function Edit() {
+            var panelID = parseFloat($(this).val());
+            var divName = $(this).attr('class').replace('close edit', '').replace(' hidden', '');
+            $Panel = $('div#' + divName + '-' + panelID);
+
+            if ($Panel.closest('.tab-pane').find('.DivDisplay.hidden').length == 0 &&
+                ($('#' + divName + '-0').length == 0 || panelID == 0)) {
+                $btnSave = $Panel.find('.save' + divName);
+                $btnCancel = $Panel.find('.cancel' + divName);
+                $btnDelete = $Panel.find('.delete' + divName);
+                $Panel.find('.DivDisplay').addClass('hidden');
+                $Panel.find('.DivEdit').removeClass('hidden');
+                $btnSave.removeClass('hidden');
+                $btnCancel.removeClass('hidden');
+                $btnDelete.addClass('hidden');
+                $(this).addClass('hidden');
+
+                if (divName == 'WorkExp') {
+                    $('div.WorkExpDate').removeClass('hidden');
+                }
+                InitDatePicker();
+
+                $('#StoreEditModel').val($('#' + divName + '-' + panelID + " *").serialize() +
+                    '&__RequestVerificationToken=' +
+                    $('@Html.AntiForgeryToken()').val());
+            }
+        }
+
+        function Save() {
+            var panelID = parseFloat($(this).val());
+            var divName = $(this).attr('class').replace('close save', '');
+            $panel = $('#' + divName + '-' + panelID).parent();
+            var tabID = $(this).closest('.tab-pane').attr('id');
+            var urlAction = '',
+                tabName = $('ul.nav-tabs').find('li a[href="' + tabID + '"]').text().trim(),
+                params = $('#' + divName + '-' + panelID + " *").serialize() +
+                    '&__RequestVerificationToken=' +
+                    $('@Html.AntiForgeryToken()').val();
+
+            switch (divName) {
+            case 'EducBG':
+                urlAction = '@Url.Action("SaveEducationalBackground", "Personnel")';
+                break;
+            case 'WorkExp':
+                urlAction = '@Url.Action("SaveWorkExperience", "Personnel")';
+                break;
+            case 'Training':
+                urlAction = '@Url.Action("SaveTraining", "Personnel")';
+                break;
+            }
+
+            $.ajax({
+                data: params,
+                type: 'POST',
+                datatype: 'JSON',
+                url: urlAction,
+                cache: false,
+                beforeSend: function() {
+                    ShowLoadingScreen()
+                },
+                complete: function() {
+                    RemoveLoadingScreen()
+                },
+                success: function(response) {
+                    if (response.msg == null) {
+                        $panel.html(response);
+                        ShowTabs(false);
+                        $('#WorkExp-0').attr('id', '#WorkExp-' + panelID);
+                        Events2();
+                        $('#StoreEditModel').val('');
+                        toastr.success(tabName + ' saved!', 'Success');
+                    } else {
+                        toastr.error(response.res);
+                    }
+                },
+                error: function(x) {
+                }
+            });
+        }
+
+        function Cancel() {
+            var panelID = parseFloat($(this).val());
+            var divName = $(this).attr('class').replace('close cancel', '');
+            var urlAction = '';
+
+            if (panelID > 0) {
+                $panel = $('#' + divName + '-' + panelID).parent('div');
+                switch (divName) {
+                case 'EducBG':
+                    urlAction = '@Url.Action("CancelEducationalBackground", "Personnel")';
+                    break;
+                case 'WorkExp':
+                    urlAction = '@Url.Action("CancelWorkExperience", "Personnel")';
+                    break;
+                case 'Memo':
+                    urlAction = '@Url.Action("CancelMemo", "Personnel")';
+                    break;
+                case 'Training':
+                    urlAction = '@Url.Action("CancelTraining", "Personnel")';
+                    break;
+                }
+
+                $.ajax({
+                    data: $('#StoreEditModel').val(),
+                    type: 'POST',
+                    datatype: 'JSON',
+                    url: urlAction,
+                    cache: false,
+                    beforeSend: function() {
+                        ShowLoadingScreen();
+                    },
+                    complete: function() {
+                        RemoveLoadingScreen();
+                    },
+                    success: function(response) {
+                        if (response.msg == null) {
+                            $panel.html(response);
+                            Events2();
+                            $('#StoreEditModel').val('');
+                        } else {
+                            toastr.error(response.res);
+                        }
+                    },
+                    error: function(x) {
+                    }
+                });
+            } else {
+                $('#' + divName + '-0').remove();
+            }
+        }
+
+        function SelectPositions(rowID) {
+            var personnelTypeId = $('#Personnel_PersonnelTypeID').val() || 0;
+            var departmentId = $('#DepartmentsTable tbody tr.Row-Input:last-child').find('input[name="HiddenDepartmentID"]').val() || 0;
+            var urlAction = '@Url.Action("GetPositionByDepartmentAndPersonnelType", "Personnel")';
+
+            if (personnelTypeId > 0 && departmentId > 0) {
+                var params = 'departmentId=' + departmentId +
+                    '&personnelTypeId=' + personnelTypeId +
+                    '&__RequestVerificationToken=' +
+                    $('@Html.AntiForgeryToken()').val();
+
+                $.ajax({
+                    data: params,
+                    type: 'POST',
+                    datatype: 'JSON',
+                    url: urlAction,
+                    cache: false,
+                    beforeSend: function() {
+                        ShowLoadingScreen();
+                    },
+                    complete: function() {
+                        RemoveLoadingScreen();
+                    },
+                    success: function(response) {
+                        if (response.msg) {
+                            var positions = response.res.Positions;
+                            if (positions.length > 0) {
+                                var options = '<option value="0">N/A</option>';
+                                for (var i = 0; i < positions.length; i++) {
+                                    options += '<option value="' + positions[i].ID + '">' + positions[i].Description + '</option>';
+                                }
+
+                                $('#PersonnelPositionDiv-' + rowID + ' select').html(options);
+                                $('#PersonnelPositionDiv-' + rowID + ' select').select2();
+                                //select2Override();
+                            }
+                            else {
+                                $('#PersonnelPositionDiv select').empty();
+                            }
+                        } else {
+                            toastr.error(response.res);
+                        }
+                    },
+                    error: function(x) {
+                    }
+                });
+            }
+        }
+
+        function Delete() {
+            var panelID = parseFloat($(this).val());
+            var divName = $(this).attr('class').replace('close delete', '');
+            $panel = $('#' + divName + '-' + panelID).parent('div');
+            var tabID = $(this).closest('.tab-pane').attr('id');
+            var urlAction = '',
+                tabName = $('ul.nav-tabs').find('li a[href="' + tabID + '"]').text().trim();
+
+            switch (divName) {
+            case 'EducBG':
+                urlAction = '@Url.Action("DeleteEducationalBackground", "Personnel")';
+                break;
+            case 'WorkExp':
+                urlAction = '@Url.Action("DeleteWorkExperience", "Personnel")';
+                break;
+            case 'Memo':
+                urlAction = '@Url.Action("DeleteMemo", "Personnel")';
+                break;
+            case 'Training':
+                urlAction = '@Url.Action("DeleteTraining", "Personnel")';
+                break;
+            }
+
+            swal({
+                title: tabName + '\nwill be deleted.\nContinue?',
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+                closeOnConfirm: true,
+                closeOnCancel: true
+            },
+            function(confirm) {
+                if (confirm) {
+                    $.ajax({
+                        data: {
+                            id: panelID,
+                            __RequestVerificationToken: $('@Html.AntiForgeryToken()').val()
+                        },
+                        type: 'POST',
+                        datatype: 'JSON',
+                        url: urlAction,
+                        cache: false,
+                        beforeSend: function() {
+                            ShowLoadingScreen()
+                        },
+                        complete: function() {
+                            RemoveLoadingScreen()
+                        },
+                        success: function(response) {
+                            if (response.msg) {
+                                $panel.remove();
+                                toastr.success(tabName + ' deleted!', 'Success');
+                            } else {
+                                toastr.error(response.res);
+                            }
+                        },
+                        error: function(x) {
+                        }
+                    });
+                }
+            });
+        }
+
+        function EditTable() {
+            var rowID = parseFloat($(this).val());
+            var divName = $(this).attr('name').replace('Edit', '');
+            var inputName = $(this).attr('name');
+            $displayRow = $('#' + divName + 'sTable tr#Row-Display-' + divName + '-' + rowID);
+            $inputRow = $('#' + divName + 'sTable tr#Row-Input-' + divName + '-' + rowID);
+            var fileName = $displayRow.find('a').text().replace('\\' + divName + 's\\', '');
+
+            if ($('#' + divName + 'sTable tbody tr.Row-Input').is(':visible') == false) {
+                $displayRow.addClass('hidden');
+                $inputRow.removeClass('hidden');
+                $inputRow.find('.browseFileCustom').val(fileName);
+                $inputRow.find('select.form-control').trigger('change');
+            } else {
+                toastr.warning('A row in ' + divName + ' is still being edited.');
+            }
+
+            var departmentId = $('#DepartmentsTable tbody tr.Row-Input:last-child').find('input[name="HiddenDepartmentID"]').val() || 0;
+            if (divName == 'Position' && departmentId > 0) {
+                SelectPositions(rowID);
+            }
+        }
+
+        function CancelTable() {
+            var rowID = parseFloat($(this).val());
+            var divName = $(this).attr('name').replace('Cancel', '');
+            var title = $(this).attr('title');
+            $displayRow = $(this).closest('tr').prev('tr');
+            $inputRow = $(this).closest('tr');
+
+            if (rowID > 0) {
+                var params = $('#' + divName + 'sTable tr#Row-Input-' + divName + '-' + rowID + ' *').serialize() +
+                    '&__RequestVerificationToken=' +
+                    $('@Html.AntiForgeryToken()').val() +
+                    '&ID=' +
+                    rowID;
+
+                var urlAction = '';
+                switch (divName) {
+                case 'ContactNumber':
+                    urlAction = '@Url.Action("CancelPersonnelContactNumber", "Personnel")';
+                    break;
+                case 'Dependent':
+                    urlAction = '@Url.Action("CancelPersonnelDependent", "Personnel")';
+                    break;
+                case 'Department':
+                    urlAction = '@Url.Action("CancelPersonnelDepartment", "Personnel")';
+                    break;
+                case 'Position':
+                    urlAction = '@Url.Action("CancelPersonnelPosition", "Personnel")';
+                    break;
+                case 'AssignedLocation':
+                    urlAction = '@Url.Action("CancelPersonnelAssignedLocation", "Personnel")';
+                    break;
+                case 'EmploymentType':
+                    urlAction = '@Url.Action("CancelPersonnelEmploymentType", "Personnel")';
+                    break;
+                case 'Schedule':
+                    urlAction = '@Url.Action("CancelPersonnelSchedule", "Personnel")';
+                    break;
+                case 'License':
+                    urlAction = '@Url.Action("CancelPersonnelLicense", "Personnel")';
+                    break;
+                case 'Memo':
+                    urlAction = '@Url.Action("CancelPersonnelMemo", "Personnel")';
+                    break;
+                case 'EducationalBackground':
+                    urlAction = '@Url.Action("CancelEducationalBackground", "Personnel")';
+                    break;
+                case 'WorkExperience':
+                    urlAction = '@Url.Action("CancelWorkExperience", "Personnel")';
+                    break;
+                case 'Training':
+                    urlAction = '@Url.Action("CancelTraining", "Personnel")';
+                    break;
+                case 'Legislation':
+                    urlAction = '@Url.Action("CancelPersonnelLegislation", "Personnel")';
+                    break;
+                case 'Compensation':
+                    urlAction = '@Url.Action("CancelPersonnelCompensation", "Personnel")';
+                    break;
+                case 'Deduction':
+                    urlAction = '@Url.Action("CancelPersonnelDeduction", "Personnel")';
+                    break;
+                case 'Loan':
+                    urlAction = '@Url.Action("CancelPersonnelLoan", "Personnel")';
+                    break;
+                case 'LeaveCredits':
+                    urlAction = '@Url.Action("CancelPersonnelLeaveCredits", "Personnel")';
+                    break;
+                case 'Vaccine':
+                    urlAction = '@Url.Action("CancelPersonnelVaccine", "Personnel")';
+                    break;
+                }
+
+                $.ajax({
+                    data: params,
+                    type: 'POST',
+                    datatype: 'JSON',
+                    url: urlAction,
+                    cache: false,
+                    beforeSend: function() {
+                        ShowLoadingScreen()
+                    },
+                    complete: function() {
+                        RemoveLoadingScreen()
+                    },
+                    success: function(response) {
+                        if (response.msg == null) {
+                            $displayRow.after(response);
+                            $inputRow.remove();
+                            $displayRow.remove();
+
+                            HideOptions('.licenseTypeID', '.licenseTypes', '#LicenseTypeID');
+                            HideOptions('.vaccineTypeID', '.vaccineTypes', '#VaccineTypeID');
+
+                            if ($('#' + divName + 'sTable tbody tr.Row-Input').length == 0) {
+                                $('#' + divName + 'sTable tbody tr#No-Row-Display').hide();
+                            }
+
+                            Events2();
+                            InitDatePicker();
+                            InitInputFileBrowse();
+                            $('#StoreEditModel').val('');
+                            //toastr.success(divName + ' saved!', 'Success');
+                        } else {
+                            toastr.error(response.res);
+                        }
+                    },
+                    error: function(x) {
+                    }
+                });
+            } else {
+                $(this).closest('tr').find('input.form-control').val('');
+                $(this).closest('tr').find('select.form-control').val(0).trigger('change');
+            }
+
+            $('#StoreEditModel').val($(this).closest('tr#Row-Display-' + rowID + " *").serialize() +
+                '&__RequestVerificationToken=' +
+                $('@Html.AntiForgeryToken()').val());
+        }
+
+        function DeleteTable() {
+            var depID = parseFloat($(this).val());
+            var personnelID = $('#tab-1 input.PersonnelID').val();
+            var divName = $(this).attr('name').replace('Delete', '');
+            $displayRow = $(this).closest('tr').prev('tr');
+            $inputRow = $(this).closest('tr');
+
+            var urlAction = '';
+            switch (divName) {
+            case 'ContactNumber':
+                urlAction = '@Url.Action("DeletePersonnelContactNumber", "Personnel")';
+                break;
+            case 'Dependent':
+                urlAction = '@Url.Action("DeletePersonnelDependent", "Personnel")';
+                break;
+            case 'Department':
+                urlAction = '@Url.Action("DeletePersonnelDepartment", "Personnel")';
+                break;
+            case 'Position':
+                urlAction = '@Url.Action("DeletePersonnelPosition", "Personnel")';
+                break;
+            case 'AssignedLocation':
+                urlAction = '@Url.Action("DeletePersonnelAssignedLocation", "Personnel")';
+                break;
+            case 'EmploymentType':
+                urlAction = '@Url.Action("DeletePersonnelEmploymentType", "Personnel")';
+                break;
+            case 'Schedule':
+                urlAction = '@Url.Action("DeletePersonnelSchedule", "Personnel")';
+                break;
+            case 'License':
+                urlAction = '@Url.Action("DeletePersonnelLicense", "Personnel")';
+                break;
+            case 'Memo':
+                urlAction = '@Url.Action("DeletePersonnelMemo", "Personnel")';
+                break;
+            case 'EducationalBackground':
+                urlAction = '@Url.Action("DeleteEducationalBackground", "Personnel")';
+                break;
+            case 'WorkExperience':
+                urlAction = '@Url.Action("DeleteWorkExperience", "Personnel")';
+                break;
+            case 'Training':
+                urlAction = '@Url.Action("DeleteTraining", "Personnel")';
+                break;
+            case 'Legislation':
+                urlAction = '@Url.Action("DeleteLegislation", "Personnel")';
+                break;
+            case 'Compensation':
+                urlAction = '@Url.Action("DeletePersonnelCompensation", "Personnel")';
+                break;
+            case 'Deduction':
+                urlAction = '@Url.Action("DeletePersonnelDeduction", "Personnel")';
+                break;
+            case 'Loan':
+                urlAction = '@Url.Action("DeletePersonnelLoan", "Personnel")';
+                break;
+            case 'Vaccine':
+                urlAction = '@Url.Action("DeletePersonnelVaccine", "Personnel")';
+                break;
+            }
+
+            swal({
+                title: 'Delete ' + divName + '?',
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+                closeOnConfirm: true,
+                closeOnCancel: true
+            },
+            function(confirm) {
+                if (confirm) {
+                    $.ajax({
+                        data: {
+                            id: depID,
+                            personnelId: personnelID,
+                            __RequestVerificationToken: $('@Html.AntiForgeryToken()').val()
+                        },
+                        type: 'POST',
+                        datatype: 'JSON',
+                        url: urlAction,
+                        cache: false,
+                        beforeSend: function() {
+                            ShowLoadingScreen()
+                        },
+                        complete: function() {
+                            RemoveLoadingScreen()
+                        },
+                        success: function(response) {
+                            if (response.msg) {
+                                $inputRow.remove();
+                                $displayRow.remove();
+                                toastr.success(divName + ' deleted!', 'Success');
+
+                                HideOptions('.licenseTypeID', '.licenseTypes', '#LicenseTypeID');
+                                HideOptions('.vaccineTypeID', '.vaccineTypes', '#VaccineTypeID');
+                                $('#Row-Input-' + divName + '-0 select').val(0).trigger('change')
+
+                                if ($('#' + divName + 'sTable tbody tr.Row-Input').length == 0) {
+                                    $('#' + divName + 'sTable tbody tr#No-Row-Display').show();
+                                }
+                            } else {
+                                toastr.error(response.res);
+                            }
+                        },
+                        error: function(x) {
+                        }
+                    });
+                }
+            });
+        }
+
+        function SaveTable() {
+            var rowID = parseFloat($(this).val());
+            var divName = $(this).attr('name').replace('Save', '');
+            var TableID = $(this).closest('table').attr('id');
+            $displayRow = $(this).closest('tr').prev('tr');
+            $inputRow = $(this).closest('tr');
+            var formdata = new FormData(),
+                hasFile = false,
+                params = $('#' + divName + 'sTable tr#Row-Input-' + divName + '-' + rowID + ' *').serialize() +
+                    '&__RequestVerificationToken=' +
+                    $('@Html.AntiForgeryToken()').val() +
+                    '&ID=' +
+                    rowID;
+
+            var urlAction = '';
+            switch (divName) {
+            case 'Dependent':
+                urlAction = '@Url.Action("SavePersonnelDependent", "Personnel")';
+                break;
+            case 'ContactNumber':
+                urlAction = '@Url.Action("SavePersonnelContactNumber", "Personnel")';
+                break;
+            case 'Department':
+                urlAction = '@Url.Action("SavePersonnelDepartment", "Personnel")';
+                break;
+            case 'Position':
+                urlAction = '@Url.Action("SavePersonnelPosition", "Personnel")';
+                break;
+            case 'AssignedLocation':
+                urlAction = '@Url.Action("SavePersonnelAssignedLocation", "Personnel")';
+                break;
+            case 'EmploymentType':
+                urlAction = '@Url.Action("SavePersonnelEmploymentType", "Personnel")';
+                break;
+            case 'Schedule':
+                urlAction = '@Url.Action("SavePersonnelSchedule", "Personnel")';
+                break;
+            case 'License':
+                urlAction = '@Url.Action("SavePersonnelLicense", "Personnel")';
+                break;
+            case 'Memo':
+                urlAction = '@Url.Action("SavePersonnelMemo", "Personnel")';
+                $('#' + divName + 'sTable tr#Row-Input-' + divName + '-' + rowID + ' *').each(function() {
+                    formdata.append($(this).attr('name'), $(this).val());
+                });
+                hasFile = true;
+                break;
+            case 'EducationalBackground':
+                urlAction = '@Url.Action("SaveEducationalBackground", "Personnel")';
+                break;
+            case 'WorkExperience':
+                urlAction = '@Url.Action("SaveWorkExperience", "Personnel")';
+                break;
+            case 'Training':
+                urlAction = '@Url.Action("SaveTraining", "Personnel")';
+                break;
+            case 'Legislation':
+                urlAction = '@Url.Action("SavePersonnelLegislation", "Personnel")';
+                $('#' + divName + 'sTable tr#Row-Input-' + divName + '-' + rowID + ' *').each(function() {
+                    formdata.append($(this).attr('name'), $(this).val());
+                });
+                hasFile = true;
+                break;
+            case 'Compensation':
+                urlAction = '@Url.Action("SavePersonnelCompensation", "Personnel")';
+                break;
+            case 'Deduction':
+                urlAction = '@Url.Action("SavePersonnelDeduction", "Personnel")';
+                break;
+            case 'Loan':
+                urlAction = '@Url.Action("SavePersonnelLoan", "Personnel")';
+                break;
+            case 'LeaveCredits':
+                urlAction = '@Url.Action("SavePersonnelLeaveCredits", "Personnel")';
+                break;
+            case 'Vaccine':
+                urlAction = '@Url.Action("SavePersonnelVaccine", "Personnel")';
+                break;
+            }
+
+            if (hasFile) {
+                formdata.append("__RequestVerificationToken", $('@Html.AntiForgeryToken()').val());
+                formdata.append("ID", rowID);
+
+                if ($inputRow.find(".browsefile")[0].files.length > 0)
+                    formdata.append("fileBase", $inputRow.find(".browsefile")[0].files[0]);
+
+                params = formdata;
+            }
+
+            $.ajax({
+                data: params,
+                type: 'POST',
+                datatype: 'JSON',
+                url: urlAction,
+                cache: false,
+                contentType: !hasFile && 'application/x-www-form-urlencoded; charset=UTF-8',
+                processData: !hasFile,
+                beforeSend: function() {
+                    ShowLoadingScreen()
+                },
+                complete: function() {
+                    RemoveLoadingScreen()
+                },
+                success: function(response) {
+                    if (response.msg == null) {
+                        if (rowID > 0) {
+                            $displayRow.after(response);
+                            $inputRow.remove();
+                            $displayRow.remove();
+                        } else {
+                            $('#' + divName + 'sTable tbody').append(response);
+                            $inputRow.find('input.form-control').val('');
+                            $inputRow.find('select.form-control').val('').trigger('click');
+                        }
+
+                        HideOptions('.licenseTypeID', '.licenseTypes', '#LicenseTypeID');
+                        HideOptions('.vaccineTypeID', '.vaccineTypes', '#VaccineTypeID');
+                        $('#Row-Input-' + divName + '-0 select').val(0).trigger('change')
+
+                        if ($('#' + divName + 'sTable tbody tr.Row-Input').length > 0) {
+                            $('#' + divName + 'sTable tbody tr#No-Row-Display').hide();
+                        }
+
+                        Events2();
+                        InitDatePicker();
+                        InitInputFileBrowse();
+                        $('#StoreEditModel').val('');
+                        toastr.success(divName + ' saved!', 'Success');
+
+                        if (divName == 'Department') SelectPositions(0);
+
+                        CheckRequiredTables();
+                    } else {
+                        toastr.error(response.res);
+                    }
+                },
+                error: function(x) {
+                }
+            });
+        }
+
+        function AddEndDateTable(TableID) {
+            var StartDate = $('table#' + TableID + ' tbody tr.Row-Display').last().find('td:nth-child(3)').text();
+            $EndDateTD = $('table#DepartmentsTable tbody tr.Row-Display').last().prev('tr.Row-Input').prev('tr.Row-Display td:nth-child(4)');
+
+            if (Date.parse("September 09, 2019")) {
+                console.log('Valid Date')
+            } else {
+                console.log('Not a valid date')
+            }
+        }
+
+        function ShowTabs(isShow) {
+            if (isShow) {
+                $('.nav-tabs').find('li').hide();
+                $('.nav-tabs li:first-child').show()
+            } else {
+                $('.nav-tabs').find('li').show();
+            }
+        }
+
+        function CheckRequiredFields() {
+            var i = CheckRequiredInputs();
+            var s = CheckRequiredSelects();
+            var t = CheckRequiredTables();
+
+            return (i.concat(s)).concat(t);
+        }
+
+        function CheckRequiredInputs() {
+            var ret = [];
+
+            if ($('input.required').length > 0) {
+                $('input.required').each(function (e) {
+                    var textLen = $(this).val().length == 0;
+                    var label = $(this).closest('.form-group').find('label').text();
+                    //$(this).attr('id').replace('Personnel_', '').replace('ID', '')
+
+                    if (textLen) {
+                        $(this).addClass('input-incomplete');
+                        ret.push(label);
+                    } else {
+                        $(this).removeClass('input-incomplete');
+                    }
+                });
+            }
+
+            return ret;
+        }
+
+        function CheckRequiredSelects() {
+            var ret = [];
+
+            if ($('select.required').length > 0) {
+                $('select.required').each(function (e) {
+                    var val = parseInt($(this).val());
+                    var label = $(this).closest('.form-group').find('label').text();
+
+                    if (!val) {
+                        $(this).next('span').find('.select2-selection').addClass('input-incomplete');
+                        ret.push(label);
+                    } else {
+                        $(this).next('span').find('.select2-selection').removeClass('input-incomplete');
+                    }
+                });
+            }
+
+            return ret;
+        }
+
+        function CheckRequiredTables() {
+            //var requiredTables = [{ tableName: 'DepartmentsTable' }, { tableName: 'PositionsTable' }];
+            //var tableName = $(this).attr('id');
+            //var isTableNotRequired = requiredTables.filter(function (e) { return e.tableName == tableName }).length == 0;
+            //var isNotOfficePersonnel = parseInt($('#Personnel_PersonnelTypeID').val()) != 1;
+            //var isTableEmpty = $(this).find('tbody tr.Row-Display').length == 0;
+
+            var ret = [];
+
+            if ($('table.required').length > 0) {
+                $('table.required').each(function (e) {
+                    var tableName = $(this).attr('id');
+                    var isNotOfficePersonnel = parseInt($('#Personnel_PersonnelTypeID').val()) != 1;
+                    var isTableEmpty = $('table#' + tableName).find('tbody tr.Row-Display').length == 0;
+
+                    if (isTableEmpty) {
+                        $(this).addClass('input-incomplete');
+                        ret.push(tableName.replace('sTable', ''));
+                    } else {
+                        $(this).removeClass('input-incomplete');
+                    }
+                });
+            }
+
+            return ret;
+        }
+
+        function InitDatePicker() {
+            $('.input-group.date')
+                .find('.form-control').attr('readonly', true)
+                .css('background-color', '#fff')
+                .datepicker({
+                    todayBtn: "linked",
+                    keyboardNavigation: false,
+                    forceParse: false,
+                    calendarWeeks: true,
+                    autoclose: true
+                }).off('change').on('change',
+                    function() {
+                        showClearInput($(this));
+                    });
+
+            $('.input-group.date').each(function() {
+                $(this).closest('.form-group').css({
+                    'margin-bottom': '7px'
+                });
+                showClearInput($(this).find('input.form-control'));
+            });
+            $('.clearInput').off('click').on('click', ClearField);
+        }
+
+        function InitMaskedInput() {
+            $('input.maskedInput').each(function() {
+                $(this).maskedInput();
+            });
+
+            //minus 2 index in length if last char is hypen (-)
+            $('input.maskedInput').off('keydown').on('keydown',
+                function(e) {
+                    var text = $(this).val();
+                    var lastChar = text.substr(text.length - 1, text.length);
+                    var maskLen = $(this).attr('placeholder').length;
+                    var textLen = $(this).val().length;
+
+                    if (e.keyCode == 8 && lastChar == '-') {
+                        text = text.substr(0, text.length - 2);
+                        $(this).val(text);
+                        return false;
+                    }
+
+                    if (maskLen == textLen) {
+                        $(this).removeClass('input-incomplete');
+                    }
+
+                    $(this).maskedInput();
+                });
+            //$('input.maskedInput').off('keyup').on('keyup', IncompleteMaskedInput);
+            //Change bgcolor to Orange if mask is not completed
+            $('input.maskedInput').off('focusout').on('focusout', IncompleteMaskedInput);
+        }
+
+        function IncompleteMaskedInput() {
+            var maskLen = $(this).attr('placeholder').length;
+            var textLen = $(this).val().length;
+
+            if (maskLen > textLen && textLen > 0) {
+                $(this).addClass('input-incomplete');
+            } else {
+                $(this).removeClass('input-incomplete');
+            }
+        }
+
+        function InitInputFileBrowse() {
+            $('input.browsefile').each(function() {
+                $(this).fileInput();
+                showClearInput($(this));
+            }).off('change').on('change',
+                function() {
+                    showClearInput($(this));
+                });
+
+            $('input.browseFileCustom').off('click').on('click', BrowseFile);
+            $('.clearInput').off('click').on('click', ClearField);
+        }
+
+        function showClearInput($this) {
+            var $input = $('#' + $this.attr('id'))
+            var $clearBtn = $input.next('.clearInput');
+            //$clearBtn.css("display", $input.val() == "" ? "none" : "block");
+
+            if ($input.val() == "") {
+                $clearBtn.hide();
+            } else {
+                $clearBtn.show();
+            }
+        }
+
+        function ClearField() {
+            $input = $(this).prev('input');
+            $inputHidden = $(this).closest('td').find('input[type="hidden"]');
+            $input.val('');
+            $inputHidden.val('');
+            showClearInput($input);
+
+            if ($(this).parent().parent().find('input.form-control').attr('id') == 'browseImage' &&
+                $('#ImageCanvasImg').attr('src') != '\Images\default.jpg') {
+                $('#ImageCanvasImg').attr('src', '\\Images\\default.jpg');
+                $input.val('default.jpg');
+            }
+        }
+
+        function Search() {
+            $.ajax({
+                url: '@Url.Action("Index", "Personnel")',
+                data: $('#form_search_params *').serialize(),
+                type: "GET",
+                cache: false,
+                beforeSend: function () {
+                    //ShowLoadingScreen();
+                    ShowHideRowLoadingDisplay('PersonnelsTable', true);
+                },
+                complete: function () {
+                    //RemoveLoadingScreen();
+                    //ShowHideRowLoadingDisplay('PersonnelsTable', false);
+                },
+                success: function(response) {
+                    if (response.msg == null) {
+                        $("#PersonnelsForm").html(response);
+                        Events();
+                        $('#txt_search').focus()
+                        isPersonnelUpdated = false;
+                    } else {
+                        toastr.error(response.res);
+                    }
+                },
+                error: function() {
+                    toastr.error('AJAX backend error', 'An error has occured.');
+                }
+            });
+        }
+
+        function Events() {
+            SetRowLoadingDisplayColSpan();
+            $_SelectedRows = [];
+
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+
+            $('.pages').off('click').on('click',
+                function() {
+                    $('#hid_page').val($(this).val())
+                    Search()
+                })
+            $('#txt_search').off('keydown').on('keydown',
+                function() {
+                    if (event.keyCode == 13) {
+                        $('#btn_search').click()
+                    }
+                })
+            $('#btn_search').off('click').on('click',
+                function() {
+                    $('#hid_search').val($('#txt_search').val());
+                    $('#hid_page').val(1);
+                    $('#hid_empStat').val($('#EmploymentStatusID').val());
+                    Search();
+                });
+
+            $('.EditProfile').off('click').on('click', EditProfile);
+            $('.DeleteProfile').off('click').on('click', DeleteProfile);
+            $('#btnadd').off('click').on('click', NewProfile);
+
+            $('tr.Row-Display.clickable').off('click').on('click', ViewRowDetails);
+            $('input.chkRow').off('ifClicked').on('ifClicked', EnableDelete);
+            $('button#MultipleDelete').off('click').on('click', MultipleDelete);
+            $('input#SelectAll').off('ifClicked').on('ifClicked', SelectAllRows);
+
+            select2Override();
+            $('select#EmploymentStatusID').off('change').on('change', SelectChange);
+        }
+
+        function Events2() {
+            //$('.tabs-container .nav-tabs li a').off('click').on('click', TabClick);
+
+            $('.TableEditButton').off('click').on('click', EditTable);
+            $('.TableDeleteButton').off('click').on('click', DeleteTable);
+            $('.TableSaveButton').off('click').on('click', SaveTable);
+            $('.TableCancelButton').off('click').on('click', CancelTable);
+
+            $('#form_personelprofile select#EducationalLevelID').each(SelectChange);
+            $('#form_personelprofile select#EducationalLevelID').off('change').on('change', SelectChange);
+            //$('#form_personelprofile select#Personnel_DepartmentID').off('change').on('change', SelectChange);
+            $('#form_personelprofile select#LicenseTypeID').off('change').on('change', SelectChange);
+            $('select#EmploymentStatusID').off('change').on('change', SelectChange);
+
+            select2Override();
+            InitDatePicker();
+            InitInputFileBrowse();
+            //$('#form_personelprofile select#Personnel_PositionID').off('select2:open').on("select2:open", selectClick);
+
+            InitDatePicker();
+            InitMaskedInput();
+            InitRequiredInputs();
+            InitInputFileBrowse();
+        }
+
+        function GetMemoArchives() {
+            var personnelID = $('#tab-1 input.PersonnelID').val();
+            var memoTypeID = $(this).attr('href') == '#tab-6' ? 1 : 2;
+
+            $.ajax({
+                data: {
+                    personnelId: personnelID,
+                    memoTypeId: memoTypeID,
+                    __RequestVerificationToken: $('@Html.AntiForgeryToken()').val()
+                },
+                type: 'POST',
+                datatype: 'JSON',
+                url: '@Url.Action("GetMemoArchives", "Personnel")',
+                cache: false,
+                beforeSend: function() {
+                    ShowLoadingScreen();
+                },
+                complete: function() {
+                    RemoveLoadingScreen();
+                },
+                success: function(response) {
+                    if (response.msg == false) {
+                        toastr.error(response.res);
+                    } else {
+                        var ViewName = memoTypeID == 1 ? "Memo" : "Legislation";
+
+                        $('#' + ViewName + 'sDiv').html(response);
+                        $('.DeleteMemo').off('click').on('click', DeleteTable);
+                        $('.ViewReplies').off('click').on('click', GetReplies);
+                        $('#' + ViewName + 'RepliesDiv').addClass('hidden');
+                        $('#' + ViewName + 'sDiv').removeClass('hidden');
+                    }
+                },
+                error: function(x) {
+                }
+            });
+        }
+
+        function GetReplies() {
+            $('#MemoRepliesDiv .chat-view .users-list button').removeClass('Personnel-Discussion');
+            $(this).addClass('Personnel-Discussion');
+            //var memoID = $('#MemoRepliesDiv .chat-view #Reply').val();
+            //var memoID = parseFloat($(this).closest('tr').attr('id').replace('Row-Display-Memo-', ''));
+            var memoID = parseFloat($(this).val());
+            var personnelID = $('#tab-1 input.PersonnelID').val();
+            var ViewName = $(this).closest('div.panel').attr('id').replace('sDiv', '');
+
+            $.ajax({
+                data: {
+                    MemoId: memoID,
+                    PersonnelId: personnelID,
+                    __RequestVerificationToken: $('@Html.AntiForgeryToken()').val()
+                },
+                type: 'POST',
+                datatype: 'JSON',
+                url: '@Url.Action("GetMemoReplies", "Personnel")',
+                cache: false,
+                beforeSend: function() {
+                    ShowLoadingScreen();
+                },
+                complete: function() {
+                    RemoveLoadingScreen();
+                },
+                success: function(response) {
+                    if (response.msg == false) {
+                        toastr.error(response.res);
+                    } else {
+                        $('#' + ViewName + 'RepliesDiv .chat-view').html(response);
+                        $('#' + ViewName + 'RepliesDiv .chat-view #Reply').val(memoID);
+
+                        $('#' + ViewName + 'RepliesDiv').removeClass('hidden');
+                        $('#' + ViewName + 'sDiv').addClass('hidden');
+
+                        //$('#ViewReplies').appendTo("body").modal('show');
+                        InitInputFileBrowse();
+                        ViewRepliesMemberClick();
+                        $('.chat-discussion .message-content a').off('mouseover').on('mouseover', MouseOverLink);
+                        $('.chat-discussion .message-content a').off('mouseleave').on('mouseleave', MouseLeaveLink);
+                    }
+                },
+                error: function(x) {
+                }
+            });
+        }
+
+        function CloseReplies() {
+            var ViewName = $(this).closest('div.panel').attr('id').replace('RepliesDiv', '');
+
+            $('#' + ViewName + 'RepliesDiv').addClass('hidden');
+            $('#' + ViewName + 'sDiv').removeClass('hidden');
+        }
+
+        function ViewReplies() {
+            var rowID = parseFloat($(this).val());
+            var tr = $(this).closest('tr');
+            var MemoNo = tr.find('td:eq(1)').text().trim();
+            var Description = tr.find('td:eq(2)').text().trim();
+            var MemoDate = tr.find('td:eq(3)').text().trim();
+            var File = tr.find('td:eq(4)').text().trim().replace('\\Memos\\', '');
+
+            $.ajax({
+                data: {
+                    ID: rowID,
+                    __RequestVerificationToken: $('@Html.AntiForgeryToken()').val()
+                },
+                type: 'POST',
+                datatype: 'JSON',
+                url: '@Url.Action("GetPersonnels", "Personnel")',
+                cache: false,
+                beforeSend: function() {
+                    ShowLoadingScreen();
+                },
+                complete: function() {
+                    RemoveLoadingScreen();
+                },
+                success: function(response) {
+                    if (response.msg == false) {
+                        toastr.error(response.res);
+                    } else {
+                        $('#MemoRepliesDiv .chat-view').html(response);
+                        $('#MemoRepliesDiv .chat-view #Reply').val(rowID);
+
+                        //var html = '<table>' +
+                        //    '<tr><td><b>Memo No.</b></td><td style="padding: 0 5px;">' + MemoNo + '</td></tr>' +
+                        //    '<tr><td><b>Description</b></td><td style="padding: 0 5px;">' + Description + '</td></tr>' +
+                        //    '<tr><td><b>Memo Date</b></td><td style="padding: 0 5px;">' + MemoDate + '</td></tr>' +
+                        //    '<tr><td><b>File</b></td><td style="padding: 0 5px;"><a id="raff" href="' + File +
+                        //    '" target="_blank" title="' + File + '">' + File +
+                        //    '<br/></a><img src="\\Memos\\' + File +'" class="" style="display: none;position: fixed;border: 2px solid #555;z-index: 1000;" /></td></tr>' +
+                        //    '</table>';
+                        //$('#MemoRepliesDiv .chat-view #MainMemoArchive').html(html);
+
+                        $('#MemoRepliesDiv').removeClass('hidden');
+                        $('#MemosDiv').addClass('hidden');
+                        InitInputFileBrowse();
+                        ViewRepliesMemberClick();
+                        //ImageLinkHoverEvents();
+                    }
+                },
+                error: function(x) {
+                }
+            });
+        }
+
+        function SendReply() {
+            var rowID = parseFloat($(this).val());
+            var formdata = new FormData();
+            var urlAction = '@Url.Action("SavePersonnelMemo", "Personnel")';
+            var memberCount = $('#MemoRepliesDiv .chat-view .users-list button').length;
+            var personnelID = $('#tab-1 input.PersonnelID').val();
+            var files = $(this).closest('.chat-message-form').find(".browsefile")[0].files;
+
+            if (files.length > 0) {
+                formdata.append("fileBase", files[0]);
+
+                formdata.append("personnelId", personnelID);
+                formdata.append("InReplyTo", rowID);
+                formdata.append("PersonnelReply", true);
+                formdata.append("__RequestVerificationToken", $('@Html.AntiForgeryToken()').val());
+
+                $.ajax({
+                    data: formdata,
+                    type: 'POST',
+                    datatype: 'JSON',
+                    url: urlAction,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function() {
+                        ShowLoadingScreen()
+                    },
+                    complete: function() {
+                        RemoveLoadingScreen()
+                    },
+                    success: function(response) {
+                        if (response.msg == null) {
+                            $('#MemoRepliesDiv .chat-discussion').append(response);
+                            toastr.success('Memo Archive Sent!', 'Success');
+
+                            if ($('#ViewReplies .modal-body .chat-discussion table tbody tr.no-message-td')
+                                .hasClass('hidden') ==
+                                false) {
+                                $('#ViewReplies .modal-body .chat-discussion table tbody tr.no-message-td')
+                                    .addClass('hidden');
+                            }
+
+                            $('.chat-message-form').find(".browsefile")
+                                .replaceWith($('.chat-message-form').find(".browsefile").val('').clone(true));
+                            $('.chat-message-form').find(".clearInput").trigger('click');
+                        } else {
+                            toastr.error(response.res);
+                        }
+                    },
+                    error: function(x) {
+                    }
+                });
+            } else {
+                toastr.error('File is empty!');
+            }
+        }
+
+        function ViewRepliesMemberClick() {
+            $('#MemoRepliesDiv .close').off('click').on('click', CloseReplies);
+            $('#LegislationRepliesDiv .close').off('click').on('click', CloseReplies);
+
+            //$('.chat-view button.chat-user').off('click').on('click', GetReplies);
+            $('.chat-view button.send').off('click').on('click', SendReply);
+        }
+
+        function ImageLinkHoverEvents() {
+            $('#MainMemoArchive a').off('mouseover').on('mouseover',
+                function() {
+                    $(this).next('img').show();
+                });
+            $('#MainMemoArchive a').off('mouseleave').on('mouseleave',
+                function() {
+                    $(this).next('img').hide();
+                });
+            $('#MainMemoArchive img').off('mouseover').on('mouseover',
+                function() {
+                    $(this).show();
+                });
+            $('#MainMemoArchive img').off('mouseleave').on('mouseleave',
+                function() {
+                    $(this).hide();
+                });
+        }
+
+        function HideOptions(input, targetDropdown, newTargetDropdownID) {
+            $(targetDropdown).find("option").show();
+            $(input).each(function() {
+                $(targetDropdown).find("option[value=" + $(this).val() + "]").hide();
+                $(targetDropdown).find("option[value=" + $(this).val() + "]:selected").show();
+            });
+        }
+
+        function BindMessageClickFunction() {
+            //$('.chat-view .message').off('click').on('click', ShowMenu);
+        }
+
+        function MouseOverLink() {
+            //console.log('over link');
+            $(this).closest('div.dropdown-toggle').removeAttr('data-toggle');
+        }
+
+        function MouseLeaveLink() {
+            //console.log('not over link');
+            $(this).closest('div.dropdown-toggle').attr('data-toggle', 'dropdown');
+        }
+
+        function ShowMenu() {
+            $(this).next('ul').show();
+        }
+
+        function BindSaveFunction(show, response) {
+            $('#form_personelprofile').html(response);
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+            $('#PersonnelProfile').appendTo("body").modal('show');
+            $('#btnSavePersonalInfo').off('click').on('click', SaveProfileInfo);
+            $('#btnSaveEmploymentInfo').off('click').on('click', SaveProfileInfo);
+            //$('#btnSaveEducationalBg').off('click').on('click', SaveProfileInfo);
+            //$('#btnSaveWorkExperience').off('click').on('click', SaveProfileInfo);
+
+            //$('#btnNewEducBG').off('click').on('click', New);
+            //$('#btnNewWorkExp').off('click').on('click', New);
+            //$('#btnNewTraining').off('click').on('click', New);
+            //$('#btnNewMemo').off('click').on('click', New);
+            Events2();
+
+            InitDatePicker();
+            InitMaskedInput();
+            InitInputFileBrowse();
+            ShowTabs(show);
+            //ImageCropper();
+            BrowseImage();
+
+            $('.clearInput').off('click').on('click', ClearField);
+
+            $('#form_personelprofile select.form-control').each(SelectChange);
+            $('#form_personelprofile select.form-control').off('change').on('change', SelectChange);
+
+            //$('input.floatingLabelInput').each(function () {
+            //    $(this).floatingLabel();
+            //});
+            //$('input.floatingLabelInput').off('click, focus, focusout').on('click, focus, focusout', function (e) {
+            //    $(this).floatingLabel();
+            //});
+            //$('label.not-floating-label').off('click').on('click', function (e) {
+            //    $('.not-floating-label').parent('.floating-form-group').find('.floatingLabelInput').focus();
+            //});
+
+            $('.moneyInput').each(function() {
+                $(this).maskMoney({ thousands: ',', decimal: '.', allowNegative: true, allowZero: true, suffix: '' })
+                    .attr('placeholder', '0.00');
+            });
+
+            initSwitches();
+            $('.js-switch').next('span.switchery').css('margin-left', '15px');
+            changeSwitchState('.js-switch', false);
+
+            $('.js-switch').off('change').on('change', JsSwitchChange);
+            select2Override();
+
+            //FixedHeaderFooterTable();
+            var departmentId = $('#DepartmentsTable tbody tr.Row-Input:last-child').find('input[name="HiddenDepartmentID"]').val() || 0;
+            if (departmentId > 0) {
+                SelectPositions(0);
+            }
+        }
+
+        function BrowseImage() {
+            document.getElementById('browseImage').onchange = function(e) {
+                var img = new Image();
+                //img.onload = draw;
+                img.onerror = failed;
+                img.src = URL.createObjectURL(this.files[0]);
+                $('#ImageCanvasImg').attr('src', img.src);
+            };
+
+            function draw() {
+                var canvas = document.getElementById('ImageCanvas');
+                canvas.width = this.width;
+                canvas.height = this.height;
+                var ctx = canvas.getContext('2d');
+                ctx.drawImage(this, 0, 0);
+            }
+
+            function failed() {
+                console.error("The provided file couldn't be loaded as an Image media");
+            }
+        }
+
+        function BrowseFile() {
+            $x = $(this);
+            $(this).parent().parent().find('.browsefile').trigger('click');
+            $(this).parent().parent().find('.browsefile').off('change').on('change',
+                function(e) {
+                    if ($(this)[0].files.length > 0)
+                        $x.val($(this)[0].files[0].name);
+                });
+        }
+
+        //JS-Switch Functions
+        function ImageCropper() {
+            var $image = $(".image-crop > img")
+            $($image).cropper({
+                aspectRatio: 1,
+                preview: ".img-preview",
+                done: function(data) {
+                    // Output the result data for cropping image.
+                }
+            });
+
+            var $inputImage = $("#inputImage");
+            if (window.FileReader) {
+                $inputImage.change(function() {
+                    var fileReader = new FileReader(),
+                        files = this.files,
+                        file;
+
+                    if (!files.length) {
+                        return;
+                    }
+
+                    file = files[0];
+
+                    if (/^image\/\w+$/.test(file.type)) {
+                        fileReader.readAsDataURL(file);
+                        fileReader.onload = function() {
+                            $inputImage.val("");
+                            $image.cropper("reset", true).cropper("replace", this.result);
+                        };
+                    } else {
+                        showMessage("Please choose an image file.");
+                    }
+                });
+            } else {
+                $inputImage.addClass("hide");
+            }
+
+            $("#download").click(function() {
+                window.open($image.cropper("getDataURL"));
+            });
+
+            $("#zoomIn").click(function() {
+                $image.cropper("zoom", 0.1);
+            });
+
+            $("#zoomOut").click(function() {
+                $image.cropper("zoom", -0.1);
+            });
+
+            $("#rotateLeft").click(function() {
+                $image.cropper("rotate", 45);
+            });
+
+            $("#rotateRight").click(function() {
+                $image.cropper("rotate", -45);
+            });
+
+            $("#setDrag").click(function() {
+                $image.cropper("setDragMode", "crop");
+            });
+        }
+
+        function JsSwitchChange() {
+            var elem = '#' + $(this).attr('id'),
+                isChecked = $(this).is(':checked');
+            changeSwitchState(elem, isChecked);
+        }
+
+        function changeSwitchState(id, isChecked) {
+            var _labelText = '',
+                _bgColor = '',
+                _bgColor2 = '',
+                _borderColor = '',
+                _boxShadow = '',
+                _transition = '',
+                _transition2 = '',
+                _left = '';
+
+            if (isChecked) {
+                //turn on
+                _labelText = 'Walk-in Applicant&nbsp;&nbsp;';
+                $(id).val(true);
+
+                _bgColor = 'rgb(26, 179, 148)';
+                _borderColor = 'rgb(26, 179, 148)';
+                _boxShadow = 'rgb(26, 179, 148) 0px 0px 0px 16px inset';
+                _transition = 'border 0.4s ease 0s, box-shadow 0.4s ease 0s, background-color 1.2s ease 0s';
+                _left = '20px';
+                _transition2 = 'background - color 0.4s ease 0s, left 0.2s ease 0s';
+                _bgColor2 = 'rgb(255, 255, 255)';
+
+                if (id == '#Personnel_WalkIn') {
+                    $('#ReferenceDiv .form-control').attr('disabled', true).val('').trigger('focusout');
+                }
+            } else {
+                //turn off
+                _labelText = 'Reffered Applicant&nbsp;&nbsp;';
+                $(id).removeAttr('checked').prop('checked', false).prev('label.control-label');
+                $(id).val(false);
+
+                _bgColor = 'rgb(255, 255, 255)';
+                _borderColor = 'rgb(223, 223, 223)';
+                _boxShadow = 'rgb(223, 223, 223) 0px 0px 0px 0px inset';
+                _transition = 'border 0.4s ease 0s, box-shadow 0.4s ease 0s';
+                _left = '0px';
+                _transition2 = 'background-color 0.4s ease 0s, left 0.2s ease 0s;'
+                _bgColor2 = 'unset';
+
+                if (id == '#Personnel_WalkIn') {
+                    $('#ReferenceDiv .form-control').removeAttr('disabled');
+                }
+            }
+
+            if (id == '#Personnel_WalkIn') {
+                $(id).prev('label').html(_labelText);
+            }
+
+            $(id).next('span.switchery').css({
+                'background-color': _bgColor,
+                'border-color': _borderColor,
+                'box-shadow': _boxShadow,
+                'transition': _transition
+            }).find('small').css({
+                'left': _left,
+                'transition': _transition2,
+                'background-color': _bgColor2
+            });
+        }
+
+        function initSwitches() {
+            var elem1 = document.querySelector('#Personnel_WalkIn');
+            appSw = new Switchery(elem1);
+            //enableAppSwitch();
+        }
+
+        function enableSwitch(switchElem, isEnabled) {
+            if (isEnabled) {
+                switchElem.enable();
+            } else {
+                switchElem.disable();
+            }
+        }
+
+        //function selectClick() {
+        //    var selectID = $(this).attr('id');
+        //    var selectedID = parseInt($(this).val());
+        //    var divName = "DivCourse";
+        //    var defID = 0;
+        //
+        //    switch (selectID) {
+        //        case 'Personnel_PositionID':
+        //            var posArr = $_positionDeptArr.filter(function (e) { return e.DepartmentID == selectedID });
+        //            $(this).val(0).trigger('change');
+        //            $('span.select2-container li').each(function () {
+        //                //var val = parseInt($(this).attr('id'));
+        //                //if (val > 0) {
+        //                //    if (posArr.filter(function (e) { return e.PositionID == val; }).length > 0) {
+        //                //        $(this).show();
+        //                //    }
+        //                //}
+        //            })
+        //            break;
+        //    }
+        //}
+
+        function SelectChange() {
+            var selectID = $(this).attr('id');
+            var selectedID = parseInt($(this).val());
+            var divName = "DivCourse";
+            var defID = 0;
+
+            switch (selectID) {
+            case 'Personnel_CivilStatusID':
+                var gender = $('#Personnel_Gender').val() == 'False' ? false : true;
+                if (selectedID == $_marriedID && !gender)
+                    $('#MaidenMiddleNameDiv').removeClass('hidden');
+                else
+                    $('#MaidenMiddleNameDiv').removeClass('hidden').addClass('hidden');
+                    break;
+            case 'Personnel_Gender':
+                var gender = $('#Personnel_Gender').val() == 'False' ? false : true;
+                var selectedID = parseInt($('#Personnel_CivilStatusID').val());
+                if (selectedID == $_marriedID && !gender)
+                    $('#MaidenMiddleNameDiv').removeClass('hidden');
+                else
+                    $('#MaidenMiddleNameDiv').removeClass('hidden').addClass('hidden');
+                break;
+            case 'EducationalLevelID':
+                for (var i = 0; i < $_noCourseEducArr.length; i++) {
+                    if (selectID == $_noCourseEducArr[i]) {
+                        $('#' + divName).addClass('hidden').find('input.form-control').val('');
+                        break;
+                    } else {
+                        $('#' + divName).removeClass('hidden');
+                    }
+                }
+                break;
+            case 'LicenseTypeID':
+                var val = $(this).val();
+                if ($_perpetualLicensesArr.filter(function (e) { return e.ID == val }).length) {
+                    $(this).closest('tr').find('.date input').val('').attr('disabled', true);
+                    break;
+                } else {
+                    $(this).closest('tr').find('.date input').removeAttr('disabled');
+                }
+                break;
+            case 'EmploymentStatusID':
+                if (selectedID > 0)
+                    $('#btn_search').trigger('click');
+                    break;
+            //case 'Personnel_DepartmentID':
+            //    var posArr = $_positionDeptArr.filter(function(e) { return e.DepartmentID == selectedID });
+            //    $("#Personnel_PositionID").val(0).trigger('change');
+            //    $("#Personnel_PositionID option").attr('disabled', 'disabled');
+            //    $("#Personnel_PositionID option").each(function() {
+            //        var val = parseInt($(this).val());
+            //        if (posArr.filter(function(e) { return e.PositionID == val; }).length > 0)
+            //            $(this).removeAttr('disabled');
+            //        //else
+            //        //    $(this).attr('disabled', 'disabled');
+            //    })
+            //
+            //    if (posArr.filter(function(e) { return e.PositionID == $('#PositionID').val(); }).length > 0) {
+            //        $("#Personnel_PositionID").val($('#PositionID').val()).trigger('change');
+            //    }
+            //
+            //    $('#Personnel_PositionID').select2();
+            //    //$('#Personnel_PositionID').next('span').find('span.select2-selection').attr("style", "height: 34px;");
+            //    break;
+            }
+
+            CheckRequiredSelects();
+        }
+
+        function InitRequiredInputs() {
+            if ($('input.required').length > 0) {
+                $('input.required').off('keyup').on('keyup', CheckRequiredInput);
+            }
+        }
+
+        function CheckRequiredInput() {
+            var valLen = $(this).val().length;
+
+            if (valLen == 0) {
+                $(this).addClass('input-incomplete');
+            } else {
+                $(this).removeClass('input-incomplete');
+            }
+        }
+
+        function TabClick() {
+            var tabID = $(this).attr('href').replace('#', '');
+        }
+
+        $.fn.floatingLabel = function() {
+            var inputID = '#' + $(this).attr('id'),
+                value = $(inputID).val();
+            $formGroup = $(this).closest('div.form-group');
+            $controlLabel = $formGroup.find('.control-label');
+
+            $formGroup.addClass('floating-form-group');
+            if (value == '' || $(this).is(':hover')) {
+                $controlLabel.removeClass('not-floating-label').addClass('floating-label');
+            } else {
+                $controlLabel.removeClass('floating-label').addClass('not-floating-label');
+            }
+        }
+
+        $.fn.maskedInput = function() {
+            //Allow only numbers
+            $(this).val($(this).val().replace(/[^0-9\.]/g, ''));
+            //Get mask from placeholder
+            var mask = $('#' + $(this).attr('id')).attr('placeholder') || "";
+            //Set input maxlength
+            $(this).attr('maxlength', mask.length);
+            //Get text
+            var text = $('#' + $(this).attr('id')).val().replace(/-/g, '');
+
+            //Get mask without splitter
+            var splitedMask = mask.split('-');
+            var splittedText = [];
+            var nextStart = 0;
+            var newText = '';
+
+            if (text != '') {
+                for (var i = 0; i < splitedMask.length; i++) {
+                    var s = text.substr(nextStart, splitedMask[i].length);
+                    splittedText.push(s);
+                    nextStart += splitedMask[i].length;
+                }
+
+                for (var j = 0; j < splittedText.length; j++) {
+                    newText += splittedText[j] + (splittedText[j].length == splitedMask[j].length ? '-' : '');
+                }
+                if (text.length == mask.replace(/-/g, '').length)
+                    newText = newText.substr(0, newText.length - 1);
+            }
+
+            $(this).val(newText);
+        }
+
+        $.fn.fileInput = function() {
+            $customInput = $('div.customFileInput');
+            $(this).attr('name', '');
+            $(this).parent().find('div').remove();
+            $(this).after($customInput.html());
+            $(this).next('div.customFileInput').removeClass('hidden');
+            $(this).addClass('hidden');
+        }
+</script>

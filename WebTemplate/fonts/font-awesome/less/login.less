@@ -1,0 +1,185 @@
+﻿@import "custom.less";
+
+.login {
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+    .login-body {
+        padding: 10px;
+        width: 400px;
+        height: 550px;
+        background-color: #fff;
+        -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+        -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+        -ms-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+        -o-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        margin: auto;
+        /* The content will not be cut when the window is smaller than the content */
+        max-width: 100%;
+        max-height: 100%;
+        overflow: auto;
+
+        .login-logo {
+            margin-top: 50px;
+
+            img {
+                display: block;
+                width: 100px;
+                height: 100px;
+                margin: 0 auto;
+            }
+        }
+
+        .login-title {
+            margin-top: 20px;
+            text-align: center;
+
+            .login-title-text {
+                color: #000;
+                font-size: 15px !important;
+                font-weight: 600;
+            }
+        }
+
+        hr {
+            margin: 0 auto;
+            margin-top: 30px;
+            width: 250px;
+            border-top: 2px solid #eee;
+        }
+
+        .login-input {
+
+            input {
+                display: block;
+                width: 300px;
+                margin: 0 auto;
+                padding: 10px;
+                margin-bottom: 15px;
+                border-radius: 30px;
+                background: #f7f7f7;
+                border-style: none;
+                font-size: 15px;
+                color: #666;
+                font-weight: 600;
+            }
+
+            input:focus {
+                outline-width: 0;
+            }
+
+            input::-webkit-input-placeholder {
+                color: #bbb;
+            }
+        }
+
+        .login-button {
+            text-align: center;
+
+            button {
+                padding: 10px;
+                background: transparent;
+                border-style: none;
+                width: 300px;
+                border: 2px solid #ebebeb;
+                border-radius: 10px;
+                font-size: 15px;
+                font-weight: 600;
+                color: #aaa;
+                margin-top: 5px;
+            }
+
+            button:hover, button:focus {
+                background: #fcfcfc;
+                outline: 0;
+            }
+        }
+
+        .login-signin {
+
+            .login-input {
+                margin-top: 50px;
+            }
+
+            .login-button {
+                margin-top: 35px;
+            }
+
+            .login-footer {
+                margin-top: 20px;
+                text-align: center;
+
+                .login-footer-text {
+                    display: block;
+                    font-size: 13px;
+                    font-weight: 500;
+                    color: #ccc;
+
+                    .clickable-text {
+                        font-weight: 600;
+                        text-decoration: underline;
+                        color: #ccc;
+                    }
+                }
+            }
+        }
+
+        .login-verification {
+            .login-username {
+                margin-top: 20px;
+                text-align: center;
+
+                .login-username-text {
+                    color: @primary-color;
+                    font-size: 13px;
+                    font-weight: 600;
+                }
+
+                hr {
+                    margin-top: 10px;
+                }
+            }
+
+            .login-description {
+                margin-top: 20px;
+
+                span {
+                    display: block;
+                }
+
+                .login-description-title {
+                    font-size: 18px;
+                    font-weight: 600;
+                    text-align: center;
+                }
+
+                .login-description-text {
+                    margin-top: 10px;
+                    text-align: center;
+
+                    .clickable-text {
+                        font-weight: 600;
+                        text-decoration: underline;
+                        color: @text-color;
+                    }
+                }
+            }
+
+            .login-input {
+                margin-top: 30px;
+            }
+
+            .login-button {
+                margin-top: 15px;
+            }
+        }
+    }
+}

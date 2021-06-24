@@ -1,0 +1,43 @@
+﻿@model WebTemplate.Models.Maintenance.Lookup.CutoffSchedule.Management
+@{
+    List<Tuple<int, string>> MonthList = new List<Tuple<int, string>>() {
+        new Tuple<int, string>(1, "January"), new Tuple<int, string>(2, "February"),
+        new Tuple<int, string>(3, "March"), new Tuple<int, string>(4, "April"),
+        new Tuple<int, string>(5, "May"), new Tuple<int, string>(6, "June"),
+        new Tuple<int, string>(7, "July"), new Tuple<int, string>(8, "August"),
+        new Tuple<int, string>(9, "September"), new Tuple<int, string>(10, "October"),
+        new Tuple<int, string>(11, "November"), new Tuple<int, string>(12, "December")
+    };
+}
+
+@if (Model != null)
+{
+    using (Ajax.BeginForm("CreateOrUpdate", "Maintenance/Lookup/CutoffSchedule", 
+        new AjaxOptions { HttpMethod = "POST", OnBegin = "ShowLoadingScreen()", OnComplete = "RemoveLoadingScreen()", OnSuccess = "createupdate_item_success", OnFailure = "toastr.error('Potentially dangerous value was detected', 'Saving failed')" }, new { @id = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="modal-header">
+            <div class="row">
+                <div class="col-xs-10">
+                    <h5 class="modal-title">@(Model.CutoffSchedule.ID == 0 ? "Add New Item" : "Update Existing Item")</h5>
+                </div>
+                <div class="col-xs-2">
+                    <button type="button" class="modal-tools" data-dismiss="modal" title="Left click to close"><i class="fa fa-times"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="m-t-sm m-b-sm">
+                @Html.HiddenFor(m => m.CutoffSchedule.ID)
+                @Html.Label("Month")
+                @Html.DropDownListFor(m => m.CutoffSchedule.Month, new SelectList(MonthList, "Item1", "Item2"), "N/A", new { @class = "form-control" })
+                <br />
+                @Html.Label("Start Day")
+                @Html.TextBoxFor(m => m.CutoffSchedule.Day, new { @class = "form-control", @type = "number", @min = 1 })
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary btn-outline btn-w-m" type="submit"><i class="fa fa-save"></i>&nbsp; Save</button>
+        </div>
+    }
+}

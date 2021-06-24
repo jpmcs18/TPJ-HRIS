@@ -1,0 +1,59 @@
+﻿@model WebTemplate.Models.Personnel.PersonnelLeaveCredits
+@{
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var LeaveCreditsTabAccess = credential.GetPage("Leave Credits") ?? new DataAccessLayer.System.Page();
+    var leaveList = ProcessLayer.Processes.LeaveTypeProcess.GetLeaveType();
+}
+
+<div class="table-responsive table-scroll" style=" margin: auto;">
+    <table id="LeaveCreditssTable" class="table table-hover table-mail">
+        <thead>
+            <tr>
+                <th style="text-align: center;">Description</th>
+                <th style="text-align: center;">Credits</th>
+                <th style="text-align: center;">Year Valid</th>
+                @if (LeaveCreditsTabAccess.Update || LeaveCreditsTabAccess.Delete)
+                {
+                    <th style="text-align: center; min-width: 100px;">Action</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.PersonnelLeaveCredit.Count() > 0)
+            {
+                for (int i = 0; i < Model.PersonnelLeaveCredit.Count(); i++)
+                {
+                    @Html.Partial("~/Views/HumanResource/Personnel/_PersonnelLeaveCredit.cshtml", Model.PersonnelLeaveCredit[i])
+                }
+            }
+            else
+            {
+                <tr id="No-Row-Display"><td style="text-align: center;" colspan="15">No @LeaveCreditsTabAccess.Module found...</td></tr>
+            }
+        </tbody>
+        <tfoot>
+            @if (LeaveCreditsTabAccess.Insert)
+            {
+            <tr id="Row-Input-LeaveCredits-0" class="Row-Input">
+                <td style="text-align: center;">
+                    @Html.DropDownList("LeaveTypeID", new SelectList(leaveList, "ID", "Display"), "N/A", new { @class = "form-control text-transform-none", @style = "" })
+                </td>
+                <td style="text-align: center;">
+                    <input type="hidden" name="PersonnelID" class="PersonnelID" value="@Model.PersonnelID" />
+                    <input type="text" name="LeaveCredits" class="form-control text-transform-none" placeholder="Credits..." />
+                </td>
+                <td style="text-align: center;">
+                    <input type="text" name="YearValid" class="form-control text-transform-none" placeholder="Year Valid..." maxlength="4" />
+                </td>
+                <td style="text-align: center;">
+                    <div class="btn-group" style="">
+                        <button type="button" name="CancelLeaveCredits" class="btn btn-outline btn-danger btn-sm btn-rounded CancelLeaveCredits TableCancelButton" value="0" title="Clear"><i class="fa fa-times"></i></button>
+                        <button type="button" name="SaveLeaveCredits" class="btn btn-info btn-sm btn-rounded SaveLeaveCredits TableSaveButton" value="0" title="Add"><i class="fa fa-plus"></i></button>
+                    </div>
+                </td>
+            </tr>
+            }
+
+        </tfoot>
+    </table>
+</div>

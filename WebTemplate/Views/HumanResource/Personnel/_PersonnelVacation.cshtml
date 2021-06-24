@@ -1,0 +1,48 @@
+﻿@model ProcessLayer.Entities.PersonnelDependent
+@{
+    var relationships = ProcessLayer.Processes.LookupProcess.GetRelationship(true);
+}
+
+<tr id="Row-Display-Vacation-@Model.ID" class="Row-Display">
+    <td class="hidden">@Html.HiddenFor(m => m.PersonnelID)</td>
+    <td style="text-align: center;">@Model.LastName</td>
+    <td style="text-align: center;">@Model.FirstName</td>
+    <td style="text-align: center;">@Model.MiddleName</td>
+    <td style="text-align: center;">@String.Format("{0:MMMM dd, yyyy}", Model.BirthDate)</td>
+    <td style="text-align: center;">@Model._Relationship.Description</td>
+    <td style="text-align: center; width: 14.6%;">
+        <div class="btn-group">
+            <button type="button" name="DeleteVacation" class="btn btn-outline btn-danger btn-sm btn-rounded DeleteVacation" value="@Model.ID" title="Delete"><i class="fa fa-trash"></i></button>
+            <button type="button" name="EditVacation" class="btn btn-info btn-sm btn-rounded EditVacation" value="@Model.ID" title="Edit"><i class="fa fa-pencil"></i></button>
+        </div>
+    </td>
+</tr>
+<tr id="Row-Input-Vacation-@Model.ID" class="Row-Input hidden">
+    <td class="hidden">@Html.HiddenFor(m => m.PersonnelID)</td>
+    <td style="text-align: center;" scope="row">
+        @Html.TextBoxFor(m => m.LastName, new { @class = "form-control text-transform-none" })
+    </td>
+    <td style="text-align: center;" scope="row">
+        @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control text-transform-none" })
+    </td>
+    <td style="text-align: center;" scope="row">
+        @Html.TextBoxFor(m => m.MiddleName, new { @class = "form-control text-transform-none" })
+    </td>
+    <td style="text-align: center;">
+        <div class="input-group date">
+            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+            @Html.TextBoxFor(m => m.BirthDate, "{0:MM/dd/yyyy}", new { @class = "form-control text-transform-none" })
+            <span id="" class="clearInput" title="Clear"><i class="fa fa-times"></i></span>
+        </div>
+    </td>
+    <td style="text-align: center;">
+        @Html.DropDownListFor(m => m.RelationshipID, new SelectList(relationships, "ID", "Description", Model.RelationshipID), new { @class = "form-control" })
+    </td>
+    <td style="text-align: center; width: 14.2%;">
+        <div class="btn-group">
+            <button type="button" name="CancelVacation" class="btn btn-outline btn-danger btn-sm btn-rounded CancelVacation" value="@Model.ID" title="Cancel"><i class="fa fa-times"></i></button>
+            <button type="button" name="SaveVacation" class="btn btn-info btn-sm btn-rounded SaveVacation" value="@Model.ID" title="Save"><i class="fa fa-save"></i></button>
+        </div>
+    </td>
+</tr>
+

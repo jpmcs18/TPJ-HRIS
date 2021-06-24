@@ -1,0 +1,65 @@
+﻿@model ProcessLayer.Entities.PersonnelDependent
+@{
+    var relationships = ProcessLayer.Processes.LookupProcess.GetRelationship();
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var DependentsPageAccess = credential.GetPage("Dependents") ?? new DataAccessLayer.System.Page();
+}
+
+<tr id="Row-Display-Dependent-@Model.ID" class="Row-Display">
+    <td class="hidden">
+        <input type="hidden" value="@Model.PersonnelID" name="PersonnelID" />
+    </td>
+    <td style="text-align: center;">@Model.LastName</td>
+    <td style="text-align: center;">@Model.FirstName</td>
+    <td style="text-align: center;">@Model.MiddleName</td>
+    <td style="text-align: center;">@String.Format("{0:MMMM dd, yyyy}", Model.BirthDate)</td>
+    <td style="text-align: center;">@Model._Relationship.Description</td>
+    @if (DependentsPageAccess.Update || DependentsPageAccess.Delete)
+    {
+        <td style="text-align: center;">
+            <div class="btn-group">
+                @if (DependentsPageAccess.Delete)
+                {
+                    <button type="button" name="DeleteDependent" class="btn btn-outline btn-danger btn-sm btn-rounded DeleteDependent TableDeleteButton" value="@Model.ID" title="Delete"><i class="fa fa-trash"></i></button>
+                }
+                @if (DependentsPageAccess.Update)
+                {
+                <button type="button" name="EditDependent" class="btn btn-info btn-sm btn-rounded EditDependent TableEditButton" value="@Model.ID" title="Edit"><i class="fa fa-pencil"></i></button>
+                }
+            </div>
+        </td>
+    }
+</tr>
+<tr id="Row-Input-Dependent-@Model.ID" class="Row-Input hidden">
+    <td class="hidden">
+        <input type="hidden" value="@Model.PersonnelID" name="PersonnelID" />
+    </td>
+    <td style="text-align: center;">
+        @Html.TextBoxFor(m => m.LastName, new { @class = "form-control text-transform-none" })
+    </td>
+    <td style="text-align: center;">
+        @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control text-transform-none" })
+    </td>
+    <td style="text-align: center;">
+        @Html.TextBoxFor(m => m.MiddleName, new { @class = "form-control text-transform-none" })
+    </td>
+    <td style="text-align: center;">
+        <div class="input-group date">
+            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+            @Html.TextBoxFor(m => m.BirthDate, "{0:MM/dd/yyyy}", new { @class = "form-control text-transform-none" })
+            <span id="" class="clearInput" title="Clear"><i class="fa fa-times"></i></span>
+        </div>
+    </td>
+    <td style="text-align: center;">
+        @Html.DropDownListFor(m => m.RelationshipID, new SelectList(relationships, "ID", "Description", Model.RelationshipID), "N/A", new { @class = "form-control" })
+    </td>
+    @if (DependentsPageAccess.Update)
+    {
+        <td style="text-align: center;">
+            <div class="btn-group">
+                <button type="button" name="CancelDependent" class="btn btn-outline btn-danger btn-sm btn-rounded CancelDependent TableCancelButton" value="@Model.ID" title="Cancel"><i class="fa fa-times"></i></button>
+                <button type="button" name="SaveDependent" class="btn btn-info btn-sm btn-rounded SaveDependent TableSaveButton" value="@Model.ID" title="Save"><i class="fa fa-save"></i></button>
+            </div>
+        </td>
+    }
+</tr>

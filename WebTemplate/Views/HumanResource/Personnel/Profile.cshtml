@@ -1,0 +1,340 @@
+﻿@model WebTemplate.Models.Personnel.Management
+@{
+    var entity = new DataAccessLayer.System.User();
+    var statuses = entity.LookupUserStatus();
+    var genders = new Dictionary<bool, string> { { true, "Male" }, { false, "Female" } };
+    var civilStatuses = ProcessLayer.Processes.LookupProcess.GetCivilStatus(true);
+    var religions = ProcessLayer.Processes.LookupProcess.GetReligion(true);
+    var personnelTypes = ProcessLayer.Processes.LookupProcess.GetPersonnelType(true);
+    var personnelLocations = ProcessLayer.Processes.LookupProcess.GetLocation(true);
+    var allowances = ProcessLayer.Processes.LookupProcess.GetAllowance(true);
+    var positions = ProcessLayer.Processes.LookupProcess.GetPosition(true);
+    var employmentTypes = ProcessLayer.Processes.LookupProcess.GetEmploymentType(true);
+}
+
+<div class="modal-header">
+    <h5 class="modal-title">Personnel Profile</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">×</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="">
+            <div class="tabs-container">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab" href="#tab-1"><i class="fa fa-user"></i> Personal Info</a></li>
+                    <li class=""><a data-toggle="tab" href="#tab-2"><i class="fa fa-cog"></i> Employment Info</a></li>
+                    <li class=""><a data-toggle="tab" href="#tab-3"><i class="fa fa-user-circle"></i> Educational Background</a></li>
+                    <li class=""><a data-toggle="tab" href="#tab-4"><i class="fa fa-user-circle"></i> Work Experience</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div id="tab-1" class="tab-pane active">
+                        <div class="panel-body" style="padding: 20px 0px;">
+                            @Html.HiddenFor(m => m.Personnel.ID)
+                            <div class="form-group col-xs-12 col-sm-4 col-md-4 col-lg-3">
+                                @Html.LabelFor(m => m.Personnel.EmployeeNo, new { @class = "control-label" })
+                                <div class="">
+                                    @Html.TextBoxFor(m => m.Personnel.EmployeeNo, new { @class = "form-control text-transform-none" })
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-sm-4 col-md-4 col-lg-3">
+                                @Html.LabelFor(m => m.Personnel.LastName, new { @class = "control-label" })
+                                <div class="">
+                                    @Html.TextBoxFor(m => m.Personnel.LastName, new { @class = "form-control text-transform-none" })
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-sm-4 col-md-4 col-lg-3">
+                                @Html.LabelFor(m => m.Personnel.FirstName, new { @class = "control-label" })
+                                <div class="">
+                                    @Html.TextBoxFor(m => m.Personnel.FirstName, new { @class = "form-control text-transform-none" })
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-sm-4 col-md-4 col-lg-3">
+                                @Html.LabelFor(m => m.Personnel.MiddleName, new { @class = "control-label" })
+                                <div class="">
+                                    @Html.TextBoxFor(m => m.Personnel.MiddleName, new { @class = "form-control text-transform-none" })
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-sm-4 col-md-4 col-lg-3">
+                                @Html.LabelFor(m => m.Personnel.Gender, new { @class = "control-label" })
+                                <div class="">
+                                    @Html.DropDownListFor(m => m.Personnel.Gender, new SelectList(genders, "Key", "Value"), new { @class = "form-control" })
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-9">
+                                @Html.LabelFor(m => m.Personnel.Address, new { @class = "control-label" })
+                                <div class="">
+                                    @Html.TextBoxFor(m => m.Personnel.Address, new { @class = "form-control text-transform-none" })
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                                @Html.LabelFor(m => m.Personnel.BirthPlace, new { @class = "control-label" })
+                                <div class="">
+                                    @Html.TextBoxFor(m => m.Personnel.BirthPlace, new { @class = "form-control text-transform-none" })
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3" id="data_1">
+                                @Html.LabelFor(m => m.Personnel.BirthDate, new { @class = "control-label" })
+                                <div class="input-group date">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    @Html.TextBoxFor(m => m.Personnel.BirthDate, "{0:MM/dd/yyyy}", new { @class = "form-control text-transform-none" })
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                                @Html.LabelFor(m => m.Personnel.ContactNo, new { @class = "control-label" })
+                                <div class="">
+                                    @Html.TextBoxFor(m => m.Personnel.ContactNo, new { @class = "form-control text-transform-none" })
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                                @Html.LabelFor(m => m.Personnel.CivilStatusID, new { @class = "control-label" })
+                                <div class="">
+                                    @Html.DropDownListFor(m => m.Personnel.CivilStatusID, new SelectList(civilStatuses, "ID", "Description"), new { @class = "form-control" })
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                                @Html.LabelFor(m => m.Personnel.ReligionID, new { @class = "control-label" })
+                                <div class="">
+                                    @Html.DropDownListFor(m => m.Personnel.ReligionID, new SelectList(religions, "ID", "Description"), new { @class = "form-control" })
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                                @Html.LabelFor(m => m.Personnel.SSS, new { @class = "control-label" })
+                                <div class="">
+                                    @Html.TextBoxFor(m => m.Personnel.SSS, new { @class = "form-control text-transform-none" })
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                                @Html.LabelFor(m => m.Personnel.Philhealth, new { @class = "control-label" })
+                                <div class="">
+                                    @Html.TextBoxFor(m => m.Personnel.Philhealth, new { @class = "form-control text-transform-none" })
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                                @Html.LabelFor(m => m.Personnel.PAGIBIG, new { @class = "control-label" })
+                                <div class="">
+                                    @Html.TextBoxFor(m => m.Personnel.PAGIBIG, new { @class = "form-control text-transform-none" })
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                                @Html.LabelFor(m => m.Personnel.TIN, new { @class = "control-label" })
+                                <div class="">
+                                    @Html.TextBoxFor(m => m.Personnel.TIN, new { @class = "form-control text-transform-none" })
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                                @Html.LabelFor(m => m.Personnel.Families, new { @class = "control-label" })
+                                <div class="">
+                                    @Html.TextBoxFor(m => m.Personnel.Families, new { @class = "form-control text-transform-none" })
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <button type="button" class="btn btn-primary btn-w-m font-bold-700 tab-save-btn" id="btnSavePersonalInfo" style="float: right; margin: 16px 0px 0px 16px">Save Personal Info</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="tab-2" class="tab-pane">
+                        <div class="panel-body" style="padding: 20px 0px;">
+                            <div class="form-group col-xs-12 col-sm-4 col-md-4 col-lg-3">
+                                @Html.LabelFor(m => m.Personnel.HiringDate, new { @class = "control-label" })
+                                <div class="input-group date">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    @Html.TextBoxFor(m => m.Personnel.HiringDate, "{0:MM/dd/yyyy}", new { @class = "form-control text-transform-none" })
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3" id="data_1">
+                                @Html.LabelFor(m => m.Personnel.ResignationDate, new { @class = "control-label" })
+                                <div class="input-group date">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    @Html.TextBoxFor(m => m.Personnel.ResignationDate, "{0:MM/dd/yyyy}", new { @class = "form-control text-transform-none" })
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-sm-4 col-md-4 col-lg-3">
+                                @Html.LabelFor(m => m.Personnel.ResignationRemarks, new { @class = "control-label" })
+                                <div class="">
+                                    @Html.TextBoxFor(m => m.Personnel.ResignationRemarks, new { @class = "form-control text-transform-none" })
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-sm-4 col-md-4 col-lg-3">
+                                @Html.LabelFor(m => m.Personnel.PersonnelTypeID, new { @class = "control-label" })
+                                <div class="">
+                                    @Html.DropDownListFor(m => m.Personnel.PersonnelTypeID, new SelectList(religions, "ID", "Description"), new { @class = "form-control" })
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-sm-4 col-md-4 col-lg-3">
+                                @Html.LabelFor(m => m.Personnel.PersonnelLocationID, new { @class = "control-label" })
+                                <div class="">
+                                    @Html.DropDownListFor(m => m.Personnel.PersonnelLocationID, new SelectList(personnelLocations, "ID", "Description"), new { @class = "form-control" })
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-sm-4 col-md-4 col-lg-3">
+                                @Html.LabelFor(m => m.Personnel.AllowanceID, new { @class = "control-label" })
+                                <div class="">
+                                    @Html.DropDownListFor(m => m.Personnel.AllowanceID, new SelectList(allowances, "ID", "Description"), new { @class = "form-control" })
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-sm-4 col-md-4 col-lg-3">
+                                @Html.LabelFor(m => m.Personnel.PositionID, new { @class = "control-label" })
+                                <div class="">
+                                    @Html.DropDownListFor(m => m.Personnel.PositionID, new SelectList(positions, "ID", "Description"), new { @class = "form-control" })
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-sm-4 col-md-4 col-lg-3">
+                                @Html.LabelFor(m => m.Personnel.EmploymentTypeID, new { @class = "control-label" })
+                                <div class="">
+                                    @Html.DropDownListFor(m => m.Personnel.EmploymentTypeID, new SelectList(employmentTypes, "ID", "Description"), new { @class = "form-control" })
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-sm-4 col-md-4 col-lg-3">
+                                @Html.LabelFor(m => m.Personnel.SeamansBookNo, new { @class = "control-label" })
+                                <div class="">
+                                    @Html.TextBoxFor(m => m.Personnel.SeamansBookNo, new { @class = "form-control text-transform-none" })
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3" id="data_1">
+                                @Html.LabelFor(m => m.Personnel.SeamansBookExpirationDate, new { @class = "control-label" })
+                                <div class="input-group date">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    @Html.TextBoxFor(m => m.Personnel.SeamansBookExpirationDate, "{0:MM/dd/yyyy}", new { @class = "form-control text-transform-none" })
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-sm-4 col-md-4 col-lg-3">
+                                @Html.LabelFor(m => m.Personnel.PassportNo, new { @class = "control-label" })
+                                <div class="">
+                                    @Html.TextBoxFor(m => m.Personnel.PassportNo, new { @class = "form-control text-transform-none" })
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3" id="data_1">
+                                @Html.LabelFor(m => m.Personnel.PassportExpirationDate, new { @class = "control-label" })
+                                <div class="input-group date">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    @Html.TextBoxFor(m => m.Personnel.PassportExpirationDate, "{0:MM/dd/yyyy}", new { @class = "form-control text-transform-none" })
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-sm-4 col-md-4 col-lg-3">
+                                @Html.LabelFor(m => m.Personnel.LicenseNo, new { @class = "control-label" })
+                                <div class="">
+                                    @Html.TextBoxFor(m => m.Personnel.LicenseNo, new { @class = "form-control text-transform-none" })
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3" id="data_1">
+                                @Html.LabelFor(m => m.Personnel.LicenseExpirationDate, new { @class = "control-label" })
+                                <div class="input-group date">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    @Html.TextBoxFor(m => m.Personnel.LicenseExpirationDate, "{0:MM/dd/yyyy}", new { @class = "form-control text-transform-none" })
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-sm-4 col-md-4 col-lg-3">
+                                @Html.LabelFor(m => m.Personnel.BFARNo, new { @class = "control-label" })
+                                <div class="">
+                                    @Html.TextBoxFor(m => m.Personnel.BFARNo, new { @class = "form-control text-transform-none" })
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3" id="data_1">
+                                @Html.LabelFor(m => m.Personnel.BFARExpirationDate, new { @class = "control-label" })
+                                <div class="input-group date">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    @Html.TextBoxFor(m => m.Personnel.BFARExpirationDate, "{0:MM/dd/yyyy}", new { @class = "form-control text-transform-none" })
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-sm-4 col-md-4 col-lg-3">
+                                @Html.LabelFor(m => m.Personnel.YellowCardExpiration, new { @class = "control-label" })
+                                <div class="">
+                                    @Html.TextBoxFor(m => m.Personnel.YellowCardExpiration, new { @class = "form-control text-transform-none" })
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <button type="button" class="btn btn-primary btn-w-m font-bold-700 tab-save-btn" id="btnSaveEmploymentInfo" style="float: right; margin: 16px 0px 0px 16px">Save Employment Info</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="tab-3" class="tab-pane">
+                        <div class="panel-body" style="padding: 20px 0px;">
+                            <div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                @Html.LabelFor(m => m.Personnel.PrimaryEducation, new { @class = "control-label" })
+                                <div class="">
+                                    @Html.TextBoxFor(m => m.Personnel.PrimaryEducation, new { @class = "form-control text-transform-none" })
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                @Html.LabelFor(m => m.Personnel.SecondaryEducation, new { @class = "control-label" })
+                                <div class="">
+                                    @Html.TextBoxFor(m => m.Personnel.SecondaryEducation, new { @class = "form-control text-transform-none" })
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                @Html.LabelFor(m => m.Personnel.TertiaryEducation, new { @class = "control-label" })
+                                <div class="">
+                                    @Html.TextBoxFor(m => m.Personnel.TertiaryEducation, new { @class = "form-control text-transform-none" })
+                                </div>
+                            </div>
+
+                            <div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                @Html.LabelFor(m => m.Personnel.PostGraduateEducation, new { @class = "control-label" })
+                                <div class="">
+                                    @Html.TextBoxFor(m => m.Personnel.PostGraduateEducation, new { @class = "form-control text-transform-none" })
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <button type="button" class="btn btn-primary btn-w-m font-bold-700 tab-save-btn" id="btnSaveEducationalBg" style="float: right; margin: 16px 0px 0px 16px">Save Educational Background</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="tab-4" class="tab-pane">
+                        <div class="panel-body" style="padding: 20px 0px;">
+                            <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                @Html.LabelFor(m => m.Personnel.WorkExperience, new { @class = "control-label" })
+                                <div class="">
+                                    @Html.TextAreaFor(m => m.Personnel.WorkExperience, new { @class = "form-control text-transform-none" })
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <button type="button" class="btn btn-primary btn-w-m font-bold-700 tab-save-btn" id="btnSaveWorkExperience" style="float: right; margin: 16px 0px 0px 16px">Save Work Experience</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@*<div class="modal-footer">
+    </div>*@

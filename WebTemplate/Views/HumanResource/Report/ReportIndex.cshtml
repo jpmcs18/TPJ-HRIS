@@ -1,0 +1,159 @@
+﻿@model WebTemplate.Models.Report.Index
+
+@{
+    var PageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("HumanResource/Report");
+    var reportTypes = from ProcessLayer.Helpers.Enumerable.ReportType e in Enum.GetValues(typeof(ProcessLayer.Helpers.Enumerable.ReportType))
+                      select new
+                      {
+                          ID = (int)e,
+                          Description = e.ToString()
+                      };
+
+    var monno = DateTime.Now.Month;
+    var months = new List<string> { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
+
+    ViewBag.title = PageAccess.PageName;
+}
+
+<div class="wrapper wrapper-content">
+    <div class="page-heading">
+        <div class="col-lg-8">
+            <h1>@Html.Raw(PageAccess.PageName ?? "&nbsp;")</h1>
+            <ol class="breadcrumb">
+                <li>
+                    <a href='@Url.Action("Index", "Home")'>Home</a>
+                </li>
+                <li>Maintenance</li>
+                <li>System</li>
+                <li class="active">
+                    <strong>@Html.Raw(PageAccess.PageName ?? "&nbsp;")</strong>
+                </li>
+            </ol>
+        </div>
+        <div class="col-lg-4">
+            <div class="title-action">
+            </div>
+        </div>
+    </div>
+    <div id="ReportsForm" class="" style="margin-top: 85px;">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6 animated fadeInDown">
+            <div class="ibox" style="margin-bottom: 10px;">
+                <div class="ibox-title bg-primary" style="padding: 8px 15px 0px;">
+                    Government Reports
+                </div>
+                <div class="ibox-content" style="border: 1px solid #009688;">
+                    <div id="GenerateReport" class="row">
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                            @*<label class="control-label">Report Type</label>*@
+                            @Html.DropDownList("ReportType", new SelectList(reportTypes, "ID", "Description"), "--Report Type--", new { @class = "form-control" })
+                        </div>
+
+                        <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                            @*<label class="control-label">Year</label>*@
+                            <input type="text" id="txt_year" name="year" class="form-control tpj-year" placeholder="Year" value="@($"{DateTime.Now:yyyy}" )" />
+                        </div>
+
+                        <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                            @*<label class="control-label">Month</label>*@
+                            <select id="select-month" class="form-control" name="month">
+                                @for (int i = 0; i < months.Count; i++)
+                                {
+                                    <option value="@(i+1)" @(i + 1 == monno ? "selected" : "")>@months[i]</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                            @*<label class="control-label">Year</label>*@
+                            <button class="btn btn-primary" type="button" title="Generate" onclick="GenerateGovReport();"><i class="fa fa-print"></i> Generate</button>
+                        </div>
+                    </div>
+                    @*<div class="row">
+                            @Html.Partial("~/Views/HumanResource/Report/_ReportSearch.cshtml")
+                        </div>*@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal inmodal custom-modal" id="GenerateReportModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
+    
+</div>
+
+<script>
+    $(document).ready(function () {
+        Events();
+    });
+
+    function Events() {
+        SearchTabEvents();
+    }
+
+    function SearchTabEvents() {
+        $('#btn_search').off('click').on('click', SearchReportType);
+        $('select').select2();
+    }
+
+    function SearchReportType() {
+        var params = $('#form_search_params *').serialize();
+
+        $.ajax({
+            url: '@Url.Action("Index", "Report")',
+            data: params,
+            type: "GET",
+            cache: false,
+            beforeSend: function () {
+                //ShowLoadingScreen();
+            },
+            complete: function () {
+                //RemoveLoadingScreen();
+            },
+            success: function (response) {
+                if (response.msg == null) {
+                    $('#ReportsForm').html(response);
+
+                    Events();
+                } else {
+                    toastr.error(response.res);
+                }
+            },
+            error: function () {
+                toastr.error('AJAX backend error', 'An error has occured.');
+            }
+        });
+    }
+
+    function GenerateGovReport() {
+        var params = $('#GenerateReport *').serialize();
+
+        $.ajax({
+            url: '@Url.Action("Index", "Report")',
+            data: params,
+            type: "POST",
+            cache: false,
+            beforeSend: function () {
+                ShowLoadingScreen();
+                //ShowHideRowLoadingDisplay('ReportBaseTable', true);
+            },
+            complete: function () {
+                RemoveLoadingScreen();
+                //ShowHideRowLoadingDisplay('ReportBaseTable', false);
+            },
+            success: function (response) {
+                if (response.msg == null) {
+                    $('#GenerateReportModal').html(response);
+                    $("#GenerateReportModal").appendTo('body').modal('show');
+                    SearchTabEvents();
+                } else {
+                    toastr.error(response.res);
+                }
+            },
+            error: function (response) {
+                toastr.error(response.res);
+            }
+        });
+    }
+</script>

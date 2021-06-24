@@ -1,0 +1,224 @@
+﻿using DBUtilities;
+using ProcessLayer.Entities;
+using ProcessLayer.Helpers;
+using ProcessLayer.Helpers.ObjectParameter;
+using ProcessLayer.Processes.Lookups;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ProcessLayer.Processes.HRs
+{
+    public class PersonnelScheduleProcess
+    {
+        private static PersonnelScheduleProcess _instance;
+        public static PersonnelScheduleProcess Instance
+        {
+            get { if (_instance == null) _instance = new PersonnelScheduleProcess(); return _instance; }
+        }
+        internal PersonnelSchedule Converter(DataRow dr)
+        {
+            var sched = new PersonnelSchedule
+            {
+                ID = dr["ID"].ToLong(),
+                PersonnelID = dr["Personnel ID"].ToLong(),
+                SundayScheduleID = dr["Sunday Schedule ID"].ToNullableByte(),
+                MondayScheduleID = dr["Monday Schedule ID"].ToNullableByte(),
+                TuesdayScheduleID = dr["Tuesday Schedule ID"].ToNullableByte(),
+                WednesdayScheduleID = dr["Wednesday Schedule ID"].ToNullableByte(),
+                ThursdayScheduleID = dr["Thursday Schedule ID"].ToNullableByte(),
+                FridayScheduleID = dr["Friday Schedule ID"].ToNullableByte(),
+                SaturdayScheduleID = dr["Saturday Schedule ID"].ToNullableByte(),
+                EffectivityDate = dr["Effectivity Date"].ToNullableDateTime()
+            };
+
+            sched._SundaySchedule = ScheduleTypeProcess.Instance.Get(sched.SundayScheduleID);
+            sched._MondaySchedule = ScheduleTypeProcess.Instance.Get(sched.MondayScheduleID);
+            sched._TuesdaySchedule = ScheduleTypeProcess.Instance.Get(sched.TuesdayScheduleID);
+            sched._WednesdaySchedule = ScheduleTypeProcess.Instance.Get(sched.WednesdayScheduleID);
+            sched._ThursdaySchedule = ScheduleTypeProcess.Instance.Get(sched.ThursdayScheduleID);
+            sched._FridaySchedule = ScheduleTypeProcess.Instance.Get(sched.FridayScheduleID);
+            sched._SaturdaySchedule = ScheduleTypeProcess.Instance.Get(sched.SaturdayScheduleID);
+
+            return sched;
+        }
+
+        public PersonnelSchedule Get(long personnelScheduleId)
+        {
+            var parameters = new Dictionary<string, object> {
+                {"@ID", personnelScheduleId}
+            };
+
+            using (var db = new DBTools())
+            {
+                using(var ds = db.ExecuteReader("[hr].[GetPersonnelSchedule]", parameters))
+                {
+                    return ds.Get(Converter);
+                }
+            }
+        }
+        public List<PersonnelSchedule> GetList(long personnelId)
+        {
+            var parameters = new Dictionary<string, object> {
+                {"@PersonnelID", personnelId}
+            };
+
+            using (var db = new DBTools())
+            {
+                using (var ds = db.ExecuteReader("[hr].[GetPersonnelSchedule]", parameters))
+                {
+                    return ds.GetList(Converter);
+                }
+            }
+        }
+        public List<PersonnelSchedule> GetList(DateTime? startDate, DateTime? endDate)
+        {
+            var parameters = new Dictionary<string, object> {
+                {"@StartDate", startDate},
+                {"@EndDate", endDate}
+            };
+
+            using (var db = new DBTools())
+            {
+                using (var ds = db.ExecuteReader("[hr].[GetPersonnelSchedule]", parameters))
+                {
+                    return ds.GetList(Converter);
+                }
+            }
+        }
+
+        public PersonnelSchedule CreateOrUpdate(PersonnelSchedule sched, int userid)
+        {
+            using (var db = new DBTools())
+            {
+                return CreateOrUpdate(db, sched, userid);
+            }
+        }
+
+        public PersonnelSchedule CreateOrUpdate(DBTools db, PersonnelSchedule sched, int userid)
+        {
+            if (sched == null)
+                return null;
+
+            var parameters = new Dictionary<string, object> {
+                {"@PersonnelID", sched.PersonnelID}
+                , {"@SundayScheduleID", sched.SundayScheduleID}
+                , {"@MondayScheduleID" ,sched.MondayScheduleID}
+                , {"@TuesdayScheduleID", sched.TuesdayScheduleID}
+                , {"@WednesdayScheduleID", sched.WednesdayScheduleID}
+                , {"@ThursdayScheduleID ", sched.ThursdayScheduleID}
+                , {"@FridayScheduleID", sched.FridayScheduleID}
+                , {"@SaturdayScheduleID", sched.SaturdayScheduleID}
+                , {"@EffectivityDate", sched.EffectivityDate}
+                , {CredentialParameters.LogBy, userid}
+            };
+
+            var outParameters = new List<OutParameters>
+            {
+                { "@ID", SqlDbType.BigInt, sched.ID }
+            };
+
+            db.ExecuteNonQuery("[hr].[CreateOrUpdatePersonnelSchedule]", ref outParameters, parameters);
+            sched.ID = outParameters.Get("@ID").ToLong();
+            
+            return sched;
+        }
+
+        public void Delete(long id, int userid)
+        {
+            using (var db = new DBTools())
+            {
+                var parameters = new Dictionary<string, object> {
+                {"@ID", id }
+                , {"@Delete", true }
+                , {CredentialParameters.LogBy, userid}
+            };
+
+                db.ExecuteNonQuery("[hr].[CreateOrUpdatePersonnelSchedule]", parameters);
+            }
+
+        }
+
+    }
+
+    public static class ContactNumberProcess
+    {
+        internal static ContactNumber Converter(DataRow dr)
+        {
+            return new ContactNumber {
+                ID = dr["ID"].ToLong(),
+                ContactNoTypeID = dr["Contact No Type ID"].ToInt(),
+                PersonnelID = dr["Personnel ID"].ToLong(),
+                Number = dr["Number"].ToString()
+            };
+        }
+
+        public static ContactNumber Get(long id)
+        {
+            using (var db = new DBTools())
+            {
+                using (var ds = db.ExecuteReader("hr.GetContactNumber", new Dictionary<string, object> { { "@ID", id } }))
+                {
+                    return ds.Get(Converter);
+                }
+            }
+        }
+
+        public static List<ContactNumber> GetList(long personnelId)
+        {
+            using (var db = new DBTools())
+            {
+                using (var ds = db.ExecuteReader("hr.GetContactNumber", new Dictionary<string, object> { { "@PersonnelID", personnelId } }))
+                {
+                    return ds.GetList(Converter);
+                }
+            }
+        }
+        public static ContactNumber CreateOrUpdate(ContactNumber contactNumber, int userid)
+        {
+            using (var db = new DBTools())
+            {
+                return CreateOrUpdate(db, contactNumber, userid);
+            }
+        }
+        public static ContactNumber CreateOrUpdate(DBTools db, ContactNumber contactNumber, int userid)
+        {
+            var parameters = new Dictionary<string, object> {
+                { "@PersonnelID", contactNumber.PersonnelID },
+                { "@ContactNoTypeID", contactNumber.ContactNoTypeID },
+                { "@Number", contactNumber.Number },
+                { "@LogBy", userid }
+            };
+            var outparameters = new List<OutParameters> {
+                { "@ID", SqlDbType.BigInt, contactNumber.ID }
+            };
+
+            db.ExecuteNonQuery("hr.CreateOrUpdateContactNumber", ref outparameters, parameters);
+
+            contactNumber.ID = outparameters.Get("@ID").ToLong();
+
+            return contactNumber;
+        }
+        public static void Delete(DBTools db, long id, int userid)
+        {
+            var parameters = new Dictionary<string, object> {
+                { "@ID", id },
+                { "@Delete", true },
+                { "@LogBy", userid }
+            };
+
+                db.ExecuteNonQuery("hr.CreateOrUpdateContactNumber", parameters);
+            
+        }
+        public static void Delete(long id, int userid)
+        {
+            using (var db = new DBTools())
+            {
+                Delete(db, id, userid);
+            }
+        }
+    }
+}

@@ -1,0 +1,325 @@
+﻿@model WebTemplate.Models.Personnel.Index
+
+@{
+    ViewBag.title = "Personnel";
+}
+
+<div class="page-heading">
+    <div class="col-lg-12">
+        <h1>Personnel</h1>
+        <ol class="breadcrumb">
+            <li>
+                <a href='@Url.Action("Index", "Home")'>Home</a>
+            </li>
+            <li class="active">
+                <strong>Personnel</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>List of Pages</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Search Filter</label>
+                            <div class="input-group">
+                                <input type="text" id="txt_search" class="form-control" placeholder="Enter the @ViewBag.Page.PageName here..." value="@Html.ValueFor(m => m.Filter)" />
+                                <span class="input-group-btn">
+                                    <button type="button" id="btn_search" class="btn btn-primary font-bold"><i class="fa fa-search"></i></button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <form id="form_search">
+                                @Html.Partial("~/Views/HumanResource/Personnel/_Search.cshtml")
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal inmodal custom-modal" id="PersonnelProfile" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="vertical-alignment-helper">
+        <div class="modal-center vertical-align-center">
+            <div class="modal-content animated fadeInDown modal-width-80">
+                <form id="form_personelprofile">
+                    @*@Html.Partial("~/Views/HUmanResource/Personnel/Profile.cshtml")*@
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="floating-buttons" class="menu pmd-floating-action" role="navigation">
+    <button type="button" id="btnadd" class="btn btn-lg btn-circle pmd-floating-action-btn pmd-btn-fab pmd-btn-raised pmd-ripple-effect btn-primary" data-title="Create New">
+        <i class="fa fa-plus"></i>
+    </button>
+</div>
+
+@section Styles {
+    @Styles.Render("~/plugins/toastrStyles")
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/footableStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/sweetAlertStyles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+}
+
+@section scripts{
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/plugins/maskMoney")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/toastr")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/bundles/jquery-unobtrusive")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/sweetAlert")
+    @Scripts.Render("~/plugins/codeEditor")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/footable")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/switchery")
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.pages').click(function () {
+                $('#hid_page').val($(this).val())
+                search()
+            })
+            $('#txt_search').keydown(function () {
+                if (event.keyCode == 13) {
+                    $('#btn_search').click()
+                }
+            })
+            $('#btn_search').click(function () {
+                $('#hid_search').val($('#txt_search').val())
+                search()
+            });
+            $('.EditProfile').on('click', EditProfile);
+            $('.DeleteProfile').on('click', DeleteProfile);
+            $('#btnadd').on('click', NewProfile);
+        });
+
+        function NewProfile() {
+            $.ajax({
+                data: {
+                    'id': 0
+                },
+                type: 'POST',
+                datatype: 'JSON',
+                url:'@Url.Action("PersonnelProfile", "Personnel")',
+                cache: false,
+                beforeSend: function () {
+                    ShowLoadingScreen()
+                },
+                complete: function () {
+                    RemoveLoadingScreen()
+                },
+                success: function (response) {
+                    $('#form_personelprofile').empty().append(response);
+                    $('#PersonnelProfile').modal('show');
+                    $('#btnSavePersonalInfo').on('click', SaveProfileInfo);
+                    $('#btnSaveEmploymentInfo').on('click', SaveProfileInfo);
+                    $('#btnSaveEducationalBg').on('click', SaveProfileInfo);
+                    $('#btnSaveWorkExperience').on('click', SaveProfileInfo);
+                    InitDatePicker();
+
+                    ShowTabs(true);
+                },
+                error: function (x) {
+                    toastr.error(ShowErrorMsg(x), 'Backend error');
+                }
+            })
+        }
+
+        function EditProfile() {
+            var id = $(this).val();
+
+            $.ajax({
+                data: {
+                    'id': id
+                },
+                type: 'POST',
+                datatype: 'JSON',
+                url:'@Url.Action("PersonnelProfile", "Personnel")',
+                cache: false,
+                beforeSend: function () {
+                    ShowLoadingScreen()
+                },
+                complete: function () {
+                    RemoveLoadingScreen()
+                },
+                success: function (response) {
+                    $('#form_personelprofile').empty().append(response);
+                    $('#PersonnelProfile').modal('show');
+                    $('#btnSavePersonalInfo').on('click', SaveProfileInfo);
+                    $('#btnSaveEmploymentInfo').on('click', SaveProfileInfo);
+                    $('#btnSaveEducationalBg').on('click', SaveProfileInfo);
+                    $('#btnSaveWorkExperience').on('click', SaveProfileInfo);
+                    InitDatePicker();
+
+                    ShowTabs(false);
+                },
+                error: function (x) {
+                    toastr.error(ShowErrorMsg(x), 'Backend error');
+                }
+            })
+        }
+
+        function DeleteProfile() {
+            var id = $(this).val();
+            var tr = $(this).closest('tr');
+
+            swal({
+                title: 'Do you want to delete \n"' + tr.find('td:eq(0)').text() + "\" ?",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+                closeOnConfirm: true,
+                closeOnCancel: true
+            }, function (confirm) {
+                if (confirm) {
+                    $.ajax({
+                        data: {
+                            'id': id,
+                            '__RequestVerificationToken': $('@Html.AntiForgeryToken()').val()
+                        },
+                        type: 'POST',
+                        datatype: 'JSON',
+                        url: '@Url.Action("DeletePersonnel", "Personnel")',
+                        async: true,
+                        cache: false,
+                        beforeSend: function (x) {
+                            ShowLoadingScreen()
+                        },
+                        complete: function () {
+                            RemoveLoadingScreen()
+                        },
+                        success: function (response) {
+                            toastr.success(tr.find('td:eq(0)').text() + "'s Profile deleted!");
+                            tr.remove();
+                            location.reload();
+                        },
+                        error: function (x) {
+                            toastr.error(ShowErrorMsg(x), 'Backend error');
+                        }
+                    })
+                }
+            });
+        }
+
+        function SaveProfileInfo() {
+            var tabID = $(this).closest('.tab-pane').attr('id');
+            var params = $("#form_personelprofile #" + tabID + " *").serialize() + '&__RequestVerificationToken=' + $('@Html.AntiForgeryToken()').val() + (tabID == 'tab-1' ? '' : '&Personnel.ID=' + $('#Personnel_ID').val());
+            var urlAction = (tabID == 'tab-1' ? '@Url.Action("SavePersonalInfo", "Personnel")' :
+                            tabID == 'tab-2' ? '@Url.Action("SaveEmployementInfo", "Personnel")' :
+                    tabID == 'tab-3' ? '@Url.Action("SaveEducationalBackground", "Personnel")' : '@Url.Action("SaveWorkExperience", "Personnel")');
+            var tabName = tabID == 'tab-1' ? 'Personnel Info' : tabID == 'tab-2' ? 'Employement Info' : tabID == 'tab-3' ? 'Educational Background' : 'Work Experience';
+
+            $.ajax({
+                data: params,
+                type: 'POST',
+                datatype: 'JSON',
+                url: urlAction,
+                cache: false,
+                beforeSend: function () {
+                    ShowLoadingScreen()
+                },
+                complete: function () {
+                    RemoveLoadingScreen()
+                },
+                success: function (response) {
+                    if (tabID == 'tab-1') {
+                        $('#Personnel_ID').val(response.id)
+                    }
+                    toastr.success(tabName + ' saved!', 'Success');
+                    ShowTabs(false);
+                },
+                error: function (x) {
+                    toastr.error(ShowErrorMsg(x), 'Backend error');
+                }
+            })
+        }
+
+        function ShowTabs(isShow) {
+            if (isShow) {
+                $('.nav-tabs').find('li').hide();
+                $('.nav-tabs li:first-child').show()
+            }
+            else {
+                $('.nav-tabs').find('li').show();
+            }
+        }
+
+        function InitDatePicker() {
+            $('.input-group.date').datepicker({
+                todayBtn: "linked",
+                keyboardNavigation: false,
+                forceParse: false,
+                calendarWeeks: true,
+                autoclose: true
+            }).find('.input-group .form-control').attr('disable', true);
+        }
+
+        function search() {
+            $.ajax({
+                url: '@Url.Action("Index", "Personnel")',
+                data: $('#form_search').serializeArray(),
+                type: "GET",
+                cache: false,
+                beforeSend: function () {
+                    ShowLoadingScreen()
+                },
+                complete: function () {
+                    RemoveLoadingScreen()
+                },
+                success: function (response) {
+                    $("#form_search").empty().append(response);
+                    event_search()
+                    $('#txt_search').focus()
+                },
+                error: function () {
+                    toastr.error('AJAX backend error', 'An error has occured.');
+                }
+            });
+        }
+    function event_search() {
+        $('.pages').click(function () {
+            $('#hid_page').val($(this).val())
+            search()
+        })
+        $('#txt_search').keydown(function () {
+            if (event.keyCode == 13) {
+                $('#btn_search').click()
+            }
+        })
+        $('#btn_search').click(function () {
+            $('#hid_search').val($('#txt_search').val())
+            search()
+        });
+    }
+    </script>
+}

@@ -1,0 +1,223 @@
+html {
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    -ms-font-smoothing: antialiased !important;
+
+    button {
+        cursor: pointer;
+    }
+}
+
+body {
+    font-family: 'Open Sans', sans-serif;
+    //font-size: 16px;
+    color: #555555;
+
+    .md-stepper-horizontal {
+        display: table;
+        width: 100%;
+        margin: 0 auto;
+        background-color: #FFFFFF;
+        //box-shadow: 0 3px 8px -6px rgba(0,0,0,.50);
+        .md-step {
+            display: table-cell;
+            position: relative;
+            padding: 10px;
+            width: 33.33%;
+
+            &:hover,
+            &:active {
+                background-color: rgba(0,0,0,0.04);
+
+                .md-step-circle {
+                    background-color: #757575;
+                }
+            }
+
+            &:active {
+                border-radius: 15% / 75%;
+            }
+
+            &:first-child {
+                &:active {
+                    border-top-left-radius: 0;
+                    border-bottom-left-radius: 0;
+                }
+
+                & .md-step-bar-left {
+                    display: none;
+                }
+            }
+
+            &:last-child {
+                //&:active {
+                //    border-top-left-radius: 0;
+                //    border-bottom-left-radius: 0;
+                //}
+
+                & .md-step-bar-right {
+                    display: none;
+                }
+            }
+
+            &:last-child:active {
+                border-top-right-radius: 0;
+                border-bottom-right-radius: 0;
+
+                & .md-step-bar-right {
+                    display: none;
+                }
+            }
+
+            .md-step-circle {
+                width: 30px;
+                height: 30px;
+                margin: 0 auto;
+                background-color: #999999;
+                border-radius: 50%;
+                text-align: center;
+                line-height: 30px;
+                font-size: 16px;
+                font-weight: 600;
+                color: #FFFFFF;
+            }
+        }
+    }
+}
+
+.md-stepper-horizontal.green .md-step.active .md-step-circle {
+    background-color: #00AE4D;
+}
+
+.md-stepper-horizontal.orange .md-step.active .md-step-circle {
+    background-color: #F96302;
+}
+
+.md-stepper-horizontal .md-step.active .md-step-circle {
+    background-color: rgb(33,150,243);
+}
+
+.md-stepper-horizontal .md-step.done1 .md-step-circle:before {
+    font-family: 'FontAwesome';
+    font-weight: 100;
+    content: "\f0c7"; //Created //"\f00c";
+}
+
+.md-stepper-horizontal .md-step.active .md-step-bar-right,
+.md-stepper-horizontal .md-step.active .md-step-bar-right,
+.md-stepper-horizontal .md-step.active .md-step-bar-right {
+    background-color: #e7eaec;
+}
+
+.md-stepper-horizontal .md-step.active .md-step-bar-left,
+.md-stepper-horizontal .md-step.active .md-step-bar-left,
+.md-stepper-horizontal .md-step.active .md-step-bar-left {
+    background-color: #e7eaec;
+}
+
+.md-stepper-horizontal .md-step.active.done1 .md-step-bar-right,
+.md-stepper-horizontal .md-step.active.done2 .md-step-bar-right,
+.md-stepper-horizontal .md-step.active.done3 .md-step-bar-right {
+    background-color: #00AE4D;
+}
+
+.md-stepper-horizontal .md-step.active.done2 .md-step-bar-left,
+.md-stepper-horizontal .md-step.active.done3 .md-step-bar-left,
+.md-stepper-horizontal .md-step.active.done4 .md-step-bar-left {
+    background-color: #00AE4D;
+}
+.md-stepper-horizontal .md-step.active.done5 .md-step-bar-left {
+    background-color: #f44336;
+}
+
+    .md-stepper-horizontal .md-step.done2 .md-step-circle:before {
+        font-family: 'FontAwesome';
+        font-weight: 100;
+        content: "\f00c"; //Checked //"\f040";
+    }
+
+    .md-stepper-horizontal .md-step.done3 .md-step-circle:before {
+        font-family: 'FontAwesome';
+        font-weight: 100;
+        content: "\f040"; //"\f044"; //Noted //"\f040";
+    }
+
+    .md-stepper-horizontal .md-step.done4 .md-step-circle:before {
+        font-family: 'FontAwesome';
+        font-weight: 100;
+        content: "\f08d"; //"\f003"; //Posted //"\f040";
+    }
+
+.md-stepper-horizontal .md-step.done5 .md-step-circle:before {
+    font-family: 'FontAwesome';
+    font-weight: 100;
+    content: "\f05e"; //"\f08d"; //"\f003"; //Posted //"\f040";
+}
+
+    .md-stepper-horizontal .md-step.done .md-step-circle *,
+    .md-stepper-horizontal .md-step.editable .md-step-circle * {
+        display: none;
+    }
+
+    .md-stepper-horizontal .md-step.editable .md-step-circle {
+        -moz-transform: scaleX(-1);
+        -o-transform: scaleX(-1);
+        -webkit-transform: scaleX(-1);
+        transform: scaleX(-1);
+    }
+
+    .md-stepper-horizontal .md-step .md-step-title {
+        margin-top: 0px;
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .md-stepper-horizontal .md-step .md-step-subtitle {
+        margin-top: 0px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .md-stepper-horizontal .md-step .md-step-title,
+    .md-stepper-horizontal .md-step .md-step-optional {
+        text-align: center;
+        color: rgba(0,0,0,.26);
+    }
+
+    .md-stepper-horizontal .md-step.active .md-step-title {
+        font-weight: 600;
+        color: rgba(0,0,0,.87);
+    }
+
+    .md-stepper-horizontal .md-step.active.done .md-step-title,
+    .md-stepper-horizontal .md-step.active.editable .md-step-title {
+        font-weight: 600;
+    }
+
+    .md-stepper-horizontal .md-step .md-step-optional {
+        font-size: 12px;
+    }
+
+    .md-stepper-horizontal .md-step.active .md-step-optional {
+        color: rgba(0,0,0,.54);
+    }
+
+    .md-stepper-horizontal .md-step .md-step-bar-left,
+    .md-stepper-horizontal .md-step .md-step-bar-right {
+        position: absolute;
+        top: 23px; //26px; //36px; //45px;
+        height: 4px;
+        border-top: 1px solid #DDDDDD;
+    }
+
+    .md-stepper-horizontal .md-step .md-step-bar-right {
+        right: 0;
+        left: 50%;
+        margin-left: 20px;
+    }
+
+    .md-stepper-horizontal .md-step .md-step-bar-left {
+        left: 0;
+        right: 50%;
+        margin-right: 20px;
+    }

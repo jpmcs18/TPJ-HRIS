@@ -1,0 +1,252 @@
+﻿@model List<string>
+@{
+    var PageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("Maintenance/Lookup/ApproverPosition");
+    var statuslist = (new DataAccessLayer.System.User()).LookupUserStatus();
+    var lookup = ProcessLayer.Processes.LookupProcess._GetLookupTables();
+
+    ViewBag.title = PageAccess.PageName;
+}
+
+<div class="wrapper wrapper-content">
+    <div class="page-heading">
+        <div class="col-lg-8">
+            <h1>@Html.Raw(PageAccess.PageName ?? "&nbsp;")</h1>
+            <ol class="breadcrumb">
+                <li>
+                    <a href='@Url.Action("Index", "Home")'>Home</a>
+                </li>
+                <li>Maintenance</li>
+                <li>System</li>
+                <li class="active">
+                    <strong>@Html.Raw(PageAccess.PageName ?? "&nbsp;")</strong>
+                </li>
+            </ol>
+        </div>
+        <div class="col-lg-4">
+            <div class="title-action">
+                @if (PageAccess.Insert)
+                {
+                    <a class="btn btn-primary compose-mail" href="#" id="btnadd" onclick="manage_item()">Add Department</a>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="" style="margin-top: 85px;">
+        <div class="col-xs-12 col-sm-12 col-md-push-2 col-md-8 col-lg-push-3 col-lg-6 animated fadeInLef">
+            <div class="file-manager">
+                <form id="form_search_params" class="m-t-md" enctype="multipart/form-data" style="margin: 0 -15px;">
+                    <div class="form-group col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                        @*<label class="control-label">Choose Lookup</label>*@
+                        <select class="form-control" id="view-select-lookup" onchange="get_items()">
+                            @if (lookup.Count() > 0 || Model.Any())
+                            {
+                                for (int x = 0; x < lookup.Count; x++)
+                                {
+                                    <option value="@lookup[x]">@lookup[x]</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                        @*<label>Filter by Description</label>*@
+                        <input type="text" class="form-control" placeholder="Input Description..." id="view-text-description" />
+                    </div>
+                </form>
+
+                <div class="form-group" style="">
+                    @*<label class="control-label" style="width: 0%; color: #fff;">Search</label>*@
+                    <button type="button" id="btn_search" class="btn btn-primary font-bold" onclick="get_items()"><i class="fa fa-search"></i> Search</button>
+                </div>
+            </div>
+            <form id="view-table-lookup" enctype="multipart/form-data" class="pull-left" style="width: 100%;">
+                @*Html.Partial("~/Views/Maintenance/Organization/Department/_Search.cshtml")*@
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal inmodal custom-modal" id="modal-lookup" data-backdrop="static" data-keyboard="false" tabindex="" role="dialog" aria-hidden="true">
+    <div class="vertical-alignment-helper">
+        <div class="modal-center vertical-align-center">
+            <div class="modal-content animated fadeInDown modal-width-30">
+                <div id="modal-lookup-body"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<div id="floating-buttons" class="menu pmd-floating-action" role="navigation">
+    <button type="button" class="btn btn-lg btn-circle pmd-floating-action-btn pmd-btn-fab pmd-btn-raised pmd-ripple-effect btn-primary" data-title="Create New"">
+        <i class="fa fa-plus"></i>
+    </button>
+</div>*@
+
+@section Styles {
+    @Styles.Render("~/plugins/toastrStyles")
+    @Styles.Render("~/plugins/footableStyles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/sweetAlertStyles")
+}
+
+@section scripts{
+    @Scripts.Render("~/plugins/toastr")
+    @Scripts.Render("~/plugins/footable")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/sweetAlert")
+
+    <script type="text/javascript">
+        var LookupTitle = '';
+
+        $(document).ready(function () {
+            get_items();
+            Events();
+        });
+
+        function Events() {
+            $('#view-text-description').keypress(function (e) {
+                var key = e.which;
+                if (key == 13) {
+                    get_items();
+                }
+            });
+
+            $('.pages').off('click').on('click',
+                function () {
+                    $('#hid_page').val($(this).val())
+                    get_items();
+                })
+        }
+
+        function get_items() {
+            LookupTitle = $('#view-select-lookup option:selected').text().trim();
+            $('#btnadd').text('Add ' + LookupTitle);
+            var params = $('#form_search_params *').serialize() +
+                '&TableName=' + $('#view-select-lookup').val() + 
+                '&Filter=' + $('#view-text-description').val();
+
+            $.ajax({
+                url: '@Url.Action("Index", "Maintenance/Lookup/ApproverPosition")',
+                data: params,
+                type: "POST",
+                cache: false,
+                beforeSend: function () {
+                    ShowLoadingScreen()
+                },
+                complete: function () {
+                    RemoveLoadingScreen()
+                },
+                success: function (response) {
+                    if (response.ErrorMsg == null) {
+                        $('#view-table-lookup').html(response);
+                        $('#view-text-description').focus();
+                        Events();
+                    }
+                    else {
+                        $('#view-table-lookup').html('<h3 class="text-center m-t-md">No item found...</h3>');
+                        toastr.error(response.ErrorMsg, "Backend Error");
+                    }
+                },
+                error: function () {
+                    toastr.error('AJAX backend error', 'An error has occured.');
+                }
+            });
+        }
+
+        function manage_item(id) {
+            $.ajax({
+                url: '@Url.Action("Management", "Maintenance/Lookup/ApproverPosition")',
+                data: { tablename: $('#view-select-lookup').val(), uid: id },
+                type: "POST",
+                cache: false,
+                beforeSend: function () {
+                    ShowLoadingScreen()
+                },
+                complete: function () {
+                    RemoveLoadingScreen()
+                },
+                success: function (response) {
+                    if (response.ErrorMsg != null) {
+                        toastr.error(response.ErrorMsg, "Backend Error");
+                    }
+                    else {
+                        $('#modal-lookup-body').html(response);
+                        $('#modal-lookup').appendTo("body").modal('show');
+                    }
+                },
+                error: function () {
+                    toastr.error('AJAX backend error', 'An error has occured.');
+                }
+            });
+        }
+
+        function delete_item(id) {
+            swal({
+                    title: "Are you sure?",
+                    text: "Delete this Item?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes",
+                    cancelButtonText: "No",
+                    closeOnConfirm: true,
+                    closeOnCancel: true
+                },
+                function (isConfirm) {
+                    if (isConfirm)
+                        $.ajax({
+                            url: '@Url.Action("Delete", "Maintenance/Lookup/ApproverPosition")',
+                            data: { tablename: $('#view-select-lookup').val(), uid: id },
+                            type: "POST",
+                            cache: false,
+                            beforeSend: function () {
+                                ShowLoadingScreen()
+                            },
+                            complete: function () {
+                                RemoveLoadingScreen()
+                            },
+                            success: function (response) {
+                                if (response.IsSuccess) {
+                                    toastr.success("Item has been successfully deleted!");
+                                    get_items();
+                                }
+                                else {
+                                    toastr.error(response.ErrorMsg, "Backend Error");
+                                }
+                            },
+                            error: function () {
+                                toastr.error('AJAX backend error', 'An error has occured.');
+                            }
+                        });
+                });
+        }
+
+        function search_item_success(response) {
+            if (response != null) {
+                if (response.ErrorMsg != null) {
+                    toastr.error(response.ErrorMsg, "Backend Error");
+                }
+                else {
+                    $('#view-table-lookup').html(response);
+                }
+            }
+            else {
+                toastr.error('AJAX backend error', 'An error has occured.');
+            }
+        }
+
+        function createupdate_item_success(response) {
+            if (response != null) {
+                if (response.IsSuccess) {
+                    toastr.success("Item has been successfully saved!", "Success");
+                    get_items();
+                    $('#modal-lookup').modal('hide');
+                }
+                else {
+                    toastr.error(response.ErrorMsg, "Backend Error");
+                }
+            }
+            else {
+                toastr.error('AJAX backend error', 'An error has occured.');
+            }
+        }
+    </script>
+}

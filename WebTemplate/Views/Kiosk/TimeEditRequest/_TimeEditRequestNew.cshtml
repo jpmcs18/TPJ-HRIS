@@ -1,0 +1,43 @@
+﻿@model WebTemplate.Models.Kiosk.Time_Edit_Request.Index
+
+@{
+    var c = User as WebTemplate.Models.CustomPrincipal;
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var TimeEditPageAccess = credential.GetPage("Kiosk/TimeEditRequest") ?? new DataAccessLayer.System.Page();
+    var TimeEditRequestCreator = credential.GetPage("Creator Request Over Time") ?? new DataAccessLayer.System.Page();
+}
+
+<input hidden name="PersonnelID" value="@Model.Personnel.ID" />
+<input hidden name="ID" value="@Model.TimeEditRequest.ID" />
+
+<div id="ToClearWhenNew">
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-6">
+            <label class="control-label">Login Date & Time</label>
+            @*<input type="text" name="StartDateTime" class="form-control text-transform-none js-datetimepicker" placeholder="StartDateTime..." />*@
+            @Html.TextBox("LoginDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.LoginDateTime), new { @type = "datetime-local", @class = "form-control" })
+            @*@Html.TextBox("LoginDateTime", String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.TimeEditRequest.LoginDateTime), new { @class = "form-control js-datetimepicker", @placeholder = "" })
+            <span id="" class="clearInput" title="Clear"><i class="fa fa-times"></i></span>*@
+        </div>
+
+        <div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-6">
+            <label class="control-label">Logout Date & Time</label>
+            @*<input type="text" name="EndingDateTime" class="form-control text-transform-none js-datetimepicker" placeholder="EndingDateTime..." />*@
+            @Html.TextBox("LogoutDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.LogoutDateTime), new { @type = "datetime-local", @class = "form-control" })
+            @*@Html.TextBox("LogoutDateTime", String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.TimeEditRequest.LogoutDateTime), new { @class = "form-control js-datetimepicker", @placeholder = "" })
+            <span id="" class="clearInput" title="Clear"><i class="fa fa-times"></i></span>*@
+        </div>
+
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <label class="control-label">Purpose/s</label>
+            <input type="text" name="Purpose" value="@Model.TimeEditRequest.Purpose" class="form-control text-transform-none" placeholder="Purpose/s..." />
+        </div>
+
+        @if (TimeEditRequestCreator.Update || TimeEditRequestCreator.Insert)
+        {
+            <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <button type="button" id="CreateTimeEditRequest" onclick="SaveTimeEditRequest('Save');" class="btn btn-primary font-bold pull-right" title="Save"><i class="fa fa-save"></i>&nbsp;&nbsp;Save</button>
+            </div>
+        }
+    </div>
+</div>

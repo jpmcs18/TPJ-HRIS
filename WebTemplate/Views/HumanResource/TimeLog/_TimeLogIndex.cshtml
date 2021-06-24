@@ -1,0 +1,640 @@
+﻿
+@{
+    var departments = ProcessLayer.Processes.Lookups.DepartmentProcess.Instance.GetList();     
+}
+
+<div class="wrapper wrapper-content">
+    <div class="page-heading">
+        <div class="col-lg-8">
+            <h1>@Html.Raw(ViewBag.Page.PageName ?? "&nbsp;")</h1>
+            <ol class="breadcrumb">
+                <li>
+                    <a href='@Url.Action("Index", "Home")'>Home</a>
+                </li>
+                <li class="active">
+                    <strong>@Html.Raw(ViewBag.Page.PageName ?? "&nbsp;")</strong>
+                </li>
+            </ol>
+        </div>
+        <div class="col-lg-2">
+            <div class="title-action">
+                <button class="btn btn-primary" id="ImportFile">Import Time Log</button>
+                <button class="btn btn-primary" id="ExportTimeSheet">Export Time Sheet</button>
+            </div>
+        </div>
+    </div>
+    <div class="" style="margin-top: 85px;">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 animated fadeInLef">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 m-b-sm" style="padding: 0px;">
+                <div class="tabs-container" style="border: 1px solid #009688;">
+                    <div class="tab-content" style="margin-top: 0px; max-height: unset; overflow-y: auto; overflow-x: hidden;">
+                        <div id="tab-2" class="tab-pane active" style="height: 850px;">
+                            <div id="TimeLogsForm" class="panel-body" style="padding: 10px; max-height: 100%; border: 1px solid #e5e6e7; overflow-y: hidden;">
+                                <div class="row" style="margin:10px;">
+                                    <div id="searchdiv">
+                                        <input type="hidden" id="hid_key" name="key" />
+                                        <input type="hidden" id="hid_start" name="startdate" />
+                                        <input type="hidden" id="hid_end" name="enddate" />
+                                    </div>
+                                    <div class="form-group col-lg-2">
+                                        <label class="control-label">Filters</label>
+                                        <input type="text" id="txt_key" class="form-control" placeholder="Personnel..." />
+                                    </div>
+                                    <div class="form-group col-lg-2">
+                                        <label class="control-label">Start Date</label>
+                                        @Html.TextBox("startdate", String.Format("{0:yyyy'-'MM'-'dd}", ""), new { @id = "txt_start", @type = "date", @class = "form-control" })
+                                    </div>
+
+                                    <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-2">
+                                        <label class="control-label">End Date</label>
+                                        @Html.TextBox("enddate", String.Format("{0:yyyy'-'MM'-'}", ""), new { @id = "txt_end", @type = "date", @class = "form-control" })
+                                    </div>
+
+                                    <div class="form-group col-lg-2">
+                                        <button type="button" id="btn_search" class="btn btn-primary font-bold" style="margin-top:20px; "><i class="fa fa-search"></i> Search</button>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="table-responsive">
+                                            <div class="mail-box">
+                                                <table class="table table-hover table-mail">
+                                                    <thead>
+                                                        <tr>
+                                                            <th style="text-align:center">Employee</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="employeediv"></tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="table-responsive">
+                                            <div class="mail-box">
+                                                <table class="table table-hover table-mail">
+                                                    <thead>
+                                                        <tr>
+                                                            <th style="text-align:left; ">In</th>
+                                                            <th style="text-align:left; ">Out</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="timelogdiv"></tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal inmodal custom-modal" id="ImportFileDiv" data-keyboard="false" tabindex="" role="dialog" aria-hidden="true" style="overflow: hidden;">
+    <div class="vertical-alignment-helper">
+        <div class="modal-center vertical-align-center">
+            <div class="modal-content animated fadeInUp modal-width-100" style=" height: 100%;">
+                <div class="modal-header">
+                    <h5 class="modal-title">Import Time Log</h5>
+                    <button type="button" class="close" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="height: 800px; background-color: #fff; overflow-y: auto;">
+                    <div class="form-group">
+                        <div class="fileinput fileinput-new" data-provides="fileinput" style="cursor: pointer !important;">
+                            <span class="btn btn-default btn-file">
+                                <span class="fileinput-new">Select file...</span>
+                                <span class="fileinput-exists">Change</span><input id="browseFile" type="file" name="..." />
+                            </span>
+                            <span class="fileinput-filename"></span>
+                            <a href="#" class="close fileinput-exists" data-dismiss="fileinput" style="float: none">×</a>
+                        </div>
+                        <button type="button" id="btn_validate" class="btn btn-primary font-bold" disabled style="display: none;">Re-Validate</button>
+                    </div>
+                    <div id="ValidateResult">
+                        <div class="col-lg-6" style="margin: 0px;">
+                            <div class="table-responsive" style="margin-bottom: 1em;">
+                                <div class="mail-box">
+                                    <table id="ErrorInputs" class="table table-hover table-mail">
+                                        <thead>
+                                            <tr class="bg-info">
+                                                <th style="text-align:center">Errors</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6" style="margin: 0px;">
+                            <div class="table-responsive" style="margin-bottom: 1em;">
+                                <div class="mail-box">
+                                    <table id="ValidInputs" class="table table-hover table-mail">
+                                        <thead>
+                                            <tr class="bg-info">
+                                                <th style="text-align:center">Validated</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    @*<button type="button" name="CancelImportFile" class="btn btn-outline btn-w-m btn-danger CancelImportFile" value="0" title="Clear"><i class="fa fa-times"></i> &nbsp;Cancel</button>*@
+                    <button type="button" name="SaveImportFile" class="btn btn-info btn-w-m SaveImportFile" value="0" title="Proceed" disabled="disabled">Proceed</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal inmodal custom-modal" id="ExportTimeSheetDiv" data-keyboard="false" tabindex="" role="dialog" aria-hidden="true">
+    <div class="vertical-alignment-helper">
+        <div class="modal-center vertical-align-center">
+            <div class="modal-content animated fadeInUp modal-width-50" style=" height: 100%;">
+                <div class="modal-header">
+                    <h5 class="modal-title">Export Time Sheet</h5>
+                    <button type="button" class="close" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="height: 79%; background-color: #fff; overflow: hidden;">
+                    <form class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
+                        <div class="form-group col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                            <label for="ByDepartment">
+                                <input class="i-checks" type="radio" name="filter" value="#form_by_department">
+                                &nbsp;&nbsp;&nbsp;By Department
+                            </label>
+                        </div>
+                        <div class="form-group col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                            <label for="ByPersonnel">
+                                <input class="i-checks" type="radio" name="filter" value="#form_by_personnel">
+                                &nbsp;&nbsp;&nbsp;By Personnel
+                            </label>
+                        </div>
+                        <div class="form-group col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                            <label for="All">
+                                <input class="i-checks" type="radio" name="filter" value="#form_all">
+                                &nbsp;&nbsp;&nbsp;All
+                            </label>
+                        </div>
+                    </form>
+                    <form id="form_all" class="input-group m-b-sm" style="float: left; display: none;">
+                        <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-6">
+                            <label class="control-label">Start Date</label>
+                            @Html.TextBox("start", String.Format("{0:yyyy'-'MM'-'dd}", DateTime.Now), new { @type = "date", @class = "form-control" })
+                        </div>
+
+                        <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-6">
+                            <label class="control-label">End Date</label>
+                            @Html.TextBox("end", String.Format("{0:yyyy'-'MM'-'dd}", DateTime.Now), new { @type = "date", @class = "form-control" })
+                        </div>
+                    </form>
+                    <div id="form_by_department" style="display: none;">
+                        <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-4">
+                            <label class="control-label">Department</label>
+                            @Html.DropDownList("departmentId", new SelectList(departments, "ID", "Description"), "N/A", new { @class = "form-control" })
+
+                        </div>
+                    </div>
+                    <div id="form_by_personnel" class="tablediv" style="        width: 50%;
+        display: none;
+        margin: 0 auto;
+">
+                        @Html.Hidden("PesonnelIdHidden")
+                        <div id="SearchPersonnelDiv" class="input-group m-b-sm" style="width: 100%;">
+                            <input id="SearchPersonnelInput" class="form-control" placeholder="Search Personnel..." />
+                            <span class="input-group-addon" id="SearchPersonnel" onclick="SearchPersonnel();" style="cursor: pointer;"><i class="fa fa-search"></i></span>
+                        </div>
+                        <div id="SearchTableDiv">
+                            <div class="table-responsive" style="max-height: 600px; overflow-y: scroll;">
+                                <table id="PersonnelsTable" class="table table-stripped table-bordered" style="max-height: 500px;">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align: center;" scope="col">Personnel</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info btn-w-m" onclick="GetTimesheet();" title="GetTimesheet">Get Timesheet</button>
+                    @using (Html.BeginForm("GetTimesheet", "TimeLog", FormMethod.Post, new { @id = "GetTimesheetForm", @target = "_blank", @class = "pull-right" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <button type="submit" hidden></button>
+                        <input type="hidden" value="" name="personnelId" />
+                        <input type="hidden" value="" name="departmentId" />
+                        <input type="hidden" value="" name="start" />
+                        <input type="hidden" value="" name="end" />
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    table.table-mail tr {
+        cursor: pointer;
+    }
+
+    #employeediv tr.selected-employee {
+        background-color: #eee;
+    }
+
+    .selected-employee {
+        background-color: #007d71;
+        color: white;
+    }
+
+    #ExportTimeSheetDiv #PersonnelsTable tr:hover {
+        background-color: #007d71;
+        color: white;
+    }
+</style>
+
+<script>
+    $Form = '';
+
+    $(document).ready(function() {
+        Events();
+    });
+
+    function Events() {
+        $("#btn_search").off('click').on('click', searchPersonnel);
+        $('#ImportFile').off('click').on('click', ImportFile);
+        $('#ExportTimeSheet').off('click').on('click', ExportTimeSheet);
+        $('#ExportTimeSheetDiv input[type="radio"]').off('ifClicked').on('ifClicked', TimeSheetSearch);
+
+        $('#ExportTimeSheetDiv #SearchPersonnelInput').off('keydown').on('keydown', function (e) {
+            if (e.keyCode == 13) {
+                SearchPersonnel();
+            }
+        });
+
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green',
+        });
+    }
+
+    function TimeSheetSearch() {
+        $Form = $(this).val();
+
+        if ($Form == '#form_by_department') {
+            $('#form_by_personnel').hide();
+            $('#form_all').show();
+            $('#form_by_department').show();
+        }
+        if ($Form == '#form_by_personnel') {
+            $('#form_by_department').hide();
+            $('#form_all').show();
+            $('#form_by_personnel').show();
+        }
+        if ($Form == '#form_all') {
+            $('#form_by_personnel').hide();
+            $('#form_by_department').hide();
+            $('#form_all').show();
+        }
+    }
+
+    function GetTimesheet() {
+        var start = $('#form_all #start').val();
+        var end = $('#form_all #end').val();
+        var dept = $('#form_by_department select').val();
+
+        if (!(start.length > 0) || !(end.length > 0)) {
+            toastr.warning('Start and End Dates are required.', "Warning");
+        }
+        else {
+            if ($Form == '#form_by_department') {
+                $('#GetTimesheetForm input[name="personnelId"]').val(null);
+                $('#GetTimesheetForm input[name="departmentId"]').val(dept);
+            }
+            if ($Form == '#form_by_personnel') {
+                //$('#GetTimesheetForm input[name="personnelId"]').val(null);
+                $('#GetTimesheetForm input[name="departmentId"]').val(null);
+            }
+            if ($Form == '#form_all') {
+                $('#GetTimesheetForm input[name="personnelId"]').val(null);
+                $('#GetTimesheetForm input[name="departmentId"]').val(null);
+            }
+
+            $('#GetTimesheetForm input[name="start"]').val(start);
+            $('#GetTimesheetForm input[name="end"]').val(end);
+
+            $('#GetTimesheetForm button[type="submit"]').trigger('click');
+            $('body').removeClass('sk-loading');
+        }
+    }
+
+    function SearchPersonnel() {
+        var key = $('#SearchPersonnelInput').val();
+
+        if (key.length == "") {
+            swal({
+                title: "Warning",
+                text: "Search will take longer because Personnel field is empty.\nContinue?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+                closeOnConfirm: true,
+                closeOnCancel: true
+            },
+                function (isConfirm) {
+                    if (isConfirm) {
+                        $.ajax({
+                            url: '@Url.Action("SearchPersonnel", "TimeLog")',
+                            data: {
+                                key: key,
+                                '__RequestVerificationToken': $('@Html.AntiForgeryToken()').val()
+                            },
+                            type: "POST",
+                            cache: false,
+                            beforeSend: function () {
+                                ShowLoadingScreen()
+                            },
+                            complete: function () {
+                                RemoveLoadingScreen()
+                            },
+                            success: function (response) {
+                                if (response.msg == null) {
+                                    $('#SearchPersonnelInput').val(key);
+                                    $("#SearchTableDiv tbody").html(response);
+                                    $("#SearchTableDiv tbody .employee").off('click').on('click', SearchTimeLog);
+                                } else {
+                                    toastr.error(response.res);
+                                }
+                            },
+                            error: function () {
+                                toastr.error('AJAX backend error', 'An error has occured.');
+                            }
+                        });
+                    }
+                });
+        }
+        else {
+            $.ajax({
+                url: '@Url.Action("SearchPersonnel", "TimeLog")',
+                data: {
+                    key: key,
+                    '__RequestVerificationToken': $('@Html.AntiForgeryToken()').val()
+                },
+                type: "POST",
+                cache: false,
+                beforeSend: function() {
+                    ShowLoadingScreen()
+                },
+                complete: function() {
+                    RemoveLoadingScreen()
+                },
+                success: function(response) {
+                    if (response.msg == null) {
+                        $('#SearchPersonnelInput').val(key);
+                        $("#SearchTableDiv tbody").html(response);
+                        $("#SearchTableDiv tbody .employee").off('click').on('click', SearchTimeLog);
+                    } else {
+                        toastr.error(response.res);
+                    }
+                },
+                error: function() {
+                    toastr.error('AJAX backend error', 'An error has occured.');
+                }
+            });
+        }
+    }
+
+    function SearchTimeLog() {
+        $('#ExportTimeSheetDiv #PersonnelsTable tr.employee').attr('title', 'click to select');
+        $('#ExportTimeSheetDiv #PersonnelsTable tr.employee').removeClass('selected-employee');
+        var id = $(this).attr('tpj-id');
+        $(this).addClass('selected-employee');
+        $('#GetTimesheetForm input[name="personnelId"]').val(id);
+        //GetTimesheet();
+    }
+
+    function ImportFile() {
+        $('#ImportFileDiv').appendTo("body").modal('show');
+        $('#ImportFileDiv .modal-header .close').off('click').on('click', CancelFileImport);
+        $('#btn_validate').off('click').on('click', ValidateFile);
+        $('input#browseFile').off('change, input').on('change, input', EnableValidate);
+    }
+
+    function ExportTimeSheet() {
+        $('#ExportTimeSheetDiv').appendTo("body").modal('show');
+        $('#ExportTimeSheetDiv .modal-header .close').off('click').on('click', CancelExportTimeSheet);
+        $('#btn_validate').off('click').on('click', ValidateFile);
+        $('input#browseFile').off('change, input').on('change, input', EnableValidate);
+    }
+
+    function CancelFileImport() {
+        $('#ValidateResult tbody').empty();
+        $('#ImportFileDiv .fileinput .close').trigger('click');
+        $('#ImportFileDiv').modal('hide');
+    }
+
+    function CancelExportTimeSheet() {
+        $('#ValidateResult tbody').empty();
+        $('#ExportTimeSheetDiv .fileinput .close').trigger('click');
+        $('#ExportTimeSheetDiv').modal('hide');
+    }
+
+    function EnableValidate() {
+        //$('#btn_validate').attr('disabled', !$("#browseFile")[0].files.length > 0);
+        ValidateFile();
+    }
+
+    function ValidateFile() {
+        var formdata = new FormData();
+        if ($("#browseFile")[0].files.length > 0)
+            formdata.append("fileBase", $("#browseFile")[0].files[0])
+
+        formdata.append("__RequestVerificationToken", $('@Html.AntiForgeryToken()').val());
+
+        $.ajax({
+            data: formdata,
+            url: '@Url.Action("ValidateTimelogFile", "TimeLog")',
+            type: 'POST',
+            datatype: 'JSON',
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function () { ShowLoadingScreen() },
+            complete: function () { RemoveLoadingScreen() },
+            success: function (response) {
+                if (response.msg == null) {
+                    $("#ValidateResult").html(response);
+                    var hasErrors = $('#ImportFileDiv table#ErrorInputs tbody tr').length > 0;
+                    var hasValids = $('#ImportFileDiv table#Timelogs tbody tr').length > 0;
+                    $('button.SaveImportFile').attr('disabled', hasErrors && !hasValids);
+                    $('button.SaveImportFile').text("Proceed" + (hasErrors && hasValids ? " Anyway" : ""));
+                    $(".SaveImportFile").off('click').on('click', SaveImportFile);
+                    $('#btn_validate').show().attr('disabled', false);
+                }
+                else {
+                    toastr.error('Error', response.res);
+                }
+            },
+            error: function (x, y, z) {
+                //toastr.error('Error', x + y + z);
+            }
+        })
+    }
+
+    function SaveImportFile() {
+        var formdata = new FormData();
+        formdata.append("path", $("#HiddenPath").val());
+        formdata.append("__RequestVerificationToken", $('@Html.AntiForgeryToken()').val());
+
+        var hasErrors = $('#ImportFileDiv table#ErrorInputs tbody tr').length > 0;
+
+        if (hasErrors) {
+            swal({
+                title: 'Unrecognized Biometrics exists!',
+                text: 'Proceed uploading validated time logs?',
+                type: 'warning',
+                showConfirmButton: true,
+                showCancelButton: true,
+                confirmButtonColor: "#1ab394",
+                //cancelButtonColor: "#f27474", //"f27474",
+                confirmButtonText: 'OK',
+                cancelButtonText: 'Retry',
+                closeOnConfirm: true,
+                closeOnCancel: true,
+                html: true
+            },
+                function (isConfirm) {
+                    if (isConfirm) {
+                        ContinueSave(formdata);
+                    } else {
+                    }
+                });
+        }
+        else {
+            ContinueSave(formdata);
+        }
+    }
+
+    function ContinueSave(formdata) {
+
+        $.ajax({
+            data: formdata,
+            url: '@Url.Action("UploadTimelog", "TimeLog")',
+            type: 'POST',
+            datatype: 'JSON',
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function () { ShowLoadingScreen() },
+            complete: function () { RemoveLoadingScreen() },
+            success: function (response) {
+                if (response.msg == true) {
+                    toastr.success('Success', response.res);
+                    CancelFileImport();
+                    $('tr.selected-employee').trigger('click');
+                }
+                else {
+                    toastr.error('Error', response.res);
+                }
+            },
+            error: function (x, y, z) {
+                //toastr.error('Error', x + y + z);
+            }
+        })
+    }
+
+    function SetTimeLogRowHeight() {
+        var h = $('tbody#employeediv tr').outerHeight();
+        $('tbody#timelogdiv tr').css('height', h + 'px');
+    }
+
+    function ResizeTimeLine() {
+        var h = ($('body').height() - $('body').height() / 2);
+        $('.table-responsive').css('height', h + 'px');
+    }
+
+    function searchPersonnel() {
+        $("#hid_key").val($("#txt_key").val());
+        $("#hid_start").val($("#txt_start").val());
+        $("#hid_end").val($("#txt_end").val());
+        var msg = '';
+
+        if (($("#hid_start").val().length + $("#hid_start").val().length) == 0) {
+            msg = 'Start & End Dates are required.';
+            toastr.warning(msg, 'Incomplete data.');
+        }
+        else {
+            var params = $("#searchdiv *").serialize() + "&__RequestVerificationToken=" + $('@Html.AntiForgeryToken()').val();
+
+            $.ajax({
+                data: params,
+                type: 'POST',
+                url: '@Url.Action("GetPersonnels", "TimeLog")',
+                beforeSend: function () { ShowLoadingScreen() },
+                complete: function () { RemoveLoadingScreen() },
+                success: function (response) {
+                    if (response.msg == null) {
+                        $("#employeediv").html(response);
+                        $("#timelogdiv").empty();
+                        $(".employee").off('click').on('click', searchTimeLog);
+                    }
+                    else {
+                        toastr.error('Error', response.res);
+                    }
+                },
+                error: function (x, y, z) {
+                    //toastr.error('Error', x + y + z);
+                }
+            })
+        }
+    }
+
+    function searchTimeLog() {
+        $tr = $(this);
+        var id = $(this).attr('tpj-id');
+
+        $.ajax({
+            data: {
+                personnelid: id,
+                startdate: $("#hid_start").val(),
+                enddate: $("#hid_end").val(),
+                __RequestVerificationToken: $('@Html.AntiForgeryToken()').val()
+            },
+            type: 'POST',
+            url: '@Url.Action("GetTimeLogs", "TimeLog")',
+            beforeSend: function () { ShowLoadingScreen() },
+            complete: function () { RemoveLoadingScreen() },
+            success: function (response) {
+                if (response.msg == null) {
+                    $('#employeediv tr').removeClass('selected-employee');
+                    $tr.addClass('selected-employee');
+                    $("#timelogdiv").html(response);
+                    SetTimeLogRowHeight();
+                    ResizeTimeLine();
+                }
+                else {
+                    toastr.error('Error', response.res);
+                }
+            },
+            error: function () {
+                toastr.error('AJAX backend error', 'An error has occured.');
+            }
+        })
+
+    }
+</script>
