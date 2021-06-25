@@ -17,8 +17,8 @@ namespace WebTemplate.Controllers.RequestsApproval
             {
                 model.Page = model.Page > 1 ? model.Page : 1;
                 model.LeaveRequests = LeaveRequestProcess.Instance.GetApprovingList(model.Personnel, model.LeaveTypeID, model.IsExpired, model.IsPending, model.IsApproved, model.IsCancelled, model.StartDateTime, model.EndingDateTime, model.Page, model.GridCount, out int PageCount, User.UserID);
-                model._LeaveType = LeaveTypeProcess.GetLeaveType(model.LeaveTypeID);
-                model.LeaveTypes = LeaveTypeProcess.GetLeaveType();
+                model._LeaveType = LeaveTypeProcess.Instance.Get(model.LeaveTypeID);
+                model.LeaveTypes = LeaveTypeProcess.Instance.GetList();
                 model.PageCount = PageCount;
 
                 if (Request.IsAjaxRequest())

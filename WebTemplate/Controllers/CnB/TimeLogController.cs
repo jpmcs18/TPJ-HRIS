@@ -141,8 +141,9 @@ namespace WebTemplate.Controllers.HumanResource
             }
             catch (Exception ex)
             {
-                //return Json(new { msg = false, res = ex.GetActualMessage() });
-                return View("~/Views/Security/ServerError.cshtml", ex.GetActualMessage());
+                ViewBag.Content = null;
+                ViewBag.Error = ex.GetActualMessage();
+                return View("~/Views/PrintingView.cshtml");
             }
         }
 

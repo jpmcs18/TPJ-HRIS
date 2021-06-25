@@ -18,6 +18,8 @@ namespace WebTemplate.Models.DynamicLookup
         Non_Working_Days,
         Schedule,
         Tax_Table,
+        Late_Deduction,
+        Leave_Type,
         PhilHealth,
         SSS,
         HDMF,
@@ -131,10 +133,17 @@ namespace WebTemplate.Models.DynamicLookup
                 , new LookupSetting("RequiredTimeLog", "Required Time Log", LookupDataType.boolean)
                 , new LookupSetting("OfficeLocation", "Office Location", LookupDataType.boolean)
                 , new LookupSetting("WarehouseLocation", "Warehouse Location", LookupDataType.boolean) },
-             { Lookups.Deduction
+            { Lookups.Late_Deduction
+                , new LookupSetting("TimeIn", "Time In", LookupDataType.time) 
+                , new LookupSetting("DeductedHours", "Deducted Hours", LookupDataType.number) },
+            { Lookups.Deduction
                 , new LookupSetting(readOnly: true)
                 , new LookupSetting("GovernmentDeduction", "Government Deduction", LookupDataType.boolean, readOnly: true)
                 , new LookupSetting("Deduct", "Cutoff", LookupDataType.model, new LookupSetting(),  WhenToDeductProcess.Instance, "WhenToDeduct") },
+            { Lookups.Leave_Type
+                , new LookupSetting()
+                , new LookupSetting("BulkUse", "Bulk Use", LookupDataType.boolean)
+                , new LookupSetting("HasDocumentNeeded", "Has Document Needed", LookupDataType.boolean)},
             { Lookups.Payroll_Parameters
                 , new LookupSetting("DisplayName", "Name", readOnly: true)
                 , new LookupSetting("Value") },
@@ -214,6 +223,7 @@ namespace WebTemplate.Models.DynamicLookup
         public static readonly List<KeyValuePair<Lookups, LookupActions>> LookupActions = new List<KeyValuePair<Lookups, LookupActions>>()
         {
             { Lookups.Payroll_Parameters, new LookupActions(add: false, delete: false, pagination: false) },
+            { Lookups.Late_Deduction, new LookupActions(search: false, add:false, delete: false, pagination: false) },
             { Lookups.PhilHealth, new LookupActions(search: false) },
             { Lookups.HDMF, new LookupActions(search: false) },
             { Lookups.SSS, new LookupActions(search: false) },

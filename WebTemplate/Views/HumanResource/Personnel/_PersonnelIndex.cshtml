@@ -14,7 +14,7 @@
     var positionDepartments = ProcessLayer.Processes.DepartmentPositionProcess.Instance.GetList();
     var positions = ProcessLayer.Processes.PositionProcess.Instance.GetList();
     //var employmentStatuses = ProcessLayer.Processes.LookupProcess.GetEmployementStatus();
-    var leaveTypes = ProcessLayer.Processes.LeaveTypeProcess.GetLeaveType();
+    var leaveTypes = ProcessLayer.Processes.LeaveTypeProcess.Instance.GetList();
 
     var noCourseEducation = ProcessLayer.Helpers.Web.NoCourseIDs(educationalLevels);
     var perpetualLicenseIDs = ProcessLayer.Helpers.Web.PerpetialLicenseIDs(licenseTypes);

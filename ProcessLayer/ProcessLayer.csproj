@@ -267,6 +267,7 @@
     <Compile Include="Processes\Lookups\HDMFProcess.cs" />
     <Compile Include="Processes\Lookups\ILookupProcess.cs" />
     <Compile Include="Processes\Lookups\KioskApproverProcess.cs" />
+    <Compile Include="Processes\Lookups\LateDeductionProcess.cs" />
     <Compile Include="Processes\Lookups\LeaveTypeProcess.cs" />
     <Compile Include="Processes\Lookups\LocationProcess.cs" />
     <Compile Include="Processes\Lookups\NonTaxableDayProcess.cs" />

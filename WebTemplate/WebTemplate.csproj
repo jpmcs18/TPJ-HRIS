@@ -186,7 +186,7 @@
     <Compile Include="Controllers\DynamicLookup\DynamicLookupController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HumanResource\MemoArchiveController.cs" />
-    <Compile Include="Controllers\HumanResource\TimeLogController.cs" />
+    <Compile Include="Controllers\CnB\TimeLogController.cs" />
     <Compile Include="Controllers\Kiosk\HighRiskRequestController.cs" />
     <Compile Include="Controllers\Kiosk\OuterPortRequestController.cs" />
     <Compile Include="Controllers\Maintenance\Lookup\ApproverPositionController.cs" />
