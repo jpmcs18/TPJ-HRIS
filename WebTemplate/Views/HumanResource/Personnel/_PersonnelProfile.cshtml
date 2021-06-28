@@ -553,6 +553,12 @@
                                             @Html.Partial("~/Views/HumanResource/Personnel/_PersonnelSchedules.cshtml", Model.Personnel)
                                         </div>
                                     </div>
+                                    <div class="panel-body" style="padding: 0px;">
+                                        <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-2">
+                                            @Html.LabelFor(m => m.Personnel.PayrollTypeID, new { @class = "control-label" })
+                                            @Html.DropDownListFor(m => m.Personnel.PayrollTypeID, new SelectList(paytype, "ID", "Description", Model.Personnel.PayrollTypeID), "N/A", new { @class = "form-control required" })
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         }
