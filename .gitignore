@@ -3,11 +3,7 @@
 ################################################################################
 
 /DataAccessLayer/bin/Debug
-/DataAccessLayer/bin/Release/DataAccessLayer.dll
-/.vs/WebTemplate/v16/.suo
-/.vs/TPJ-HRIS/v16/.suo
-/.vs/WebTemplate/config
-/.vs/slnx.sqlite
+/DataAccessLayer/bin/Release
 /.vs
 /DataAccessLayer/bin/Release
 /DataAccessLayer/obj
@@ -36,3 +32,4 @@
 /WebTemplate/UploadedImages
 /WebTemplate/UploadedMemos
 /WebTemplate/UploadImages
+/WebTemplate/WebTemplate.csproj.user
