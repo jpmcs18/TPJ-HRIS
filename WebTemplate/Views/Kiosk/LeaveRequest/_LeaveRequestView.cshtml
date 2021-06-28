@@ -4,7 +4,7 @@
     var c = User as WebTemplate.Models.CustomPrincipal;
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
     var CreatorAccess = credential.GetPage("Creator Leave Request") ?? new DataAccessLayer.System.Page();
-    var leaveTypes = ProcessLayer.Processes.LeaveTypeProcess.GetLeaveType();
+    var leaveTypes = ProcessLayer.Processes.LeaveTypeProcess.Instance.GetList();
     var IsBulkUse = Model._LeaveType.BulkUse ?? false;
 }
 

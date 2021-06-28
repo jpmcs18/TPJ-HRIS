@@ -1,9 +1,0 @@
-﻿@model WebTemplate.Models.TimeLog.TimeLogList
-
-@for (int i = 0; i < Model.TimeLogs.Count(); i++)
-{
-    <tr>
-        <td>@(Model.TimeLogs[i].LoginDate != null ? Model.TimeLogs[i].LoginDate.Value.ToString("MMMM dd, yyyy hh:mm:ss tt") : "")</td>
-        <td>@(Model.TimeLogs[i].LogoutDate != null ? Model.TimeLogs[i].LogoutDate.Value.ToString("MMMM dd, yyyy hh:mm:ss tt") : "")</td>
-    </tr>
-}

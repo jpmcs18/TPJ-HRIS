@@ -21,7 +21,7 @@ namespace WebTemplate.Controllers.Kiosk
             model.Page = model.Page > 1 ? model.Page : 1;
             model.LeaveRequests = LeaveRequestProcess.Instance.GetList(model.Key, model.LeaveTypeID, model.IsExpired, model.IsPending, model.IsApproved, model.IsCancelled, model.StartDateTime, model.EndingDateTime, model.Page, model.GridCount, out int PageCount);
             model.Personnel = PersonnelProcess.GetByUserId(User.UserID);
-            model.LeaveTypes = LeaveTypeProcess.GetLeaveType();
+            model.LeaveTypes = LeaveTypeProcess.Instance.GetList();
             model.PageCount = PageCount;
 
             if (Request.IsAjaxRequest())

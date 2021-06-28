@@ -27,7 +27,7 @@ namespace ProcessLayer.Computation.CnB
         public PayrollType Monthly { get; set; }
         public PayrollComputation()
         {
-            LateDeductions = LookupProcess.GetLateDeductions();
+            LateDeductions = LateDeductionProcess.Instance.GetList();
         }
         public PayrollPeriod GeneratePayroll(PayrollPeriod payrollPeriod)
         {
@@ -190,6 +190,8 @@ namespace ProcessLayer.Computation.CnB
                                         || (starttime <= x.LoginDate && endtime <= x.LogoutDate && endtime >= x.LoginDate)
                                         || (x.LoginDate <= starttime && x.LogoutDate <= endtime && x.LogoutDate >= endtime)
                                         || (x.LoginDate?.Date == start.Date)).OrderByDescending(x => x.LogoutDate).Select(x => x.LogoutDate).FirstOrDefault();
+                    LoginDate = LoginDate?.AddSeconds(-(LoginDate?.Second ?? 0));
+                    LogoutDate = LogoutDate?.AddSeconds(-(LogoutDate?.Second ?? 0));
                     #endregion
                     LeaveRequest leave = approvedleaverequests.Where(x => starttime.Date >= x.StartDateTime?.Date && starttime.Date <= x.EndDateTime?.Date && x.ApprovedLeaveCredits.HasValue && x.ApprovedLeaveCredits > 0).FirstOrDefault();
 
@@ -326,11 +328,12 @@ namespace ProcessLayer.Computation.CnB
                                 }
                                 #endregion
                             }
-
+                            details.TotalRegularMinutes = details.TotalRegularMinutes < 0 ? 0 : details.TotalRegularMinutes;
                             payroll.PayrollDetails.Add(details);
                         }
                         else if (isholiday && (sched?.ID ?? 0) != 0 && timelogs.Where(x => x.LoginDate?.Date == prevDate?.Date).Any())
                         {
+                            details.TotalRegularMinutes = details.TotalRegularMinutes < 0 ? 0 : details.TotalRegularMinutes;
                             payroll.PayrollDetails.Add(details);
                         }
                     }
@@ -419,6 +422,7 @@ namespace ProcessLayer.Computation.CnB
                                     details.IsPresent = true;
 
                                 }
+                                details.TotalRegularMinutes = details.TotalRegularMinutes < 0 ? 0 : details.TotalRegularMinutes;
                                 payroll.PayrollDetails.Add(details);
                             }
                             else //Regular Hours
@@ -527,6 +531,7 @@ namespace ProcessLayer.Computation.CnB
                                     }
                                     #endregion
                                 }
+                                details.TotalRegularMinutes = details.TotalRegularMinutes < 0 ? 0 : details.TotalRegularMinutes;
                                 payroll.PayrollDetails.Add(details);
                             }
                         }

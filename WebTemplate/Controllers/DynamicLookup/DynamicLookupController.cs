@@ -157,8 +157,12 @@ namespace WebTemplate.Controllers.DynamicLookup
                     return PositionProcess.Instance;
                 case Lookups.Location:
                     return LocationProcess.Instance;
+                case Lookups.Late_Deduction:
+                    return LateDeductionProcess.Instance;
                 case Lookups.Deduction:
                     return DeductionProcess.Instance;
+                case Lookups.Leave_Type:
+                    return LeaveTypeProcess.Instance;
                 case Lookups.Payroll_Parameters:
                     return ParametersProcess.Instance;
                 case Lookups.Non_Working_Days:

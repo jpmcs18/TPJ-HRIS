@@ -31,7 +31,7 @@ namespace ProcessLayer.Processes.Kiosk
                 ID = dr[LeaveRequestFields.Instance.ID].ToLong(),
                 PersonnelID = dr[LeaveRequestFields.Instance.PersonnelID].ToNullableLong(),
                 LeaveTypeID = dr[LeaveRequestFields.Instance.LeaveTypeID].ToNullableByte(),
-                _LeaveType = LeaveTypeProcess.GetLeaveType(dr[LeaveRequestFields.Instance.LeaveTypeID].ToNullableByte()),
+                _LeaveType = LeaveTypeProcess.Instance.Get(dr[LeaveRequestFields.Instance.LeaveTypeID].ToNullableByte()),
                 StartDateTime = dr[LeaveRequestFields.Instance.StartDateTime].ToNullableDateTime(),
                 EndDateTime = dr[LeaveRequestFields.Instance.EndDateTime].ToNullableDateTime(),
                 Reasons = dr[LeaveRequestFields.Instance.Reasons].ToString(),
@@ -239,7 +239,7 @@ namespace ProcessLayer.Processes.Kiosk
         public bool ValidateLeaveRequest(LeaveRequest leave)
         {
             StringBuilder sb = new StringBuilder();
-            leave._LeaveType = LeaveTypeProcess.GetLeaveType(leave.LeaveTypeID);
+            leave._LeaveType = LeaveTypeProcess.Instance.Get(leave.LeaveTypeID);
             if ((leave.LeaveTypeID ?? 0) == 0)
             {
                 sb.AppendLine("<br/>");

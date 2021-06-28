@@ -84,25 +84,6 @@ namespace ProcessLayer.Processes
                 WithGovtDeduction = dr["With Govt Deduction"].ToNullableBoolean() ?? false
             };
         }
-
-        public static List<LateDeduction> GetLateDeductions()
-        {
-            var lateDeduction = new List<LateDeduction>();
-
-            var Parameters = new Dictionary<string, object> {
-                { LookupParameters.Table, Table.LateDeductions }
-            };
-
-            using (var db = new DBTools())
-            {
-                using (var ds = db.ExecuteReader(LookupProcedures.GetLookup, Parameters))
-                {
-                    lateDeduction = ds.GetList(LateDeductionConverter);
-                }
-            }
-
-            return lateDeduction;
-        }
         public static List<LicenseType> GetLicenseType(bool HasDefault = false)
         {
             var licenseTypes = new List<LicenseType>();

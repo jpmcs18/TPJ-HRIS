@@ -22,7 +22,7 @@ namespace ProcessLayer.Processes.HR
                 YearValid = dr[PersonnelLeaveCreditsFields.Instance.YearValid].ToNullableShort()
             };
 
-            l._LeaveType = LeaveTypeProcess.GetLeaveType(l.LeaveTypeID);
+            l._LeaveType = LeaveTypeProcess.Instance.Get(l.LeaveTypeID);
 
             return l;
         }
@@ -102,7 +102,7 @@ namespace ProcessLayer.Processes.HR
             {
                 using (var ds = db.ExecuteReader("hr.GetLeavesWithCredits", new Dictionary<string, object> { { "@PersonnelID", personnelID }, { "@Year", year } }))
                 {
-                    return ds.GetList(LeaveTypeProcess.Converter);
+                    return ds.GetList(LeaveTypeProcess.Instance.Converter);
                 }
             }
         }

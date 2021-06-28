@@ -26,20 +26,21 @@ namespace ProcessLayer.Computation.CnB
         public PayrollType Monthly { get; set; }
         public TimelogComputation()
         {
-            LateDeductions = LookupProcess.GetLateDeductions();
+            LateDeductions = LateDeductionProcess.Instance.GetList();
         }
 
         public List<PersonnelTimesheet> GenerateTimesheet(DateTime start, DateTime end, long? personnelID, int? departmentID)
         {
             List<PersonnelTimesheet> timesheets = new List<PersonnelTimesheet>();
             var emp = PersonnelProcess.GetListByDepartment(start, personnelID, departmentID);
-            timesheets.AddRange(PersonnelProcess.GetListByDepartment(start, personnelID, departmentID)?.Select(x => new PersonnelTimesheet { Personnel = x }));
+            timesheets.AddRange(emp?.Select(x => new PersonnelTimesheet { Personnel = x }));
             if (timesheets?.Any() ?? false)
             {
                 NonWorkingDays = NonWorkingDaysProcess.Instance.GetNonWorkingDays(start, end);
 
                 foreach (var timesheet in timesheets)
                 {
+                    if (timesheet.Personnel.EmploymentStatusId != 1) throw new Exception("Cannot compute timesheet for " + timesheet.Personnel.FullName + ". Inactive employment status.");
                     if (!(timesheet.Personnel._Schedules?.Any() ?? false)) throw new Exception("Cannot compute timesheet for " + timesheet.Personnel.FullName + ". No Schedule found.");
                     if (!(timesheet.Personnel._AssignedLocation?.Any() ?? false)) throw new Exception("Cannot compute timesheet for " + timesheet.Personnel.FullName + ". No Assigned Location found.");
                 }
@@ -50,7 +51,7 @@ namespace ProcessLayer.Computation.CnB
                 return timesheets;
             }
             else
-                throw new Exception("No personnel found");
+                throw new Exception("No personnel found.<br />-Must be employement status is not active");
         }
         private void Compute(PersonnelTimesheet timesheet, DateTime periodStart, DateTime periodEnd)
         {
@@ -113,6 +114,8 @@ namespace ProcessLayer.Computation.CnB
                                     || (starttime <= x.LoginDate && endtime <= x.LogoutDate && endtime >= x.LoginDate)
                                     || (x.LoginDate <= starttime && x.LogoutDate <= endtime && x.LogoutDate >= endtime)
                                     || (x.LoginDate?.Date == start.Date)).OrderByDescending(x => x.LogoutDate).Select(x => x.LogoutDate).FirstOrDefault();
+                LoginDate = LoginDate?.AddSeconds(-(LoginDate?.Second ?? 0));
+                LogoutDate = LogoutDate?.AddSeconds(-(LogoutDate?.Second ?? 0));
                 #endregion
 
                 LeaveRequest leave = approvedleaverequests.Where(x => starttime.Date >= x.StartDateTime?.Date && starttime.Date <= x.EndDateTime?.Date && x.ApprovedLeaveCredits.HasValue && x.ApprovedLeaveCredits > 0).FirstOrDefault();
@@ -199,7 +202,7 @@ namespace ProcessLayer.Computation.CnB
                                     details.SunOTHours = regminutes / PayrollParameters.CNBInstance.Minutes;
                                 }
                                 else
-                                    details.NoofDays = mins / (decimal)PayrollParameters.CNBInstance.TotalMinutesPerDay;
+                                    details.NoofDays = mins < 0 ? 0 : mins / (decimal)PayrollParameters.CNBInstance.TotalMinutesPerDay;
 
                             }
                             else if (((holiday?.ID ?? 0) > 0))
@@ -387,7 +390,8 @@ namespace ProcessLayer.Computation.CnB
                             
                             totalRegularMinutes -= late;
 
-                            details.NoofDays = totalRegularMinutes / (decimal)PayrollParameters.CNBInstance.TotalMinutesPerDay;
+                            
+                            details.NoofDays = totalRegularMinutes < 0 ? 0 : totalRegularMinutes / (decimal)PayrollParameters.CNBInstance.TotalMinutesPerDay;
 
                             #region Night Diff
                             if (starttime <= startnight1 && endtime >= endnight1)
