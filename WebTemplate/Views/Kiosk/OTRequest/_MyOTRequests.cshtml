@@ -128,7 +128,8 @@
                             </th>
                             <th style="text-align: left;">Reasons</th>
                             <th style="text-align: left;">Request Date</th>
-                            <th style="text-align: left;">At Office</th>
+                            <th style="text-align: left;">Is At Office/Time End</th>
+                            <th style="text-align: left;">Is Early OT/Time Start</th>
                             <th style="text-align: left;">Status</th>
                             <th style="text-align: left;">Last Modified</th>
                             <th style="text-align: left;">Remarks</th>
@@ -176,7 +177,10 @@
                                         @Html.Raw(String.Format("{0:MMM dd, yyyy}", Model.OTRequests[i].RequestDate))
                                     </td>
                                     <td class="text-left">
-                                        @(Model.OTRequests[i].IsOffice == true ? "Yes" : "")
+                                        @(Model.OTRequests[i].IsOffice == true ? "Yes" : (Model.OTRequests[i].EndDateTime != null ? String.Format("No @ {0:HH':'mm}", Model.OTRequests[i].EndDateTime) : ""))
+                                    </td>
+                                    <td class="text-left">
+                                        @(Model.OTRequests[i].IsEarlyOT == true ? String.Format("Yes @ {0:HH':'mm}", Model.OTRequests[i].StartDateTime) : "")<br/>
                                     </td>
                                     <td class="text-left">
                                         @Html.Raw(LastStatus)

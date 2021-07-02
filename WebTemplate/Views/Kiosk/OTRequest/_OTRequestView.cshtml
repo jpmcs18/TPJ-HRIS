@@ -7,17 +7,39 @@
 <input hidden name="PersonnelID" value="@Model.PersonnelID" />
 <input hidden name="ID" value="@Model.ID" />
 
-<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
-    <label class="control-label">Request Date</label>
-    <label class="form-control">@String.Format("{0:MM/dd/yyyy}", Model.RequestDate)</label>
-</div>
-
-<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+<div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-6">
     <label class="control-label">
         @Html.CheckBox("IsOffice", Model.IsOffice, new { @class = "i-checks status-checkbox" })
         Is Office
     </label>
 </div>
+
+<div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-6">
+    <label class="control-label">
+        @Html.CheckBox("IsOffice", Model.IsEarlyOT, new { @class = "i-checks status-checkbox" })
+        Is Early OT
+    </label>
+</div>
+
+<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <label class="control-label">Request Date</label>
+    <label class="form-control">@String.Format("{0:MM/dd/yyyy}", Model.RequestDate)</label>
+</div>
+
+@if (Model.IsEarlyOT)
+{
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <label class="control-label">Time Start</label>
+        <label class="form-control">@String.Format("{0:HH:mm tt}", Model.StartDateTime)</label>
+    </div>
+}
+@if (Model.IsOffice)
+{
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <label class="control-label">Time End</label>
+        <label class="form-control">@String.Format("{0:HH:mm tt}", Model.EndDateTime)</label>
+    </div>
+}
 
 <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <label class="control-label">Reasons</label>

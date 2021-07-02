@@ -458,7 +458,7 @@ namespace ProcessLayer.Computation.CnB
                 if ((leave?.ID ?? 0) == 0)
                 {
                     //compute ot
-                    OTRequest ot = approvedotrequests.Where(x => x.RequestDate.Date == starttime.Date).FirstOrDefault();
+                    OTRequest ot = approvedotrequests.Where(x => x.RequestDate?.Date == starttime.Date).FirstOrDefault();
                     if ((ot?.ID ?? 0) > 0 || payroll.Personnel.AutoOT)
                     {
 
@@ -548,7 +548,7 @@ namespace ProcessLayer.Computation.CnB
                 {
                     totalminutes = PayrollParameters.CNBInstance.TotalMinutesPerDay;
                     //compute ot
-                    OTRequest ot = approvedotrequests.Where(x => x.RequestDate.Date == starttime.Date).FirstOrDefault();
+                    OTRequest ot = approvedotrequests.Where(x => x.RequestDate?.Date == starttime.Date).FirstOrDefault();
 
                     if ((ot?.ID ?? 0) > 0 || payroll.Personnel.AutoOT)
                     {
@@ -605,7 +605,7 @@ namespace ProcessLayer.Computation.CnB
             if (LoginDate.HasValue && LogoutDate.HasValue)
             {
                 int mins = 0;
-                OTRequest ot = approvedotrequests.Where(x => x.RequestDate.Date == starttime.Date).FirstOrDefault();
+                OTRequest ot = approvedotrequests.Where(x => x.RequestDate?.Date == starttime.Date).FirstOrDefault();
                 if ((ot?.ID ?? 0) > 0 || payroll.Personnel.AutoOT)
                 {
                     if ((LoginDate > defbt && defbtend > LoginDate) && defbtend < LogoutDate)
