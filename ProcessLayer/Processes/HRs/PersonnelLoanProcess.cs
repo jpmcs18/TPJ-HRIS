@@ -95,6 +95,30 @@ namespace ProcessLayer.Processes.HR
             return pl;
         }
 
+        public void RevertAmount(DBTools dB, long id, long loanDeductionId, int userId)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                { "@ID", id },
+                { "@LoanDeductionID", loanDeductionId},
+                { "@LogBy", userId }
+            };
+
+            dB.ExecuteNonQuery("hr.RevertPersonnelLoanAmount", parameters);
+        }
+
+        public void UpdateAmount(DBTools dB, long id, decimal amount, int userId)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                { "@ID", id },
+                { "@Amount", amount},
+                { "@LogBy", userId }
+            };
+
+            dB.ExecuteNonQuery("hr.UpdatePersonnelLoanAmount", parameters);
+        }
+
         public PersonnelLoan CreateOrUpdate(PersonnelLoan personnelLoan, int userid)
         {
             using (var db = new DBTools())

@@ -48,7 +48,7 @@ namespace ReportLayer.Reports
             WriteToCell(PrintTimeSheetHelper.Instance.TotalHazardCell, timesheet.TotalHigRisk);
             WriteToCell(PrintTimeSheetHelper.Instance.HazardTitleCell, $"HIGH RISK ({(int)(timesheet.HighRiskRate * 100)}%)");
 
-            int startrow = PrintTimeSheetHelper.Instance.StartRow;
+            int startrow = PrintTimeSheetHelper.Instance.StartRow - 1;
             foreach(var timelog in timesheet.ComputedTimelogs)
             {
                 if (timelog.Date.DayOfWeek == DayOfWeek.Sunday)

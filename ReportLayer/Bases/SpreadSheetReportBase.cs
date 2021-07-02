@@ -125,7 +125,10 @@ namespace ReportLayer.Bases
             WorkSheet.Cells.GetSubrangeAbsolute(startrow, startcolumn, lastrow, lastcolumn).Merged = true;
             return WorkSheet.Cells.GetSubrangeAbsolute(startrow, startcolumn, lastrow, lastcolumn);
         }
-
+        protected void DeleteCells(int startrow, int startcolumn, int lastrow, int lastcolumn)
+        {
+            WorkSheet.Cells.GetSubrangeAbsolute(startrow, startcolumn, lastrow, lastcolumn).Remove(RemoveShiftDirection.Up);
+        }
         protected CellRange GetRange(int startrow, int startcolumn, int lastrow, int lastcolumn)
         {
             return WorkSheet.Cells.GetSubrangeAbsolute(startrow, startcolumn, lastrow, lastcolumn);

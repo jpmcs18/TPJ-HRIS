@@ -201,7 +201,8 @@ namespace ReportLayer.Reports
                 AutofitRow(startRow);
                 startRow++;
             }
-
+            if(payroll.Allowance == 0)
+                DeleteCells(PrintPayslipHelper.Instance.AllowanceStartRow - 2 + (addRow > 0 ? addRow : 0), 0, PrintPayslipHelper.Instance.AllowanceStartRow + 10 + (addRow > 0 ? addRow : 0), PrintPayslipHelper.Instance.AmountColumn);
         }
         private string GetPeriod(DateTime start, DateTime end)
         {

@@ -8,7 +8,11 @@
 
         public string StartDate = "@StartDate";
         public string EndDate = "@EndDate";
+
+        public string StartDateTime = "@StartDateTime";
+        public string EndDateTime = "@EndDateTime";
         public string RequestDate = "@RequestDate";
         public string IsOffice = "@IsOffice";
+        public string IsEarlyOT = "@IsEarlyOT";
     }
 }

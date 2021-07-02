@@ -461,155 +461,15 @@ namespace ProcessLayer.Processes.CnB
 
         public PayrollPeriod CreateOrUpdate(PayrollPeriod payrollBase, int userid)
         {
-            var parameters = new Dictionary<string, object>();
-            var outparameters = new List<OutParameters>();
             using (var db = new DBTools())
             {
                 db.StartTransaction();
                 try
                 {
-                    parameters.Clear();
-                    outparameters.Clear();
+                    SavePayrollBase(payrollBase, userid, db);
 
-                    parameters.Add("@PayPeriod", payrollBase.PayPeriod);
-                    parameters.Add("@StartDate", payrollBase.StartDate);
-                    parameters.Add("@EndDate", payrollBase.EndDate);
-                    parameters.Add("@AdjustedStartDate", payrollBase.AdjustedStartDate);
-                    parameters.Add("@AdjustedEndDate", payrollBase.AdjustedEndDate);
-                    parameters.Add("@Type", payrollBase.Type);
-                    parameters.Add("@StatusId", payrollBase.PayrollStatus?.ID);
-                    parameters.Add("@LogBy", userid);
-                    outparameters.Add("@ID", SqlDbType.BigInt);
+                    SavePayrollList(payrollBase.Payrolls, payrollBase.ID, payrollBase.StartDate, payrollBase.EndDate, userid, db);
 
-                    db.ExecuteNonQuery("cnb.CreateOrUpdatePayrollPeriod", ref outparameters, parameters);
-                    payrollBase.ID = outparameters.Get("@ID").ToLong();
-
-                    foreach (var payroll in payrollBase.Payrolls)
-                    {
-                        parameters.Clear();
-                        outparameters.Clear();
-
-                        parameters.Add("@PayrollPeriodId", payrollBase.ID);
-                        parameters.Add("@PersonnelID", payroll.Personnel.ID);
-                        parameters.Add("@Position", payroll.Position);
-                        parameters.Add("@Department", payroll.Department);
-                        parameters.Add("@TotalDeductions", payroll.TotalDeductions);
-                        parameters.Add("@Allowance", payroll.Allowance);
-                        parameters.Add("@Tax", payroll.Tax);
-                        parameters.Add("@RegularOTPay", payroll.RegularOTPay);
-                        parameters.Add("@SundayOTPay", payroll.SundayOTPay);
-                        parameters.Add("@HolidayOTPay", payroll.HolidayOTPay);
-                        parameters.Add("@NightDifferentialPay", payroll.NightDifferentialPay);
-                        parameters.Add("@NOofDays", payroll.NOofDays);
-                        parameters.Add("@DailyRate", payroll.DailyRate);
-                        parameters.Add("@OutstandingVale", payroll.OutstandingVale);
-                        parameters.Add("@TotalAllowance", payroll.TotalAllowance);
-                        parameters.Add("@RegularOTRate", payroll.RegularOTRate);
-                        parameters.Add("@RegularOTAllowance", payroll.RegularOTAllowance);
-                        parameters.Add("@SundayOTRate", payroll.SundayOTRate);
-                        parameters.Add("@SundayOTAllowance", payroll.SundayOTAllowance);
-                        parameters.Add("@HolidayRegularOTRate", payroll.HolidayRegularOTRate);
-                        parameters.Add("@HolidayRegularOTAllowance", payroll.HolidayRegularOTAllowance);
-                        parameters.Add("@HolidayExcessOTRate", payroll.HolidayExcessOTRate);
-                        parameters.Add("@HolidayExcessOTAllowance", payroll.HolidayExcessOTAllowance);
-                        parameters.Add("@HolidayExcessOTPay", payroll.HolidayExcessOTPay);
-                        parameters.Add("@RegularOTAllowancePay", payroll.RegularOTAllowancePay);
-                        parameters.Add("@SundayOTAllowancePay", payroll.SundayOTAllowancePay);
-                        parameters.Add("@HolidayOTAllowancePay", payroll.HolidayOTAllowancePay);
-                        parameters.Add("@HolidayOTExcessAllowancePay", payroll.HolidayOTExcessAllowancePay);
-                        parameters.Add("@AdditionalPayRate", payroll.AdditionalPayRate);
-                        parameters.Add("@AdditionalAllowanceRate", payroll.AdditionalAllowanceRate);
-                        parameters.Add("@TotalAdditionalPay", payroll.TotalAdditionalPay);
-                        parameters.Add("@TotalAdditionalAllowancePay", payroll.TotalAdditionalAllowancePay);
-                        parameters.Add("@TotalAdditionalOvertimePay", payroll.TotalAdditionalOvertimePay);
-                        parameters.Add("@TotalAdditionalOvertimeAllowancePay", payroll.TotalAdditionalOvertimeAllowancePay);
-                        parameters.Add("@BasicPay", payroll.BasicPay);
-                        parameters.Add("@TotalOTPay", payroll.TotalOTPay);
-                        parameters.Add("@TotalOTAllowance", payroll.TotalOTAllowance);
-                        parameters.Add("@GrossPay", payroll.GrossPay);
-                        parameters.Add("@NetPay", payroll.NetPay);
-                        parameters.Add("@LogBy", userid);
-
-                        outparameters.Add("@ID", SqlDbType.BigInt);
-
-                        db.ExecuteNonQuery("cnb.CreateOrUpdatePayroll", ref outparameters, parameters);
-                        payroll.ID = outparameters.Get("@ID").ToLong();
-
-                        foreach (var details in payroll.PayrollDetails)
-                        {
-                            parameters.Clear();
-                            outparameters.Clear();
-
-                            parameters.Add("@PayrollID", payroll.ID);
-                            parameters.Add("@LoggedDate", details.LoggedDate);
-                            parameters.Add("@TotalRegularMinutes", details.TotalRegularMinutes);
-                            parameters.Add("@TotalLeaveMinutes", details.TotalLeaveMinutes);
-                            parameters.Add("@LocationID", details.Location?.ID);
-                            parameters.Add("@IsHoliday", details.IsHoliday);
-                            parameters.Add("@IsSunday", details.IsSunday);
-                            parameters.Add("@RegularOTMinutes", details.RegularOTMinutes);
-                            parameters.Add("@SundayOTMinutes", details.SundayOTMinutes);
-                            parameters.Add("@HolidayRegularOTMinutes", details.HolidayRegularOTMinutes);
-                            parameters.Add("@HolidayExcessOTMinutes", details.HolidayExcessOTMinutes);
-                            parameters.Add("@IsHighRisk", details.IsHighRisk);
-                            parameters.Add("@HighRiskRate", details.HighRiskRate);
-                            parameters.Add("@HighRiskPayRate", details.HighRiskPayRate);
-                            parameters.Add("@HighRiskAllowanceRate", details.HighRiskAllowanceRate);
-                            parameters.Add("@IsNonTaxable", details.IsNonTaxable);
-                            parameters.Add("@IsPresent", details.IsPresent);
-                            parameters.Add("@LogBy", userid);
-
-                            outparameters.Add("@ID", SqlDbType.BigInt);
-                            db.ExecuteNonQuery("cnb.CreateOrUpdatePayrollDetails", ref outparameters, parameters);
-                            details.ID = outparameters.Get("@ID").ToLong();
-                        }
-
-                        foreach (var deduction in payroll.PayrollDeductions)
-                        {
-                            parameters.Clear();
-                            outparameters.Clear();
-
-                            parameters.Add("@PayrollID", payroll.ID);
-                            parameters.Add("@DeductionID", deduction.Deduction?.ID);
-                            parameters.Add("@Amount", deduction.Amount);
-                            parameters.Add("@PS", deduction.PS);
-                            parameters.Add("@ES", deduction.ES);
-                            parameters.Add("@EC", deduction.EC);
-                            parameters.Add("@LogBy", userid);
-
-                            outparameters.Add("@ID", SqlDbType.BigInt);
-                            db.ExecuteNonQuery("cnb.CreateOrUpdatePayrollDeductions", ref outparameters, parameters);
-                            deduction.ID = outparameters.Get("@ID").ToLong();
-                        }
-
-                        foreach (var loan in payroll.LoanDeductions)
-                        {
-                            parameters.Clear();
-                            outparameters.Clear();
-
-                            parameters.Add("@PayrollID", payroll.ID);
-                            parameters.Add("@PersonnelLoanID", loan.PersonnelLoan?.ID);
-                            parameters.Add("@Amount", loan.Amount);
-                            parameters.Add("@LogBy", userid);
-
-                            outparameters.Add("@ID", SqlDbType.BigInt);
-                            db.ExecuteNonQuery("cnb.CreateOrUpdateLoanDeductions", ref outparameters, parameters);
-                            loan.ID = outparameters.Get("@ID").ToLong();
-                        }
-
-                        if (payroll.OutstandingVale > 0)
-                        {
-                            parameters.Clear();
-                            outparameters.Clear();
-
-                            parameters.Add("@PersonnelID", payroll.Personnel?.ID);
-                            parameters.Add("@Amount", payroll.OutstandingVale);
-                            parameters.Add("@CutOffStart", payrollBase.StartDate);
-                            parameters.Add("@CutoffEnd", payrollBase.EndDate);
-                            parameters.Add("@LogBy", userid);
-                            db.ExecuteNonQuery("cnb.ChargeRemainingToVale", parameters);
-                        }
-                    }
                     db.CommitTransaction();
                 }
                 catch (Exception ex)
@@ -619,6 +479,251 @@ namespace ProcessLayer.Processes.CnB
                 }
             }
             return payrollBase;
+        }
+
+        private void SavePayrollBase(PayrollPeriod payrollBase, int userid, DBTools db)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                { "@PayPeriod", payrollBase.PayPeriod },
+                { "@StartDate", payrollBase.StartDate },
+                { "@EndDate", payrollBase.EndDate },
+                { "@AdjustedStartDate", payrollBase.AdjustedStartDate },
+                { "@AdjustedEndDate", payrollBase.AdjustedEndDate },
+                { "@Type", payrollBase.Type },
+                { "@StatusId", payrollBase.PayrollStatus?.ID },
+                { "@LogBy", userid }
+            };
+
+            var outparameters = new List<OutParameters>
+            {
+                { "@ID", SqlDbType.BigInt }
+            };
+
+            db.ExecuteNonQuery("cnb.CreateOrUpdatePayrollPeriod", ref outparameters, parameters);
+            payrollBase.ID = outparameters.Get("@ID").ToLong();
+        }
+
+        private void SavePayrollList(List<Payroll> payrolls, long baseId, DateTime cutoffStart, DateTime cutoffEnd, int userid, DBTools db)
+        {
+            foreach (var payroll in payrolls)
+            {
+                if (payroll.ID > 0 && !payroll.Modified)
+                {
+                    DeletePayroll(db, payroll.ID, userid);
+                    DeletePayrollDetails(db, userid, payrollId: payroll.ID);
+                }
+                else
+                    SaveIndividualPayroll(baseId, cutoffStart, cutoffEnd, userid, db, payroll);
+            }
+        }
+
+        private void DeletePayrollDetails(DBTools db, int userid, long? payrollId = null, long? detailsId = null)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                { "@ID", detailsId },
+                { "@PayrollID", payrollId },
+                { "@LogBy", userid }
+            };
+
+            db.ExecuteNonQuery("cnb.DeletePayrollDetails", parameters);
+        }
+
+        private void DeletePayroll(DBTools db, long id, int userid)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                { "@ID", id },
+                {  "@LogBy", userid }
+            };
+
+            db.ExecuteNonQuery("cnb.DeletePayroll", parameters);
+        }
+
+        private void SaveIndividualPayroll(long baseId, DateTime cutoffStart, DateTime cutoffEnd, int userid, DBTools db, Payroll payroll)
+        {
+            SavePayroll(baseId, userid, db, payroll);
+
+            foreach (var details in payroll.PayrollDetails)
+            {
+                if(details.ID > 0 && !details.Modified)
+                    SavePayrollDetails(userid, db, payroll, details);
+            }
+
+            foreach (var deduction in payroll.PayrollDeductions)
+            {
+                SavePayrollDeductions(userid, db, payroll, deduction);
+            }
+
+            foreach (var loan in payroll.LoanDeductions)
+            {
+                if (loan.ID > 0)
+                    PersonnelLoanProcess.Instance.RevertAmount(db, loan.PersonnelLoan?.ID ?? 0, loan.ID, userid);
+
+                SaveLoanDeductions(userid, db, payroll, loan);
+
+                PersonnelLoanProcess.Instance.UpdateAmount(db, loan.PersonnelLoan?.ID ?? 0, loan.Amount, userid);
+                
+                SaveLoanPaymentMethod(userid, db, loan);
+            }
+
+            if (payroll.OutstandingVale > 0)
+            {
+                SaveOutstandingVale(cutoffStart, cutoffEnd, userid, db, payroll);
+            }
+        }
+
+        private void SavePayroll(long baseId, int userid, DBTools db, Payroll payroll)
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>
+                {
+                    { "@PayrollPeriodId", baseId },
+                    { "@PersonnelID", payroll.Personnel.ID },
+                    { "@Position", payroll.Position },
+                    { "@Department", payroll.Department },
+                    { "@TotalDeductions", payroll.TotalDeductions },
+                    { "@Allowance", payroll.Allowance },
+                    { "@Tax", payroll.Tax },
+                    { "@RegularOTPay", payroll.RegularOTPay },
+                    { "@SundayOTPay", payroll.SundayOTPay },
+                    { "@HolidayOTPay", payroll.HolidayOTPay },
+                    { "@NightDifferentialPay", payroll.NightDifferentialPay },
+                    { "@NOofDays", payroll.NOofDays },
+                    { "@DailyRate", payroll.DailyRate },
+                    { "@OutstandingVale", payroll.OutstandingVale },
+                    { "@TotalAllowance", payroll.TotalAllowance },
+                    { "@RegularOTRate", payroll.RegularOTRate },
+                    { "@RegularOTAllowance", payroll.RegularOTAllowance },
+                    { "@SundayOTRate", payroll.SundayOTRate },
+                    { "@SundayOTAllowance", payroll.SundayOTAllowance },
+                    { "@HolidayRegularOTRate", payroll.HolidayRegularOTRate },
+                    { "@HolidayRegularOTAllowance", payroll.HolidayRegularOTAllowance },
+                    { "@HolidayExcessOTRate", payroll.HolidayExcessOTRate },
+                    { "@HolidayExcessOTAllowance", payroll.HolidayExcessOTAllowance },
+                    { "@HolidayExcessOTPay", payroll.HolidayExcessOTPay },
+                    { "@RegularOTAllowancePay", payroll.RegularOTAllowancePay },
+                    { "@SundayOTAllowancePay", payroll.SundayOTAllowancePay },
+                    { "@HolidayOTAllowancePay", payroll.HolidayOTAllowancePay },
+                    { "@HolidayOTExcessAllowancePay", payroll.HolidayOTExcessAllowancePay },
+                    { "@AdditionalPayRate", payroll.AdditionalPayRate },
+                    { "@AdditionalAllowanceRate", payroll.AdditionalAllowanceRate },
+                    { "@TotalAdditionalPay", payroll.TotalAdditionalPay },
+                    { "@TotalAdditionalAllowancePay", payroll.TotalAdditionalAllowancePay },
+                    { "@TotalAdditionalOvertimePay", payroll.TotalAdditionalOvertimePay },
+                    { "@TotalAdditionalOvertimeAllowancePay", payroll.TotalAdditionalOvertimeAllowancePay },
+                    { "@BasicPay", payroll.BasicPay },
+                    { "@TotalOTPay", payroll.TotalOTPay },
+                    { "@TotalOTAllowance", payroll.TotalOTAllowance },
+                    { "@GrossPay", payroll.GrossPay },
+                    { "@NetPay", payroll.NetPay },
+                    { "@LogBy", userid }
+                };
+
+            List<OutParameters> outparameters = new List<OutParameters>
+                {
+                    { "@ID", SqlDbType.BigInt, payroll.ID }
+                };
+
+            db.ExecuteNonQuery("cnb.CreateOrUpdatePayroll", ref outparameters, parameters);
+            payroll.ID = outparameters.Get("@ID").ToLong();
+        }
+
+        private void SaveLoanDeductions(int userid, DBTools db, Payroll payroll, LoanDeductions loan)
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>
+            {
+                { "@PayrollID", payroll.ID },
+                { "@PersonnelLoanID", loan.PersonnelLoan?.ID },
+                { "@Amount", loan.Amount },
+                { "@LogBy", userid }
+            };
+
+            List<OutParameters> outparameters = new List<OutParameters>
+            {
+                { "@ID", SqlDbType.BigInt, loan.ID }
+            };
+            db.ExecuteNonQuery("cnb.CreateOrUpdateLoanDeductions", ref outparameters, parameters);
+            loan.ID = outparameters.Get("@ID").ToLong();
+        }
+
+        private void SavePayrollDeductions(int userid, DBTools db, Payroll payroll, PayrollDeductions deduction)
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>
+            {
+                { "@PayrollID", payroll.ID },
+                { "@DeductionID", deduction.Deduction?.ID },
+                { "@Amount", deduction.Amount },
+                { "@PS", deduction.PS },
+                { "@ES", deduction.ES },
+                { "@EC", deduction.EC },
+                { "@LogBy", userid }
+            };
+
+            List<OutParameters> outparameters = new List<OutParameters>
+            {
+                { "@ID", SqlDbType.BigInt }
+            };
+            db.ExecuteNonQuery("cnb.CreateOrUpdatePayrollDeductions", ref outparameters, parameters);
+            deduction.ID = outparameters.Get("@ID").ToLong();
+        }
+
+        private void SaveLoanPaymentMethod(int userid, DBTools db, LoanDeductions loan)
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>
+                {
+                    { "@PersonnelLoanID", loan.PersonnelLoan?.ID },
+                    { "@LoanDeductionID", loan.ID },
+                    { "@Amount", loan.Amount },
+                    { "@LogBy", userid }
+                };
+
+            db.ExecuteNonQuery("cnb.CreateOrUpdateLoanPaymentMethod", parameters);
+        }
+
+        private void SaveOutstandingVale(DateTime cutoffStart, DateTime cutoffEnd, int userid, DBTools db, Payroll payroll)
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>
+            {
+                { "@PersonnelID", payroll.Personnel?.ID },
+                { "@Amount", payroll.OutstandingVale },
+                { "@CutOffStart", cutoffStart },
+                { "@CutoffEnd", cutoffEnd },
+                { "@LogBy", userid }
+            };
+            db.ExecuteNonQuery("cnb.ChargeRemainingToVale", parameters);
+        }
+
+        private void SavePayrollDetails(int userid, DBTools db, Payroll payroll, PayrollDetails details)
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>
+            {
+                { "@PayrollID", payroll.ID },
+                { "@LoggedDate", details.LoggedDate },
+                { "@TotalRegularMinutes", details.TotalRegularMinutes },
+                { "@TotalLeaveMinutes", details.TotalLeaveMinutes },
+                { "@LocationID", details.Location?.ID },
+                { "@IsHoliday", details.IsHoliday },
+                { "@IsSunday", details.IsSunday },
+                { "@RegularOTMinutes", details.RegularOTMinutes },
+                { "@SundayOTMinutes", details.SundayOTMinutes },
+                { "@HolidayRegularOTMinutes", details.HolidayRegularOTMinutes },
+                { "@HolidayExcessOTMinutes", details.HolidayExcessOTMinutes },
+                { "@IsHighRisk", details.IsHighRisk },
+                { "@HighRiskRate", details.HighRiskRate },
+                { "@HighRiskPayRate", details.HighRiskPayRate },
+                { "@HighRiskAllowanceRate", details.HighRiskAllowanceRate },
+                { "@IsNonTaxable", details.IsNonTaxable },
+                { "@IsPresent", details.IsPresent },
+                { "@LogBy", userid }
+            };
+
+            List<OutParameters> outparameters = new List<OutParameters>
+            {
+                { "@ID", SqlDbType.BigInt }
+            };
+            db.ExecuteNonQuery("cnb.CreateOrUpdatePayrollDetails", ref outparameters, parameters);
+            details.ID = outparameters.Get("@ID").ToLong();
         }
 
         public PayrollPeriod GeneratePayroll(PayrollPeriod payrollBase, PayrollSheet payrollSheet, int userid)
