@@ -186,37 +186,56 @@
         setTimeout(SearchRequest, 500);
     }
 
-    function OtTypeClicked() {
-        $(this).iCheck(($(this).is(':checked') ? 'un' : '') + 'check');
-        var isAtOffice = $('#IsOffice').is(':checked');
-        var isEarlyOT = $('#IsEarlyOT').is(':checked');
-        ShowTimeStartEndOt(isAtOffice, isEarlyOT);
-    }
+    //function OtTypeClicked() {
+    //    $(this).iCheck(($(this).is(':checked') ? 'un' : '') + 'check');
+    //    var isAtOffice = $('#IsOffice').is(':checked');
+    //    var isEarlyOT = $('#IsEarlyOT').is(':checked');
+    //    ShowTimeStartEndOt(isAtOffice, isEarlyOT);
+    //}
 
-    function ShowTimeStartEndOt(isAtOffice, isEarlyOT) {
-        console.log(isAtOffice, isEarlyOT);
+    //function ShowTimeStartEndOt(isAtOffice, isEarlyOT) {
+    //    console.log(isAtOffice, isEarlyOT);
 
-        if (isAtOffice == false && isEarlyOT == false) {
-            $('#OTRequestForm #TimeEnd').show();
-            $('#OTRequestForm #TimeStart').hide();
-        }
-        if ((isAtOffice == true || isAtOffice == false) && isEarlyOT == true) {
-            $('#OTRequestForm #TimeEnd').hide();
-            $('#OTRequestForm #TimeStart').show();
-        }
-        if (isAtOffice == true && isEarlyOT == false) {
-            $('#OTRequestForm #TimeEnd').hide();
-            $('#OTRequestForm #TimeStart').hide();
+    //    if (isAtOffice == false && isEarlyOT == false) {
+    //        $('#OTRequestForm #TimeEnd').show();
+    //        $('#OTRequestForm #TimeStart').hide();
+    //    }
+    //    if ((isAtOffice == true || isAtOffice == false) && isEarlyOT == true) {
+    //        $('#OTRequestForm #TimeEnd').hide();
+    //        $('#OTRequestForm #TimeStart').show();
+    //    }
+    //    if (isAtOffice == true && isEarlyOT == false) {
+    //        $('#OTRequestForm #TimeEnd').hide();
+    //        $('#OTRequestForm #TimeStart').hide();
+    //    }
+    //}
+
+    function ShowTimeStartEndOt(ottype) {
+        switch (ottype) {
+            case "1":
+                $('#OTRequestForm #TimeEnd').show();
+                $('#OTRequestForm #TimeStart').hide();
+                break;
+            case "2":
+                $('#OTRequestForm #TimeEnd').hide();
+                $('#OTRequestForm #TimeStart').show();
+                break;
+            case "3":
+                $('#OTRequestForm #TimeEnd').show();
+                $('#OTRequestForm #TimeStart').show();
+                break;
+            default:
+                $('#OTRequestForm #TimeEnd').hide();
+                $('#OTRequestForm #TimeStart').hide();
         }
     }
 
     function SearchTabEvents() {
         $('#Btn_Search').off('click').on('click', SearchRequest);
-        $('select').select2();
-        //$('#OTRequestModal select').select2();
+        $('#form_search_params select').select2();
 
         $('.status-checkbox').off('ifClicked').on('ifClicked', StatusFilter);
-        
+
         $('.i-checks').iCheck({
             checkboxClass: 'icheckbox_square-green',
             radioClass: 'iradio_square-green',
@@ -224,12 +243,12 @@
 
         $('#Btn_Search').off('click').on('click', function () {
             $('#hid_search').val($('.txt_search').val());
-            $('#hid_page').val(1);
+            $('#Page').val(1);
             SearchRequest();
         });
 
         $('.pages').off('click').on('click', function () {
-            $('#hid_page').val($(this).val())
+            $('#Page').val($(this).val())
             SearchRequest();
         });
     }
@@ -241,11 +260,16 @@
             checkboxClass: 'icheckbox_square-green',
             radioClass: 'iradio_square-green',
         });
-        $('.ottype-checkbox').off('ifClicked').on('ifClicked', OtTypeClicked);
-        ShowTimeStartEndOt($('#IsOffice').is(':checked'), $('#IsEarlyOT').is(':checked'));
-        if (isAppend)
+        //$('.ottype-checkbox').off('ifClicked').on('ifClicked', OtTypeClicked);
+        //ShowTimeStartEndOt($('#IsOffice').is(':checked'), $('#IsEarlyOT').is(':checked'));
+        ShowTimeStartEndOt($('#OTRequestForm select').val());
+        if (isAppend) {
             $(modal).appendTo('body').modal('show');
-
+            $(modal + ' select').off('change').on('change', function () {
+                ShowTimeStartEndOt($(this).val());
+            });
+            $(modal + ' select').select2();
+        }
     }
 
     function NewRequest() {
@@ -328,16 +352,31 @@
         var url = '@Url.Action("Save", "OTRequest")';
         $('#OTRequestForm .form-control').each(function () {
             var name = $(this).attr('name');
-            if (name == 'IsOffice') {
-                formdata.append(name, $('#IsOffice').is(':checked'));
-            }
-            else if (name == 'IsEarlyOT') {
-                formdata.append(name, $('#IsEarlyOT').is(':checked'));
-            }
-            else {
-                formdata.append(name, $(this).val());
-            }
+            var val = $(this).val();
+            //if (name == 'IsOffice') {
+            //    formdata.append(name, $('#IsOffice').is(':checked'));
+            //}
+            //else if (name == 'IsEarlyOT') {
+            //    formdata.append(name, $('#IsEarlyOT').is(':checked'));
+            //}
+            //else {
+            if ($(this).attr('type') != 'time')
+                formdata.append(name, val);
+            //}
         });
+        var ottype = $('#OTRequestForm select').val();
+        switch (ottype) {
+            case "1":
+                formdata.append('EndDateTime', $('#OTRequestForm #EndDateTime').val());
+                break;
+            case "2":
+                formdata.append('StartDateTime', $('#OTRequestForm #StartDateTime').val());
+                break;
+            case "3":
+                formdata.append('StartDateTime', $('#OTRequestForm #StartDateTime').val());
+                formdata.append('EndDateTime', $('#OTRequestForm #EndDateTime').val());
+                break;
+        }
         formdata.append('__RequestVerificationToken', $('@Html.AntiForgeryToken()').val());
 
         $.ajax({

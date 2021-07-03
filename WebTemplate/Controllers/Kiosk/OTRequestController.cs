@@ -83,12 +83,18 @@ namespace WebTemplate.Controllers.Kiosk
             try
             {
                 StringBuilder errors = new StringBuilder();
+
+                if (model.OtType == null || model.OtType == 0)
+                    errors.Append("- <b>OT Type</b> is required<br/>");
+
                 if (string.IsNullOrEmpty(model.Reasons))
-                    errors.Append("- <b>Reasons</b> is required<br>");
+                    errors.Append("- <b>Reasons</b> is required<br/>");
 
                 if (errors.Length > 0)
                     return Json(new { msg = false, res = errors.ToString() });
+
                 model = OTRequestProcess.Instance.CreateOrUpdate(model, User.UserID);
+
                 ModelState.Clear();
                 return PartialViewCustom("_OTRequestEdit", model);
             }
