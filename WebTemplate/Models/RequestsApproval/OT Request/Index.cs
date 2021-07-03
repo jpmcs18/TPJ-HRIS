@@ -9,6 +9,7 @@ namespace WebTemplate.Models.RequestsApproval.OT_Request
         public string Personnel { get; set; }
         public DateTime? StartDateTime { get; set; }
         public DateTime? EndingDateTime { get; set; }
+        public int? OtType { get; set; }
 
         public bool IsExpired { get; set; } = true;
         public bool IsPending { get; set; } = true;

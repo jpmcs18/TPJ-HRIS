@@ -4,12 +4,13 @@
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
     var PageAccess = credential.GetPage("Kiosk/OTRequest") ?? new DataAccessLayer.System.Page();
     var CreatorAccess = credential.GetPage("Creator Request Over Time") ?? new DataAccessLayer.System.Page();
+    var ottypes = new Dictionary<int, string> { { 1, "After Office" }, { 2, "Early" }, { 3, "Whole Day" } };
 }
 
 @if (PageAccess.View)
 {
     <form id="form_search_params" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
-        @Html.Hidden("Page", Model.Page, new { @class = "search-values" })
+        @Html.Hidden("Page", Model.Page, new { @class = "form-control search-values" })
 
         <fieldset>
             <legend>Search</legend>
@@ -26,6 +27,13 @@
             <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-2">
                 <label class="control-label">Key</label>
                 @Html.TextBox("Key", Model.Key, new { @class = "form-control search-values", @placeholder = "Key..." })
+            </div>
+
+            <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                <label class="control-label">OT Type</label>
+                <div>
+                    @Html.DropDownList("OtType", new SelectList(ottypes, "Key", "Value", Model.OtType ?? 0), "N/A", new { @class = "form-control" })
+                </div>
             </div>
 
             @*<div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-2">
@@ -128,8 +136,9 @@
                             </th>
                             <th style="text-align: left;">Reasons</th>
                             <th style="text-align: left;">Request Date</th>
-                            <th style="text-align: left;">Is At Office/Time End</th>
-                            <th style="text-align: left;">Is Early OT/Time Start</th>
+                            @*<th style="text-align: left;">Is At Office/Time End</th>
+                            <th style="text-align: left;">Is Early OT/Time Start</th>*@
+                            <th style="text-align: left;">OT Type</th>
                             <th style="text-align: left;">Status</th>
                             <th style="text-align: left;">Last Modified</th>
                             <th style="text-align: left;">Remarks</th>
@@ -176,11 +185,15 @@
                                     <td style="text-align: left;">
                                         @Html.Raw(String.Format("{0:MMM dd, yyyy}", Model.OTRequests[i].RequestDate))
                                     </td>
-                                    <td class="text-left">
+                                    @*<td class="text-left">
                                         @(Model.OTRequests[i].IsOffice == true ? "Yes" : (Model.OTRequests[i].EndDateTime != null ? String.Format("No @ {0:HH':'mm}", Model.OTRequests[i].EndDateTime) : ""))
                                     </td>
                                     <td class="text-left">
                                         @(Model.OTRequests[i].IsEarlyOT == true ? String.Format("Yes @ {0:HH':'mm}", Model.OTRequests[i].StartDateTime) : "")<br/>
+                                    </td>*@
+                                    <td class="text-left">
+                                        <b>@ottypes.Where(m => m.Key == Model.OTRequests[i].OtType).Select(m => m.Value).FirstOrDefault()</b>
+                                        @Html.Raw(Model.OTRequests[i].OtType == 1 ? String.Format(" ends</br> @ <b>{0:hh:mm tt}</b>", Model.OTRequests[i].EndDateTime) : (Model.OTRequests[i].OtType == 2 ? String.Format(" starts</br> @ <b>{0:hh:mm tt}</b>", Model.OTRequests[i].StartDateTime) : (Model.OTRequests[i].OtType == 3 ? String.Format(" from</br><b>{0:hh:mm tt}</b> to <b>{1:hh:mm tt}</b>", Model.OTRequests[i].StartDateTime, Model.OTRequests[i].EndDateTime) : "")))
                                     </td>
                                     <td class="text-left">
                                         @Html.Raw(LastStatus)

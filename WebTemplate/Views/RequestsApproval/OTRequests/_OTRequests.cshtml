@@ -4,6 +4,7 @@
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
     var OtRequestPageAccess = credential.GetPage("RequestsApproval/OTRequests") ?? new DataAccessLayer.System.Page();
     var OtRequestApprover = credential.GetPage("Approver Request Over Time") ?? new DataAccessLayer.System.Page();
+    var ottypes = new Dictionary<int, string> { { 1, "After Office" }, { 2, "Early" }, { 3, "Whole Day" } };
 }
 
 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -24,18 +25,25 @@
                     </div>
                 }
 
-            <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-2">
-                <label class="control-label">Start Date & Time</label>
-                @Html.TextBox("StartDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.StartDateTime), new { @type = "datetime-local", @class = "form-control" })
-                @*@Html.TextBox("StartDateTime", String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.StartDateTime), new { @class = "form-control js-datetimepicker", @placeholder = "" })
-                <span id="" class="clearInput" title="Clear"><i class="fa fa-times"></i></span>*@
-            </div>
+                <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-2">
+                    <label class="control-label">Start Date & Time</label>
+                    @Html.TextBox("StartDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.StartDateTime), new { @type = "datetime-local", @class = "form-control" })
+                    @*@Html.TextBox("StartDateTime", String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.StartDateTime), new { @class = "form-control js-datetimepicker", @placeholder = "" })
+            <span id="" class="clearInput" title="Clear"><i class="fa fa-times"></i></span>*@
+                </div>
 
                 <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-2">
                     <label class="control-label">End Date & Time</label>
                     @Html.TextBox("EndingDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.EndingDateTime), new { @type = "datetime-local", @class = "form-control" })
                     @*@Html.TextBox("EndingDateTime", String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.EndingDateTime), new { @class = "form-control js-datetimepicker", @placeholder = "" })
-                    <span id="" class="clearInput" title="Clear"><i class="fa fa-times"></i></span>*@
+            <span id="" class="clearInput" title="Clear"><i class="fa fa-times"></i></span>*@
+                </div>
+
+                <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                    <label class="control-label">OT Type</label>
+                    <div>
+                        @Html.DropDownList("OtType", new SelectList(ottypes, "Key", "Value", Model.OtType ?? 0), "N/A", new { @class = "form-control" })
+                    </div>
                 </div>
 
                 <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
@@ -123,7 +131,7 @@
                                 <th style="text-align: left;">Personnel</th>
                                 <th style="text-align: left;">Request Date</th>
                                 <th style="text-align: left;">Reasons</th>
-                                <th style="text-align: left;">Is Office</th>
+                                <th style="text-align: left;">OT Type</th>
                                 <th style="text-align: left;">Status</th>
                                 <th style="text-align: left;">Last Modified</th>
                                 <th style="text-align: left;">Remarks</th>
@@ -162,8 +170,12 @@
                                             @Model.OTRequests[i].Reasons
                                         </text>
                                     </td>
-                                    <td class="text-left">
+                                    @*<td class="text-left">
                                         @(Model.OTRequests[i].IsOffice == true ? "Yes" : "")
+                                    </td>*@
+                                    <td class="text-left">
+                                        <b>@ottypes.Where(m => m.Key == Model.OTRequests[i].OtType).Select(m => m.Value).FirstOrDefault()</b>
+                                        @Html.Raw(Model.OTRequests[i].OtType == 1 ? String.Format(" ends</br> @ <b>{0:hh:mm tt}</b>", Model.OTRequests[i].EndDateTime) : (Model.OTRequests[i].OtType == 2 ? String.Format(" starts</br> @ <b>{0:hh:mm tt}</b>", Model.OTRequests[i].StartDateTime) : (Model.OTRequests[i].OtType == 3 ? String.Format(" from</br><b>{0:hh:mm tt}</b> to <b>{1:hh:mm tt}</b>", Model.OTRequests[i].StartDateTime, Model.OTRequests[i].EndDateTime) : "")))
                                     </td>
                                     <td class="text-left">
                                         @Html.Raw(LastStatus)
