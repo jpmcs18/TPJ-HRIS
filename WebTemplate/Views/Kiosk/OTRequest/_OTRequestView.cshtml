@@ -3,21 +3,53 @@
 @{
     var c = User as WebTemplate.Models.CustomPrincipal;
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var ottypes = new Dictionary<int, string> { { 1, "After Office" }, { 2, "Early" }, { 3, "Whole Day" } };
 }
 <input hidden name="PersonnelID" value="@Model.PersonnelID" />
 <input hidden name="ID" value="@Model.ID" />
+
+@*<div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-6">
+    <label class="control-label">
+        @Html.CheckBox("IsOffice", Model.IsOffice, new { @class = "i-checks status-checkbox" })
+        Is Office
+    </label>
+</div>
+
+<div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-6">
+    <label class="control-label">
+        @Html.CheckBox("IsOffice", Model.IsEarlyOT, new { @class = "i-checks status-checkbox" })
+        Is Early OT
+    </label>
+</div>*@
+
+<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <label class="control-label">OT Type</label>
+    <div>
+        @*@Html.DropDownList("OtType", new SelectList(ottypes, "Key", "Value", Model.OtType ?? 0), new { @class = "form-control", @disabled = "" })*@
+        <label class="form-control">@ottypes.Where(m => m.Key == Model.OtType).Select(m => m.Value).FirstOrDefault()</label>
+    </div>
+</div>
 
 <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <label class="control-label">Request Date</label>
     <label class="form-control">@String.Format("{0:MM/dd/yyyy}", Model.RequestDate)</label>
 </div>
 
-<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
-    <label class="control-label">
-        @Html.CheckBox("IsOffice", Model.IsOffice, new { @class = "i-checks status-checkbox" })
-        Is Office
-    </label>
-</div>
+@if (Model.OtType != 1 && Model.OtType != null && Model.StartDateTime != null)
+{
+    <div id="TimeStart" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <label class="control-label">Time Start</label>
+        <label class="form-control">@String.Format("{0:hh:mm tt}", Model.StartDateTime)</label>
+    </div>
+}
+
+@if (Model.OtType != 2 && Model.OtType != null && Model.EndDateTime != null)
+{
+    <div id="TimeEnd" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <label class="control-label">Time End</label>
+        <label class="form-control">@String.Format("{0:hh:mm tt}", Model.EndDateTime)</label>
+    </div>
+}
 
 <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <label class="control-label">Reasons</label>

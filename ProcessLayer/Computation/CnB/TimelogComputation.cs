@@ -171,7 +171,7 @@ namespace ProcessLayer.Computation.CnB
                     if (LoginDate.HasValue && LogoutDate.HasValue)
                     {
                         int mins = 0;
-                        OTRequest ot = approvedotrequests.Where(x => x.RequestDate.Date == starttime.Date).FirstOrDefault();
+                        OTRequest ot = approvedotrequests.Where(x => x.RequestDate?.Date == starttime.Date).FirstOrDefault();
                         if ((ot?.ID ?? 0) > 0 || timesheet.Personnel.AutoOT)
                         {
                             if ((LoginDate > defbt && defbtend > LoginDate) && defbtend < LogoutDate)
@@ -281,7 +281,7 @@ namespace ProcessLayer.Computation.CnB
                             {
                                 totalminutes = PayrollParameters.CNBInstance.TotalMinutesPerDay;
                                 //compute ot
-                                OTRequest ot = approvedotrequests.Where(x => x.RequestDate.Date == starttime.Date).FirstOrDefault();
+                                OTRequest ot = approvedotrequests.Where(x => x.RequestDate?.Date == starttime.Date).FirstOrDefault();
                                 if ((ot?.ID ?? 0) > 0 || timesheet.Personnel.AutoOT)
                                 {
                                     DateTime? startot = timeotmuststart;
@@ -344,7 +344,7 @@ namespace ProcessLayer.Computation.CnB
                             if ((leave?.ID ?? 0) == 0)
                             {
                                 //compute ot
-                                OTRequest ot = approvedotrequests.Where(x => x.RequestDate.Date == starttime.Date).FirstOrDefault();
+                                OTRequest ot = approvedotrequests.Where(x => x.RequestDate?.Date == starttime.Date).FirstOrDefault();
                                 if ((ot?.ID ?? 0) > 0 || timesheet.Personnel.AutoOT)
                                 {
                                     DateTime? startot = endtime;
