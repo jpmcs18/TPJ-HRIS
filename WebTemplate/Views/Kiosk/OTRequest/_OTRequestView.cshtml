@@ -26,7 +26,7 @@
     <label class="control-label">OT Type</label>
     <div>
         @*@Html.DropDownList("OtType", new SelectList(ottypes, "Key", "Value", Model.OtType ?? 0), new { @class = "form-control", @disabled = "" })*@
-        <label class="form-control">@ottypes.Where(m => m.Key == Model.OtType).Select(m => m.Value).FirstOrDefault()</label>
+        <label class="form-control">@ottypes.Where(m => m.Key == ((int)Model.OTType)).Select(m => m.Value).FirstOrDefault()</label>
     </div>
 </div>
 
@@ -35,7 +35,7 @@
     <label class="form-control">@String.Format("{0:MM/dd/yyyy}", Model.RequestDate)</label>
 </div>
 
-@if (Model.OtType != 1 && Model.OtType != null && Model.StartDateTime != null)
+@if (((int)Model.OTType) != 1 && Model.StartDateTime != null)
 {
     <div id="TimeStart" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <label class="control-label">Time Start</label>
@@ -43,7 +43,7 @@
     </div>
 }
 
-@if (Model.OtType != 2 && Model.OtType != null && Model.EndDateTime != null)
+@if (((int)Model.OTType) != 2 &&  Model.EndDateTime != null)
 {
     <div id="TimeEnd" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <label class="control-label">Time End</label>

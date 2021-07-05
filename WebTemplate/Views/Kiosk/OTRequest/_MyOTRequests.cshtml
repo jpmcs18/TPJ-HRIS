@@ -192,8 +192,8 @@
                                         @(Model.OTRequests[i].IsEarlyOT == true ? String.Format("Yes @ {0:HH':'mm}", Model.OTRequests[i].StartDateTime) : "")<br/>
                                     </td>*@
                                     <td class="text-left">
-                                        <b>@ottypes.Where(m => m.Key == Model.OTRequests[i].OtType).Select(m => m.Value).FirstOrDefault()</b>
-                                        @Html.Raw(Model.OTRequests[i].OtType == 1 ? String.Format(" ends</br> @ <b>{0:hh:mm tt}</b>", Model.OTRequests[i].EndDateTime) : (Model.OTRequests[i].OtType == 2 ? String.Format(" starts</br> @ <b>{0:hh:mm tt}</b>", Model.OTRequests[i].StartDateTime) : (Model.OTRequests[i].OtType == 3 ? String.Format(" from</br><b>{0:hh:mm tt}</b> to <b>{1:hh:mm tt}</b>", Model.OTRequests[i].StartDateTime, Model.OTRequests[i].EndDateTime) : "")))
+                                        <b>@ottypes.Where(m => m.Key == ((int)Model.OTRequests[i].OTType)).Select(m => m.Value).FirstOrDefault()</b>
+                                        @Html.Raw(((int)Model.OTRequests[i].OTType) == 1 ? String.Format(" ends</br> @ <b>{0:hh:mm tt}</b>", Model.OTRequests[i].EndDateTime) : (((int)Model.OTRequests[i].OTType) == 2 ? String.Format(" starts</br> @ <b>{0:hh:mm tt}</b>", Model.OTRequests[i].StartDateTime) : (((int)Model.OTRequests[i].OTType) == 3 ? String.Format(" from</br><b>{0:hh:mm tt}</b> to <b>{1:hh:mm tt}</b>", Model.OTRequests[i].StartDateTime, Model.OTRequests[i].EndDateTime) : "")))
                                     </td>
                                     <td class="text-left">
                                         @Html.Raw(LastStatus)

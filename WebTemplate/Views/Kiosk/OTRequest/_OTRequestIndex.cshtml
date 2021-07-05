@@ -186,49 +186,53 @@
         setTimeout(SearchRequest, 500);
     }
 
-    //function OtTypeClicked() {
-    //    $(this).iCheck(($(this).is(':checked') ? 'un' : '') + 'check');
-    //    var isAtOffice = $('#IsOffice').is(':checked');
-    //    var isEarlyOT = $('#IsEarlyOT').is(':checked');
-    //    ShowTimeStartEndOt(isAtOffice, isEarlyOT);
-    //}
+    function OtTypeClicked() {
+        $(this).iCheck(($(this).is(':checked') ? 'un' : '') + 'check');
+        var isAtOffice = $('#IsOffice').is(':checked');
+        var isEarlyOT = $('#IsEarlyOT').is(':checked');
+        ShowTimeStartEndOt(isAtOffice, isEarlyOT);
+    }
 
-    //function ShowTimeStartEndOt(isAtOffice, isEarlyOT) {
-    //    console.log(isAtOffice, isEarlyOT);
+    function ShowTimeStartEndOt(isAtOffice, isEarlyOT) {
+        //console.log(isAtOffice, isEarlyOT);
 
-    //    if (isAtOffice == false && isEarlyOT == false) {
-    //        $('#OTRequestForm #TimeEnd').show();
-    //        $('#OTRequestForm #TimeStart').hide();
-    //    }
-    //    if ((isAtOffice == true || isAtOffice == false) && isEarlyOT == true) {
-    //        $('#OTRequestForm #TimeEnd').hide();
-    //        $('#OTRequestForm #TimeStart').show();
-    //    }
-    //    if (isAtOffice == true && isEarlyOT == false) {
-    //        $('#OTRequestForm #TimeEnd').hide();
-    //        $('#OTRequestForm #TimeStart').hide();
-    //    }
-    //}
-
-    function ShowTimeStartEndOt(ottype) {
-        switch (ottype) {
-            case "1":
-                $('#OTRequestForm #TimeEnd').show();
-                $('#OTRequestForm #TimeStart').hide();
-                break;
-            case "2":
-                $('#OTRequestForm #TimeEnd').hide();
-                $('#OTRequestForm #TimeStart').show();
-                break;
-            case "3":
-                $('#OTRequestForm #TimeEnd').show();
-                $('#OTRequestForm #TimeStart').show();
-                break;
-            default:
-                $('#OTRequestForm #TimeEnd').hide();
-                $('#OTRequestForm #TimeStart').hide();
+        //if (isAtOffice == true && isEarlyOT == true) {
+        //    $('#OTRequestForm #TimeEnd').hide();
+        //    $('#OTRequestForm #TimeStart').hide();
+        //}
+        if (isAtOffice == true && isEarlyOT == false) {
+            $('#OTRequestForm #TimeEnd').show();
+            $('#OTRequestForm #TimeStart').hide();
+        }
+        else if ((isAtOffice == false || isAtOffice == true) && isEarlyOT == true) {
+            $('#OTRequestForm #TimeEnd').hide();
+            $('#OTRequestForm #TimeStart').show();
+        }
+        else {
+            $('#OTRequestForm #TimeEnd').show();
+            $('#OTRequestForm #TimeStart').show();
         }
     }
+
+    //function ShowTimeStartEndOt(ottype) {
+        //switch (ottype) {
+        //    case "1":
+        //        $('#OTRequestForm #TimeEnd').show();
+        //        $('#OTRequestForm #TimeStart').hide();
+        //        break;
+        //    case "2":
+        //        $('#OTRequestForm #TimeEnd').hide();
+        //        $('#OTRequestForm #TimeStart').show();
+        //        break;
+        //    case "3":
+        //        $('#OTRequestForm #TimeEnd').show();
+        //        $('#OTRequestForm #TimeStart').show();
+        //        break;
+        //    default:
+        //        $('#OTRequestForm #TimeEnd').hide();
+        //        $('#OTRequestForm #TimeStart').hide();
+        //}
+    //}
 
     function SearchTabEvents() {
         $('#Btn_Search').off('click').on('click', SearchRequest);
@@ -260,9 +264,9 @@
             checkboxClass: 'icheckbox_square-green',
             radioClass: 'iradio_square-green',
         });
-        //$('.ottype-checkbox').off('ifClicked').on('ifClicked', OtTypeClicked);
-        //ShowTimeStartEndOt($('#IsOffice').is(':checked'), $('#IsEarlyOT').is(':checked'));
-        ShowTimeStartEndOt($('#OTRequestForm select').val());
+        $('.ottype-checkbox').off('ifClicked').on('ifClicked', OtTypeClicked);
+        ShowTimeStartEndOt($('#IsOffice').is(':checked'), $('#IsEarlyOT').is(':checked'));
+        //ShowTimeStartEndOt($('#OTRequestForm select').val());
         if (isAppend) {
             $(modal).appendTo('body').modal('show');
             $(modal + ' select').off('change').on('change', function () {
@@ -348,36 +352,54 @@
     }
 
     function SaveRequest() {
-        var formdata = new FormData();
         var url = '@Url.Action("Save", "OTRequest")';
+        var formdata = new FormData();
+        formdata.append('__RequestVerificationToken', $('@Html.AntiForgeryToken()').val());
+
         $('#OTRequestForm .form-control').each(function () {
             var name = $(this).attr('name');
             var val = $(this).val();
-            //if (name == 'IsOffice') {
-            //    formdata.append(name, $('#IsOffice').is(':checked'));
-            //}
-            //else if (name == 'IsEarlyOT') {
-            //    formdata.append(name, $('#IsEarlyOT').is(':checked'));
-            //}
-            //else {
-            if ($(this).attr('type') != 'time')
-                formdata.append(name, val);
-            //}
+            if (name == 'IsOffice') {
+                formdata.append(name, $('#IsOffice').is(':checked'));
+            }
+            else if (name == 'IsEarlyOT') {
+                formdata.append(name, $('#IsEarlyOT').is(':checked'));
+            }
+            else {
+                if ($(this).attr('type') != 'time')
+                    formdata.append(name, val);
+            }
         });
-        var ottype = $('#OTRequestForm select').val();
-        switch (ottype) {
-            case "1":
-                formdata.append('EndDateTime', $('#OTRequestForm #EndDateTime').val());
-                break;
-            case "2":
-                formdata.append('StartDateTime', $('#OTRequestForm #StartDateTime').val());
-                break;
-            case "3":
-                formdata.append('StartDateTime', $('#OTRequestForm #StartDateTime').val());
-                formdata.append('EndDateTime', $('#OTRequestForm #EndDateTime').val());
-                break;
+
+        //var ottype = $('#OTRequestForm select').val();
+        //switch (ottype) {
+        //    case "1":
+        //        formdata.append('EndDateTime', $('#OTRequestForm #EndDateTime').val());
+        //        break;
+        //    case "2":
+        //        formdata.append('StartDateTime', $('#OTRequestForm #StartDateTime').val());
+        //        break;
+        //    case "3":
+        //        formdata.append('StartDateTime', $('#OTRequestForm #StartDateTime').val());
+        //        formdata.append('EndDateTime', $('#OTRequestForm #EndDateTime').val());
+        //        break;
+        //}
+
+        var isOffice = $('#IsOffice').is(':checked');
+        var isEarlyOt = $('#IsEarlyOT').is(':checked');
+        if (isOffice == true && isEarlyOt == false) {
+            formdata.append('OTType', 1);
+            formdata.append('EndDateTime', $('#OTRequestForm #EndDateTime').val());
         }
-        formdata.append('__RequestVerificationToken', $('@Html.AntiForgeryToken()').val());
+        else if (isOffice == false && isEarlyOt == true) {
+            formdata.append('OTType', 2);
+            formdata.append('StartDateTime', $('#OTRequestForm #StartDateTime').val());
+        }
+        else {
+            formdata.append('OTType', 3);
+            formdata.append('StartDateTime', $('#OTRequestForm #StartDateTime').val());
+            formdata.append('EndDateTime', $('#OTRequestForm #EndDateTime').val());
+        }
 
         $.ajax({
             url: url,
