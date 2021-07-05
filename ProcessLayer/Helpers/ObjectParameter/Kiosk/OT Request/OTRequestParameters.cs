@@ -13,6 +13,6 @@
         public string EndDateTime = "@EndDateTime";
         public string RequestDate = "@RequestDate";
         public string IsOffice = "@IsOffice";
-        public string IsEarlyOT = "@IsEarlyOT";
+        public string OTType = "@OTType";
     }
 }

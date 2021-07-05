@@ -21,8 +21,8 @@ namespace ProcessLayer.Processes.Kiosk
                 ID = dr[OTRequestFields.Instance.ID].ToLong(),
                 PersonnelID = dr[OTRequestFields.Instance.PersonnelID].ToNullableLong(),
                 IsOffice = dr[OTRequestFields.Instance.IsOffice].ToNullableBoolean() ?? false,
-                IsEarlyOT = dr[OTRequestFields.Instance.IsEarlyOT].ToNullableBoolean() ?? false,
-                RequestDate = dr[OTRequestFields.Instance.RequestDate].ToNullableDateTime(),
+                OTType = dr[OTRequestFields.Instance.OTType].ToByte(),
+                RequestDate = dr[OTRequestFields.Instance.RequestDate].ToDateTime(),
                 StartDateTime = dr[OTRequestFields.Instance.StartDateTime].ToNullableDateTime(),
                 EndDateTime = dr[OTRequestFields.Instance.EndDateTime].ToNullableDateTime(),
                 Reasons = dr[OTRequestFields.Instance.Reasons].ToString(),
@@ -173,7 +173,7 @@ namespace ProcessLayer.Processes.Kiosk
             var parameters = new Dictionary<string, object> {
                 { OTRequestParameters.Instance.PersonnelID, ot.PersonnelID }
                 , { OTRequestParameters.Instance.IsOffice, ot.IsOffice }
-                , { OTRequestParameters.Instance.IsEarlyOT, ot.IsEarlyOT }
+                , { OTRequestParameters.Instance.OTType, ot.OTType }
                 , { OTRequestParameters.Instance.RequestDate, ot.RequestDate }
                 , { OTRequestParameters.Instance.StartDateTime, ot.StartDateTime }
                 , { OTRequestParameters.Instance.EndDateTime, ot.EndDateTime }

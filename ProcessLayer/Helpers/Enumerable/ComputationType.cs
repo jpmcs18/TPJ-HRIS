@@ -12,4 +12,10 @@ namespace ProcessLayer.Helpers.Enumerable
         Monthly = 1,
         Lumpsum = 2
     }
+    public enum OTType
+    {
+        After = 1,
+        Early = 2,
+        Whole = 3
+    }
 }

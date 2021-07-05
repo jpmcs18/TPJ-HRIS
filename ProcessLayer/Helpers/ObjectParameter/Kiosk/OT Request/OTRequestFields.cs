@@ -10,6 +10,6 @@
         public string StartDateTime = "Start Date Time";
         public string EndDateTime = "End Date Time";
         public string IsOffice = "Is Office";
-        public string IsEarlyOT = "Is Early OT";
+        public string OTType = "OT Type";
     }
 }

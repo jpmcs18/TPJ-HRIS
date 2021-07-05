@@ -207,6 +207,25 @@ namespace ProcessLayer.Computation.CnB
                     LoginDate = (leave?.ID ?? 0) == 0 ? LoginDate : (!LoginDate.HasValue ? leave.StartDateTime : (leave.StartDateTime < LoginDate ? leave.StartDateTime : LoginDate));
                     LogoutDate = (leave?.ID ?? 0) == 0 ? LogoutDate : (!LogoutDate.HasValue ? leave.EndDateTime : (leave.EndDateTime > LogoutDate ? leave.EndDateTime : LogoutDate));
 
+                    OTRequest early = approvedotrequests.Where(x => x.RequestDate.Date == starttime.Date && x.OTType == OTType.Early).FirstOrDefault();
+                    OTRequest after = approvedotrequests.Where(x => x.RequestDate.Date == starttime.Date && x.OTType == OTType.Early).FirstOrDefault();
+                    OTRequest whole = approvedotrequests.Where(x => x.RequestDate.Date == starttime.Date && x.OTType == OTType.Whole).FirstOrDefault();
+
+
+                    if ((leave?.ID ?? 0) == 0)
+                    {
+                        if ((early?.ID ?? 0) > 0 && !(early?.IsOffice ?? false))
+                            LoginDate = early.StartDateTime;
+                        if ((after?.ID ?? 0) > 0 && !(after?.IsOffice ?? false))
+                            LogoutDate = after.EndDateTime;
+                        if((whole?.ID ?? 0) > 0 && !(whole?.IsOffice ?? false))
+                        {
+                            LoginDate = early.StartDateTime;
+                            LogoutDate = after.EndDateTime;
+                        }
+                    }
+
+
                     //get outer port request on specific date
                     bool needTimeLog = false;
                     OuterPortRequest outerPort = approvedouterportrequests.Where(x => starttime.Date >= x.StartDate && (starttime.Date <= x.EndDate || !x.EndDate.HasValue)).FirstOrDefault();
@@ -251,7 +270,93 @@ namespace ProcessLayer.Computation.CnB
                     }
                     else if (isholiday || (sched?.ID ?? 0) == 0 || start.DayOfWeek == DayOfWeek.Sunday)
                     {
-                        SundayOrHolidayComputation(payroll, timelogs, approvedotrequests, start, sched, starttime, endtime, startnight1, endnight1, startnight2, endnight2, defbt, defbtend, details, LoginDate, LogoutDate, isholiday, prevDate);
+                        if (isholiday && (sched?.ID ?? 0) != 0)
+                        {
+                            details.TotalRegularMinutes = PayrollParameters.CNBInstance.TotalMinutesPerDay;
+                            details.IsHoliday = true;
+                        }
+
+                        if (LoginDate.HasValue && LogoutDate.HasValue)
+                        {
+                            int mins = 0;
+                            OTRequest ot = approvedotrequests.Where(x => x.RequestDate.Date == starttime.Date).FirstOrDefault();
+                            if ((ot?.ID ?? 0) > 0 || payroll.Personnel.AutoOT)
+                            {
+                                if ((LoginDate > defbt && defbtend > LoginDate) && defbtend < LogoutDate)
+                                {
+                                    mins = GlobalHelper.SubtractDate(LogoutDate, defbtend);
+                                }
+                                else if (LoginDate >= defbtend || LogoutDate <= defbt)
+                                {
+                                    mins = GlobalHelper.SubtractDate(LogoutDate, LoginDate);
+                                }
+                                else if ((LogoutDate > defbt && defbtend > LogoutDate) && defbt > LoginDate)
+                                {
+                                    mins = GlobalHelper.SubtractDate(defbt, LoginDate);
+                                }
+                                else if (LoginDate < defbt && LogoutDate > defbtend)
+                                {
+                                    mins = GlobalHelper.SubtractDate(LogoutDate, LoginDate) - (int)PayrollParameters.CNBInstance.DefaultBreaktimeMinutes;
+                                }
+
+                                if (start.DayOfWeek == DayOfWeek.Sunday && (sched?.ID ?? 0) == 0)
+                                {
+                                    details.IsSunday = true;
+                                    int regminutes = mins - PayrollParameters.CNBInstance.SundayTotalMinutes;
+                                    if (regminutes > 0
+                                        && timelogs.Where(x => x.LoginDate?.Date == starttime.AddDays(-1).Date).Any()
+                                        && timelogs.Where(x => x.LoginDate?.Date == starttime.AddDays(1).Date).Any())
+                                    {
+                                        details.IsPresent = true;
+                                        details.TotalRegularMinutes = PayrollParameters.CNBInstance.TotalMinutesPerDay;
+                                        details.SundayOTMinutes = regminutes;
+                                    }
+                                    else
+                                        details.TotalRegularMinutes = mins;
+
+                                }
+                                else if (isholiday)
+                                {
+                                    details.IsHoliday = true;
+                                    int regminutes = mins - PayrollParameters.CNBInstance.HolidayTotalMinutes;
+                                    if (regminutes > 0
+                                        && timelogs.Where(x => x.LoginDate?.Date == prevDate?.Date).Any())
+                                    {
+                                        details.IsPresent = true;
+                                        details.HolidayRegularOTMinutes = PayrollParameters.CNBInstance.HolidayTotalMinutes;
+                                        details.HolidayExcessOTMinutes = regminutes;
+
+                                    }
+                                    else
+                                        details.HolidayRegularOTMinutes = mins;
+                                }
+
+                                #region Night Diff
+                                if (starttime <= startnight1 && endtime >= endnight1)
+                                {
+                                    DateTime? login = LoginDate < startnight1 ? startnight1 : LoginDate;
+                                    DateTime? logout = LogoutDate > endnight1 ? endnight1 : LogoutDate;
+
+                                    details.NightDifferentialOTMinutes1 = GlobalHelper.SubtractDate(logout, login);
+
+                                }
+                                if (starttime <= startnight2 && endtime >= endnight2)
+                                {
+                                    DateTime? login = LoginDate < startnight2 ? startnight2 : LoginDate;
+                                    DateTime? logout = LogoutDate > endnight2 ? endnight2 : LogoutDate;
+
+                                    details.NightDifferentialOTMinutes2 = GlobalHelper.SubtractDate(logout, login);
+                                }
+                                #endregion
+                            }
+                            details.TotalRegularMinutes = details.TotalRegularMinutes < 0 ? 0 : details.TotalRegularMinutes;
+                            payroll.PayrollDetails.Add(details);
+                        }
+                        else if (isholiday && (sched?.ID ?? 0) != 0 && timelogs.Where(x => x.LoginDate?.Date == prevDate?.Date).Any())
+                        {
+                            details.TotalRegularMinutes = details.TotalRegularMinutes < 0 ? 0 : details.TotalRegularMinutes;
+                            payroll.PayrollDetails.Add(details);
+                        }
                     }
                     else
                     {
@@ -267,7 +372,127 @@ namespace ProcessLayer.Computation.CnB
                             }
                             else //Regular Hours
                             {
-                                RegularHoursComputation(payroll, approvedotrequests, start, sched, starttime, breaktime, breaktimeend, endtime, startnight1, endnight1, startnight2, endnight2, details, LoginDate, LogoutDate, leave);
+                                if (!LoginDate.HasValue && !LogoutDate.HasValue)
+                                {
+                                    details.TotalRegularMinutes = 0;
+                                }
+                                else
+                                {
+                                    int totalRegularMinutes = GlobalHelper.SubtractDate(endtime, starttime) - GlobalHelper.SubtractDate(breaktimeend, breaktime);
+                                    details.TotalRegularMinutes = totalRegularMinutes;
+                                    int late = 0;
+                                    int undertime = 0;
+                                    //compute late
+                                    if (starttime < LoginDate)
+                                    {
+                                        late = GlobalHelper.SubtractDate(LoginDate, starttime);
+                                        LateDeduction lateded = LateDeductions.Where(x => (start + x.TimeIn) <= LoginDate).OrderByDescending(x => x.TimeIn).FirstOrDefault();
+                                        if ((lateded?.ID ?? 0) > 0)
+                                        {
+                                            if (lateded.DeductedHours.HasValue)
+                                                late = (lateded.DeductedHours ?? 0) * (int)PayrollParameters.CNBInstance.Minutes;
+                                        }
+
+                                        if (sched.BreakTime.HasValue && sched.BreakTimeHour.HasValue)
+                                        {
+                                            if (breaktime < LoginDate &&
+                                                breaktime.AddHours(sched.BreakTimeHour ?? 0) > LoginDate &&
+                                                breaktime.AddHours(sched.BreakTimeHour ?? 0) < LogoutDate)
+                                                late -= GlobalHelper.SubtractDate(breaktime.AddHours(sched.BreakTimeHour ?? 0), LoginDate);
+                                            else if (breaktime.AddHours(sched.BreakTimeHour ?? 0) <= LoginDate)
+                                            {
+                                                late -= sched.BreakTimeHour ?? 0;
+                                            }
+                                        }
+                                    }
+                                    //compute undertime
+                                    if (LogoutDate.HasValue && LogoutDate < endtime)
+                                    {
+                                        if (sched.BreakTime.HasValue && sched.BreakTimeHour.HasValue)
+                                        {
+                                            if (breaktime.AddHours(sched.BreakTimeHour ?? 0) > LogoutDate && breaktime < LogoutDate)
+                                                undertime = GlobalHelper.SubtractDate(endtime, breaktime.AddHours(sched.BreakTimeHour ?? 0));
+                                            else if (breaktime > LogoutDate)
+                                                undertime = GlobalHelper.SubtractDate(endtime, LogoutDate) - (sched.BreakTimeHour ?? 0);
+                                            else if (breaktime.AddHours(sched.BreakTimeHour ?? 0) < LogoutDate)
+                                                undertime = GlobalHelper.SubtractDate(endtime, LogoutDate);
+                                            else
+                                                undertime = GlobalHelper.SubtractDate(endtime, breaktime.AddHours(sched.BreakTimeHour ?? 0));
+                                        }
+                                        else
+                                            undertime = GlobalHelper.SubtractDate(endtime, LogoutDate);
+                                        details.TotalRegularMinutes -= undertime;
+                                    }
+
+                                    if ((leave?.ID ?? 0) == 0)
+                                    {
+                                        //compute ot after office
+                                        if ((after?.ID ?? 0) > 0 || payroll.Personnel.AutoOT)
+                                        {
+                                            DateTime? startot = endtime;
+                                            DateTime? endot = LogoutDate;
+
+                                            if (endot > startot)
+                                            {
+                                                int totolotminutes = GlobalHelper.SubtractDate(endot, startot);
+
+                                                int totalotminutesremain = totolotminutes - late;
+                                                if (totalotminutesremain <= 0)
+                                                    late = Math.Abs(totalotminutesremain);
+                                                else
+                                                {
+                                                    late = 0;
+                                                    details.RegularOTMinutes = totalotminutesremain;
+                                                }
+                                            }
+                                        }
+
+                                        if ((early?.ID ?? 0) > 0 || payroll.Personnel.AutoOT)
+                                        {
+                                            DateTime? startot = LoginDate;
+                                            DateTime? endot = starttime;
+
+                                            if (endot > startot)
+                                            {
+                                                int totolotminutes = GlobalHelper.SubtractDate(endot, startot);
+
+                                                int totalotminutesremain = totolotminutes - late;
+                                                if (totalotminutesremain <= 0)
+                                                    late = Math.Abs(totalotminutesremain);
+                                                else
+                                                {
+                                                    late = 0;
+                                                    details.RegularOTMinutes += totalotminutesremain;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    details.TotalRegularMinutes -= late;
+
+
+
+
+                                    details.IsPresent = true;
+
+                                    #region Night Diff
+                                    if (starttime <= startnight1 && endtime >= endnight1)
+                                    {
+                                        DateTime? login = LoginDate < startnight1 ? startnight1 : LoginDate;
+                                        DateTime? logout = LogoutDate > endnight1 ? endnight1 : LogoutDate;
+
+                                        details.NightDifferentialOTMinutes1 = GlobalHelper.SubtractDate(logout, login);
+                                    }
+                                    if (starttime <= startnight2 && endtime >= endnight2)
+                                    {
+                                        DateTime? login = LoginDate < startnight2 ? startnight2 : LoginDate;
+                                        DateTime? logout = LogoutDate > endnight2 ? endnight2 : LogoutDate;
+
+                                        details.NightDifferentialOTMinutes2 = GlobalHelper.SubtractDate(logout, login);
+                                    }
+                                    #endregion
+                                }
+                                details.TotalRegularMinutes = details.TotalRegularMinutes < 0 ? 0 : details.TotalRegularMinutes;
+                                payroll.PayrollDetails.Add(details);
                             }
                         }
                     }
@@ -397,115 +622,6 @@ namespace ProcessLayer.Computation.CnB
             }
         }
 
-        private void RegularHoursComputation(Payroll payroll, List<OTRequest> approvedotrequests, DateTime start, ScheduleType sched, DateTime starttime, DateTime breaktime, DateTime breaktimeend, DateTime endtime, DateTime startnight1, DateTime endnight1, DateTime startnight2, DateTime endnight2, PayrollDetails details, DateTime? LoginDate, DateTime? LogoutDate, LeaveRequest leave)
-        {
-            if (!LoginDate.HasValue && !LogoutDate.HasValue)
-            {
-                details.TotalRegularMinutes = 0;
-            }
-            else
-            {
-                int totalRegularMinutes = GlobalHelper.SubtractDate(endtime, starttime) - GlobalHelper.SubtractDate(breaktimeend, breaktime);
-                details.TotalRegularMinutes = totalRegularMinutes;
-                int late = 0;
-                int undertime = 0;
-                //compute late
-                if (starttime < LoginDate)
-                {
-                    late = GlobalHelper.SubtractDate(LoginDate, starttime);
-                    LateDeduction lateded = LateDeductions.Where(x => (start + x.TimeIn) <= LoginDate).OrderByDescending(x => x.TimeIn).FirstOrDefault();
-                    if ((lateded?.ID ?? 0) > 0)
-                    {
-                        if (lateded.DeductedHours.HasValue)
-                            late = (lateded.DeductedHours ?? 0) * (int)PayrollParameters.CNBInstance.Minutes;
-                    }
-
-                    if (sched.BreakTime.HasValue && sched.BreakTimeHour.HasValue)
-                    {
-                        if (breaktime < LoginDate &&
-                            breaktime.AddHours(sched.BreakTimeHour ?? 0) > LoginDate &&
-                            breaktime.AddHours(sched.BreakTimeHour ?? 0) < LogoutDate)
-                            late -= GlobalHelper.SubtractDate(breaktime.AddHours(sched.BreakTimeHour ?? 0), LoginDate);
-                        else if (breaktime.AddHours(sched.BreakTimeHour ?? 0) <= LoginDate)
-                        {
-                            late -= sched.BreakTimeHour ?? 0;
-                        }
-                    }
-                }
-                //compute undertime
-                if (LogoutDate.HasValue && LogoutDate < endtime)
-                {
-
-                    if (sched.BreakTime.HasValue && sched.BreakTimeHour.HasValue)
-                    {
-                        if (breaktime.AddHours(sched.BreakTimeHour ?? 0) > LogoutDate && breaktime < LogoutDate)
-                            undertime = GlobalHelper.SubtractDate(endtime, breaktime.AddHours(sched.BreakTimeHour ?? 0));
-                        else if (breaktime > LogoutDate)
-                        {
-                            undertime = GlobalHelper.SubtractDate(endtime, LogoutDate) - (sched.BreakTimeHour ?? 0);
-                        }
-                        else if (breaktime.AddHours(sched.BreakTimeHour ?? 0) < LogoutDate)
-                            undertime = GlobalHelper.SubtractDate(endtime, LogoutDate);
-                        else
-                            undertime = GlobalHelper.SubtractDate(endtime, breaktime.AddHours(sched.BreakTimeHour ?? 0));
-                    }
-                    else
-                        undertime = GlobalHelper.SubtractDate(endtime, LogoutDate);
-                    details.TotalRegularMinutes -= undertime;
-
-                }
-
-                if ((leave?.ID ?? 0) == 0)
-                {
-                    //compute ot
-                    OTRequest ot = approvedotrequests.Where(x => x.RequestDate.Date == starttime.Date).FirstOrDefault();
-                    if ((ot?.ID ?? 0) > 0 || payroll.Personnel.AutoOT)
-                    {
-
-                        DateTime? startot = endtime;
-                        DateTime? endot = LogoutDate;
-                        if (endot > startot)
-                        {
-                            int totolotminutes = GlobalHelper.SubtractDate(endot, startot);
-
-                            int totalotminutesremain = totolotminutes - late;
-                            if (totalotminutesremain <= 0)
-                                late = Math.Abs(totalotminutesremain);
-                            else
-                            {
-                                late = 0;
-                                details.RegularOTMinutes = totalotminutesremain;
-                            }
-                        }
-                    }
-                }
-                details.TotalRegularMinutes -= late;
-
-
-
-
-                details.IsPresent = true;
-
-                #region Night Diff
-                if (starttime <= startnight1 && endtime >= endnight1)
-                {
-                    DateTime? login = LoginDate < startnight1 ? startnight1 : LoginDate;
-                    DateTime? logout = LogoutDate > endnight1 ? endnight1 : LogoutDate;
-
-                    details.NightDifferentialOTMinutes1 = GlobalHelper.SubtractDate(logout, login);
-                }
-                if (starttime <= startnight2 && endtime >= endnight2)
-                {
-                    DateTime? login = LoginDate < startnight2 ? startnight2 : LoginDate;
-                    DateTime? logout = LogoutDate > endnight2 ? endnight2 : LogoutDate;
-
-                    details.NightDifferentialOTMinutes2 = GlobalHelper.SubtractDate(logout, login);
-                }
-                #endregion
-            }
-            details.TotalRegularMinutes = details.TotalRegularMinutes < 0 ? 0 : details.TotalRegularMinutes;
-            payroll.PayrollDetails.Add(details);
-        }
 
         private void FlexiComputation(Payroll payroll, List<OTRequest> approvedotrequests, DateTime end, ScheduleType sched, DateTime starttime, DateTime breaktime, DateTime breaktimeend, DateTime endtime, DateTime startnight1, DateTime endnight1, DateTime startnight2, DateTime endnight2, PayrollDetails details, DateTime? LoginDate, DateTime? LogoutDate, LeaveRequest leave)
         {
@@ -592,97 +708,6 @@ namespace ProcessLayer.Computation.CnB
                 details.IsPresent = true;
             }
             payroll.PayrollDetails.Add(details);
-        }
-
-        private void SundayOrHolidayComputation(Payroll payroll, List<TimeLog> timelogs, List<OTRequest> approvedotrequests, DateTime start, ScheduleType sched, DateTime starttime, DateTime endtime, DateTime startnight1, DateTime endnight1, DateTime startnight2, DateTime endnight2, DateTime defbt, DateTime defbtend, PayrollDetails details, DateTime? LoginDate, DateTime? LogoutDate, bool isholiday, DateTime? prevDate)
-        {
-            if (isholiday && (sched?.ID ?? 0) != 0)
-            {
-                details.TotalRegularMinutes = PayrollParameters.CNBInstance.TotalMinutesPerDay;
-                details.IsHoliday = true;
-            }
-
-            if (LoginDate.HasValue && LogoutDate.HasValue)
-            {
-                int mins = 0;
-                OTRequest ot = approvedotrequests.Where(x => x.RequestDate.Date == starttime.Date).FirstOrDefault();
-                if ((ot?.ID ?? 0) > 0 || payroll.Personnel.AutoOT)
-                {
-                    if ((LoginDate > defbt && defbtend > LoginDate) && defbtend < LogoutDate)
-                    {
-                        mins = GlobalHelper.SubtractDate(LogoutDate, defbtend);
-                    }
-                    else if (LoginDate >= defbtend || LogoutDate <= defbt)
-                    {
-                        mins = GlobalHelper.SubtractDate(LogoutDate, LoginDate);
-                    }
-                    else if ((LogoutDate > defbt && defbtend > LogoutDate) && defbt > LoginDate)
-                    {
-                        mins = GlobalHelper.SubtractDate(defbt, LoginDate);
-                    }
-                    else if (LoginDate < defbt && LogoutDate > defbtend)
-                    {
-                        mins = GlobalHelper.SubtractDate(LogoutDate, LoginDate) - (int)PayrollParameters.CNBInstance.DefaultBreaktimeMinutes;
-                    }
-
-                    if (start.DayOfWeek == DayOfWeek.Sunday && (sched?.ID ?? 0) == 0)
-                    {
-                        details.IsSunday = true;
-                        int regminutes = mins - PayrollParameters.CNBInstance.SundayTotalMinutes;
-                        if (regminutes > 0
-                            && timelogs.Where(x => x.LoginDate?.Date == starttime.AddDays(-1).Date).Any()
-                            && timelogs.Where(x => x.LoginDate?.Date == starttime.AddDays(1).Date).Any())
-                        {
-                            details.IsPresent = true;
-                            details.TotalRegularMinutes = PayrollParameters.CNBInstance.TotalMinutesPerDay;
-                            details.SundayOTMinutes = regminutes;
-                        }
-                        else
-                            details.TotalRegularMinutes = mins;
-
-                    }
-                    else if (isholiday)
-                    {
-                        details.IsHoliday = true;
-                        int regminutes = mins - PayrollParameters.CNBInstance.HolidayTotalMinutes;
-                        if (regminutes > 0
-                            && timelogs.Where(x => x.LoginDate?.Date == prevDate?.Date).Any())
-                        {
-                            details.IsPresent = true;
-                            details.HolidayRegularOTMinutes = PayrollParameters.CNBInstance.HolidayTotalMinutes;
-                            details.HolidayExcessOTMinutes = regminutes;
-
-                        }
-                        else
-                            details.HolidayRegularOTMinutes = mins;
-                    }
-
-                    #region Night Diff
-                    if (starttime <= startnight1 && endtime >= endnight1)
-                    {
-                        DateTime? login = LoginDate < startnight1 ? startnight1 : LoginDate;
-                        DateTime? logout = LogoutDate > endnight1 ? endnight1 : LogoutDate;
-
-                        details.NightDifferentialOTMinutes1 = GlobalHelper.SubtractDate(logout, login);
-
-                    }
-                    if (starttime <= startnight2 && endtime >= endnight2)
-                    {
-                        DateTime? login = LoginDate < startnight2 ? startnight2 : LoginDate;
-                        DateTime? logout = LogoutDate > endnight2 ? endnight2 : LogoutDate;
-
-                        details.NightDifferentialOTMinutes2 = GlobalHelper.SubtractDate(logout, login);
-                    }
-                    #endregion
-                }
-                details.TotalRegularMinutes = details.TotalRegularMinutes < 0 ? 0 : details.TotalRegularMinutes;
-                payroll.PayrollDetails.Add(details);
-            }
-            else if (isholiday && (sched?.ID ?? 0) != 0 && timelogs.Where(x => x.LoginDate?.Date == prevDate?.Date).Any())
-            {
-                details.TotalRegularMinutes = details.TotalRegularMinutes < 0 ? 0 : details.TotalRegularMinutes;
-                payroll.PayrollDetails.Add(details);
-            }
         }
 
         private decimal GetRate(Payroll payroll, DateTime periodStart, DateTime periodEnd, PersonnelCompensation comp, decimal rate, decimal noofdays)
