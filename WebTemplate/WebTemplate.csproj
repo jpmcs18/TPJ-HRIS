@@ -770,6 +770,7 @@
     <Content Include="fonts\font-awesome\less\stepper.less" />
     <Content Include="fonts\font-awesome\less\calendar.less" />
     <Content Include="libman.json" />
+    <Content Include="DB\20210706.bak" />
     <None Include="Properties\PublishProfiles\Inspinia.pubxml" />
     <Content Include="Resources\Template\Crewlist.xlsx" />
     <Content Include="Resources\Template\Crewmovementform.xlsx" />

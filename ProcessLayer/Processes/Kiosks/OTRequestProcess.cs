@@ -21,7 +21,7 @@ namespace ProcessLayer.Processes.Kiosk
                 ID = dr[OTRequestFields.Instance.ID].ToLong(),
                 PersonnelID = dr[OTRequestFields.Instance.PersonnelID].ToNullableLong(),
                 IsOffice = dr[OTRequestFields.Instance.IsOffice].ToNullableBoolean() ?? false,
-                OTType = dr[OTRequestFields.Instance.OTType].ToByte(),
+                OTType = dr[OTRequestFields.Instance.OTType].ToOTTYpe(),
                 RequestDate = dr[OTRequestFields.Instance.RequestDate].ToDateTime(),
                 StartDateTime = dr[OTRequestFields.Instance.StartDateTime].ToNullableDateTime(),
                 EndDateTime = dr[OTRequestFields.Instance.EndDateTime].ToNullableDateTime(),

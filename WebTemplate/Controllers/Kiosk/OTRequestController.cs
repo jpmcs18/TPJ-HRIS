@@ -84,7 +84,7 @@ namespace WebTemplate.Controllers.Kiosk
             {
                 StringBuilder errors = new StringBuilder();
 
-                if (model.OtType == null || model.OtType == 0)
+                if (model.OTType == null || model.OTType == 0)
                     errors.Append("- <b>OT Type</b> is required<br/>");
 
                 if (string.IsNullOrEmpty(model.Reasons))
