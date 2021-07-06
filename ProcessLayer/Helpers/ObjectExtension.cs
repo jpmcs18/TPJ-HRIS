@@ -171,11 +171,15 @@ namespace ProcessLayer.Helpers
                 return (KioskNotificationFilter)(obj.ToNullableInt() ?? 1);
             }
         }
-        public static KioskNotoficationType ToKioskNotoficationType(this object obj)
+        public static KioskNotoficationType ToKioskNotificationType(this object obj)
         {
             return (KioskNotoficationType)(obj.ToNullableInt() ?? 1);
         }
-        public static KioskNotoficationType? ToNullableKioskNotoficationType(this object obj)
+        public static OTType ToOTTYpe(this object obj)
+        {
+            return (OTType)(obj.ToNullableInt() ?? 1);
+        }
+        public static KioskNotoficationType? ToNullableKioskNotificationType(this object obj)
         {
             if (obj == DBNull.Value) return null;
             else

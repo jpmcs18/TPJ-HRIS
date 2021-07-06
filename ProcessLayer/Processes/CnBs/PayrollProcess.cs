@@ -21,29 +21,7 @@ namespace ProcessLayer.Processes.CnB
         private static PayrollProcess _instance;
         public static PayrollProcess Instance { get { if (_instance == null) _instance = new PayrollProcess(); return _instance; } }
 
-
-        internal PayrollPeriod BaseOnlyConverter(DataRow dr)
-        {
-            return new PayrollPeriod
-            {
-                ID = dr["ID"].ToLong(),
-                PayPeriod = dr["Pay Period"].ToString(),
-                StartDate = dr["Start Date"].ToDateTime(),
-                EndDate = dr["End Date"].ToDateTime(),
-                AdjustedStartDate = dr["Adjusted Start Date"].ToNullableDateTime(),
-                AdjustedEndDate = dr["Adjusted End Date"].ToNullableDateTime(),
-                Type = dr["Type"].ToPayrollSheet(),
-                PayrollStatus = LookupProcess.GetPayrollStatus(dr["Status ID"].ToByte()),
-                PreparedBy = LookupProcess.GetUser(dr["Prepared By"].ToNullableInt()),
-                PreparedOn = dr["Prepared On"].ToNullableDateTime(),
-                CheckedBy = LookupProcess.GetUser(dr["Checked By"].ToNullableInt()),
-                CheckedOn = dr["Checked On"].ToNullableDateTime(),
-                ApprovedBy = LookupProcess.GetUser(dr["Approved By"].ToNullableInt()),
-                ApprovedOn = dr["Approved On"].ToNullableDateTime()
-            };
-        }
-
-
+        public bool BaseOnly { get; set; } = false;
         internal PayrollPeriod BaseConverter(DataRow dr)
         {
             var pbase = new PayrollPeriod
@@ -64,11 +42,11 @@ namespace ProcessLayer.Processes.CnB
                 ApprovedOn = dr["Approved On"].ToNullableDateTime()
             };
 
-            pbase.Payrolls = GetPayrollList(pbase.ID);
+            if(!BaseOnly)
+               pbase.Payrolls = GetPayrollList(pbase.ID);
 
             return pbase;
         }
-
         internal Payroll PayrollConverter(DataRow dr)
         {
             var p = new Payroll
@@ -118,7 +96,6 @@ namespace ProcessLayer.Processes.CnB
             p.LoanDeductions = GetLoanDeductions(p.ID);
             return p;
         }
-
         internal LoanDeductions LoanDeductionConverter(DataRow dr)
         {
             LoanDeductions loanDeductions =  new LoanDeductions
@@ -137,7 +114,6 @@ namespace ProcessLayer.Processes.CnB
 
             return loanDeductions;
         }
-
         internal PayrollDeductions PayrollDeductionConverter(DataRow dr)
         {
             return new PayrollDeductions
@@ -150,7 +126,6 @@ namespace ProcessLayer.Processes.CnB
                 EC = dr["EC"].ToNullableDecimal()
             };
         }
-
         internal PayrollDetails DetailConverter(DataRow dr)
         {
             return new PayrollDetails
@@ -174,7 +149,6 @@ namespace ProcessLayer.Processes.CnB
                 IsNonTaxable = dr["Is Non Taxable"].ToNullableBoolean() ?? false
             };
         }
-
         public List<PayrollPeriod> GetPayrollBases(DateTime? startDate, DateTime? endDate, PayrollSheet payrollSheet, int page, int gridCount, out int PageCount)
         {
             var parameters = new Dictionary<string, object> {
@@ -192,13 +166,14 @@ namespace ProcessLayer.Processes.CnB
             {
                 using (var ds = db.ExecuteReader("cnb.FilterPayrollBase", ref outparameters, parameters))
                 {
+                    BaseOnly = true;
                     pbase = ds.GetList(BaseConverter);
+                    BaseOnly = false;
                     PageCount = outparameters.Get("@PageCount").ToInt();
                 }
             }
             return pbase;
         }
-
         public PayrollPeriod GetPayrollBase(long? id)
         {
             var parameters = new Dictionary<string, object> {
@@ -219,10 +194,12 @@ namespace ProcessLayer.Processes.CnB
         {
             using (var ds = db.ExecuteReader("cnb.GetPayrollBase", new Dictionary<string, object> { { "@ID", id } }))
             {
-                return ds.Get(BaseOnlyConverter);
+                BaseOnly = true;
+                var pbase = ds.Get(BaseConverter);
+                BaseOnly = false;
+                return pbase;
             }
         }
-
         public PayrollDeductions GetPhilHealth(long? personnelID, decimal gross, byte cutoff, DateTime date)
         {
             var pd = new PayrollDeductions();
@@ -249,7 +226,6 @@ namespace ProcessLayer.Processes.CnB
             }
             return pd;
         }
-
         public byte GetMonthlyTaxScheduleID()
         {
             using (var db = new DBTools())
@@ -258,7 +234,6 @@ namespace ProcessLayer.Processes.CnB
             }
 
         }
-
         public PayrollDeductions GetHDMF(long? personnelID, decimal gross, byte cutoff, DateTime date)
         {
             using (var db = new DBTools())
@@ -283,7 +258,6 @@ namespace ProcessLayer.Processes.CnB
                 }
             }
         }
-
         public PayrollDeductions GetSSS(long? personnelID, decimal gross, byte cutoff, DateTime date)
         {
             using (var db = new DBTools())
@@ -309,7 +283,6 @@ namespace ProcessLayer.Processes.CnB
                 }
             }
         }
-
         public PayrollDeductions GetProvidentFund(long? personnelID, decimal gross, byte cutoff, DateTime date)
         {
             using (var db = new DBTools())
@@ -334,7 +307,6 @@ namespace ProcessLayer.Processes.CnB
                 }
             }
         }
-
         public List<LoanDeductions> GetLoanDeductions(long payrollID)
         {
             using (var db = new DBTools())
@@ -345,7 +317,6 @@ namespace ProcessLayer.Processes.CnB
                 }
             }
         }
-
         public List<LoanDeductions> GetPersonnelLoanDeductions(long personnelLoanId)
         {
             using (var db = new DBTools())
@@ -356,7 +327,6 @@ namespace ProcessLayer.Processes.CnB
                 }
             }
         }
-
         public List<PayrollDeductions> GetPayrollDeductions(long payrollID)
         {
             using (var db = new DBTools())
@@ -367,7 +337,6 @@ namespace ProcessLayer.Processes.CnB
                 }
             }
         }
-
         public List<PayrollDetails> GetPayrollDetails(long payrollID)
         {
             var paydet = new List<PayrollDetails>();
@@ -380,7 +349,6 @@ namespace ProcessLayer.Processes.CnB
             }
             return paydet;
         }
-
         public List<Payroll> GetPayrollList(long payrollperiodid, long? id = null, long? personnelId = null)
         {
             var pay = new List<Payroll>();
@@ -391,7 +359,6 @@ namespace ProcessLayer.Processes.CnB
             }
             return pay;
         }
-
         public List<Payroll> GetPayrollList(DBTools db, long payrollperiodid, long? id = null, long? personnelId = null)
         {
             using (var ds = db.ExecuteReader("cnb.GetPayroll", new Dictionary<string, object> { { "@PayrollPeriodID", payrollperiodid },
@@ -401,7 +368,6 @@ namespace ProcessLayer.Processes.CnB
                 return ds.GetList(PayrollConverter);
             }
         }
-
         public Payroll GetPayroll(long id)
         {
             var pay = new Payroll();
@@ -415,7 +381,6 @@ namespace ProcessLayer.Processes.CnB
             }
             return pay;
         }
-
         public bool ValidatePayrollGeneration(string payperiod, PayrollSheet type)
         {
 
@@ -427,7 +392,6 @@ namespace ProcessLayer.Processes.CnB
             }
             throw new Exception("Unable to generate payroll");
         }
-
         public Payroll UpdatePayrollStatus(Payroll payroll, int userid)
         {
             var parameters = new Dictionary<string, object> {
@@ -441,7 +405,6 @@ namespace ProcessLayer.Processes.CnB
                 return GetPayroll(payroll.ID);
             }
         }
-
         public decimal? GetTax(long personnelId, decimal? gross, byte cutoff, byte? taxschedule, DateTime date)
         {
 
@@ -458,7 +421,6 @@ namespace ProcessLayer.Processes.CnB
                 return db.ExecuteScalar("cnb.GetTax", parameters).ToNullableDecimal();
             }
         }
-
         public PayrollPeriod CreateOrUpdate(PayrollPeriod payrollBase, int userid)
         {
             using (var db = new DBTools())
@@ -480,7 +442,6 @@ namespace ProcessLayer.Processes.CnB
             }
             return payrollBase;
         }
-
         private void SavePayrollBase(PayrollPeriod payrollBase, int userid, DBTools db)
         {
             var parameters = new Dictionary<string, object>
@@ -503,7 +464,6 @@ namespace ProcessLayer.Processes.CnB
             db.ExecuteNonQuery("cnb.CreateOrUpdatePayrollPeriod", ref outparameters, parameters);
             payrollBase.ID = outparameters.Get("@ID").ToLong();
         }
-
         private void SavePayrollList(List<Payroll> payrolls, long baseId, DateTime cutoffStart, DateTime cutoffEnd, int userid, DBTools db)
         {
             foreach (var payroll in payrolls)
@@ -517,7 +477,6 @@ namespace ProcessLayer.Processes.CnB
                     SaveIndividualPayroll(baseId, cutoffStart, cutoffEnd, userid, db, payroll);
             }
         }
-
         private void DeletePayrollDetails(DBTools db, int userid, long? payrollId = null, long? detailsId = null)
         {
             var parameters = new Dictionary<string, object>
@@ -529,7 +488,6 @@ namespace ProcessLayer.Processes.CnB
 
             db.ExecuteNonQuery("cnb.DeletePayrollDetails", parameters);
         }
-
         private void DeletePayroll(DBTools db, long id, int userid)
         {
             var parameters = new Dictionary<string, object>
@@ -540,7 +498,6 @@ namespace ProcessLayer.Processes.CnB
 
             db.ExecuteNonQuery("cnb.DeletePayroll", parameters);
         }
-
         private void SaveIndividualPayroll(long baseId, DateTime cutoffStart, DateTime cutoffEnd, int userid, DBTools db, Payroll payroll)
         {
             SavePayroll(baseId, userid, db, payroll);
@@ -548,12 +505,14 @@ namespace ProcessLayer.Processes.CnB
             foreach (var details in payroll.PayrollDetails)
             {
                 if(details.ID > 0 && !details.Modified)
-                    SavePayrollDetails(userid, db, payroll, details);
+                    DeletePayrollDetails(db, userid, detailsId: details.ID);
+                else
+                    SavePayrollDetails(userid, db, payroll.ID, details);
             }
 
             foreach (var deduction in payroll.PayrollDeductions)
             {
-                SavePayrollDeductions(userid, db, payroll, deduction);
+                SavePayrollDeductions(userid, db, payroll.ID, deduction);
             }
 
             foreach (var loan in payroll.LoanDeductions)
@@ -561,7 +520,7 @@ namespace ProcessLayer.Processes.CnB
                 if (loan.ID > 0)
                     PersonnelLoanProcess.Instance.RevertAmount(db, loan.PersonnelLoan?.ID ?? 0, loan.ID, userid);
 
-                SaveLoanDeductions(userid, db, payroll, loan);
+                SaveLoanDeductions(userid, db, payroll.ID, loan);
 
                 PersonnelLoanProcess.Instance.UpdateAmount(db, loan.PersonnelLoan?.ID ?? 0, loan.Amount, userid);
                 
@@ -570,10 +529,9 @@ namespace ProcessLayer.Processes.CnB
 
             if (payroll.OutstandingVale > 0)
             {
-                SaveOutstandingVale(cutoffStart, cutoffEnd, userid, db, payroll);
+                SaveOutstandingVale(cutoffStart, cutoffEnd, userid, db, payroll.Personnel.ID, payroll.OutstandingVale);
             }
         }
-
         private void SavePayroll(long baseId, int userid, DBTools db, Payroll payroll)
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>
@@ -628,12 +586,11 @@ namespace ProcessLayer.Processes.CnB
             db.ExecuteNonQuery("cnb.CreateOrUpdatePayroll", ref outparameters, parameters);
             payroll.ID = outparameters.Get("@ID").ToLong();
         }
-
-        private void SaveLoanDeductions(int userid, DBTools db, Payroll payroll, LoanDeductions loan)
+        private void SaveLoanDeductions(int userid, DBTools db, long payrollId, LoanDeductions loan)
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>
             {
-                { "@PayrollID", payroll.ID },
+                { "@PayrollID", payrollId },
                 { "@PersonnelLoanID", loan.PersonnelLoan?.ID },
                 { "@Amount", loan.Amount },
                 { "@LogBy", userid }
@@ -646,12 +603,11 @@ namespace ProcessLayer.Processes.CnB
             db.ExecuteNonQuery("cnb.CreateOrUpdateLoanDeductions", ref outparameters, parameters);
             loan.ID = outparameters.Get("@ID").ToLong();
         }
-
-        private void SavePayrollDeductions(int userid, DBTools db, Payroll payroll, PayrollDeductions deduction)
+        private void SavePayrollDeductions(int userid, DBTools db, long payrollId, PayrollDeductions deduction)
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>
             {
-                { "@PayrollID", payroll.ID },
+                { "@PayrollID", payrollId },
                 { "@DeductionID", deduction.Deduction?.ID },
                 { "@Amount", deduction.Amount },
                 { "@PS", deduction.PS },
@@ -662,12 +618,11 @@ namespace ProcessLayer.Processes.CnB
 
             List<OutParameters> outparameters = new List<OutParameters>
             {
-                { "@ID", SqlDbType.BigInt }
+                { "@ID", SqlDbType.BigInt, deduction.ID }
             };
             db.ExecuteNonQuery("cnb.CreateOrUpdatePayrollDeductions", ref outparameters, parameters);
             deduction.ID = outparameters.Get("@ID").ToLong();
         }
-
         private void SaveLoanPaymentMethod(int userid, DBTools db, LoanDeductions loan)
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>
@@ -680,25 +635,23 @@ namespace ProcessLayer.Processes.CnB
 
             db.ExecuteNonQuery("cnb.CreateOrUpdateLoanPaymentMethod", parameters);
         }
-
-        private void SaveOutstandingVale(DateTime cutoffStart, DateTime cutoffEnd, int userid, DBTools db, Payroll payroll)
+        private void SaveOutstandingVale(DateTime cutoffStart, DateTime cutoffEnd, int userid, DBTools db, long personnelId, decimal outStandingVale)
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>
             {
-                { "@PersonnelID", payroll.Personnel?.ID },
-                { "@Amount", payroll.OutstandingVale },
+                { "@PersonnelID", personnelId },
+                { "@Amount", outStandingVale },
                 { "@CutOffStart", cutoffStart },
                 { "@CutoffEnd", cutoffEnd },
                 { "@LogBy", userid }
             };
             db.ExecuteNonQuery("cnb.ChargeRemainingToVale", parameters);
         }
-
-        private void SavePayrollDetails(int userid, DBTools db, Payroll payroll, PayrollDetails details)
+        private void SavePayrollDetails(int userid, DBTools db, long payrollId, PayrollDetails details)
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>
             {
-                { "@PayrollID", payroll.ID },
+                { "@PayrollID", payrollId },
                 { "@LoggedDate", details.LoggedDate },
                 { "@TotalRegularMinutes", details.TotalRegularMinutes },
                 { "@TotalLeaveMinutes", details.TotalLeaveMinutes },
@@ -720,12 +673,11 @@ namespace ProcessLayer.Processes.CnB
 
             List<OutParameters> outparameters = new List<OutParameters>
             {
-                { "@ID", SqlDbType.BigInt }
+                { "@ID", SqlDbType.BigInt, details.ID }
             };
             db.ExecuteNonQuery("cnb.CreateOrUpdatePayrollDetails", ref outparameters, parameters);
             details.ID = outparameters.Get("@ID").ToLong();
         }
-
         public PayrollPeriod GeneratePayroll(PayrollPeriod payrollBase, PayrollSheet payrollSheet, int userid)
         {
             payrollBase.PayPeriod = payrollBase.StartDate.ToString("MMddyyyy") + payrollBase.EndDate.ToString("MMddyyyy");
@@ -753,7 +705,9 @@ namespace ProcessLayer.Processes.CnB
 
                 using (var ds = db.ExecuteReader("cnb.GetPayrollPeriod", new Dictionary<string, object> { { "@PayPeriod", payrollBase.PayPeriod } }))
                 {
-                    payrollBase = ds.Get(BaseOnlyConverter);
+                    BaseOnly = true;
+                    payrollBase = ds.Get(BaseConverter);
+                    BaseOnly = false;
                 }
 
                 payrollBase.Payrolls = GetPayrollList(db, payrollBase.ID, personnelId: personnelId);

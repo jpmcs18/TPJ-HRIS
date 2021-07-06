@@ -19,7 +19,7 @@ namespace ProcessLayer.Processes.Kiosk
         {
             return new KioskNotification
             {
-                Type = dr["Type"].ToKioskNotoficationType(),
+                Type = dr["Type"].ToKioskNotificationType(),
                 Filter = dr["Filter"].ToKioskNotificationFilter(),
                 Count = dr["Cnt"].ToInt()
             };
