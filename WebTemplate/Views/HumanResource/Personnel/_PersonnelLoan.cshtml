@@ -29,6 +29,7 @@
         <td style="text-align: center;">@Model.PaymentTerms</td>
         <td style="text-align: center;">@((Model.Amount ?? 0).ToString("N2"))</td>
         <td style="text-align: center;">@((Model.Amortization ?? 0).ToString("N2"))</td>
+        <td style="text-align: center;">@(Model.Amount - Model.PaidAmount)</td>
         <td style="text-align: center;">@Model.Remarks</td>
         @if (LoansPageAccess.Update || LoansPageAccess.Delete)
         {
@@ -70,6 +71,9 @@
         </td>
         <td style="text-align: center;">
             @Html.TextBoxFor(m => m.Amortization, new { @class = "form-control text-transform-none", @Placeholder = "Amortization..." })
+        </td>
+        <td style="text-align: center;">
+            @*@Html.TextBox("Remaining", Model.Amount - Model.PaidAmount, new { @class = "form-control text-transform-none", @Placeholder = "Remaining..." })*@
         </td>
         <td style="text-align: center;">
             @Html.TextBoxFor(m => m.Remarks, new { @class = "form-control text-transform-none", @Placeholder = "Remarks..." })

@@ -21,6 +21,7 @@
                 <th style="text-align: center;">Payment Terms (months)</th>
                 <th style="text-align: center;">Amount</th>
                 <th style="text-align: center;">Amortization</th>
+                <th style="text-align: center;">Remaining</th>
                 <th style="text-align: center;">Remarks</th>
                 @if (LoanPageAccess.Update || LoanPageAccess.Delete)
                 {
@@ -69,6 +70,9 @@
                     </td>
                     <td style="text-align: center;">
                         <input type="text" name="Amortization" class="form-control text-transform-none" placeholder="Amortization..." />
+                    </td>
+                    <td style="text-align: center;">
+                        @*<input type="text" name="Amortization" class="form-control text-transform-none" placeholder="Amortization..." />*@
                     </td>
                     <td style="text-align: center;">
                         <input type="text" name="Remarks" class="form-control text-transform-none" placeholder="Remarks..." />
