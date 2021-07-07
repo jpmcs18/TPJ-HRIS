@@ -25,7 +25,6 @@
 <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <label class="control-label">OT Type</label>
     <div>
-        @*@Html.DropDownList("OtType", new SelectList(ottypes, "Key", "Value", Model.OtType ?? 0), new { @class = "form-control", @disabled = "" })*@
         <label class="form-control">@ottypes.Where(m => m.Key == ((int)Model.OTType)).Select(m => m.Value).FirstOrDefault()</label>
     </div>
 </div>

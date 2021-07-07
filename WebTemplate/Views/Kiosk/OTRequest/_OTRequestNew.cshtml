@@ -21,7 +21,7 @@
         <span id="" class="clearInput" title="Clear"><i class="fa fa-times"></i></span>
     </div>*@
 
-<div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-6">
+<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="text-align: center;">
     <label class="control-label">
         @Html.CheckBox("IsOffice", false, new { @class = "i-checks ottype-checkbox form-control" })
         At Office
@@ -31,27 +31,34 @@
 <div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-6">
     <label class="control-label">
         @Html.CheckBox("IsEarlyOT", false, new { @class = "i-checks ottype-checkbox form-control" })
-        Is Early OT
+        Early OT
+    </label>
+</div>
+
+<div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-6" style="text-align: right;">
+    <label class="control-label">
+        @Html.CheckBox("IsAfterOffice", false, new { @class = "i-checks ottype-checkbox form-control" })
+        After Office
     </label>
 </div>
 
 @*<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
-    <label class="control-label">OT Type</label>
-    <div>
-        @Html.DropDownList("OtType", new SelectList(ottypes, "Key", "Value"), "N/A", new { @class = "form-control" })
-    </div>
-</div>*@
+        <label class="control-label">OT Type</label>
+        <div>
+            @Html.DropDownList("OtType", new SelectList(ottypes, "Key", "Value"), "N/A", new { @class = "form-control" })
+        </div>
+    </div>*@
 
 <div id="RequestDate" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <label class="control-label">Request Date</label>
     @Html.TextBox("RequestDate", String.Format("{0:yyyy'-'MM'-'dd}", Model.OTRequest.RequestDate), new { @type = "date", @class = "form-control" })
 </div>
 
-<div id="TimeStart" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="display: none;">
+<div id="TimeStart" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="">
     <label class="control-label">Time Start</label>
     @Html.TextBox("StartDateTime", String.Format("{0:HH':'mm}", Model.OTRequest.StartDateTime), new { @type = "time", @class = "form-control" })
 </div>
-<div id="TimeEnd" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="display: none;">
+<div id="TimeEnd" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="">
     <label class="control-label">Time End</label>
     @Html.TextBox("EndDateTime", String.Format("{0:HH':'mm}", Model.OTRequest.EndDateTime), new { @type = "time", @class = "form-control" })
 </div>

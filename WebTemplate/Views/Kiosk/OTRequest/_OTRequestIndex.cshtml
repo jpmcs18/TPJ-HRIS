@@ -188,51 +188,48 @@
 
     function OtTypeClicked() {
         $(this).iCheck(($(this).is(':checked') ? 'un' : '') + 'check');
-        var isAtOffice = $('#IsOffice').is(':checked');
-        var isEarlyOT = $('#IsEarlyOT').is(':checked');
-        ShowTimeStartEndOt(isAtOffice, isEarlyOT);
-    }
+        var name = $(this).attr('name');
 
-    function ShowTimeStartEndOt(isAtOffice, isEarlyOT) {
-        //console.log(isAtOffice, isEarlyOT);
-
-        //if (isAtOffice == true && isEarlyOT == true) {
-        //    $('#OTRequestForm #TimeEnd').hide();
-        //    $('#OTRequestForm #TimeStart').hide();
-        //}
-        if (isAtOffice == true && isEarlyOT == false) {
-            $('#OTRequestForm #TimeEnd').show();
-            $('#OTRequestForm #TimeStart').hide();
-        }
-        else if ((isAtOffice == false || isAtOffice == true) && isEarlyOT == true) {
-            $('#OTRequestForm #TimeEnd').hide();
-            $('#OTRequestForm #TimeStart').show();
+        if (name == 'IsOffice') {
+            if ($(this).is(':checked')) {
+                $('#IsEarlyOT').iCheck('uncheck');
+                $('#IsAfterOffice').iCheck('uncheck');
+            }
         }
         else {
-            $('#OTRequestForm #TimeEnd').show();
-            $('#OTRequestForm #TimeStart').show();
+            var label = ($(this).closest('.form-group').find('label').text() || '').trim();
+
+            if (name == 'IsEarlyOT') {
+                if ($(this).is(':checked')) $('#IsAfterOffice').iCheck('uncheck');
+            }
+            else {
+                if ($(this).is(':checked')) $('#IsEarlyOT').iCheck('uncheck');
+            }
+
+            //if (!$('#IsOffice').is(':checked')) {
+            //    $('#' + name).iCheck('uncheck');
+            //    toastr.warning("'" + label + "' only applicable when At 'At Office' checked.", 'Warning');
+            //}
         }
+
+        ShowTimeStartEndOt();
     }
 
-    //function ShowTimeStartEndOt(ottype) {
-        //switch (ottype) {
-        //    case "1":
-        //        $('#OTRequestForm #TimeEnd').show();
-        //        $('#OTRequestForm #TimeStart').hide();
-        //        break;
-        //    case "2":
-        //        $('#OTRequestForm #TimeEnd').hide();
-        //        $('#OTRequestForm #TimeStart').show();
-        //        break;
-        //    case "3":
-        //        $('#OTRequestForm #TimeEnd').show();
-        //        $('#OTRequestForm #TimeStart').show();
-        //        break;
-        //    default:
-        //        $('#OTRequestForm #TimeEnd').hide();
-        //        $('#OTRequestForm #TimeStart').hide();
-        //}
-    //}
+    function ShowTimeStartEndOt() {
+        var isAtOffice = $('#IsOffice').is(':checked');
+        var isEarlyOT = $('#IsEarlyOT').is(':checked');
+        var isAfterOffice = $('#IsAfterOffice').is(':checked');
+
+        $('#OTRequestForm #TimeStart').hide();
+        $('#OTRequestForm #TimeEnd').hide();
+
+        if (isAtOffice == false) {
+            if (isAfterOffice == false)
+                $('#OTRequestForm #TimeStart').show();
+            if (isEarlyOT == false) 
+                $('#OTRequestForm #TimeEnd').show();
+        }
+    }
 
     function SearchTabEvents() {
         $('#Btn_Search').off('click').on('click', SearchRequest);
@@ -265,13 +262,10 @@
             radioClass: 'iradio_square-green',
         });
         $('.ottype-checkbox').off('ifClicked').on('ifClicked', OtTypeClicked);
-        ShowTimeStartEndOt($('#IsOffice').is(':checked'), $('#IsEarlyOT').is(':checked'));
-        //ShowTimeStartEndOt($('#OTRequestForm select').val());
         if (isAppend) {
+            //$('.ottype-checkbox').iCheck('uncheck');
+            //ShowTimeStartEndOt();
             $(modal).appendTo('body').modal('show');
-            $(modal + ' select').off('change').on('change', function () {
-                ShowTimeStartEndOt($(this).val());
-            });
             $(modal + ' select').select2();
         }
     }
@@ -362,44 +356,37 @@
             if (name == 'IsOffice') {
                 formdata.append(name, $('#IsOffice').is(':checked'));
             }
-            else if (name == 'IsEarlyOT') {
-                formdata.append(name, $('#IsEarlyOT').is(':checked'));
-            }
-            else {
-                if ($(this).attr('type') != 'time')
-                    formdata.append(name, val);
-            }
+            else if ($(this).attr('type') != 'time')
+                formdata.append(name, val);            
         });
 
-        //var ottype = $('#OTRequestForm select').val();
-        //switch (ottype) {
-        //    case "1":
-        //        formdata.append('EndDateTime', $('#OTRequestForm #EndDateTime').val());
-        //        break;
-        //    case "2":
-        //        formdata.append('StartDateTime', $('#OTRequestForm #StartDateTime').val());
-        //        break;
-        //    case "3":
-        //        formdata.append('StartDateTime', $('#OTRequestForm #StartDateTime').val());
-        //        formdata.append('EndDateTime', $('#OTRequestForm #EndDateTime').val());
-        //        break;
-        //}
+        var isAtOffice = $('#IsOffice').is(':checked');
+        var isEarlyOT = $('#IsEarlyOT').is(':checked');
+        var isAfterOffice = $('#IsAfterOffice').is(':checked');
+        if (isAtOffice == false) {
+            if (isAfterOffice == false && $('#OTRequestForm #StartDateTime').val() == '') {
+                toastr.warning('Time Start is required.');
+                return;
+            }
+            if (isEarlyOT == false && $('#OTRequestForm #EndDateTime').val() == '') {
+                toastr.warning('Time End is required.');
+                return;
+            }
+        }
+        if ($('#OTRequestForm #Reasons').val() == '') {
+            toastr.warning('Reasons is required.');
+            return;
+        }
 
-        var isOffice = $('#IsOffice').is(':checked');
-        var isEarlyOt = $('#IsEarlyOT').is(':checked');
-        if (isOffice == true && isEarlyOt == false) {
-            formdata.append('OTType', 1);
-            formdata.append('EndDateTime', $('#OTRequestForm #EndDateTime').val());
+        if (isAtOffice == false) {
+            if (isAfterOffice == false) {
+                formdata.append('StartDateTime', $('#OTRequestForm #StartDateTime').val());
+            }
+            if (isEarlyOT == false) {
+                formdata.append('EndDateTime', $('#OTRequestForm #EndDateTime').val());
+            }
         }
-        else if (isOffice == false && isEarlyOt == true) {
-            formdata.append('OTType', 2);
-            formdata.append('StartDateTime', $('#OTRequestForm #StartDateTime').val());
-        }
-        else {
-            formdata.append('OTType', 3);
-            formdata.append('StartDateTime', $('#OTRequestForm #StartDateTime').val());
-            formdata.append('EndDateTime', $('#OTRequestForm #EndDateTime').val());
-        }
+        formdata.append('OTType', isAfterOffice ? 1 : (isEarlyOT ? 2 : 3));
 
         $.ajax({
             url: url,
