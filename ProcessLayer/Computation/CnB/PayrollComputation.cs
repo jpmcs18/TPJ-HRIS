@@ -312,10 +312,10 @@ namespace ProcessLayer.Computation.CnB
                 var _SundayOTPay = payroll.PayrollDetails.Where(x => (x.ID > 0 && x.Modified) || x.ID == 0).Where(x => x.IsNonTaxable).Sum(x => payroll.SundayOTRate * x.SundayOTHours).ToDecimalPlaces(2);
                 var _HolidayOTPay = payroll.PayrollDetails.Where(x => (x.ID > 0 && x.Modified) || x.ID == 0).Where(x => x.IsNonTaxable).Sum(x => payroll.HolidayRegularOTRate * x.HolidayOTDays).ToDecimalPlaces(2);
                 var _HolidayExcessOTPay = payroll.PayrollDetails.Where(x => (x.ID > 0 && x.Modified) || x.ID == 0).Where(x => x.IsNonTaxable).Sum(x => payroll.HolidayExcessOTRate * x.HolidayExcessOTHours).ToDecimalPlaces(2);
-                var _RegularOTAllowancePay = payroll.PayrollDetails.Where(x => (x.ID > 0 && x.Modified) || x.ID == 0).Where(x => !x.IsNonTaxable).Sum(x => payroll.RegularOTAllowance * x.RegularOTHours).ToDecimalPlaces(2);
-                var _SundayOTAllowancePay = payroll.PayrollDetails.Where(x => (x.ID > 0 && x.Modified) || x.ID == 0).Where(x => !x.IsNonTaxable).Sum(x => payroll.SundayOTAllowance * x.SundayOTHours).ToDecimalPlaces(2);
-                var _HolidayOTAllowancePay = payroll.PayrollDetails.Where(x => (x.ID > 0 && x.Modified) || x.ID == 0).Where(x => !x.IsNonTaxable).Sum(x => payroll.HolidayRegularOTAllowance * x.HolidayOTDays).ToDecimalPlaces(2);
-                var _HolidayOTExcessAllowancePay = payroll.PayrollDetails.Where(x => (x.ID > 0 && x.Modified) || x.ID == 0).Where(x => !x.IsNonTaxable).Sum(x => payroll.HolidayExcessOTAllowance * x.HolidayExcessOTHours).ToDecimalPlaces(2);
+                var _RegularOTAllowancePay = payroll.PayrollDetails.Where(x => (x.ID > 0 && x.Modified) || x.ID == 0).Where(x => x.IsNonTaxable).Sum(x => payroll.RegularOTAllowance * x.RegularOTHours).ToDecimalPlaces(2);
+                var _SundayOTAllowancePay = payroll.PayrollDetails.Where(x => (x.ID > 0 && x.Modified) || x.ID == 0).Where(x => x.IsNonTaxable).Sum(x => payroll.SundayOTAllowance * x.SundayOTHours).ToDecimalPlaces(2);
+                var _HolidayOTAllowancePay = payroll.PayrollDetails.Where(x => (x.ID > 0 && x.Modified) || x.ID == 0).Where(x => x.IsNonTaxable).Sum(x => payroll.HolidayRegularOTAllowance * x.HolidayOTDays).ToDecimalPlaces(2);
+                var _HolidayOTExcessAllowancePay = payroll.PayrollDetails.Where(x => (x.ID > 0 && x.Modified) || x.ID == 0).Where(x => x.IsNonTaxable).Sum(x => payroll.HolidayExcessOTAllowance * x.HolidayExcessOTHours).ToDecimalPlaces(2);
                 payroll.TotalAdditionalOvertimePay = _RegularOTPay + _SundayOTPay + _HolidayOTPay + _HolidayExcessOTPay;
                 payroll.TotalAdditionalOvertimeAllowancePay = _RegularOTAllowancePay + _SundayOTAllowancePay + _HolidayOTAllowancePay + _HolidayOTExcessAllowancePay;
 
