@@ -80,10 +80,6 @@ namespace WebTemplate.Controllers.Kiosk
         {
             try
             {
-                StringBuilder errors = new StringBuilder();
-                if (string.IsNullOrEmpty(model.Reasons))
-                    errors.Append("- <b>Reasons</b> is required<br>");
-
                 if (errors.Length > 0)
                     return Json(new { msg = false, res = errors.ToString() });
 
