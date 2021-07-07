@@ -53,6 +53,23 @@ namespace WebTemplate.Controllers.CnB
                 return Json(new { msg = false, res = ex.GetActualMessage() });
             }
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult RecomputePersonnelPayroll(long payrollId)
+        {
+            try
+            {
+                Payroll model = PayrollProcess.Instance.RecomputePayroll(payrollId, User.UserID);
+
+                ModelState.Clear();
+
+                return PartialViewCustom("_PayrollSheetB", model);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { msg = false, res = ex.GetActualMessage() });
+            }
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]

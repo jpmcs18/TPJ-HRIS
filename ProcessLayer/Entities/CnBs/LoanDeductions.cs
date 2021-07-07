@@ -10,5 +10,6 @@ namespace ProcessLayer.Entities.CnB
         public DateTime CutoffEnd { get; set; }
         public PersonnelLoan PersonnelLoan { get; set; }
         public decimal Amount { get; set; }
+        public bool Modified { get; set; } = false;
     }
 }

@@ -9,6 +9,7 @@ namespace ProcessLayer.Entities.CnB
     public class Payroll
     {
         public long ID { get; set; }
+        public long PayrollPeriodID { get; set; }
         public Personnel Personnel { get; set; }
         public decimal NOofDays { get; set; }
         public decimal DailyRate { get; set; }

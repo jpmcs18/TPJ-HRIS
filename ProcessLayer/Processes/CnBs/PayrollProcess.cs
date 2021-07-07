@@ -52,6 +52,7 @@ namespace ProcessLayer.Processes.CnB
             var p = new Payroll
             {
                 ID = dr["ID"].ToLong(),
+                PayrollPeriodID = dr["Payroll Period ID"].ToLong(),
                 Position = dr["Position"].ToString(),
                 Department = dr["Department"].ToString(),
                 Personnel = PersonnelProcess.Get(dr["Personnel ID"].ToLong(), true),
@@ -174,7 +175,7 @@ namespace ProcessLayer.Processes.CnB
             }
             return pbase;
         }
-        public PayrollPeriod GetPayrollBase(long? id)
+        public PayrollPeriod GetPayrollBase(long? id, bool baseOnly = false)
         {
             var parameters = new Dictionary<string, object> {
                 { "@ID", id}
@@ -185,7 +186,9 @@ namespace ProcessLayer.Processes.CnB
             {
                 using (var ds = db.ExecuteReader("cnb.GetPayrollBase", parameters))
                 {
+                    BaseOnly = baseOnly;
                     pbase = ds.Get(BaseConverter);
+                    BaseOnly = false;
                 }
             }
             return pbase;
@@ -474,7 +477,7 @@ namespace ProcessLayer.Processes.CnB
                     DeletePayrollDetails(db, userid, payrollId: payroll.ID);
                 }
                 else
-                    SaveIndividualPayroll(baseId, cutoffStart, cutoffEnd, userid, db, payroll);
+                    SaveIndividualPayroll(db, baseId, cutoffStart, cutoffEnd, userid, payroll);
             }
         }
         private void DeletePayrollDetails(DBTools db, int userid, long? payrollId = null, long? detailsId = null)
@@ -498,9 +501,9 @@ namespace ProcessLayer.Processes.CnB
 
             db.ExecuteNonQuery("cnb.DeletePayroll", parameters);
         }
-        private void SaveIndividualPayroll(long baseId, DateTime cutoffStart, DateTime cutoffEnd, int userid, DBTools db, Payroll payroll)
+        private void SaveIndividualPayroll(DBTools db, long baseId, DateTime cutoffStart, DateTime cutoffEnd, int userid, Payroll payroll)
         {
-            SavePayroll(baseId, userid, db, payroll);
+            SavePayroll(db, baseId, userid, payroll);
 
             foreach (var details in payroll.PayrollDetails)
             {
@@ -512,7 +515,10 @@ namespace ProcessLayer.Processes.CnB
 
             foreach (var deduction in payroll.PayrollDeductions)
             {
-                SavePayrollDeductions(userid, db, payroll.ID, deduction);
+                if (deduction.ID > 0 && !deduction.Modified)
+                    DeletePayrollDeduction(db, userid, deduction.ID);
+                else
+                    SavePayrollDeductions(userid, db, payroll.ID, deduction);
             }
 
             foreach (var loan in payroll.LoanDeductions)
@@ -520,19 +526,71 @@ namespace ProcessLayer.Processes.CnB
                 if (loan.ID > 0)
                     PersonnelLoanProcess.Instance.RevertAmount(db, loan.PersonnelLoan?.ID ?? 0, loan.ID, userid);
 
-                SaveLoanDeductions(userid, db, payroll.ID, loan);
-
-                PersonnelLoanProcess.Instance.UpdateAmount(db, loan.PersonnelLoan?.ID ?? 0, loan.Amount, userid);
-                
-                SaveLoanPaymentMethod(userid, db, loan);
+                if (loan.ID > 0 && !loan.Modified)
+                {
+                    DeleteLoanDeduction(db, loan.ID, userid);
+                    DeleteLoanPaymentMethod(db, loan.ID, userid);
+                }
+                else
+                {
+                    SaveLoanDeductions(userid, db, payroll.ID, loan);
+                    PersonnelLoanProcess.Instance.UpdateAmount(db, loan.PersonnelLoan?.ID ?? 0, loan.Amount, userid);
+                    SaveLoanPaymentMethod(userid, db, loan);
+                }
             }
 
             if (payroll.OutstandingVale > 0)
-            {
-                SaveOutstandingVale(cutoffStart, cutoffEnd, userid, db, payroll.Personnel.ID, payroll.OutstandingVale);
-            }
+                SaveOutstandingVale(cutoffStart, cutoffEnd, userid, db, payroll.Personnel.ID, payroll.OutstandingVale, payroll.ID);
+            else
+                RevertAnyOutstandingVale(db, payroll.ID, userid);
         }
-        private void SavePayroll(long baseId, int userid, DBTools db, Payroll payroll)
+
+        private void DeleteLoanPaymentMethod(DBTools db, long loanDeductionId, int userid)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                { "@LoanDeductionID", loanDeductionId },
+                { "@LogBy", userid}
+            };
+
+            db.ExecuteNonQuery("cnb.DeleteLoanPaymentMethod", parameters);
+        }
+
+        private void RevertAnyOutstandingVale(DBTools db, long payrollId, int userid)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                { "@PayrollID", payrollId },
+                { "@LogBy", userid}
+            };
+
+            db.ExecuteNonQuery("cnb.RevertAnyOutstandingVale", parameters);
+        }
+
+        private void DeleteLoanDeduction(DBTools db, long loanDeductionId, int userid)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                { "@ID", loanDeductionId },
+                { "@LogBy", userid}
+            };
+
+            db.ExecuteNonQuery("cnb.DeleteLoanDeduction", parameters);
+        }
+
+        private void DeletePayrollDeduction(DBTools db, int userid, long payrollDeductionId)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                { "@ID", payrollDeductionId },
+                { "@LogBy", userid}
+            };
+
+            db.ExecuteNonQuery("cnb.DeletePayrollDeductions", parameters);
+        }
+
+
+        private void SavePayroll(DBTools db, long baseId, int userid, Payroll payroll)
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>
                 {
@@ -635,11 +693,12 @@ namespace ProcessLayer.Processes.CnB
 
             db.ExecuteNonQuery("cnb.CreateOrUpdateLoanPaymentMethod", parameters);
         }
-        private void SaveOutstandingVale(DateTime cutoffStart, DateTime cutoffEnd, int userid, DBTools db, long personnelId, decimal outStandingVale)
+        private void SaveOutstandingVale(DateTime cutoffStart, DateTime cutoffEnd, int userid, DBTools db, long personnelId, decimal outStandingVale, long payrollId)
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>
             {
                 { "@PersonnelID", personnelId },
+                { "@PayrollID", payrollId },
                 { "@Amount", outStandingVale },
                 { "@CutOffStart", cutoffStart },
                 { "@CutoffEnd", cutoffEnd },
@@ -720,9 +779,7 @@ namespace ProcessLayer.Processes.CnB
             using (var db = new DBTools())
             {
                 PayrollPeriod payrollBase = GetPayrollBase(db, payPeriodId);
-
                 payrollBase.Payrolls = GetPayrollList(db, payrollBase.ID, personnelId: personnelId);
-
                 return payrollBase;
             }
         }
@@ -730,7 +787,6 @@ namespace ProcessLayer.Processes.CnB
         {
             using (var db = new DBTools())
             {
-
                 return (db.ExecuteScalar("cnb.HasPayrollAhead", new Dictionary<string, object> {
                         { "@PayrollType", type },
                         { "@StartDate", date },
@@ -790,6 +846,30 @@ namespace ProcessLayer.Processes.CnB
             payrollBase.EndDate = new DateTime(year, month, e);
 
             return payrollBase;
+        }
+        public Payroll RecomputePayroll(long payrollId, int userid)
+        {
+            var payroll = GetPayroll(payrollId);
+            var payrollBase = GetPayrollBase(payroll.PayrollPeriodID, true);
+
+            PayrollComputation.Instance.Recompute(payroll, payrollBase);
+
+            using (var db = new DBTools())
+            {
+                db.StartTransaction();
+                try
+                {
+                    SaveIndividualPayroll(db, payrollBase.ID, payrollBase.StartDate, payrollBase.EndDate, userid, payroll);
+                    db.CommitTransaction();
+                }
+                catch (Exception ex)
+                {
+                    db.RollBackTransaction();
+                    throw ex;
+                }
+            }
+
+            return payroll;
         }
     }
 
