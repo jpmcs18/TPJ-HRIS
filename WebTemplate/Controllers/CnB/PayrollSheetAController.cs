@@ -62,14 +62,15 @@ namespace WebTemplate.Controllers.CnB
         {
             try
             {
-                PayrollPeriod model = PayrollProcess.Instance.GeneratePayroll(month, year, 0, PayrollSheet.A, User.UserID);
+                //PayrollPeriod model = PayrollProcess.Instance.GeneratePayroll(month, year, 0, PayrollSheet.A, User.UserID);
 
-                ModelState.Clear();
+                //ModelState.Clear();
 
-                if (model.Payrolls.Count() > 0)
-                    return PartialViewCustom("_PayrollSheetA", model);
-                else
-                    return Json(new { msg = false, res = "No payrolls generated!" });
+                //if (model.Payrolls.Count() > 0)
+                //    return PartialViewCustom("_PayrollSheetA", model);
+                //else
+                //    return Json(new { msg = false, res = "No payrolls generated!" });
+                return Json(new { msg = false, res = "Under Maintenance!" });
             }
             catch (Exception ex)
             {

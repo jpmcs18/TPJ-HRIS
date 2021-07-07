@@ -40,6 +40,6 @@ namespace ProcessLayer.Entities.CnB
         public decimal NightDifferentialOTHours1 { get { return (NightDifferentialOTMinutes1 / PayrollParameters.CNBInstance.Minutes).ToDecimalPlaces(2); } }
         public decimal NightDifferentialOTHours2 { get { return (NightDifferentialOTMinutes2 / PayrollParameters.CNBInstance.Minutes).ToDecimalPlaces(2); } }
 
-        public bool Modified { get; set; }
+        public bool Modified { get; set; } = false;
     }
 }

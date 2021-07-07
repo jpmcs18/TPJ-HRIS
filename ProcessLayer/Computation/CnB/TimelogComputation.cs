@@ -183,7 +183,7 @@ namespace ProcessLayer.Computation.CnB
                 }
                 else if (((holiday?.ID ?? 0) > 0) || (sched?.ID ?? 0) == 0 || start.DayOfWeek == DayOfWeek.Sunday)
                 {
-                    SundayAndHolidayComputation(timesheet, timelogs, start, sched, starttime, endtime, startnight1, endnight1, startnight2, endnight2, defbt, defbtend, details, wholeDayOT, holiday, prevDate);
+                    SundayAndHolidayComputation(timesheet, timelogs, start, sched, starttime, endtime, startnight1, endnight1, startnight2, endnight2, defbt, defbtend, details, (wholeDayOT ?? earlyOT) ?? afterWorkOT, holiday, prevDate);
                 }
                 else
                 {
@@ -362,7 +362,7 @@ namespace ProcessLayer.Computation.CnB
             }
         }
 
-        private static void SundayAndHolidayComputation(PersonnelTimesheet timesheet, List<TimeLog> timelogs, DateTime start, ScheduleType sched, DateTime starttime, DateTime endtime, DateTime startnight1, DateTime endnight1, DateTime startnight2, DateTime endnight2, DateTime defbt, DateTime defbtend, ComputedTimelog details, OTRequest wholeDayOT, NonWorkingDays holiday, DateTime? prevDate)
+        private static void SundayAndHolidayComputation(PersonnelTimesheet timesheet, List<TimeLog> timelogs, DateTime start, ScheduleType sched, DateTime starttime, DateTime endtime, DateTime startnight1, DateTime endnight1, DateTime startnight2, DateTime endnight2, DateTime defbt, DateTime defbtend, ComputedTimelog details, OTRequest ot, NonWorkingDays holiday, DateTime? prevDate)
         {
             if (((holiday?.ID ?? 0) > 0) && (sched?.ID ?? 0) != 0)
             {
@@ -372,7 +372,7 @@ namespace ProcessLayer.Computation.CnB
             if (details.Login.HasValue && details.Logout.HasValue)
             {
                 int mins = 0;
-                if ((wholeDayOT?.ID ?? 0) > 0 || timesheet.Personnel.AutoOT)
+                if ((ot?.ID ?? 0) > 0 || timesheet.Personnel.AutoOT)
                 {
                     if ((details.Login > defbt && defbtend > details.Login) && defbtend < details.Logout)
                     {

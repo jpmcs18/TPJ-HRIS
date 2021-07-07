@@ -197,11 +197,13 @@ namespace WebTemplate.Controllers.HumanResource
                     var datas = System.IO.File.ReadAllLines(path);
                     if (datas?.Any() ?? false)
                     {
+                        //Organize file data
                         for (int i = 0; i < datas.Length; i++)
                         {
                             if (string.IsNullOrEmpty(datas[i])) continue;
 
                             var logs = datas[i].Split('\t');
+                            //validate timelog
                             if (!(logs?.Any() ?? false) || 
                                     logs.Length != 2 || 
                                     string.IsNullOrEmpty(logs[0]) || 
@@ -215,20 +217,25 @@ namespace WebTemplate.Controllers.HumanResource
                             template.Add(new TimeLogTemplate(bioId, datetime));
                         }
 
+                        //group data by biometric id
                         var groups = template.GroupBy(x => x.BiometricsID).ToList();
 
+                        //iterate timelog that is grouped by biometric id
                         foreach (var group in groups)
                         {
                             Personnel personnel = PersonnelProcess.GetByBiometricId(group.Key);
+                            //validate if biometric id is exist in personnel
                             if ((personnel?.ID ?? 0) == 0)
                             {
                                 t.PinNotRecognized.Add(group.Key.ToString());
                                 continue;
                             }
 
+                            //getting the last timelog of employee
                             TimeLog lastTimeLog = t.Timelogs?.Where(x => x.PersonnelID == personnel?.ID).LastOrDefault();
                             List<TimeLogTemplate> lsts = group.OrderBy(x => x.Date).ToList();
-
+                            
+                            //initialize timelog
                             TimeLog timeLog = new TimeLog()
                             {
                                 PersonnelID = personnel.ID,
@@ -236,6 +243,7 @@ namespace WebTemplate.Controllers.HumanResource
                                 BiometricsID = personnel.BiometricsID
                             };
 
+                            //remove all timelog that is already inserted
                             if ((lastTimeLog?.ID ?? 0) > 0)
                             {
                                 lsts = lsts.Where(x => (lastTimeLog.LogoutDate.HasValue && lastTimeLog.LogoutDate?.Date < x.Date) && lastTimeLog.LoginDate?.Date < x.Date).ToList();
@@ -254,7 +262,7 @@ namespace WebTemplate.Controllers.HumanResource
                             {
                                 var schedule = GlobalHelper.GetSchedule(personnel._Schedules, startvalidate.Value.Date);
                                 if (schedule == null || (schedule?.TimeIn == null || schedule?.TimeOut == null) || schedule?.TimeIn < schedule?.TimeOut)
-                                    validationEnd = new DateTime(startvalidate.Value.Year, startvalidate.Value.Month, startvalidate.Value.Day, 23, 59, 59);
+                                    validationEnd = new DateTime(startvalidate.Value.Year, startvalidate.Value.Month, startvalidate.Value.Day, 4, 59, 59).AddDays(1);
                                 else if (schedule?.TimeIn > schedule?.TimeOut)
                                     validationEnd = new DateTime(startvalidate.Value.Year, startvalidate.Value.Month, startvalidate.Value.Day, 11, 59, 59).AddDays(1);
                             }
@@ -281,7 +289,7 @@ namespace WebTemplate.Controllers.HumanResource
                                     timeLog.LoginDate = lst.Date;
                                     var schedule = GlobalHelper.GetSchedule(personnel._Schedules, timeLog.LoginDate.Value.Date);
                                     if (schedule == null || (schedule?.TimeIn == null || schedule?.TimeOut == null) || schedule?.TimeIn < schedule?.TimeOut)
-                                        validationEnd = new DateTime(timeLog.LoginDate.Value.Year, timeLog.LoginDate.Value.Month, timeLog.LoginDate.Value.Day, 23, 59, 59);
+                                        validationEnd = new DateTime(timeLog.LoginDate.Value.Year, timeLog.LoginDate.Value.Month, timeLog.LoginDate.Value.Day, 4, 59, 59).AddDays(1);
                                     else if (schedule?.TimeIn > schedule?.TimeOut)
                                         validationEnd = new DateTime(timeLog.LoginDate.Value.Year, timeLog.LoginDate.Value.Month, timeLog.LoginDate.Value.Day, 11, 59, 59).AddDays(1);
                                     continue;

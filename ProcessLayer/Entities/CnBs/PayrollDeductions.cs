@@ -8,5 +8,6 @@
         public decimal? PS { get; set; }
         public decimal? ES { get; set; }
         public decimal? EC { get; set; }
+        public bool Modified { get; set; } = false;
     }
 }
