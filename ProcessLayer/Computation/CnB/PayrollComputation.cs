@@ -271,7 +271,7 @@ namespace ProcessLayer.Computation.CnB
                     }
                     else if (isholiday || (sched?.ID ?? 0) == 0 || start.DayOfWeek == DayOfWeek.Sunday)
                     {
-                        SundayOrHolidayComputation(payroll, timelogs, start, sched, starttime, endtime, startnight1, endnight1, startnight2, endnight2, defbt, defbtend, details, LoginDate, LogoutDate, wholeDayOT, isholiday, prevDate);
+                        SundayOrHolidayComputation(payroll, timelogs, start, sched, starttime, endtime, startnight1, endnight1, startnight2, endnight2, defbt, defbtend, details, LoginDate, LogoutDate, (wholeDayOT ?? earlyOT) ?? afterWorkOT, isholiday, prevDate);
                     }
                     else
                     {
@@ -459,7 +459,7 @@ namespace ProcessLayer.Computation.CnB
             }
         }
 
-        private static void SundayOrHolidayComputation(Payroll payroll, List<TimeLog> timelogs, DateTime start, ScheduleType sched, DateTime starttime, DateTime endtime, DateTime startnight1, DateTime endnight1, DateTime startnight2, DateTime endnight2, DateTime defbt, DateTime defbtend, PayrollDetails details, DateTime? LoginDate, DateTime? LogoutDate, OTRequest whole, bool isholiday, DateTime? prevDate)
+        private static void SundayOrHolidayComputation(Payroll payroll, List<TimeLog> timelogs, DateTime start, ScheduleType sched, DateTime starttime, DateTime endtime, DateTime startnight1, DateTime endnight1, DateTime startnight2, DateTime endnight2, DateTime defbt, DateTime defbtend, PayrollDetails details, DateTime? LoginDate, DateTime? LogoutDate, OTRequest ot, bool isholiday, DateTime? prevDate)
         {
             if (isholiday && (sched?.ID ?? 0) != 0)
             {
@@ -470,7 +470,7 @@ namespace ProcessLayer.Computation.CnB
             if (LoginDate.HasValue && LogoutDate.HasValue)
             {
                 int mins = 0;
-                if ((whole?.ID ?? 0) > 0 || payroll.Personnel.AutoOT)
+                if ((ot?.ID ?? 0) > 0 || payroll.Personnel.AutoOT)
                 {
                     if ((LoginDate > defbt && defbtend > LoginDate) && defbtend < LogoutDate)
                     {
