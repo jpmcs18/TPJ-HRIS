@@ -80,6 +80,8 @@ namespace WebTemplate.Controllers.Kiosk
         {
             try
             {
+                StringBuilder errors = new StringBuilder();
+
                 if (errors.Length > 0)
                     return Json(new { msg = false, res = errors.ToString() });
 
