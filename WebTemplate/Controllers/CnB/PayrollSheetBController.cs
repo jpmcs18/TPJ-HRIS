@@ -63,11 +63,12 @@ namespace WebTemplate.Controllers.CnB
 
                 ModelState.Clear();
 
-                return PartialViewCustom("_PayrollSheetB", model);
+                return PartialViewCustom("_Payroll", model);
             }
             catch (Exception ex)
             {
                 //return Json(new { msg = false, res = ex.GetActualMessage() });
+                ViewBag.ErrorID = 0;
                 return View("ServerError.cshtml", ex.GetActualMessage());
             }
         }
