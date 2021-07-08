@@ -106,7 +106,7 @@ namespace ProcessLayer.Processes.HR
                     { "@End", end }
                 };
 
-                using (var ds = db.ExecuteReader("hr.GetPayrollBGovernmentLoanDeductions", parameters))
+                using (var ds = db.ExecuteReader("cnb.GetPayrollBGovernmentLoanDeductions", parameters))
                 {
                     return ds.GetList(Converter);
                 }
