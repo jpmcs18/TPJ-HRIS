@@ -105,6 +105,14 @@ namespace ProcessLayer.Computation.CnB
                 deductibleLoans = PersonnelLoanProcess.Instance.GetDeductibleAmount(payroll.Personnel.ID, periodEnd);
             else
                 deductibleLoans = PersonnelLoanProcess.Instance.GetPayrollBGovernmentLoanDeductions(payroll.Personnel.ID, periodStart, periodEnd);
+
+            if(payroll.ID > 0)
+            {
+                payroll = new Payroll {
+                    ID = payroll.ID,
+                    Personnel = payroll.Personnel
+                };
+            }
             
             List<PersonnelDeduction> deductions = PersonnelDeductionProcess.GetByPersonnelID(payroll.Personnel.ID);
 
