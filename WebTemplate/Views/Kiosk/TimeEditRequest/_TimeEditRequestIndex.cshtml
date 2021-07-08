@@ -363,6 +363,19 @@
                 if (btnTitle == 'Save')
                     $(serializeID + ' input[name="ID"]').val('');
 
+                if ($('#TimeEditRequestForm #LoginDateTime').val() == '') {
+                    toastr.warning('Login DateTime is required.');
+                    return;
+                }
+                if ($('#TimeEditRequestForm #LogoutDateTime').val() == '') {
+                    toastr.warning('Logout DateTime is required.');
+                    return;
+                }
+                if ($('#TimeEditRequestForm #Reasons').val() == '') {
+                    toastr.warning('Reasons is required.');
+                    return;
+                }
+
                 var params = $('#TimeEditRequestForm *').serialize() +
                     '&__RequestVerificationToken=' +
                     $('@Html.AntiForgeryToken()').val();

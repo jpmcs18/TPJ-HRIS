@@ -214,7 +214,7 @@
                             @Html.Raw(String.Format("{0}{1}", EndDateTime.ToString() == DateTime.Now.ToString() ? "Today" : String.Format("<b>{0:MMM dd, yyyy}</b>", EndDateTime), (EndDateTime.ToString() == "" ? "" : " @ ") + String.Format("<b>{0:HH:mm tt}</b>", EndDateTime)))
                         </td>
                         <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
-                            <text class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@Model.TimeEditRequests[i].Purpose">
+                            <text class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@Model.TimeEditRequests[i].Reasons">
                                 @Model.TimeEditRequests[i].Reasons
                             </text>
                         </td>
