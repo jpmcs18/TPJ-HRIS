@@ -408,14 +408,14 @@ namespace ProcessLayer.Processes.CnB
                 return GetPayroll(payroll.ID);
             }
         }
-        public decimal? GetTax(long personnelId, decimal? gross, byte cutoff, byte? taxschedule, DateTime date)
+        public decimal? GetTax(long personnelId, PayrollSheet type, decimal? gross, byte cutoff, DateTime date)
         {
 
             var parameters = new Dictionary<string, object> {
                 { "@PersonnelID", personnelId },
                 { "@Gross", gross },
                 { "@CutOff", cutoff },
-                { "@TaxSchedule", taxschedule },
+                { "@Type", type },
                 { "@Date", date }
             };
 
@@ -433,7 +433,7 @@ namespace ProcessLayer.Processes.CnB
                 {
                     SavePayrollBase(payrollBase, userid, db);
 
-                    SavePayrollList(payrollBase.Payrolls, payrollBase.ID, payrollBase.StartDate, payrollBase.EndDate, userid, db);
+                    SavePayrollList(payrollBase.Payrolls, payrollBase.ID, payrollBase.Type, payrollBase.StartDate, payrollBase.EndDate, userid, db);
 
                     db.CommitTransaction();
                 }
@@ -467,7 +467,7 @@ namespace ProcessLayer.Processes.CnB
             db.ExecuteNonQuery("cnb.CreateOrUpdatePayrollPeriod", ref outparameters, parameters);
             payrollBase.ID = outparameters.Get("@ID").ToLong();
         }
-        private void SavePayrollList(List<Payroll> payrolls, long baseId, DateTime cutoffStart, DateTime cutoffEnd, int userid, DBTools db)
+        private void SavePayrollList(List<Payroll> payrolls, long baseId, PayrollSheet type, DateTime cutoffStart, DateTime cutoffEnd, int userid, DBTools db)
         {
             foreach (var payroll in payrolls)
             {
@@ -477,7 +477,7 @@ namespace ProcessLayer.Processes.CnB
                     DeletePayrollDetails(db, userid, payrollId: payroll.ID);
                 }
                 else
-                    SaveIndividualPayroll(db, baseId, cutoffStart, cutoffEnd, userid, payroll);
+                    SaveIndividualPayroll(db, baseId, type, cutoffStart, cutoffEnd, userid, payroll);
             }
         }
         private void DeletePayrollDetails(DBTools db, int userid, long? payrollId = null, long? detailsId = null)
@@ -501,7 +501,7 @@ namespace ProcessLayer.Processes.CnB
 
             db.ExecuteNonQuery("cnb.DeletePayroll", parameters);
         }
-        private void SaveIndividualPayroll(DBTools db, long baseId, DateTime cutoffStart, DateTime cutoffEnd, int userid, Payroll payroll)
+        private void SaveIndividualPayroll(DBTools db, long baseId, PayrollSheet type, DateTime cutoffStart, DateTime cutoffEnd, int userid, Payroll payroll)
         {
             SavePayroll(db, baseId, userid, payroll);
 
@@ -523,7 +523,7 @@ namespace ProcessLayer.Processes.CnB
 
             foreach (var loan in payroll.LoanDeductions)
             {
-                if (loan.ID > 0)
+                if(type == PayrollSheet.B && loan.ID > 0)
                     PersonnelLoanProcess.Instance.RevertAmount(db, loan.PersonnelLoan?.ID ?? 0, loan.ID, userid);
 
                 if (loan.ID > 0 && !loan.Modified)
@@ -534,7 +534,7 @@ namespace ProcessLayer.Processes.CnB
                 else
                 {
                     SaveLoanDeductions(userid, db, payroll.ID, loan);
-                    PersonnelLoanProcess.Instance.UpdateAmount(db, loan.PersonnelLoan?.ID ?? 0, loan.Amount, userid);
+                    if(type == PayrollSheet.B) PersonnelLoanProcess.Instance.UpdateAmount(db, loan.PersonnelLoan?.ID ?? 0, loan.Amount, userid);
                     SaveLoanPaymentMethod(userid, db, loan);
                 }
             }
@@ -859,7 +859,7 @@ namespace ProcessLayer.Processes.CnB
                 db.StartTransaction();
                 try
                 {
-                    SaveIndividualPayroll(db, payrollBase.ID, payrollBase.StartDate, payrollBase.EndDate, userid, payroll);
+                    SaveIndividualPayroll(db, payrollBase.ID, payrollBase.Type, payrollBase.StartDate, payrollBase.EndDate, userid, payroll);
                     db.CommitTransaction();
                 }
                 catch (Exception ex)

@@ -70,7 +70,7 @@ namespace ProcessLayer.Computation.CnB
 
                     foreach (Payroll payroll in payrollPeriod.Payrolls)
                     {
-                            Compute(payroll, payrollPeriod.StartDate, payrollPeriod.EndDate);
+                            Compute(payroll, payrollPeriod.Type, payrollPeriod.StartDate, payrollPeriod.EndDate);
                     }
                 }
             }
@@ -82,12 +82,12 @@ namespace ProcessLayer.Computation.CnB
             NonWorkingDays = NonWorkingDaysProcess.Instance.GetNonWorkingDays(payrollPeriod.StartDate, payrollPeriod.EndDate);
             NonTaxableDays = NonTaxableDayProcess.Instance.GetList(payrollPeriod.StartDate, payrollPeriod.EndDate);
 
-            Compute(payroll, payrollPeriod.StartDate, payrollPeriod.EndDate);
+            Compute(payroll, payrollPeriod.Type, payrollPeriod.StartDate, payrollPeriod.EndDate);
 
             return payroll;
         }
 
-        private void Compute(Payroll payroll, DateTime periodStart, DateTime periodEnd)
+        private void Compute(Payroll payroll, PayrollSheet type, DateTime periodStart, DateTime periodEnd)
         {
             List<PersonnelCompensation> compensation = PersonnelCompensationProcess.GetByPersonnelID(payroll.Personnel.ID);
             PersonnelCompensation comp = compensation.Where(x => x._Compensation.SupplementarySalary ?? false).FirstOrDefault();
@@ -100,7 +100,12 @@ namespace ProcessLayer.Computation.CnB
 
             byte cutoff = (byte)((periodEnd - periodStart).TotalDays > 25 ? 0 : (periodEnd.Day <= 15 ? 1 : 2));
 
-            List<PersonnelLoan> deductibleLoans = PersonnelLoanProcess.Instance.GetDeductibleAmount(payroll.Personnel.ID, periodEnd);
+            List<PersonnelLoan> deductibleLoans = new List<PersonnelLoan>();
+            if(type == PayrollSheet.B)
+                deductibleLoans = PersonnelLoanProcess.Instance.GetDeductibleAmount(payroll.Personnel.ID, periodEnd);
+            else
+                deductibleLoans = PersonnelLoanProcess.Instance.GetPayrollBGovernmentLoanDeductions(payroll.Personnel.ID, periodStart, periodEnd);
+            
             List<PersonnelDeduction> deductions = PersonnelDeductionProcess.GetByPersonnelID(payroll.Personnel.ID);
 
             List<TimeLog> timelogs = TimeLogProcess.Get(payroll.Personnel.ID, periodStart.AddDays(-5), periodEnd);
@@ -218,7 +223,7 @@ namespace ProcessLayer.Computation.CnB
                             LoginDate = earlyOT.StartDateTime;
                         if ((afterWorkOT?.ID ?? 0) > 0 && !(afterWorkOT?.IsOffice ?? false))
                             LogoutDate = afterWorkOT.EndDateTime;
-                        if((wholeDayOT?.ID ?? 0) > 0 && !(wholeDayOT?.IsOffice ?? false))
+                        if ((wholeDayOT?.ID ?? 0) > 0 && !(wholeDayOT?.IsOffice ?? false))
                         {
                             LoginDate = wholeDayOT.StartDateTime;
                             LogoutDate = wholeDayOT.EndDateTime;
@@ -297,8 +302,10 @@ namespace ProcessLayer.Computation.CnB
 
             payroll.BasicPay = payroll.PayrollDetails.Where(x => (x.ID > 0 && x.Modified) || x.ID == 0).GroupBy(x => x.Location?.ID ?? 0).Sum(t => t.Sum(x => (payroll.DailyRate * (x.IsHazard ? ((x.Location?.HazardRate ?? 0) + 1) : 1)).ToDecimalPlaces(3) * x.RegularDay).ToDecimalPlaces(2)).ToDecimalPlaces(2);
             payroll.NOofDays = payroll.PayrollDetails.Where(x => (x.ID > 0 && x.Modified) || x.ID == 0).Sum(x => x.RegularDay);
-              
-            payroll.RegularOTAllowancePay = payroll.PayrollDetails.Where(x => (x.ID > 0 && x.Modified) || x.ID == 0).Where(x => !x.IsNonTaxable).Sum(x => payroll.RegularOTAllowance * x.RegularOTHours).ToDecimalPlaces(2);
+
+            if (type == PayrollSheet.B)
+            {
+                payroll.RegularOTAllowancePay = payroll.PayrollDetails.Where(x => (x.ID > 0 && x.Modified) || x.ID == 0).Where(x => !x.IsNonTaxable).Sum(x => payroll.RegularOTAllowance * x.RegularOTHours).ToDecimalPlaces(2);
                 payroll.SundayOTAllowancePay = payroll.PayrollDetails.Where(x => (x.ID > 0 && x.Modified) || x.ID == 0).Where(x => !x.IsNonTaxable).Sum(x => payroll.SundayOTAllowance * x.SundayOTHours).ToDecimalPlaces(2);
                 payroll.HolidayOTAllowancePay = payroll.PayrollDetails.Where(x => (x.ID > 0 && x.Modified) || x.ID == 0).Where(x => !x.IsNonTaxable).Sum(x => payroll.HolidayRegularOTAllowance * x.HolidayOTDays).ToDecimalPlaces(2);
                 payroll.HolidayOTExcessAllowancePay = payroll.PayrollDetails.Where(x => (x.ID > 0 && x.Modified) || x.ID == 0).Where(x => !x.IsNonTaxable).Sum(x => payroll.HolidayExcessOTAllowance * x.HolidayExcessOTHours).ToDecimalPlaces(2);
@@ -318,6 +325,7 @@ namespace ProcessLayer.Computation.CnB
                 var _HolidayOTExcessAllowancePay = payroll.PayrollDetails.Where(x => (x.ID > 0 && x.Modified) || x.ID == 0).Where(x => x.IsNonTaxable).Sum(x => payroll.HolidayExcessOTAllowance * x.HolidayExcessOTHours).ToDecimalPlaces(2);
                 payroll.TotalAdditionalOvertimePay = _RegularOTPay + _SundayOTPay + _HolidayOTPay + _HolidayExcessOTPay;
                 payroll.TotalAdditionalOvertimeAllowancePay = _RegularOTAllowancePay + _SundayOTAllowancePay + _HolidayOTAllowancePay + _HolidayOTExcessAllowancePay;
+            }
 
             payroll.RegularOTPay = payroll.PayrollDetails.Where(x => (x.ID > 0 && x.Modified) || x.ID == 0).Where(x => !x.IsNonTaxable).Sum(x => payroll.RegularOTRate * x.RegularOTHours).ToDecimalPlaces(2);
             payroll.SundayOTPay = payroll.PayrollDetails.Where(x => (x.ID > 0 && x.Modified) || x.ID == 0).Where(x => !x.IsNonTaxable).Sum(x => payroll.SundayOTRate * x.SundayOTHours).ToDecimalPlaces(2);
@@ -329,17 +337,20 @@ namespace ProcessLayer.Computation.CnB
 
             ComputeDeductions(payroll, periodStart, cutoff, deductions);
 
-            payroll.Tax += PayrollProcess.Instance.GetTax(payroll.Personnel?.ID ?? 0, payroll.GrossPay, cutoff, payrollType, periodStart) ?? 0;
+            payroll.Tax += PayrollProcess.Instance.GetTax(payroll.Personnel?.ID ?? 0, type, payroll.GrossPay, cutoff, periodStart) ?? 0;
             payroll.TotalDeductions += payroll.Tax.ToDecimalPlaces(2);
             payroll.NetPay += payroll.GrossPay.ToDecimalPlaces(2) + payroll.SumOfAllAllowance.ToDecimalPlaces(2) - payroll.TotalDeductions.ToDecimalPlaces(2) + payroll.SumOfAllAdditionalPay.ToDecimalPlaces(2);
-            
-            ComputeLoans(payroll, deductibleLoans);
 
+            ComputeLoans(payroll, type, deductibleLoans);
+
+            if (type == PayrollSheet.B)
+            {
                 if (payroll.NetPay < 0)
                 {
                     payroll.OutstandingVale = payroll.NetPay.ToDecimalPlaces(2);
                     payroll.NetPay = 0;
                 }
+            }
         }
 
         private void RegularComputation(Payroll payroll, DateTime start, ScheduleType sched, DateTime starttime, DateTime breaktime, DateTime breaktimeend, DateTime endtime, DateTime startnight1, DateTime endnight1, DateTime startnight2, DateTime endnight2, PayrollDetails details, DateTime? LoginDate, DateTime? LogoutDate, LeaveRequest leave, OTRequest earlyOT, OTRequest afterWorkOT)
@@ -533,13 +544,13 @@ namespace ProcessLayer.Computation.CnB
             }
         }
 
-        private void ComputeLoans(Payroll payroll, List<PersonnelLoan> deductibleLoans)
+        private void ComputeLoans(Payroll payroll, PayrollSheet type, List<PersonnelLoan> deductibleLoans)
         {
             if (deductibleLoans?.Any() ?? false)
             {
                 deductibleLoans.ForEach(d =>
                 {
-                    if ((d._Loan.GovernmentLoan ?? false))
+                    if (d._Loan.GovernmentLoan ?? false)
                     {
                         payroll.TotalDeductions += (d.Amount ?? 0).ToDecimalPlaces(2);
                         payroll.NetPay -= (d.Amount ?? 0).ToDecimalPlaces(2);
@@ -554,19 +565,22 @@ namespace ProcessLayer.Computation.CnB
                     }
                     else
                     {
-                        if (payroll.NetPay >= d.Amortization)
+                        if (type == PayrollSheet.B)
                         {
-                            payroll.TotalDeductions += (d.Amount ?? 0).ToDecimalPlaces(2);
-                            payroll.NetPay -= (d.Amount ?? 0).ToDecimalPlaces(2);
-
-                            if (payroll.LoanDeductions.Where(x => x.PersonnelLoan?.ID == d?.ID && x.ID > 0).Any())
+                            if (payroll.NetPay >= d.Amortization)
                             {
-                                var ded = payroll.LoanDeductions.Where(x => x.PersonnelLoan?.ID == d?.ID && x.ID > 0).First();
-                                ded.Modified = true;
-                                ded.Amount = (d.Amount ?? 0);
+                                payroll.TotalDeductions += (d.Amount ?? 0).ToDecimalPlaces(2);
+                                payroll.NetPay -= (d.Amount ?? 0).ToDecimalPlaces(2);
+
+                                if (payroll.LoanDeductions.Where(x => x.PersonnelLoan?.ID == d?.ID && x.ID > 0).Any())
+                                {
+                                    var ded = payroll.LoanDeductions.Where(x => x.PersonnelLoan?.ID == d?.ID && x.ID > 0).First();
+                                    ded.Modified = true;
+                                    ded.Amount = (d.Amount ?? 0);
+                                }
+                                else
+                                    payroll.LoanDeductions.Add(new LoanDeductions { Amount = (d.Amount ?? 0), PersonnelLoan = d });
                             }
-                            else
-                                payroll.LoanDeductions.Add(new LoanDeductions { Amount = (d.Amount ?? 0), PersonnelLoan = d });
                         }
                     }
                 });

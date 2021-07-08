@@ -96,6 +96,23 @@ namespace ProcessLayer.Processes.HR
             return pl;
         }
 
+        public List<PersonnelLoan> GetPayrollBGovernmentLoanDeductions(long personnelID, DateTime start, DateTime end)
+        {
+            using (var db = new DBTools())
+            {
+                var parameters = new Dictionary<string, object> {
+                    { "@PersonnelID", personnelID },
+                    { "@Start", start },
+                    { "@End", end }
+                };
+
+                using (var ds = db.ExecuteReader("cnb.GetPayrollBGovernmentLoanDeductions", parameters))
+                {
+                    return ds.GetList(Converter);
+                }
+            }
+        }
+
         public void RevertAmount(DBTools dB, long id, long loanDeductionId, int userId)
         {
             var parameters = new Dictionary<string, object>

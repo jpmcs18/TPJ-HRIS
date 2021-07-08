@@ -32,7 +32,7 @@ namespace WebTemplate.Controllers.CnB
                 return ViewCustom("_PayrollSheetAIndex", model);
             }
         }
-        
+
 
         //[HttpPost]
         //[ValidateAntiForgeryToken]
@@ -55,6 +55,24 @@ namespace WebTemplate.Controllers.CnB
         //    }
         //}
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult RecomputePersonnelPayroll(long payrollId)
+        {
+            try
+            {
+                Payroll model = PayrollProcess.Instance.RecomputePayroll(payrollId, User.UserID);
+
+                ModelState.Clear();
+
+                return PartialViewCustom("_PayrollSheetA", model);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { msg = false, res = ex.GetActualMessage() });
+            }
+        }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -62,15 +80,14 @@ namespace WebTemplate.Controllers.CnB
         {
             try
             {
-                //PayrollPeriod model = PayrollProcess.Instance.GeneratePayroll(month, year, 0, PayrollSheet.A, User.UserID);
+                PayrollPeriod model = PayrollProcess.Instance.GeneratePayroll(month, year, 0, PayrollSheet.A, User.UserID);
 
-                //ModelState.Clear();
+                ModelState.Clear();
 
-                //if (model.Payrolls.Count() > 0)
-                //    return PartialViewCustom("_PayrollSheetA", model);
-                //else
-                //    return Json(new { msg = false, res = "No payrolls generated!" });
-                return Json(new { msg = false, res = "Under Maintenance!" });
+                if (model.Payrolls.Count() > 0)
+                    return PartialViewCustom("_PayrollSheetA", model);
+                else
+                    return Json(new { msg = false, res = "No payrolls generated!" });
             }
             catch (Exception ex)
             {
