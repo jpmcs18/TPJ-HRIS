@@ -110,6 +110,12 @@
                                             @if (PayrollPageAccess.Update || PayrollPageAccess.Delete)
                                             {
                                                 <th style="text-align: center;">
+                                                    @using (Html.BeginForm("RecomputePersonnelPayroll", "PayrollSheetB", FormMethod.Post, new { @target = "_blank", @class = "pull-right" }))
+                                                    {
+                                                        <button class="btn btn-info compose-mail pull-right m-r-sm" type="submit" onclick="event.stopPropagation();" id="RecomputePayroll" title="Recompute Individual Payroll"><i class="fa fa-refresh"></i> </button>
+                                                        <input type="hidden" value="@Model.Payrolls[i].ID" name="payrollId" />
+                                                        @Html.AntiForgeryToken()
+                                                    }
                                                     @using (Html.BeginForm("PrintIndividualPayslip", "PayrollSheetB", FormMethod.Post, new { @target = "_blank", @class = "pull-right" }))
                                                     {
                                                         <button class="btn btn-primary compose-mail pull-right m-r-sm" type="submit" onclick="event.stopPropagation();" id="PrintPayslip" title="Print Individual Payslip"><i class="fa fa-file"></i> </button>

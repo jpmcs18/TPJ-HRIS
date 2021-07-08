@@ -67,7 +67,8 @@ namespace WebTemplate.Controllers.CnB
             }
             catch (Exception ex)
             {
-                return Json(new { msg = false, res = ex.GetActualMessage() });
+                //return Json(new { msg = false, res = ex.GetActualMessage() });
+                return View("ServerError.cshtml", ex.GetActualMessage());
             }
         }
 
