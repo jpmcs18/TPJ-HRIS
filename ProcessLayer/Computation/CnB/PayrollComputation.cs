@@ -110,7 +110,10 @@ namespace ProcessLayer.Computation.CnB
             {
                 payroll = new Payroll {
                     ID = payroll.ID,
-                    Personnel = payroll.Personnel
+                    Personnel = payroll.Personnel,
+                    PayrollDetails = payroll.PayrollDetails,
+                    PayrollDeductions = payroll.PayrollDeductions,
+                    LoanDeductions = payroll.LoanDeductions
                 };
             }
             
