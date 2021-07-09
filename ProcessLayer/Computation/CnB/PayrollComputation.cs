@@ -54,7 +54,7 @@ namespace ProcessLayer.Computation.CnB
                 {
                     foreach (Payroll payroll in payrollPeriod.Payrolls)
                     {
-                        List<PersonnelCompensation> compensation = PersonnelCompensationProcess.GetByPersonnelID(payroll.Personnel.ID);
+                        List<PersonnelCompensation> compensation = PersonnelCompensationProcess.Instance.GetByPersonnelID(payroll.Personnel.ID);
                         if (!(payroll.Personnel._AssignedLocation?.Any() ?? false)) throw new Exception("Cannot compute payroll for " + payroll.Personnel.FullName + ". No Assigned Location found.");
 
                         if (string.IsNullOrEmpty(payroll.Personnel._PayrollType?.Description)) throw new Exception("Cannot compute payroll for " + payroll.Personnel.FullName + ". No Payroll Type found.");
@@ -89,7 +89,7 @@ namespace ProcessLayer.Computation.CnB
 
         private void Compute(Payroll payroll, PayrollSheet type, DateTime periodStart, DateTime periodEnd)
         {
-            List<PersonnelCompensation> compensation = PersonnelCompensationProcess.GetByPersonnelID(payroll.Personnel.ID);
+            List<PersonnelCompensation> compensation = PersonnelCompensationProcess.Instance.GetByPersonnelID(payroll.Personnel.ID);
             PersonnelCompensation comp = compensation.Where(x => x._Compensation.SupplementarySalary ?? false).FirstOrDefault();
             decimal rate = (comp?.Amount ?? 0).ToDecimalPlaces(3);
             decimal noofdays = payroll.Personnel._PayrollType?.NoofDays ?? 0;

@@ -523,7 +523,7 @@ namespace WebTemplate.Controllers.HumanResource
                 CompensationsAndDeductions model = new CompensationsAndDeductions
                 {
                     PersonnelID = PersonnelID,
-                    Compensation = PersonnelCompensationProcess.GetByPersonnelID(PersonnelID),
+                    Compensation = PersonnelCompensationProcess.Instance.GetByPersonnelID(PersonnelID),
                     AssumedDeductions = PersonnelDeductionProcess.GetAssumed(PersonnelID)
                     //Deduction = PersonnelDeductionProcess.GetByPersonnelID(PersonnelID)
                 };
@@ -560,7 +560,7 @@ namespace WebTemplate.Controllers.HumanResource
         {
             try
             {
-                PersonnelCompensation model = PersonnelCompensationProcess.Get(ID);
+                PersonnelCompensation model = PersonnelCompensationProcess.Instance.Get(ID);
                 ModelState.Clear();
                 return PartialViewCustom("_PersonnelCompensation", model);
             }
@@ -576,7 +576,7 @@ namespace WebTemplate.Controllers.HumanResource
         {
             try
             {
-                model = PersonnelCompensationProcess.CreateOrUpdate(model, User.UserID);
+                model = PersonnelCompensationProcess.Instance.CreateOrUpdate(model, User.UserID);
 
                 ModelState.Clear();
                 return PartialViewCustom("_PersonnelCompensation", model);
@@ -595,7 +595,7 @@ namespace WebTemplate.Controllers.HumanResource
             {
                 try
                 {
-                    PersonnelCompensationProcess.Delete(id.Value, User.UserID);
+                    PersonnelCompensationProcess.Instance.Delete(id.Value, User.UserID);
                 }
                 catch
                 {

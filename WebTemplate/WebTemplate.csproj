@@ -185,6 +185,7 @@
     <Compile Include="Controllers\CnB\TimesheetController.cs" />
     <Compile Include="Controllers\DynamicLookup\DynamicLookupController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\HumanResource\CompensationApprovalController.cs" />
     <Compile Include="Controllers\HumanResource\MemoArchiveController.cs" />
     <Compile Include="Controllers\CnB\TimeLogController.cs" />
     <Compile Include="Controllers\Kiosk\HighRiskRequestController.cs" />
@@ -229,6 +230,7 @@
     <Compile Include="Helpers\HMTLHelperExtensions.cs" />
     <Compile Include="Models\AuthorizationAttribute.cs" />
     <Compile Include="Models\BaseModel.cs" />
+    <Compile Include="Models\CompensationApproval\Index.cs" />
     <Compile Include="Models\CrewMovement\ActualMovement.cs" />
     <Compile Include="Models\CrewMovement\CrewMovement.cs" />
     <Compile Include="Models\CrewMovement\Index.cs" />

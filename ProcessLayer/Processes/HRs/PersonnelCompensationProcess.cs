@@ -8,23 +8,36 @@ using ProcessLayer.Helpers.ObjectParameter.Personnel;
 
 namespace ProcessLayer.Processes
 {
-    public static class PersonnelCompensationProcess
+    public class PersonnelCompensationProcess
     {
-        internal static PersonnelCompensation Converter(DataRow dr)
+        private static PersonnelCompensationProcess _instance;
+        public static PersonnelCompensationProcess Instance
         {
-            return new PersonnelCompensation
+            get { if (_instance == null) _instance = new PersonnelCompensationProcess(); return _instance; }
+        }
+        internal PersonnelCompensation Converter(DataRow dr)
+        {
+            var pc = new PersonnelCompensation
             {
                 ID = dr[PersonnelCompensationFields.ID].ToInt(),
                 PersonnelID = dr[PersonnelCompensationFields.PersonnelID].ToNullableLong(),
                 CompensationID = dr[PersonnelCompensationFields.CompensationID].ToNullableInt(),
                 CurrencyID = dr[PersonnelCompensationFields.CurrencyID].ToNullableInt(),
                 Amount = dr[PersonnelCompensationFields.Amount].ToNullableDecimal(),
+                NewAmount = dr["New Amount"].ToNullableDecimal(),
+                ApprovalDate = dr["Approval Date"].ToNullableDateTime(),
+                DisapprovalDate = dr["Disapproval Date"].ToNullableDateTime(),
+                Remarks = dr["Remarks"].ToString(),
                 _Compensation = LookupProcess.GetCompensation(dr[PersonnelCompensationFields.CompensationID].ToNullableInt()),
                 _Currency = LookupProcess.GetCurrency(dr[PersonnelCompensationFields.CurrencyID].ToNullableInt())
             };
-        }
 
-        public static List<PersonnelCompensation> GetByPersonnelID(long? PersonnelID = null)
+            try { pc.FullName = dr["FullName"].ToString(); }
+            catch { }
+
+            return pc;
+        }
+        public List<PersonnelCompensation> GetByPersonnelID(long? PersonnelID = null)
         {
             var eb = new List<PersonnelCompensation>();
 
@@ -46,8 +59,7 @@ namespace ProcessLayer.Processes
 
             return eb;
         }
-
-        public static PersonnelCompensation Get(long Id)
+        public PersonnelCompensation Get(long Id)
         {
             var eb = new PersonnelCompensation();
 
@@ -66,16 +78,14 @@ namespace ProcessLayer.Processes
 
             return eb;
         }
-
-
-        public static PersonnelCompensation CreateOrUpdate(PersonnelCompensation personnelCompensation, int userid)
+        public PersonnelCompensation CreateOrUpdate(PersonnelCompensation personnelCompensation, int userid)
         {
             var Parameters = new Dictionary<string, object>
             {
                 { PersonnelCompensationParameters.PersonnelID, personnelCompensation.PersonnelID },
                 { PersonnelCompensationParameters.CompensationID, personnelCompensation.CompensationID },
                 { PersonnelCompensationParameters.CurrencyID, personnelCompensation.CurrencyID },
-                { PersonnelCompensationParameters.Amount, personnelCompensation.Amount },
+                { PersonnelCompensationParameters.Amount, personnelCompensation.NewAmount },
                 { CredentialParameters.LogBy, userid }
             };
 
@@ -95,59 +105,58 @@ namespace ProcessLayer.Processes
 
             return personnelCompensation;
         }
+        public List<PersonnelCompensation> FilterCompensationToApprove(string filter, int pageNumber, int gridCount, out int pageCount) 
+        {
+            using (var db = new DBTools())
+            {
+                var parameters = new Dictionary<string, object>
+                {
+                    { "@Filter", filter },
+                    { "@PageNumber", pageNumber },
+                    { "@GridCount", gridCount }
+                };
 
-        //public static PersonnelCompensation Create(PersonnelCompensation personnelCompensation, int userid)
-        //{
-        //    var Parameters = new Dictionary<string, object>
-        //    {
-        //        { PersonnelCompensationParameters.PersonnelID, personnelCompensation.PersonnelID },
-        //        { PersonnelCompensationParameters.CompensationID, personnelCompensation.CompensationID },
-        //        { PersonnelCompensationParameters.CurrencyID, personnelCompensation.CurrencyID },
-        //        { PersonnelCompensationParameters.Amount, personnelCompensation.Amount },
-        //        { CredentialParameters.LogBy, userid }
-        //    };
+                var outParameters = new List<OutParameters> { 
+                    { "@PageCount", SqlDbType.Int },
+                };
 
-        //    var OutParameters = new List<OutParameters>
-        //    {
-        //        { PersonnelCompensationParameters.ID, SqlDbType.BigInt}
-        //    };
+                using (var ds = db.ExecuteReader("[lookup].[FilterPersonnelCompensationToApprove]", ref outParameters, parameters))
+                {
+                    pageCount = outParameters.Get("@PageCount").ToInt();
+                    return ds.GetList(Converter);
+                }
+            }
+        }
+        public void Approve(long id, int userid)
+        {
+            using (var db = new DBTools())
+            {
+                var parameters = new Dictionary<string, object>
+                {
+                    { "@ID", id },
+                    { "@Approve", true },
+                    { "@LogBy", userid }
+                };
 
-        //    using (var db = new DBTools())
-        //    {
-        //        db.ExecuteNonQuery(PersonnelCompensationProcedures.Create, ref OutParameters, Parameters);
-        //        personnelCompensation.ID = OutParameters.Get(PersonnelCompensationParameters.ID).ToLong();
+                db.ExecuteNonQuery("hr.ApproveOrDisapprovePersonnelCompensation", parameters);
+            }
+        }
+        public void Disapprove(long id, string remarks, int userid)
+        {
+            using (var db = new DBTools())
+            {
+                var parameters = new Dictionary<string, object>
+                {
+                    { "@ID", id },
+                    { "@Approve", false },
+                    { "@Remarks", remarks },
+                    { "@LogBy", userid }
+                };
 
-        //        personnelCompensation._Compensation = LookupProcess.GetCompensation(personnelCompensation.CompensationID);
-        //        personnelCompensation._Currency = LookupProcess.GetCurrency(personnelCompensation.CurrencyID);
-        //    }
-
-        //    return personnelCompensation;
-        //}
-
-        //public static PersonnelCompensation Update(PersonnelCompensation personnelCompensation, int userid)
-        //{
-        //    var Parameters = new Dictionary<string, object>
-        //    {
-        //        { PersonnelCompensationParameters.ID, personnelCompensation.ID },
-        //        { PersonnelCompensationParameters.PersonnelID, personnelCompensation.PersonnelID },
-        //        { PersonnelCompensationParameters.CompensationID, personnelCompensation.CompensationID },
-        //        { PersonnelCompensationParameters.CurrencyID, personnelCompensation.CurrencyID },
-        //        { PersonnelCompensationParameters.Amount, personnelCompensation.Amount },
-        //        { CredentialParameters.LogBy, userid }
-        //    };
-
-        //    using (var db = new DBTools())
-        //    {
-        //        db.ExecuteNonQuery(PersonnelCompensationProcedures.Update, Parameters);
-
-        //        personnelCompensation._Compensation = LookupProcess.GetCompensation(personnelCompensation.CompensationID);
-        //        personnelCompensation._Currency = LookupProcess.GetCurrency(personnelCompensation.CurrencyID);
-        //    }
-
-        //    return personnelCompensation;
-        //}
-
-        public static void Delete(long Id, int userid)
+                db.ExecuteNonQuery("hr.ApproveOrDisapprovePersonnelCompensation", parameters);
+            }
+        }
+        public void Delete(long Id, int userid)
         {
             var Parameters = new Dictionary<string, object>
             {
