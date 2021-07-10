@@ -4,36 +4,83 @@
     var currencies = ProcessLayer.Processes.LookupProcess.GetCurrency();
 
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
-    var CompensationsPageAccess = credential.GetPage("Compensations") ?? new DataAccessLayer.System.Page ();
+    var PageAccess = credential.GetPage("Compensations") ?? new DataAccessLayer.System.Page ();
+
+    var Approved = Model.ApprovalDate != null;
+    var Cancelled = Model.DisapprovalDate != null;
+    var IsPending = !Approved && !Cancelled;
 }
 
 <tr id="Row-Display-Compensation-@Model.ID" class="Row-Display">
     <td class="hidden">
         <input type="hidden" value="@Model.PersonnelID" name="PersonnelID" />
+        <input type="hidden" value="@Model.CompensationID" class="CompensationID" />
+        <input type="hidden" value="@Model.CurrencyID" class="CurrencyID" />
+        <input type="hidden" value="@Model.Amount" class="CurrencyID" />
+        <input type="hidden" value="@Model.NewAmount" class="CurrencyID" />
     </td>
     <td style="text-align: center;">
         @Model._Compensation.Description
-        <input type="hidden" value="@Model.CompensationID" class="CompensationID" />
     </td>
     <td style="text-align: center;">
         @Model._Currency.Description
-        <input type="hidden" value="@Model.CurrencyID" class="CurrencyID" />
     </td>
-    <td style="text-align: center;">
+    @*<td style="text-align: center;">
         @((Model.Amount ?? 0).ToString("#,##0.00"))
-        <input type="hidden" value="@Model.Amount" class="CurrencyID" />
+    </td>*@
+    <td style="text-align: center;">
+        @((Model.NewAmount ?? 0).ToString("#,##0.00"))
     </td>
-    @if (CompensationsPageAccess.Update || CompensationsPageAccess.Delete)
+    @if (Approved)
+    {
+        <td class="text-center">
+            <span class='label label-primary'>Approved</span>
+            <br />
+            @Html.Raw($"{Model.ApprovalDate:MMM dd, yyyy}")
+        </td>
+        <td class="text-center">
+        </td>
+    }
+    else if (Cancelled)
+    {
+        <td class="text-center">
+            <span class='label label-warning'>Cancelled</span>
+            <br />
+            @Html.Raw($"{Model.DisapprovalDate:MMM dd, yyyy}")
+        </td>
+        <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
+            <text class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@Model.Remarks">
+                @Model.Remarks
+            </text>
+        </td>
+    }
+    else
+    {
+        <td class="text-center">
+            @if (Model._Compensation.Has_Approval == true) { 
+                <span class='label label-info'>Pending</span>
+            }
+            else { 
+                <span class='label label-default'>No Approval</span>
+            }
+        </td>
+        <td class="text-center">
+        </td>
+    }
+    @if (PageAccess.Update || PageAccess.Delete)
     {
         <td style="text-align: center; width: 14.6%;">
             <div class="btn-group">
-                @if (CompensationsPageAccess.Delete)
+                @if (IsPending)
                 {
-                    <button type="button" name="DeleteCompensation" class="btn btn-outline btn-danger btn-sm btn-rounded DeleteCompensation TableDeleteButton" value="@Model.ID" title="Delete"><i class="fa fa-trash"></i></button>
-                }
-                @if (CompensationsPageAccess.Update)
-                {
-                    <button type="button" name="EditCompensation" class="btn btn-info btn-sm btn-rounded EditCompensation TableEditButton" value="@Model.ID" title="Edit"><i class="fa fa-pencil"></i></button>
+                    if (PageAccess.Delete)
+                    {
+                        <button type="button" name="DeleteCompensation" class="btn btn-outline btn-danger btn-sm btn-rounded DeleteCompensation TableDeleteButton" value="@Model.ID" title="Delete"><i class="fa fa-trash"></i></button>
+                    }
+                    if (PageAccess.Update)
+                    {
+                        <button type="button" name="EditCompensation" class="btn btn-info btn-sm btn-rounded EditCompensation TableEditButton" value="@Model.ID" title="Edit"><i class="fa fa-pencil"></i></button>
+                    }
                 }
             </div>
         </td>
@@ -42,6 +89,7 @@
 <tr id="Row-Input-Compensation-@Model.ID" class="Row-Input hidden">
     <td class="hidden">
         <input type="hidden" value="@Model.PersonnelID" name="PersonnelID" />
+        <input name="Amount" value="@Model.Amount" class="form-control text-right" placeholder="0.00" />
     </td>
     <td style="text-align: center;">
         @Html.DropDownListFor(m => m.CompensationID, new SelectList(compensations, "ID", "Description", Model.CompensationID), "N/A", new { @class = "form-control CompensationIDs" })
@@ -50,9 +98,11 @@
         @Html.DropDownListFor(m => m.CurrencyID, new SelectList(currencies, "ID", "Description", Model.CompensationID), "N/A", new { @class = "form-control CompensationIDs" })
     </td>
     <td style="text-align: center;">
-        <input name="Amount" value="@Model.Amount" class="form-control text-right" placeholder="0.00" />
+        <input name="NewAmount" type="number" value="@Model.NewAmount" class="form-control text-right" placeholder="0.00" />
     </td>
-    @if (CompensationsPageAccess.Update)
+    <td></td>
+    <td></td>
+    @if (PageAccess.Update)
     {
         <td style="text-align: center; width: 14.2%;">
             <div class="btn-group">

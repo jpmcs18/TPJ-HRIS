@@ -363,6 +363,7 @@ namespace ProcessLayer.Processes
                 Description = dr["Description"].ToString(),
                 Taxable = dr["Taxable"].ToNullableBoolean(),
                 SupplementarySalary = dr["Supplemental Salary"].ToNullableBoolean(),
+                Has_Approval = dr["Has Approval"].ToNullableBoolean(),
                 ComputationType = dr["Computation Type"].ToComputationType()
 
             };
