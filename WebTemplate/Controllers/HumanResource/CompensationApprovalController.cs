@@ -10,8 +10,7 @@ namespace WebTemplate.Controllers.HumanResource
     public class CompensationApprovalController : BaseController
     {
         public ActionResult Index(C.Index model)
-        {
-            
+        {            
             model.Page = model.Page > 1 ? model.Page : 1;
             model.PersonnelCompensations = PersonnelCompensationProcess.Instance.FilterCompensationToApprove(model.Filter, model.Page, model.GridCount, out int PageCount).ToList();
             model.PageCount = PageCount;
@@ -23,7 +22,7 @@ namespace WebTemplate.Controllers.HumanResource
             }
             else
             {
-                return ViewCustom("_Index", model);
+                return ViewCustom("Index", model);
             }
         }
 
