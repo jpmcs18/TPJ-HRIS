@@ -4,7 +4,7 @@
     var currencies = ProcessLayer.Processes.LookupProcess.GetCurrency();
 
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
-    var CompensationsPageAccess = credential.GetPage("Compensations") ?? new DataAccessLayer.System.Page();
+    var PageAccess = credential.GetPage("Compensations") ?? new DataAccessLayer.System.Page();
 }
 
 
@@ -15,7 +15,9 @@
                 <th class="text-center">Description</th>
                 <th class="text-center">Currency</th>
                 <th class="text-center">Amount</th>
-                @if (CompensationsPageAccess.Update || CompensationsPageAccess.Delete)
+                <th class="text-center">Status</th>
+                <th class="text-center">Remarks</th>
+                @if (PageAccess.Update || PageAccess.Delete)
                 {
                     <th style="text-align: center; width: 6.44%;">Action</th>
                 }
@@ -35,7 +37,7 @@
             }
         </tbody>
         <tfoot>
-            @if (CompensationsPageAccess.Insert)
+            @if (PageAccess.Insert)
             {
                 <tr id="Row-Input-Compensation-0" class="Row-Input">
                     <td style="text-align: center; width: 18%;">
@@ -46,8 +48,10 @@
                         @Html.DropDownList("CurrencyID", new SelectList(currencies, "ID", "Description", 0), "N/A", new { @class = "form-control CurrencyIDs" })
                     </td>
                     <td style="text-align: center;">
-                        <input value="" name="Amount" class="form-control text-right tpj-money" placeholder="0.00" />
+                        <input value="" name="NewAmount" class="form-control text-right" type="number" placeholder="0.00" />
                     </td>
+                    <td></td>
+                    <td></td>
                     <td style="text-align: center; width: 6.38%;">
                         <div class="btn-group" style="">
                             <button type="button" name="CancelCompensation" class="btn btn-outline btn-danger btn-sm btn-rounded CancelCompensation TableCancelButton" value="0" title="Clear"><i class="fa fa-times"></i></button>

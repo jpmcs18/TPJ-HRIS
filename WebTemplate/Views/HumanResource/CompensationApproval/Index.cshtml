@@ -1,0 +1,277 @@
+﻿@model WebTemplate.Models.CompensationApproval.Index
+@{
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var PageAccess = credential.GetPage("HumanResource/CompensationApproval") ?? new DataAccessLayer.System.Page();
+}
+
+<div class="wrapper wrapper-content">
+    <div class="page-heading">
+        <div class="col-lg-8">
+            <h1>@Html.Raw(PageAccess.PageName ?? "&nbsp;")</h1>
+            <ol class="breadcrumb">
+                <li>
+                    <a href='@Url.Action("Index", "Home")'>Home</a>
+                </li>
+                <li>Human Resource</li>
+                <li class="active">
+                    <strong>@Html.Raw(PageAccess.PageName ?? "&nbsp;")</strong>
+                </li>
+            </ol>
+        </div>
+        <div class="col-lg-4">
+            <div class="title-action">
+                <!--if (PageAccess.Insert)
+                {
+                    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">-->
+                @*<h1><b>My Overtime Requests</b></h1>*@
+                <!--<button type="button" id="CreateNew" onclick="NewRequest();" tpj-show-tab="#tab-1" class="btn btn-primary font-bold pull-right" title="Create"><i class="fa fa-plus"></i>&nbsp;&nbsp;New High Risk</button>
+                    </div>
+                }-->
+            </div>
+        </div>
+    </div>
+    <div class="" style="margin-top: 85px;">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 animated fadeInLef">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 m-b-sm" style="padding: 0px;">
+                <div class="tabs-container" style="border: 1px solid #009688;">
+                    <div class="tab-content" style="margin-top: 0px; max-height: unset; overflow-y: auto; overflow-x: hidden;">
+                        @if (PageAccess.View)
+                        {
+                            <div id="tab-2" class="tab-pane active" style="height: 850px;">
+                                <div id="CompensationsForm" class="panel-body" style="padding: 10px; max-height: 100%; border: 1px solid #e5e6e7; overflow-y: hidden;">
+                                    @Html.Partial("~/Views/HumanResource/CompensationApproval/_Search.cshtml", Model)
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal inmodal custom-modal" id="CancellationModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="vertical-alignment-helper">
+        <div class="modal-center vertical-align-center">
+            <div class="modal-content animated fadeInDown modal-width-60">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cancellation Remarks</h5>
+                    <button type="button" class="close" aria-label="Close" data-dismiss="modal">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="max-height: 750px; background-color: #fff; overflow: hidden;">
+                    <div class="chat-view">
+                        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <label class="control-label">Indicate why you are cancelling this request.</label>
+                            <textarea name="Remarks" value="Remarks" style="resize: none;" class="form-control text-transform-none" placeholder="Cancellation Remarks..." rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" name="CancelCompensation" class="btn btn-outline btn-w-m btn-danger CancelCompensation" value="0" title="Clear"><i class="fa fa-times"></i> &nbsp;Cancel</button>
+                    <button type="button" name="Proceed" class="btn btn-info btn-w-m Proceed" value="0" title="Proceed Cancellation">Proceed</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var xhr;
+
+    $(document).ready(function () {
+        Events();
+    });
+
+    function Events() {
+        SetRowLoadingDisplayColSpan();
+        SearchTabEvents();
+
+        $(document).off('keydown').on('keydown', function () {
+            if (event.keyCode == 13) {
+                if ($('div.showSweetAlert button.confirm').length > 0)
+                    $('div.showSweetAlert button.confirm').trigger('click');
+            }
+
+            if (event.keyCode == 27) {
+                if ($('div.showSweetAlert button.confirm').length > 0)
+                    $('div.showSweetAlert button.cancel').trigger('click');
+            }
+        });
+
+        $(".modal").on('shown.bs.modal', function () {
+            var id = $(this).attr('id');
+            $('#' + id + '.form-control:first').select();
+            $(this).find('textarea').val('');
+            $(this).find('span.select2').css('width', '100%');
+        });
+    }
+
+    function SearchTabEvents() {
+        $('.pages').off('click').on('click', function () {
+            $('#Page').val($(this).val())
+            Search();
+        });
+
+        $('#Key').off('keydown').on('keydown', function () {
+            if (event.keyCode == 13) {
+                $('#Btn_Search').click();
+            }
+        });
+
+        $('#Btn_Search').off('click').on('click', function () {
+            $('#Page').val(1);
+            Search();
+        });
+
+        $('.Approve').off('click').on('click', ShowSwal);
+        $('.Disapprove').off('click').on('click', ShowSwal);
+        $('select').select2();
+    }
+
+    function Search() {
+        var formdata = new FormData();
+        var url = '@Url.Action("Index", "CompensationApproval")';
+
+        $('#form_search_params *').each(function () {
+            formdata.append($(this).attr('name'), $(this).val());
+        });
+        formdata.append('__RequestVerificationToken', $('@Html.AntiForgeryToken()').val());
+
+        $.ajax({
+            url: url,
+            data: formdata,
+            type: "POST",
+            datatype: 'JSON',
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function () {
+                ShowHideRowLoadingDisplay('CompensationsTable', true);
+            },
+            complete: function () {
+            },
+            success: function (response) {
+                if (response.msg == null) {
+                    $("#CompensationsForm").html(response);
+                    Events();
+                } else {
+                    toastr.warning(response.res, "Warning");
+                }
+            },
+            error: function (response) {
+                toastr.error('AJAX backend error', 'An error has occured.');
+            }
+        });
+    }
+
+    function ShowSwal() {
+        var id = $(this).val();
+        var action = $(this).attr('tpj-action');
+
+        swal({
+            title: 'Continue to ' + action + '<br/> compensation?',
+            text: '', //'Choose from the actions below or<br/>Press Esc to Cancel, Enter to Continue.',
+            type: 'warning',
+            showConfirmButton: true,
+            showCancelButton: true,
+            confirmButtonColor: "#1ab394",
+            cancelButtonColor: "#f27474", //"f27474",
+            confirmButtonText: 'Continue',
+            cancelButtonText: 'Cancel',
+            closeOnConfirm: true,
+            closeOnCancel: true,
+            html: true
+        },
+        function (isConfirm) {
+            if (isConfirm) {
+                if (action == 'Approve')
+                    Approve(id);
+                else {
+                    //Disapprove(id);
+                    $('#CancellationModal').appendTo("body").modal('show');
+                    $('#CancellationModal .Proceed').val(id);
+                    $('#CancellationModal .Proceed').off('click').on('click', Disapprove);
+                    $('#CancellationModal .form-control').off('keydown').on('keydown', Proceed);
+                }
+            }
+        });
+    }
+
+    function Proceed() {
+        $proceedBtn = $(this).closest('div.modal').find('.Proceed');
+
+        if (event.keyCode == 13)
+            $proceedBtn.trigger('click');
+    }
+
+    function Approve(id) {
+        var params = 'id=' + id +
+            '&__RequestVerificationToken=' +
+            $('@Html.AntiForgeryToken()').val();
+
+        if (xhr) { xhr.abort(); }
+        xhr = $.ajax({
+            data: params,
+            type: 'POST',
+            url: '@Url.Action("Approve", "CompensationApproval")',
+            cache: false,
+            beforeSend: function () {
+                ShowLoadingScreen()
+            },
+            complete: function () {
+                RemoveLoadingScreen()
+            },
+            success: function (response) {
+                if (response.msg == true) {
+                    toastr.success('Compensation Approved!');
+
+                    Search();
+                } else {
+                    toastr.error(response.res);
+                }
+            },
+            error: function (response) {
+                toastr.error(response.res);
+            }
+        });
+    }
+
+    function Disapprove() {
+        var remarks = $('#CancellationModal textarea').val();
+        var id = $(this).val();
+
+        var params = 'id=' + id +
+            '&Remarks=' + remarks +
+            '&__RequestVerificationToken=' +
+            $('@Html.AntiForgeryToken()').val();
+
+        if (xhr) { xhr.abort(); }
+        xhr = $.ajax({
+            data: params,
+            type: 'POST',
+            url: '@Url.Action("Disapprove", "CompensationApproval")',
+            cache: false,
+            beforeSend: function () {
+                ShowLoadingScreen()
+            },
+            complete: function () {
+                RemoveLoadingScreen()
+            },
+            success: function (response) {
+                if (response.msg == true) {
+                    $('#CancellationModal').modal('hide');
+                    toastr.success('Compensation dispproved!');
+
+                    Search();
+                } else {
+                    toastr.error(response.res);
+                }
+            },
+            error: function (response) {
+                toastr.error(response.res);
+            }
+        });
+    }
+</script>

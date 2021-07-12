@@ -131,7 +131,7 @@
                         if (response.success == true) {
                             var tab = $('ul.nav-tabs').find('li')
                             toastr.success('Record Saved.');
-                            manage(response.id, tab.index(tab.filter('.active')))
+                            manage(response.id, tab.index(tab.filter('.active')));
                         }
                         else if (response.success == false) {
                             toastr.error(response.msg, 'An error has occured.');
@@ -276,6 +276,13 @@
                 error: function () {
                     toastr.error('AJAX backend error', 'An error has occured.');
                 }
+            });
+        });
+        $('#modal_management select').select2();
+        $("#txtfilter").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#modal_management table tbody tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
             });
         });
     }
