@@ -16,6 +16,7 @@ namespace ProcessLayer.Entities.HR
         public bool? PayrollDeductible { get; set; }
         public byte? WhenToDeduct { get; set; }
         public string Remarks { get; set; }
+        public long? PayrollID { get; set; }
 
         public Loan _Loan { get; set; }
     }

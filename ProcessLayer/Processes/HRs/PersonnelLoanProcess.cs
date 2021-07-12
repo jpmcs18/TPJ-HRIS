@@ -33,7 +33,8 @@ namespace ProcessLayer.Processes.HR
                 PaymentTerms = dr["Payment Terms"].ToNullableInt(),
                 PayrollDeductible = dr["Payroll Deductible"].ToNullableBoolean(),
                 WhenToDeduct = dr["When to Deduct"].ToNullableByte(),
-                Remarks = dr["Remarks"].ToString()
+                Remarks = dr["Remarks"].ToString(),
+                PayrollID = dr["Payroll ID"].ToNullableLong()
             };
 
             if (!IsPersonnelLoanOnly)
@@ -76,7 +77,7 @@ namespace ProcessLayer.Processes.HR
             return pl;
         }
 
-        public List<PersonnelLoan> GetDeductibleAmount(long personnelID, DateTime date, int? id = null, bool? isGovernmentLoan = null)
+        public List<PersonnelLoan> GetDeductibleAmount(long payrollID, long personnelID, DateTime date, int? id = null, bool? isGovernmentLoan = null)
         {
             var pl = new List<PersonnelLoan>();
             using (var db = new DBTools())
@@ -85,7 +86,8 @@ namespace ProcessLayer.Processes.HR
                     { "@PersonnelID", personnelID },
                     { "@Date", date },
                     { "@ID", id },
-                    { "@IsGovernmentLoan", isGovernmentLoan }
+                    { "@IsGovernmentLoan", isGovernmentLoan },
+                    { "@PayrollID", payrollID }
                 };
 
                 using (var ds = db.ExecuteReader("hr.GetLoanAmountToBeDeduct", parameters))

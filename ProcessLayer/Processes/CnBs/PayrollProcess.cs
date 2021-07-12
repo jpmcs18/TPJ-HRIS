@@ -523,9 +523,6 @@ namespace ProcessLayer.Processes.CnB
 
             foreach (var loan in payroll.LoanDeductions)
             {
-                if(type == PayrollSheet.B && loan.ID > 0)
-                    PersonnelLoanProcess.Instance.RevertAmount(db, loan.PersonnelLoan?.ID ?? 0, loan.ID, userid);
-
                 if (loan.ID > 0 && !loan.Modified)
                 {
                     DeleteLoanDeduction(db, loan.ID, userid);
@@ -541,8 +538,6 @@ namespace ProcessLayer.Processes.CnB
 
             if (payroll.OutstandingVale > 0)
                 SaveOutstandingVale(cutoffStart, cutoffEnd, userid, db, payroll.Personnel.ID, payroll.OutstandingVale, payroll.ID);
-            else
-                RevertAnyOutstandingVale(db, payroll.ID, userid);
         }
 
         private void DeleteLoanPaymentMethod(DBTools db, long loanDeductionId, int userid)
@@ -851,6 +846,22 @@ namespace ProcessLayer.Processes.CnB
         {
             var payroll = GetPayroll(payrollId);
             var payrollBase = GetPayrollBase(payroll.PayrollPeriodID, true);
+
+            using (var db = new DBTools())
+            {
+                db.StartTransaction();
+                try {
+                    foreach (var loan in payroll.LoanDeductions)
+                    {
+                        if (payrollBase.Type == PayrollSheet.B)
+                            PersonnelLoanProcess.Instance.RevertAmount(db, loan.PersonnelLoan?.ID ?? 0, loan.ID, userid);
+                    }
+                    RevertAnyOutstandingVale(db, payroll.ID, userid);
+                    db.CommitTransaction();
+                }
+                catch(Exception ex) { db.RollBackTransaction(); throw ex; }
+
+            }
 
             PayrollComputation.Instance.Recompute(payroll, payrollBase);
 

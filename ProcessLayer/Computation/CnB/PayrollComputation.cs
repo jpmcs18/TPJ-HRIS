@@ -102,19 +102,18 @@ namespace ProcessLayer.Computation.CnB
 
             List<PersonnelLoan> deductibleLoans = new List<PersonnelLoan>();
             if(type == PayrollSheet.B)
-                deductibleLoans = PersonnelLoanProcess.Instance.GetDeductibleAmount(payroll.Personnel.ID, periodEnd);
+                deductibleLoans = PersonnelLoanProcess.Instance.GetDeductibleAmount(payroll.ID, payroll.Personnel.ID, periodEnd);
             else
                 deductibleLoans = PersonnelLoanProcess.Instance.GetPayrollBGovernmentLoanDeductions(payroll.Personnel.ID, periodStart, periodEnd);
 
             if(payroll.ID > 0)
             {
-                payroll = new Payroll {
-                    ID = payroll.ID,
-                    Personnel = payroll.Personnel,
-                    PayrollDetails = payroll.PayrollDetails,
-                    PayrollDeductions = payroll.PayrollDeductions,
-                    LoanDeductions = payroll.LoanDeductions
-                };
+                payroll.Tax = 0;
+                payroll.NetPay = 0;
+                payroll.TotalDeductions = 0;
+                payroll.BasicPay = 0;
+                payroll.GrossPay = 0;
+                payroll.OutstandingVale = 0;
             }
             
             List<PersonnelDeduction> deductions = PersonnelDeductionProcess.GetByPersonnelID(payroll.Personnel.ID);
@@ -191,7 +190,24 @@ namespace ProcessLayer.Computation.CnB
 
                     if (payroll.PayrollDetails?.Where(x => x.LoggedDate == start)?.Any() ?? false)
                     {
-                        details.ID = payroll.PayrollDetails.Where(x => x.LoggedDate == start).First().ID;
+                        details = payroll.PayrollDetails.Where(x => x.LoggedDate == start).First();
+                        details.Location = default;
+                        details.HighRiskAllowanceRate = default;
+                        details.TotalRegularMinutes = default;
+                        details.TotalLeaveMinutes = default;
+                        details.IsHoliday = default;
+                        details.IsNonTaxable = default;
+                        details.IsHighRisk = default;
+                        details.HighRiskRate = default;
+                        details.HighRiskPayRate = default;
+                        details.HighRiskAllowanceRate = default;
+                        details.RegularOTMinutes = default;
+                        details.SundayOTMinutes = default;
+                        details.HolidayRegularOTMinutes = default;
+                        details.HolidayExcessOTMinutes = default;
+                        details.NightDifferentialOTMinutes1 = default;
+                        details.NightDifferentialOTMinutes2 = default;
+                        details.IsPresent = default;
                         details.Modified = true;
                     }
 
@@ -278,12 +294,14 @@ namespace ProcessLayer.Computation.CnB
                     if (!needTimeLog && details.IsHazard)
                     {
                         details.TotalRegularMinutes = PayrollParameters.CNBInstance.TotalMinutesPerDay;
-                        payroll.PayrollDetails.Add(details);
+                        if(details.ID == 0)
+                            payroll.PayrollDetails.Add(details);
                     }
                     else if (sched.AtHome ?? false)
                     {
                         details.TotalRegularMinutes = (sched.TotalWorkingHours ?? 0) * 60;
-                        payroll.PayrollDetails.Add(details);
+                        if (details.ID == 0)
+                            payroll.PayrollDetails.Add(details);
                     }
                     else if (isholiday || (sched?.ID ?? 0) == 0 || start.DayOfWeek == DayOfWeek.Sunday)
                     {
@@ -353,12 +371,11 @@ namespace ProcessLayer.Computation.CnB
             payroll.NetPay += payroll.GrossPay.ToDecimalPlaces(2) + payroll.SumOfAllAllowance.ToDecimalPlaces(2) - payroll.TotalDeductions.ToDecimalPlaces(2) + payroll.SumOfAllAdditionalPay.ToDecimalPlaces(2);
 
             ComputeLoans(payroll, type, deductibleLoans);
-
             if (type == PayrollSheet.B)
             {
                 if (payroll.NetPay < 0)
                 {
-                    payroll.OutstandingVale = payroll.NetPay.ToDecimalPlaces(2);
+                    payroll.OutstandingVale = Math.Abs(payroll.NetPay.ToDecimalPlaces(2));
                     payroll.NetPay = 0;
                 }
             }
@@ -460,7 +477,8 @@ namespace ProcessLayer.Computation.CnB
 
                 details.TotalRegularMinutes = details.TotalRegularMinutes < 0 ? 0 : details.TotalRegularMinutes;
             }
-            payroll.PayrollDetails.Add(details);
+            if (details.ID == 0)
+                payroll.PayrollDetails.Add(details);
         }
 
         private static void NighDiffComputation(DateTime starttime, DateTime endtime, DateTime startnight1, DateTime endnight1, DateTime startnight2, DateTime endnight2, PayrollDetails details, DateTime? LoginDate, DateTime? LogoutDate)
@@ -546,12 +564,16 @@ namespace ProcessLayer.Computation.CnB
                     NighDiffComputation(starttime, endtime, startnight1, endnight1, startnight2, endnight2, details, LoginDate, LogoutDate);
                 }
                 details.TotalRegularMinutes = details.TotalRegularMinutes < 0 ? 0 : details.TotalRegularMinutes;
-                payroll.PayrollDetails.Add(details);
+
+                if (details.ID == 0)
+                    payroll.PayrollDetails.Add(details);
             }
             else if (isholiday && (sched?.ID ?? 0) != 0 && timelogs.Where(x => x.LoginDate?.Date == prevDate?.Date).Any())
             {
                 details.TotalRegularMinutes = details.TotalRegularMinutes < 0 ? 0 : details.TotalRegularMinutes;
-                payroll.PayrollDetails.Add(details);
+
+                if (details.ID == 0)
+                    payroll.PayrollDetails.Add(details);
             }
         }
 
@@ -731,7 +753,9 @@ namespace ProcessLayer.Computation.CnB
 
                 details.TotalRegularMinutes = totalminutes < 0 ? 0 : totalminutes;
             }
-            payroll.PayrollDetails.Add(details);
+
+            if (details.ID == 0)
+                payroll.PayrollDetails.Add(details);
         }
 
         private void MustBePresentOnly(Payroll payroll, ScheduleType sched, PayrollDetails details)
@@ -741,7 +765,9 @@ namespace ProcessLayer.Computation.CnB
                 details.TotalRegularMinutes = (sched.TotalWorkingHours ?? 0) / 60;
                 details.IsPresent = true;
             }
-            payroll.PayrollDetails.Add(details);
+
+            if (details.ID == 0)
+                payroll.PayrollDetails.Add(details);
         }
 
         private decimal GetRate(Payroll payroll, DateTime periodStart, DateTime periodEnd, PersonnelCompensation comp, decimal rate, decimal noofdays)
