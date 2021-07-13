@@ -34,8 +34,12 @@ namespace ProcessLayer.Processes.HR
                 PayrollDeductible = dr["Payroll Deductible"].ToNullableBoolean(),
                 WhenToDeduct = dr["When to Deduct"].ToNullableByte(),
                 Remarks = dr["Remarks"].ToString(),
-                PayrollID = dr["Payroll ID"].ToNullableLong()
             };
+                try {
+                pl.PayrollID = dr["Payroll ID"].ToNullableLong();
+            }
+
+            catch { }
 
             if (!IsPersonnelLoanOnly)
             {

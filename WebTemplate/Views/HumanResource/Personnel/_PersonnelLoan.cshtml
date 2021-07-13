@@ -35,13 +35,16 @@
         {
             <td style="text-align: center;">
                 <div class="btn-group">
-                    @if (LoansPageAccess.Delete)
+                    @if (Model.PayrollID == null || (Model.PaidAmount ?? 0) == 0)
                     {
-                        <button type="button" name="DeleteLoan" class="btn btn-outline btn-danger btn-sm btn-rounded TableDeleteButton" value="@Model.ID" title="Delete"><i class="fa fa-trash"></i></button>
-                    }
-                    @if (LoansPageAccess.Update)
-                    {
-                        <button type="button" name="EditLoan" class="btn btn-info btn-sm btn-rounded EditLoan TableEditButton" value="@Model.ID" title="Edit"><i class="fa fa-pencil"></i></button>
+                        if (LoansPageAccess.Delete)
+                        {
+                            <button type="button" name="DeleteLoan" class="btn btn-outline btn-danger btn-sm btn-rounded TableDeleteButton" value="@Model.ID" title="Delete"><i class="fa fa-trash"></i></button>
+                        }
+                        if (LoansPageAccess.Update)
+                        {
+                            <button type="button" name="EditLoan" class="btn btn-info btn-sm btn-rounded EditLoan TableEditButton" value="@Model.ID" title="Edit"><i class="fa fa-pencil"></i></button>
+                        }                    
                     }
                 </div>
             </td>
