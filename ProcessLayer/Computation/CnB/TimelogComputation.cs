@@ -206,6 +206,11 @@ namespace ProcessLayer.Computation.CnB
                         }
                     }
                 }
+                if((leave?.ID ?? 0) > 0)
+                {
+                    details.LeaveDesc = leave._LeaveType?.Description ?? "";
+                    details.NoofDays += (decimal)(leave.ApprovedLeaveCredits / sched.TotalWorkingHours);
+                }
                 start = start.AddDays(1);
                 timesheet.ComputedTimelogs.Add(details);
             }
