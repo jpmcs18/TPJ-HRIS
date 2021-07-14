@@ -15,14 +15,14 @@ namespace ProcessLayer.Entities.Kiosk
         {
             get
             {
+                if ((Approved ?? false) && (_LeaveType?.HasDocumentNeeded ?? false) && string.IsNullOrEmpty(File))
+                    return "Partialy approved, Waiting for document to upload";
+
                 if (IsExpired)
-                {
                     return "Exceeded 48 hours upon request Start Date & Time.";
-                }
-                else if (Cancelled != null && Cancelled.Value)
-                {
+                if (Cancelled != null && Cancelled.Value)
                     return CancellationRemarks;
-                }
+
                 return "";
             }
         }
