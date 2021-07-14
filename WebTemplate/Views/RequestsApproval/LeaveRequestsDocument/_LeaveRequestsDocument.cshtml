@@ -1,58 +1,59 @@
 ﻿@model WebTemplate.Models.RequestsApproval.Leave_Request.Index
 
 @{ var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
-                var PageAccess = credential.GetPage("RequestsApproval/LeaveRequests") ?? new DataAccessLayer.System.Page();
-                var ApproverAccess = credential.GetPage("Approver Leave Request") ?? new DataAccessLayer.System.Page();
-                var UploadDocumentAccess = credential.GetPage("Kiosk Upload Document") ?? new DataAccessLayer.System.Page();
-                var IsBulkUse = Model.LeaveTypes.Where(m => m.ID == Model.LeaveTypeID).Select(m => m.BulkUse).FirstOrDefault() ?? false; }
+    var PageAccess = credential.GetPage("RequestsApproval/LeaveRequests") ?? new DataAccessLayer.System.Page();
+    var ApproverAccess = credential.GetPage("Approver Leave Request") ?? new DataAccessLayer.System.Page();
+    var UploadDocumentAccess = credential.GetPage("Kiosk Upload Document") ?? new DataAccessLayer.System.Page();
+    var IsBulkUse = Model.LeaveTypes.Where(m => m.ID == Model.LeaveTypeID).Select(m => m.BulkUse).FirstOrDefault() ?? false; }
 
 @if (PageAccess.View)
 {
-<form id="form_search_params" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
-    @Html.Hidden("Page", Model.Page, new { @class = "search-values" })
-    <fieldset>
-        <legend>Search</legend>
-        <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-2">
-            <label class="control-label">Leave Type</label>
-            <select id="LeaveTypeID" name="LeaveTypeID" class="form-control search-values">
-                <option value="" isbulk="false">N/A</option>
-                @foreach (var l in Model.LeaveTypes)
-                {
-                    var selected = Model.LeaveTypeID == l.ID ? "selected" : "";
-<option value="@l.ID" isbulk="@((l.BulkUse ?? false) ? "true" : "false")" @selected>@l.Description</option>}
-            </select>
-        </div>
-
-        <div id="NonBulkUseDatePicker" class="@(IsBulkUse ? "hidden" : "")">
-            <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-2">
-                <label class="control-label">Start Date & Time</label>
-                @Html.TextBox("StartDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.StartDateTime), new { @type = "datetime-local", @class = "form-control search-values" })
-            </div>
-
-            <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-2">
-                <label class="control-label">End Date & Time</label>
-                @Html.TextBox("EndingDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.EndingDateTime), new { @type = "datetime-local", @class = "form-control search-values" })
-            </div>
-        </div>
-        <div id="BulkUseDatePicker" class="@(IsBulkUse ? "" : "hidden")">
+    <form id="form_search_params" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
+        @Html.Hidden("Page", Model.Page, new { @class = "search-values" })
+        <fieldset>
+            <legend>Search</legend>
             <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-2">
-                <label class="control-label">Start Date</label>
-                @Html.TextBox("StartDateTime", String.Format("{0:yyyy'-'MM'-'dd}", Model.StartDateTime), new { @type = "date", @class = "form-control search-values" })
+                <label class="control-label">Leave Type</label>
+                <select id="LeaveTypeID" name="LeaveTypeID" class="form-control search-values">
+                    <option value="" isbulk="false">N/A</option>
+                    @foreach (var l in Model.LeaveTypes)
+                    {
+                        var selected = Model.LeaveTypeID == l.ID ? "selected" : "";
+                        <option value="@l.ID" isbulk="@((l.BulkUse ?? false) ? "true" : "false")" @selected>@l.Description</option>
+                    }
+                </select>
             </div>
-        </div>
 
-        <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-3">
-            <label class="control-label">Personnel</label>
-            @Html.TextBox("Personnel", Model.Personnel, new { @class = "form-control search-values", @placeholder = "Personnel..." })
-        </div>
+            <div id="NonBulkUseDatePicker" class="@(IsBulkUse ? "hidden" : "")">
+                <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-2">
+                    <label class="control-label">Start Date & Time</label>
+                    @Html.TextBox("StartDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.StartDateTime), new { @type = "datetime-local", @class = "form-control search-values" })
+                </div>
 
-        <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
-            <label class="control-label" style="width: 100%; color: #fff;">Search</label>
-            @*<button type="button" onclick="(function() { $('#form_search_params input*').val(''); })();" class="btn btn-default font-bold m-r-sm">Clear</button>*@
-            <button type="button" id="Btn_Search" class="btn btn-primary font-bold"><i class="fa fa-search"></i> Search</button>
-        </div>
-    </fieldset>
-</form>
+                <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-2">
+                    <label class="control-label">End Date & Time</label>
+                    @Html.TextBox("EndingDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.EndingDateTime), new { @type = "datetime-local", @class = "form-control search-values" })
+                </div>
+            </div>
+            <div id="BulkUseDatePicker" class="@(IsBulkUse ? "" : "hidden")">
+                <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-2">
+                    <label class="control-label">Start Date</label>
+                    @Html.TextBox("StartDateTime", String.Format("{0:yyyy'-'MM'-'dd}", Model.StartDateTime), new { @type = "date", @class = "form-control search-values" })
+                </div>
+            </div>
+
+            <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-3">
+                <label class="control-label">Personnel</label>
+                @Html.TextBox("Personnel", Model.Personnel, new { @class = "form-control search-values", @placeholder = "Personnel..." })
+            </div>
+
+            <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                <label class="control-label" style="width: 100%; color: #fff;">Search</label>
+                @*<button type="button" onclick="(function() { $('#form_search_params input*').val(''); })();" class="btn btn-default font-bold m-r-sm">Clear</button>*@
+                <button type="button" id="Btn_Search" class="btn btn-primary font-bold"><i class="fa fa-search"></i> Search</button>
+            </div>
+        </fieldset>
+    </form>
                 <form id="status_search_params" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
                     <fieldset>
                         <legend>Status</legend>
@@ -138,7 +139,7 @@
                                                     <th class="text-left">Status</th>
                                                     <th class="text-left">Last Modified</th>
                                                     <th class="text-left">Remarks</th>
-                                                    if (UploadDocumentAccess.View)
+                                                    @if (UploadDocumentAccess.View)
         {
             <th class="text-left">Document</th>
         }
@@ -196,7 +197,7 @@
                                 <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
                                     @if (!Cancelled && (Model.LeaveRequests[i]._LeaveType.HasDocumentNeeded ?? false) == true && (UploadDocumentAccess.Insert || UploadDocumentAccess.Update || UploadDocumentAccess.Delete))
                                     {
-                                        <button type="button" name="id" class="btn btn-default btn-md" onclick="UploadDocument(Model.LeaveRequests[i].ID, 'filename')" title="@(!string.IsNullOrEmpty(filename)? filename : "Upload Document")"><i class="fa fa-paperclip"></i>@Html.Raw(!string.IsNullOrEmpty(filename) ? " <span class='label label-info'>1</span>" : "")</button>
+                                        <button type="button" name="" class="btn btn-default btn-md" onclick="UploadDocument(@Model.LeaveRequests[i].ID, '')" title="@(!string.IsNullOrEmpty(filename)? filename : "Upload Document")"><i class="fa fa-paperclip"></i>@Html.Raw(!string.IsNullOrEmpty(filename) ? " <span class='label label-info'>1</span>" : "")</button>
                                     }
                                     <text class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@filename">
                                     </text>

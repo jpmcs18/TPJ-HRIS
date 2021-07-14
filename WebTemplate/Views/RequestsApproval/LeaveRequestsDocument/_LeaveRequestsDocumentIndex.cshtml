@@ -2,7 +2,7 @@
 
 @{
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
-    var LeaveRequestPageAccess = credential.GetPage("RequestsApproval/LeaveRequests") ?? new DataAccessLayer.System.Page();
+    var LeaveRequestPageAccess = credential.GetPage("RequestsApproval/LeaveRequestsDocument") ?? new DataAccessLayer.System.Page();
     var LeaveRequestApprover = credential.GetPage("Approver Leave Request") ?? new DataAccessLayer.System.Page();
     var UploadDocumentAccess = credential.GetPage("Kiosk Upload Document") ?? new DataAccessLayer.System.Page();
 
@@ -92,29 +92,30 @@
 
 @if (UploadDocumentAccess.View || UploadDocumentAccess.Insert || UploadDocumentAccess.Update || UploadDocumentAccess.Delete)
 {                        
-        <div class="modal inmodal custom-modal" id="UploadDocumentModal" data-backdrop="static" data-keyboard="false" tabindex="" role="dialog" aria-hidden="true">
-            <div class="vertical-alignment-helper">
-                <div class="modal-center vertical-align-center">
-                    <div class="modal-content animated fadeInDown modal-width-60">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Upload Document</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
-                        </div>
-                        <div class="modal-body" style="max-height: 750px; background-color: #fff; overflow: hidden;">
-                            <input id="browseFile" type="file" class="btn btn-default" />
-                            @Html.Hidden("leaveRequestId", 0)
-                            <form id="DeleteDocumentForm" action="/LeaveRequests/DeleteDocument?leaveRequestId=">
-                                <input id="DeleteDocument" type="hidden" value="Delete" class="btn btn-danger btn-outline btn-w-m font-bold-700 pull-right" title="Delete" />
-                            </form>
-                        </div>
-                        <div class="modal-footer" style=" margin: 0;">
-                            <button type="button" class="btn btn-default btn-outline btn-w-m font-bold-700 pull-left" data-dismiss="modal">Close</button>
-                            <button type="button" onclick="ValidateFile()" class="btn btn-primary btn-w-m font-bold-700 pull-right">Upload</button>
-                        </div>
+    <div class="modal inmodal custom-modal" id="UploadDocumentModal" data-backdrop="static" data-keyboard="false" tabindex="" role="dialog" aria-hidden="true">
+        <div class="vertical-alignment-helper">
+            <div class="modal-center vertical-align-center">
+                <div class="modal-content animated fadeInDown modal-width-60">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Upload Document</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
+                    </div>
+                    <div class="modal-body" style="max-height: 750px; background-color: #fff; overflow: hidden;">
+                        @*<label id="filename" class="control-label"></label>*@
+                        <input id="browseFile" type="file" class="btn btn-default" />
+                        @Html.Hidden("leaveRequestId", 0)
+                        <form id="DeleteDocumentForm" action="/LeaveRequests/DeleteDocument?leaveRequestId=">
+                            <input id="DeleteDocument" type="hidden" value="Delete" class="btn btn-danger btn-outline btn-w-m font-bold-700 pull-right" title="Delete" />
+                        </form>
+                    </div>
+                    <div class="modal-footer" style=" margin: 0;">
+                        <button type="button" class="btn btn-default btn-outline btn-w-m font-bold-700 pull-left" data-dismiss="modal">Close</button>
+                        <button type="button" onclick="ValidateFile()" class="btn btn-primary btn-w-m font-bold-700 pull-right">Upload</button>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
     <div class="modal inmodal custom-modal" id="" data-keyboard="false" tabindex="" role="dialog" aria-hidden="true">
         <div class="vertical-alignment-helper">
@@ -147,7 +148,7 @@
                     </div>
                     <div class="modal-footer">
                         @*<button type="button" class="btn btn-default btn-outline btn-w-m font-bold-700 pull-left" data-dismiss="modal">Close</button>*@
-                        <button type="button" class="btn btn-primary btn-w-m font-bold-700 pull-right">Save</button>
+                        <button type="button" onclick="ValidateFile()" class="btn btn-primary btn-w-m font-bold-700 pull-right">Save</button>
                     </div>
                 </div>
             </div>
@@ -217,8 +218,8 @@
         $('#form_search_params #LeaveTypeID').off('change').on('change', SetLeaveTypeID);
         $('#Btn_Search').off('click').on('click', SearchLeaveRequests);
         //$('input[type="checkbox"]').parent('div.disabled').css('background-color', '#eee');
-        $('.ApproveLeaveRequest').off('click').on('click', ApproveLeaveRequest);
-        $('.CancelLeaveRequest').off('click').on('click', CancelLeaveRequest);
+        //$('.ApproveLeaveRequest').off('click').on('click', ApproveLeaveRequest);
+        //$('.CancelLeaveRequest').off('click').on('click', CancelLeaveRequest);
         $('select').select2();
     }
 
@@ -251,12 +252,14 @@
     }
 
     function UploadDocument(leaveReqID, filename) {
+        $tr = $('#LeaveRequestsTable tr#Row-Display-LeaveRequests-' + leaveReqID);
         var action = $('#DeleteDocumentForm').attr('action');
+        filename = $tr.find('td button').attr('title');
 
         if (leaveReqID) {
             $('#UploadDocumentModal #leaveRequestId').val(leaveReqID);
             $('#UploadDocumentModal').attr('action', action + (filename ? leaveReqID : ''));
-            $('#UploadDocumentModal #browseFile').val(filename);
+            //$('#UploadDocumentModal #filename').text('filename: ' + filename);
             //$('#UploadDocumentModal #DeleteDocument').attr(filename ? 'submit' : 'hidden');
             $('#UploadDocumentModal .modal-header .close').off('click').on('click', CancelDocumentUpload);
             $('#UploadDocumentModal').appendTo('body').modal('show');
@@ -284,7 +287,7 @@
         if (xhr) { xhr.abort(); }
         xhr = $.ajax({
             data: formdata,
-            url: '@Url.Action("UploadDocument", "LeaveRequests")',
+            url: '@Url.Action("UploadDocument", "LeaveRequestsDocument")',
             type: 'POST',
             datatype: 'JSON',
             cache: false,
@@ -324,7 +327,7 @@
 
         if (xhr) { xhr.abort(); }
         xhr = $.ajax({
-            url: '@Url.Action("Index", "LeaveRequests")',
+            url: '@Url.Action("Index", "LeaveRequestsDocument")',
             data: formdata,
             type: "POST",
             datatype: 'JSON',
@@ -352,7 +355,7 @@
         });
     }
 
-    function ApproveLeaveRequest() {
+    @*function ApproveLeaveRequest() {
         var id = $(this).val();
 
         swal({
@@ -385,7 +388,7 @@
         xhr = $.ajax({
             data: params,
             type: 'POST',
-            url: '@Url.Action("Approve", "LeaveRequests")',
+            url: '@Url.Action("Approve", "LeaveRequestsDocument")',
             cache: false,
             beforeSend: function () {
                 ShowLoadingScreen()
@@ -434,9 +437,9 @@
                 $('#CancellationModal .form-control').off('keydown').on('keydown', Proceed);
         //    }
         //});
-    }
+    }*@
 
-    function Cancel() {
+    @*function Cancel() {
         var remarks = $('#CancellationModal textarea').val();
         var id = $(this).val();
 
@@ -483,7 +486,7 @@
 
         if (event.keyCode == 13)
             $proceedBtn.trigger('click');
-    }
+    }*@
 
     function SetLeaveTypeID() {
         var div = $('#LeaveRequestModal').is(':visible') ? '#LeaveRequestModal' : '#form_search_params';
