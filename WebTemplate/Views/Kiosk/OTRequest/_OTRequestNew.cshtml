@@ -56,11 +56,11 @@
 
 <div id="TimeStart" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="">
     <label class="control-label">Time Start</label>
-    @Html.TextBox("StartDateTime", String.Format("{0:HH':'mm}", Model.OTRequest.StartDateTime), new { @type = "time", @class = "form-control" })
+    @Html.TextBox("StartDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.OTRequest.StartDateTime), new { @type = "datetime-local", @class = "form-control" })
 </div>
 <div id="TimeEnd" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="">
     <label class="control-label">Time End</label>
-    @Html.TextBox("EndDateTime", String.Format("{0:HH':'mm}", Model.OTRequest.EndDateTime), new { @type = "time", @class = "form-control" })
+    @Html.TextBox("EndDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.OTRequest.EndDateTime), new { @type = "datetime-local", @class = "form-control" })
 </div>
 
 <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">

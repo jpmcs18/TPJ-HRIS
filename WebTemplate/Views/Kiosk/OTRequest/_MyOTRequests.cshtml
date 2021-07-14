@@ -201,11 +201,11 @@
                                         {
                                             if (Model.OTRequests[i].OTType == ProcessLayer.Helpers.Enumerable.OTType.Early || Model.OTRequests[i].OTType == ProcessLayer.Helpers.Enumerable.OTType.Whole)
                                             {                                
-                                                @Html.Raw(String.Format("<br/>Start: {0:HH':'mm tt}", Model.OTRequests[i].StartDateTime))
+                                                @Html.Raw(String.Format("<br/>Start: {0:MMM dd, yyyy @ hh:mm tt}", Model.OTRequests[i].StartDateTime))
                                             }
                                             if (Model.OTRequests[i].OTType == ProcessLayer.Helpers.Enumerable.OTType.After || Model.OTRequests[i].OTType == ProcessLayer.Helpers.Enumerable.OTType.Whole)
                                             {                                
-                                                @Html.Raw(String.Format("<br/>End: {0:HH':'mm tt}", Model.OTRequests[i].EndDateTime))
+                                                @Html.Raw(String.Format("<br/>End: {0:MMM dd, yyyy @ hh:mm tt}", Model.OTRequests[i].EndDateTime))
                                             }
                                         }
                                     </td>
@@ -213,7 +213,7 @@
                                         @Html.Raw(LastStatus)
                                     </td>
                                     <td class="text-left">
-                                        @Html.Raw(String.Format("{0}<br/>{1:MM/dd/yyyy hh:mm tt}", LastUser ?? "", LastDate))
+                                        @Html.Raw(String.Format("{0}<br/>{1:MMM dd, yyyy @ hh:mm tt}", LastUser ?? "", LastDate))
                                     </td>
                                     <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;">
                                         <text class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;" title="@Model.OTRequests[i].Remarks">
