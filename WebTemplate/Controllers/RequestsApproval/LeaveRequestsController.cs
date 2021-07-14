@@ -31,9 +31,12 @@ namespace WebTemplate.Controllers.RequestsApproval
                     return ViewCustom("_LeaveRequestsIndex", model);
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                string msg = ex.Message.ToString();
+                ViewBag.Message = msg ?? "You don't have the right to access this page.";
                 return View("~/Views/Security/Unauthorized.cshtml");
+                //return View("ServerError.cshtml", ex.GetActualMessage());
             }
         }
 

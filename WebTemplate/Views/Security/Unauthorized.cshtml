@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     Layout = null;
 }
 
@@ -26,7 +25,7 @@
     <div class="middle-box text-center animated fadeInDown">
         <h1>401</h1>
         <h3 class="font-bold">Unauthorized Access</h3>
-        <p class="m-t-lg">You don't have the right to access this page.</p>
+        <p class="m-t-lg text-danger">@ViewBag.Message</p>
         <div class="m-t-lg">
             <a href="@Url.Action("Index", "Home")" class="btn btn-primary btn-outline btn-sm btn-w-m m-r-sm">Go to Home</a>
             <a href="@Url.Action("Logout", "Security")" class="btn btn-primary btn-outline btn-sm btn-w-m m-r-sm">Logout</a>
