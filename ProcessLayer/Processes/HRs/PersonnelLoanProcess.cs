@@ -28,7 +28,7 @@ namespace ProcessLayer.Processes.HR
                 PersonnelID = dr["Personnel ID"].ToNullableLong(),
                 LoanID = dr["Loan ID"].ToNullableByte(),
                 Amount = dr["Amount"].ToNullableDecimal(),
-                PaidAmount = dr["Paid Amount"].ToNullableDecimal(),
+                PaidAmount = dr["Paid Amount"].ToNullableDecimal() ?? 0,
                 Amortization = dr["Amortization"].ToNullableDecimal(),
                 PaymentTerms = dr["Payment Terms"].ToNullableInt(),
                 PayrollDeductible = dr["Payroll Deductible"].ToNullableBoolean(),

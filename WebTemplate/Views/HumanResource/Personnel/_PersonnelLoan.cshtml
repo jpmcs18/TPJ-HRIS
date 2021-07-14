@@ -29,13 +29,13 @@
         <td style="text-align: center;">@Model.PaymentTerms</td>
         <td style="text-align: center;">@((Model.Amount ?? 0).ToString("N2"))</td>
         <td style="text-align: center;">@((Model.Amortization ?? 0).ToString("N2"))</td>
-        <td style="text-align: center;">@(Model.Amount - Model.PaidAmount)</td>
+        <td style="text-align: center;">@(((Model.Amount ?? 0) - Model.PaidAmount).ToString("N2"))</td>
         <td style="text-align: center;">@Model.Remarks</td>
         @if (LoansPageAccess.Update || LoansPageAccess.Delete)
         {
             <td style="text-align: center;">
                 <div class="btn-group">
-                    @if (Model.PayrollID == null || (Model.PaidAmount ?? 0) == 0)
+                    @if (Model.PayrollID == null || Model.PaidAmount == 0)
                     {
                         if (LoansPageAccess.Delete)
                         {

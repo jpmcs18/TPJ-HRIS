@@ -10,7 +10,7 @@ namespace ProcessLayer.Entities.HR
     {
         public byte? LoanID { get; set; }
         public decimal? Amount { get; set; }
-        public decimal? PaidAmount { get; set; }
+        public decimal PaidAmount { get; set; }
         public decimal? Amortization { get; set; }
         public int? PaymentTerms { get; set; }
         public bool? PayrollDeductible { get; set; }
