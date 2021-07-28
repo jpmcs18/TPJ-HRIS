@@ -170,6 +170,7 @@ namespace ProcessLayer.Processes.Kiosk
         {
             var parameters = new Dictionary<string, object> {
                 { TimeEditRequestParameters.Instance.PersonnelID, timeedit.PersonnelID }
+                , { "@RequestDate", timeedit.RequestDate }
                 , { TimeEditRequestParameters.Instance.LoginDateTime, timeedit.LoginDateTime }
                 , { TimeEditRequestParameters.Instance.LogoutDateTime, timeedit.LogoutDateTime }
                 , { TimeEditRequestParameters.Instance.Reasons, timeedit.Reasons }

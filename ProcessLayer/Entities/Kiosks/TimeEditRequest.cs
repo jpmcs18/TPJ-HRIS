@@ -4,6 +4,7 @@ namespace ProcessLayer.Entities.Kiosk
 {
     public class TimeEditRequest : KioskBase
     {
+        public DateTime RequestDate { get; set; }
         public DateTime? LoginDateTime { get; set; }
         public DateTime? LogoutDateTime { get; set; }
         //public DateTime? StartDateTime { get; set; }
