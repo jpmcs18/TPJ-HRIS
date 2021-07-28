@@ -167,7 +167,8 @@
                                                                 <tr id="Row-Display-LeaveRequests-@Model.LeaveRequests[i].ID" class="Row-Display Row-Display-LeaveRequests @RowColorLabel" style="">
                                                                     <td class="text-left">
                                                                         @Html.Hidden("id", Model.LeaveRequests[i].ID)
-                                                                        @(String.Format("{0}. {1}", (i + 1) + ((Model.Page > 1 ? Model.GridCount : 0) * Model.Page), Model.LeaveRequests[i]._Personnel != null ? Model.LeaveRequests[i]._Personnel.FullName : "N/A"))
+
+                                                                        @Model.LeaveRequests[i]._Personnel.FullName
                                                                     </td>
                                                                     <td class="text-left">@Model.LeaveRequests[i]._LeaveType.Description</td>
                                                                     <td class="text-center">

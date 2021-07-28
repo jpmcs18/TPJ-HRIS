@@ -149,7 +149,8 @@
                                 <tr id="Row-Display-HighRiskRequests-@Model.HighRiskRequests[i].ID" class="Row-Display Row-Display-HighRiskRequests @RowColorLabel" style="">
                                     <td class="text-left">
                                         @Html.Hidden("id", Model.HighRiskRequests[i].ID)
-                                        @(String.Format("{0}. {1}", (i + 1) + ((Model.Page > 1 ? Model.GridCount : 0) * Model.Page), Model.HighRiskRequests[i]._Personnel != null ? Model.HighRiskRequests[i]._Personnel.FullName : "N/A"))
+
+                                        @Model.HighRiskRequests[i]._Personnel.FullName
                                     </td>
                                     <td class="text-center">
                                         @Html.Raw(String.Format("{0:MMM dd, yyyy}", Model.HighRiskRequests[i].RequestDate))

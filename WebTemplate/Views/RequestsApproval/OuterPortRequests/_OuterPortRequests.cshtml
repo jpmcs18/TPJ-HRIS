@@ -9,31 +9,27 @@
 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
     @if (TimeEditRequestPageAccess.View)
     {
-    <div class="file-manager">
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px; margin: 0px -15px;">
-            <div id="form_search_params" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
-                <input type="hidden" id="hid_page" name="@Html.NameFor(m => m.Page)" value="@Html.ValueFor(m => m.Page)" />
-                @Html.AntiForgeryToken()
+        <div class="file-manager">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px; margin: 0px -15px;">
+                <div id="form_search_params" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
+                    <input type="hidden" id="hid_page" name="@Html.NameFor(m => m.Page)" value="@Html.ValueFor(m => m.Page)" />
+                    @Html.AntiForgeryToken()
 
-                @if (TimeEditRequestApprover.Approve)
-                {
+                    @if (TimeEditRequestApprover.Approve)
+                    {
+                        <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-2">
+                            <label class="control-label">Personnel</label>
+                            <input type="text" id="txt_personnel" class="form-control" name="Personnel" placeholder="Personnel..." value="@Model.Personnel" autofocus />
+                        </div>
+                    }
+
                     <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-2">
-                        <label class="control-label">Personnel</label>
-                        <input type="text" id="txt_personnel" class="form-control" name="Personnel" placeholder="Personnel..." value="@Model.Personnel" autofocus />
+                        @Html.TextBox("LoginDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.LoginDateTime), new { @type = "datetime-local", @class = "form-control" })
                     </div>
-                }
-
-                <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-2">
-                    @Html.TextBox("LoginDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.LoginDateTime), new { @type = "datetime-local", @class = "form-control" })
-                    @*@Html.TextBox("LoginDateTime", String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.LoginDateTime), new { @class = "form-control js-datetimepicker", @placeholder = "" })
-                        <span id="" class="clearInput" title="Clear"><i class="fa fa-times"></i></span>
-                    </div>*@
 
                     <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-2">
                         <label class="control-label">End Date & Time</label>
                         @Html.TextBox("LogoutDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.LogoutDateTime), new { @type = "datetime-local", @class = "form-control" })
-                        @*@Html.TextBox("LogoutDateTime", String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.LogoutDateTime), new { @class = "form-control js-datetimepicker", @placeholder = "" })
-                        <span id="" class="clearInput" title="Clear"><i class="fa fa-times"></i></span>*@
                     </div>
 
                     <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
@@ -51,11 +47,11 @@
                     </div>
 
                     @*<div class="form-group col-xs-12 col-sm-3 col-md-2 col-lg-1">
-                        <label class="control-label">
-                            @Html.CheckBoxFor(m => m.IsExpired, new { @class = "i-checks status-checkbox" })
-                            Expired
-                        </label>
-                    </div>*@
+                            <label class="control-label">
+                                @Html.CheckBoxFor(m => m.IsExpired, new { @class = "i-checks status-checkbox" })
+                                Expired
+                            </label>
+                        </div>*@
 
                     <div class="form-group col-xs-12 col-sm-3 col-md-2 col-lg-1">
                         <label class="control-label">
@@ -80,7 +76,6 @@
                 </div>
             </div>
         </div>
-    </div>
     }
     <form id="form_search" class="pull-left" style="width: 100%;">
         <div class="table-responsive" style="height: 650px;">
@@ -128,27 +123,27 @@
                                 </td>
                             </tr>
                         }
-                    <tr>
-                        <th style="text-align: center;" scope="col">
-                            <input id="SelectAll" type="checkbox" class="i-checks" title="Select All" value="">
-                        </th>
-                        @*<th style="text-align: left;">Personnel</th>*@
-                        <th style="text-align: left;">No.</th>
-                        <th style="text-align: left;">Start Date & Time</th>
-                        <th style="text-align: left;">End Date & Time</th>
-                        <th style="text-align: left;">Reason/s</th>
-                        @*<th style="text-align: left;">Created</th>
-        <th style="text-align: left;">Modified</th>
-        <th style="text-align: left;">Approved</th>
-        <th style="text-align: left;">Cancelled</th>*@
-                        <th style="text-align: left;">Status</th>
-                        <th style="text-align: left;">Last Modified</th>
-                        <th style="text-align: left;">Remarks</th>
-                        @if (TimeEditRequestPageAccess.Update || TimeEditRequestPageAccess.Delete)
-                        {
-                            <th style="text-align: center; min-width: 10%;" scope="col">Action</th>
-                        }
-                    </tr>
+                        <tr>
+                            <th style="text-align: center;" scope="col">
+                                <input id="SelectAll" type="checkbox" class="i-checks" title="Select All" value="">
+                            </th>
+                            @*<th style="text-align: left;">Personnel</th>*@
+                            <th style="text-align: left;">No.</th>
+                            <th style="text-align: left;">Start Date & Time</th>
+                            <th style="text-align: left;">End Date & Time</th>
+                            <th style="text-align: left;">Reason/s</th>
+                            @*<th style="text-align: left;">Created</th>
+                                <th style="text-align: left;">Modified</th>
+                                <th style="text-align: left;">Approved</th>
+                                <th style="text-align: left;">Cancelled</th>*@
+                            <th style="text-align: left;">Status</th>
+                            <th style="text-align: left;">Last Modified</th>
+                            <th style="text-align: left;">Remarks</th>
+                            @if (TimeEditRequestPageAccess.Update || TimeEditRequestPageAccess.Delete)
+                            {
+                                <th style="text-align: center; min-width: 10%;" scope="col">Action</th>
+                            }
+                        </tr>
                     </thead>
                     <tbody>
                         <tr id="Row-Loading-Display" class="hidden">
@@ -161,103 +156,94 @@
                             for (int i = 0; i < Model.TimeEditRequests.Count(); i++)
                             {
                                 @*@Html.Partial("~/Views/Kiosk/TimeEditRequest/_TimeEditRequest.cshtml", Model.TimeEditRequests[i])*@
-                        var RowColorLabel = ""; // Model.TimeEditRequests[i].TimeEditRequests[i].Cancelled == true ? " label-danger" : Model.TimeEditRequests[i].TimeEditRequests[i].Approved == true ? " label-primary" : Model.TimeEditRequests[i].TimeEditRequests[i].ModifiedBy != null ? " label-success" : " label-info";
-                        var LastStatus = Model.TimeEditRequests[i].IsExpired == true ? "<span class='label label-warning'>Expired</span>" : (Model.TimeEditRequests[i].Cancelled == true ? "<span class='label label-danger'>Cancelled</span>" : (Model.TimeEditRequests[i].Approved == true ? "<span class='label label-primary'>Approved</span>" : "<span class='label label-info'>Pending</span>"));
-                        var LastUser = Model.TimeEditRequests[i].Cancelled == true ? Model.TimeEditRequests[i]._Cancel : (Model.TimeEditRequests[i].Approved == true ? Model.TimeEditRequests[i]._Approver : (Model.TimeEditRequests[i].ModifiedBy != null ? Model.TimeEditRequests[i]._Modifier : Model.TimeEditRequests[i]._Creator));
-                        var LastDate = Model.TimeEditRequests[i].Cancelled == true ? Model.TimeEditRequests[i].CancelledOn : (Model.TimeEditRequests[i].Approved == true ? Model.TimeEditRequests[i].ApprovedOn : (Model.TimeEditRequests[i].ModifiedBy != null ? Model.TimeEditRequests[i].ModifiedOn : Model.TimeEditRequests[i].CreatedOn));
+                                var RowColorLabel = ""; // Model.TimeEditRequests[i].TimeEditRequests[i].Cancelled == true ? " label-danger" : Model.TimeEditRequests[i].TimeEditRequests[i].Approved == true ? " label-primary" : Model.TimeEditRequests[i].TimeEditRequests[i].ModifiedBy != null ? " label-success" : " label-info";
+                                var LastStatus = Model.TimeEditRequests[i].IsExpired == true ? "<span class='label label-warning'>Expired</span>" : (Model.TimeEditRequests[i].Cancelled == true ? "<span class='label label-danger'>Cancelled</span>" : (Model.TimeEditRequests[i].Approved == true ? "<span class='label label-primary'>Approved</span>" : "<span class='label label-info'>Pending</span>"));
+                                var LastUser = Model.TimeEditRequests[i].Cancelled == true ? Model.TimeEditRequests[i]._Cancel : (Model.TimeEditRequests[i].Approved == true ? Model.TimeEditRequests[i]._Approver : (Model.TimeEditRequests[i].ModifiedBy != null ? Model.TimeEditRequests[i]._Modifier : Model.TimeEditRequests[i]._Creator));
+                                var LastDate = Model.TimeEditRequests[i].Cancelled == true ? Model.TimeEditRequests[i].CancelledOn : (Model.TimeEditRequests[i].Approved == true ? Model.TimeEditRequests[i].ApprovedOn : (Model.TimeEditRequests[i].ModifiedBy != null ? Model.TimeEditRequests[i].ModifiedOn : Model.TimeEditRequests[i].CreatedOn));
 
-                    <tr id="Row-Display-TimeEditRequests-@Model.TimeEditRequests[i].ID" class="Row-Display Row-Display-TimeEditRequest @RowColorLabel" style="">
-                        @*<td class="check-mail">
-            <input type="checkbox" class="i-checks">
-        </td>*@
-                        @{
-                            DateTime? StartDateTime = Model.TimeEditRequests[i].LoginDateTime;
-                            DateTime? EndDateTime = Model.TimeEditRequests[i].LogoutDateTime;
-                        }
-                        @*<td style="text-align: left;">
-            @(String.Format("{0}. {1}", (i + 1) + ((Model.Page > 1 ? Model.GridCount : 0) * Model.Page), Model.TimeEditRequests[i]._Personnel != null ? Model.TimeEditRequests[i]._Personnel.FullName : "N/A"))
-        </td>*@
-                        <td class="text-center">
-                            @if (TimeEditRequestPageAccess.Delete)
-                            {
-                                if (!(Model.TimeEditRequests[i].Approved == true || Model.TimeEditRequests[i].Cancelled == true || Model.TimeEditRequests[i].IsExpired == true))
-                                {
-                                    <input type="checkbox" class="i-checks chkRow" title="" value="@Model.TimeEditRequests[i].ID">
-                                }
-                                else
-                                {
-                                    <input type="checkbox" disabled class="i-checks" title="" value="">
-                                }
-                            }
-                            <input hidden name="id" value="@Model.TimeEditRequests[i].ID" />
-                            <input hidden name="personnelid" value="@Model.TimeEditRequests[i].PersonnelID" />
-                        </td>
-                        <td style="text-align: left;">
-                            <input hidden name="id" value="@Model.TimeEditRequests[i].ID" />
-                            <input hidden name="personnelid" value="@Model.TimeEditRequests[i].PersonnelID" />
-                            @if (Model.TimeEditRequests[i].IsExpired == false)
-                            {
-                                if ((Model.TimeEditRequests[i].Approved == null && Model.TimeEditRequests[i].Cancelled == null) || (Model.TimeEditRequests[i].Approved == false && Model.TimeEditRequests[i].Cancelled == false))
-                                {
-                                    @(String.Format("{0}. {1}", (i + 1) + ((Model.Page > 1 ? Model.GridCount : 0) * Model.Page), Model.TimeEditRequests[i]._Personnel != null ? Model.TimeEditRequests[i]._Personnel.FullName : "N/A"))
-                                }
-                                else
-                                {
-                                    <div class="clickable-text" title="Click to view movement" onclick="EditOrNewTimeEditRequest(@Model.TimeEditRequests[i].ID)">@(String.Format("{0}. {1}", (i + 1) + ((Model.Page > 1 ? Model.GridCount : 0) * Model.Page), Model.TimeEditRequests[i]._Personnel != null ? Model.TimeEditRequests[i]._Personnel.FullName : "N/A"))</div>
-                                }
-                            }
-                        </td>
-                        <td style="text-align: left;">
-                            @Html.Raw(String.Format("{0}{1}", StartDateTime.ToString() == DateTime.Now.ToString() ? "Today" : String.Format("<b>{0:MMM dd, yyyy}</b>", StartDateTime), (StartDateTime.ToString() == "" ? "" : " @ ") + String.Format("<b>{0:HH:mm tt}</b>", StartDateTime)))
-                        </td>
-                        <td style="text-align: left;">
-                            @Html.Raw(String.Format("{0}{1}", EndDateTime.ToString() == DateTime.Now.ToString() ? "Today" : String.Format("<b>{0:MMM dd, yyyy}</b>", EndDateTime), (EndDateTime.ToString() == "" ? "" : " @ ") + String.Format("<b>{0:HH:mm tt}</b>", EndDateTime)))
-                        </td>
-                        <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
-                            <text class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@Model.TimeEditRequests[i].Reasons">
-                                @Model.TimeEditRequests[i].Reasons
-                            </text>
-                        </td>
-                        <td class="text-left">
-                            @Html.Raw(LastStatus)
-                        </td>
-                        <td class="text-left">
-                            @Html.Raw(String.Format("{0}<br/>{1:MM/dd/yyyy hh:mm tt}", LastUser ?? "", LastDate))
-                        </td>
-                        @*<td class="text-left">
-            @Html.Raw(String.Format("<b>{0}</b><br />{1:MM/dd/yyyy hh:mm tt}", Model.TimeEditRequests[i]._Creator ?? "", Model.TimeEditRequests[i].CreatedOn))
-        </td>
-        <td class="text-left">
-                @Html.Raw(String.Format("<b>{0}</b><br />{1:MM/dd/yyyy hh:mm tt}", Model.TimeEditRequests[i]._Modifier ?? "", Model.TimeEditRequests[i].ModifiedOn))
-            </td>
-            <td class="text-left">
-                @Html.Raw(String.Format("<b>{0}</b><br />{1:MM/dd/yyyy hh:mm tt}", Model.TimeEditRequests[i]._Approver ?? "", Model.TimeEditRequests[i].ApprovedOn))
-            </td>
-            <td class="text-left">
-                @Html.Raw(String.Format("<b>{0}</b><br />{1:MM/dd/yyyy hh:mm tt}", Model.TimeEditRequests[i]._Cancel ?? "", Model.TimeEditRequests[i].CancelledOn))
-            </td>*@
-                        <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
-                            <text class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@Model.TimeEditRequests[i].Remarks">
-                                @Model.TimeEditRequests[i].Remarks
-                            </text>
-                        </td>
-                        <td style="width: 160px;" class="row-actions">
-                            <div class="btn-group">
-                                @if (Model.TimeEditRequests[i].IsExpired == false)
-                                {
-                                    if ((Model.TimeEditRequests[i].Approved == null && Model.TimeEditRequests[i].Cancelled == null) || (Model.TimeEditRequests[i].Approved == false && Model.TimeEditRequests[i].Cancelled == false))
-                                    {
-                                        <button type="button" name="id" class="btn btn-danger btn-sm btn-rounded CancelTimeEditRequest" value="@Model.TimeEditRequests[i].ID" title="Cancel"><i class="fa fa-ban"></i></button>
-                                        <button type="button" name="id" class="btn btn-primary btn-sm btn-rounded ApproveTimeEditRequest" value="@Model.TimeEditRequests[i].ID" title="Approve"><i class="fa fa-check"></i></button>
+                                <tr id="Row-Display-TimeEditRequests-@Model.TimeEditRequests[i].ID" class="Row-Display Row-Display-TimeEditRequest @RowColorLabel" style="">
+                                    @*<td class="check-mail">
+                                            <input type="checkbox" class="i-checks">
+                                        </td>*@
+                                    @{
+                                        DateTime? StartDateTime = Model.TimeEditRequests[i].LoginDateTime;
+                                        DateTime? EndDateTime = Model.TimeEditRequests[i].LogoutDateTime;
                                     }
-                                    else
-                                    {
-                                        @*<button type="button" name="id" tpj-show-tab="#tab-3" class="btn btn-info btn-sm btn-rounded ViewTimeEditRequest" value="@Model.TimeEditRequests[i].ID" title="View"><i class="fa fa-eye"></i></button>*@
-                                    }
-                                }
-                            </div>
-                        </td>
-                    </tr>
+                                    @*<td style="text-align: left;">
+                                            @(String.Format("{0}. {1}", (i + 1) + ((Model.Page > 1 ? Model.GridCount : 0) * Model.Page), Model.TimeEditRequests[i]._Personnel != null ? Model.TimeEditRequests[i]._Personnel.FullName : "N/A"))
+                                        </td>*@
+                                    <td class="text-center">
+                                        @if (TimeEditRequestPageAccess.Delete)
+                                        {
+                                            if (!(Model.TimeEditRequests[i].Approved == true || Model.TimeEditRequests[i].Cancelled == true || Model.TimeEditRequests[i].IsExpired == true))
+                                            {
+                                                <input type="checkbox" class="i-checks chkRow" title="" value="@Model.TimeEditRequests[i].ID">
+                                            }
+                                            else
+                                            {
+                                                <input type="checkbox" disabled class="i-checks" title="" value="">
+                                            }
+                                        }
+                                        <input hidden name="id" value="@Model.TimeEditRequests[i].ID" />
+                                        <input hidden name="personnelid" value="@Model.TimeEditRequests[i].PersonnelID" />
+                                    </td>
+                                    <td style="text-align: left;">
+                                        <input hidden name="id" value="@Model.TimeEditRequests[i].ID" />
+                                        <input hidden name="personnelid" value="@Model.TimeEditRequests[i].PersonnelID" />
+
+                                        @Model.TimeEditRequests[i]._Personnel.FullName
+                                    </td>
+                                    <td style="text-align: left;">
+                                        @Html.Raw(String.Format("{0}{1}", StartDateTime.ToString() == DateTime.Now.ToString() ? "Today" : String.Format("<b>{0:MMM dd, yyyy}</b>", StartDateTime), (StartDateTime.ToString() == "" ? "" : " @ ") + String.Format("<b>{0:HH:mm tt}</b>", StartDateTime)))
+                                    </td>
+                                    <td style="text-align: left;">
+                                        @Html.Raw(String.Format("{0}{1}", EndDateTime.ToString() == DateTime.Now.ToString() ? "Today" : String.Format("<b>{0:MMM dd, yyyy}</b>", EndDateTime), (EndDateTime.ToString() == "" ? "" : " @ ") + String.Format("<b>{0:HH:mm tt}</b>", EndDateTime)))
+                                    </td>
+                                    <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
+                                        <text class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@Model.TimeEditRequests[i].Reasons">
+                                            @Model.TimeEditRequests[i].Reasons
+                                        </text>
+                                    </td>
+                                    <td class="text-left">
+                                        @Html.Raw(LastStatus)
+                                    </td>
+                                    <td class="text-left">
+                                        @Html.Raw(String.Format("{0}<br/>{1:MM/dd/yyyy hh:mm tt}", LastUser ?? "", LastDate))
+                                    </td>
+                                    @*<td class="text-left">
+                                            @Html.Raw(String.Format("<b>{0}</b><br />{1:MM/dd/yyyy hh:mm tt}", Model.TimeEditRequests[i]._Creator ?? "", Model.TimeEditRequests[i].CreatedOn))
+                                        </td>
+                                        <td class="text-left">
+                                                @Html.Raw(String.Format("<b>{0}</b><br />{1:MM/dd/yyyy hh:mm tt}", Model.TimeEditRequests[i]._Modifier ?? "", Model.TimeEditRequests[i].ModifiedOn))
+                                            </td>
+                                            <td class="text-left">
+                                                @Html.Raw(String.Format("<b>{0}</b><br />{1:MM/dd/yyyy hh:mm tt}", Model.TimeEditRequests[i]._Approver ?? "", Model.TimeEditRequests[i].ApprovedOn))
+                                            </td>
+                                            <td class="text-left">
+                                                @Html.Raw(String.Format("<b>{0}</b><br />{1:MM/dd/yyyy hh:mm tt}", Model.TimeEditRequests[i]._Cancel ?? "", Model.TimeEditRequests[i].CancelledOn))
+                                            </td>*@
+                                    <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
+                                        <text class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@Model.TimeEditRequests[i].Remarks">
+                                            @Model.TimeEditRequests[i].Remarks
+                                        </text>
+                                    </td>
+                                    <td style="width: 160px;" class="row-actions">
+                                        <div class="btn-group">
+                                            @if (Model.TimeEditRequests[i].IsExpired == false)
+                                            {
+                                                if ((Model.TimeEditRequests[i].Approved == null && Model.TimeEditRequests[i].Cancelled == null) || (Model.TimeEditRequests[i].Approved == false && Model.TimeEditRequests[i].Cancelled == false))
+                                                {
+                                                    <button type="button" name="id" class="btn btn-danger btn-sm btn-rounded CancelTimeEditRequest" value="@Model.TimeEditRequests[i].ID" title="Cancel"><i class="fa fa-ban"></i></button>
+                                                    <button type="button" name="id" class="btn btn-primary btn-sm btn-rounded ApproveTimeEditRequest" value="@Model.TimeEditRequests[i].ID" title="Approve"><i class="fa fa-check"></i></button>
+                                                }
+                                                else
+                                                {
+                                                    @*<button type="button" name="id" tpj-show-tab="#tab-3" class="btn btn-info btn-sm btn-rounded ViewTimeEditRequest" value="@Model.TimeEditRequests[i].ID" title="View"><i class="fa fa-eye"></i></button>*@
+                                                }
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
                             }
                         }
                         else
@@ -269,6 +255,7 @@
             </div>
         </div>
     </form>
+</div>
 
 
 @section scripts {

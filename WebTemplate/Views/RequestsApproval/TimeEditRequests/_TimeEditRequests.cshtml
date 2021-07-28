@@ -186,17 +186,8 @@
                         <td style="text-align: left;">
                             <input hidden name="id" value="@Model.TimeEditRequests[i].ID" />
                             <input hidden name="personnelid" value="@Model.TimeEditRequests[i].PersonnelID" />
-                            @if (Model.TimeEditRequests[i].IsExpired == false)
-                            {
-                                if ((Model.TimeEditRequests[i].Approved == null && Model.TimeEditRequests[i].Cancelled == null) || (Model.TimeEditRequests[i].Approved == false && Model.TimeEditRequests[i].Cancelled == false))
-                                {
-                                    @(String.Format("{0}. {1}", (i + 1) + ((Model.Page > 1 ? Model.GridCount : 0) * Model.Page), Model.TimeEditRequests[i]._Personnel != null ? Model.TimeEditRequests[i]._Personnel.FullName : "N/A"))
-                                }
-                                else
-                                {
-                                    <div class="clickable-text" title="Click to view movement" onclick="EditOrNewTimeEditRequest(@Model.TimeEditRequests[i].ID)">@(String.Format("{0}. {1}", (i + 1) + ((Model.Page > 1 ? Model.GridCount : 0) * Model.Page), Model.TimeEditRequests[i]._Personnel != null ? Model.TimeEditRequests[i]._Personnel.FullName : "N/A"))</div>
-                                }
-                            }
+
+                            @Model.TimeEditRequests[i]._Personnel.FullName
                         </td>
                         <td class="text-left">
                             @($"{Model.TimeEditRequests[i].RequestDate:MMM dd, yyyy}")

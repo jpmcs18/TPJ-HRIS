@@ -160,7 +160,8 @@
                                     <td style="text-align: left;">
                                         <input hidden name="id" value="@Model.OTRequests[i].ID" />
                                         <input hidden name="personnelid" value="@Model.OTRequests[i].PersonnelID" />
-                                        @(String.Format("{0}. {1}", (i + 1) + ((Model.Page > 1 ? Model.GridCount : 0) * Model.Page), Model.OTRequests[i]._Personnel != null ? Model.OTRequests[i]._Personnel.FullName : "N/A"))
+
+                                        @Model.OTRequests[i]._Personnel.FullName
                                     </td>
                                     <td style="text-align: left;">
                                         @Html.Raw(String.Format("{0:MMM dd, yyyy}", Model.OTRequests[i].RequestDate))
