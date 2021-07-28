@@ -20,6 +20,7 @@ namespace ProcessLayer.Processes.Kiosk
             {
                 ID = dr[TimeEditRequestFields.Instance.ID].ToLong(),
                 PersonnelID = dr[TimeEditRequestFields.Instance.PersonnelID].ToNullableLong(),
+                RequestDate = dr["Request Date"].ToDateTime(),
                 LoginDateTime = dr[TimeEditRequestFields.Instance.LoginDateTime].ToNullableDateTime(),
                 LogoutDateTime = dr[TimeEditRequestFields.Instance.LogoutDateTime].ToNullableDateTime(),
                 Reasons = dr[TimeEditRequestFields.Instance.Reasons].ToString(),
