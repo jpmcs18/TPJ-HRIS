@@ -50,11 +50,11 @@ namespace ProcessLayer.Processes.Kiosk
             return o;
         }
 
-        public List<OTRequest> GetList(string personnel, bool isExpired, bool isPending, bool isApproved, bool isCancelled, DateTime? startdatetime, DateTime? enddatetime, int page, int gridCount, out int PageCount)
+        public List<OTRequest> GetList(long personnelId, bool isExpired, bool isPending, bool isApproved, bool isCancelled, DateTime? startdatetime, DateTime? enddatetime, int page, int gridCount, out int PageCount)
         {
             var ots = new List<OTRequest>();
             var parameters = new Dictionary<string, object> {
-                { OTRequestParameters.Instance.Personnel, personnel },
+                { "@PersonnelID", personnelId },
                 { OTRequestParameters.Instance.IsExpired, isExpired },
                 { OTRequestParameters.Instance.IsPending, isPending },
                 { OTRequestParameters.Instance.IsApproved, isApproved },

@@ -50,10 +50,10 @@ namespace ProcessLayer.Processes.Kiosk
             return h;
         }
 
-        public List<HighRiskRequest> GetList(string personnel, bool isExpired, bool isPending, bool isApproved, bool isCancelled, DateTime? startdate, DateTime? enddate, int page, int gridCount, out int PageCount)
+        public List<HighRiskRequest> GetList(long personnelId, bool isExpired, bool isPending, bool isApproved, bool isCancelled, DateTime? startdate, DateTime? enddate, int page, int gridCount, out int PageCount)
         {
             var parameters = new Dictionary<string, object> {
-                { "@Personnel", personnel },
+                { "@PersonnelID", personnelId },
                 { "@IsExpired", isExpired },
                 { "@IsPending", isPending },
                 { "@IsApproved", isApproved },

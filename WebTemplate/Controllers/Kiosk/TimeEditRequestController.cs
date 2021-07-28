@@ -14,8 +14,8 @@ namespace WebTemplate.Controllers.Kiosk
         // GET: TimeEditRequest
         public ActionResult Index(Index model)
         {
-            model.TimeEditRequests = TimeEditRequestProcess.Instance.GetList(model.Key, model.IsExpired, model.IsPending, model.IsApproved, model.IsCancelled, model.LoginDateTime, model.LogoutDateTime, model.Page, model.GridCount, out int PageCount);
             model.Personnel = PersonnelProcess.GetByUserId(User.UserID);
+            model.TimeEditRequests = TimeEditRequestProcess.Instance.GetList(model.Personnel?.ID ?? 0, model.IsExpired, model.IsPending, model.IsApproved, model.IsCancelled, model.LoginDateTime, model.LogoutDateTime, model.Page, model.GridCount, out int PageCount);
             model.PageCount = PageCount;
             if (Request.IsAjaxRequest())
             {

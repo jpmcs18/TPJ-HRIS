@@ -67,11 +67,11 @@ namespace ProcessLayer.Processes.Kiosk
             return o;
         }
 
-        public List<LeaveRequest> GetList(string personnel, byte? leavetypeid, bool isExpired, bool isPending, bool isApproved, bool isCancelled, DateTime? startdatetime, DateTime? enddatetime, int page, int gridCount, out int PageCount)
+        public List<LeaveRequest> GetList(long personnelId, byte? leavetypeid, bool isExpired, bool isPending, bool isApproved, bool isCancelled, DateTime? startdatetime, DateTime? enddatetime, int page, int gridCount, out int PageCount)
         {
             var Leaves = new List<LeaveRequest>();
             var parameters = new Dictionary<string, object> {
-                { LeaveRequestParameters.Instance.Personnel, personnel },
+                { "@PersonnelID", personnelId },
                 { LeaveRequestParameters.Instance.LeaveTypeID, leavetypeid },
                 { LeaveRequestParameters.Instance.IsExpired, isExpired },
                 { LeaveRequestParameters.Instance.IsPending, isPending },

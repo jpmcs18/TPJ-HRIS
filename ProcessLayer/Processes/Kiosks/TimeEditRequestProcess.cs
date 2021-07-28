@@ -47,11 +47,11 @@ namespace ProcessLayer.Processes.Kiosk
             return o;
         }
 
-        public List<TimeEditRequest> GetList(string personnel, bool isExpired, bool isPending, bool isApproved, bool isCancelled, DateTime? logindatetime, DateTime? logoutdatetime, int page, int gridCount, out int PageCount)
+        public List<TimeEditRequest> GetList(long personnelId, bool isExpired, bool isPending, bool isApproved, bool isCancelled, DateTime? logindatetime, DateTime? logoutdatetime, int page, int gridCount, out int PageCount)
         {
             var TimeEdits = new List<TimeEditRequest>();
             var parameters = new Dictionary<string, object> {
-                { TimeEditRequestParameters.Instance.Personnel, personnel },
+                { "@PersonnelID", personnelId },
                 { TimeEditRequestParameters.Instance.IsExpired, isExpired },
                 { TimeEditRequestParameters.Instance.IsPending, isPending },
                 { TimeEditRequestParameters.Instance.IsApproved, isApproved },

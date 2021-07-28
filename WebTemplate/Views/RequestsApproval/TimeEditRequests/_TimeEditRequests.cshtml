@@ -162,7 +162,7 @@
                         var LastUser = Model.TimeEditRequests[i].Cancelled == true ? Model.TimeEditRequests[i]._Cancel : (Model.TimeEditRequests[i].Approved == true ? Model.TimeEditRequests[i]._Approver : (Model.TimeEditRequests[i].ModifiedBy != null ? Model.TimeEditRequests[i]._Modifier : Model.TimeEditRequests[i]._Creator));
                         var LastDate = Model.TimeEditRequests[i].Cancelled == true ? Model.TimeEditRequests[i].CancelledOn : (Model.TimeEditRequests[i].Approved == true ? Model.TimeEditRequests[i].ApprovedOn : (Model.TimeEditRequests[i].ModifiedBy != null ? Model.TimeEditRequests[i].ModifiedOn : Model.TimeEditRequests[i].CreatedOn));
 
-                    <tr id="Row-Display-TimeEditRequests-@Model.TimeEditRequests[i].ID" class="Row-Display Row-Display-OuterPortRequest @RowColorLabel" style="">
+                    <tr id="Row-Display-TimeEditRequests-@Model.TimeEditRequests[i].ID" class="Row-Display Row-Display-TimeEditRequest @RowColorLabel" style="">
                         @{
                             DateTime? StartDateTime = Model.TimeEditRequests[i].LoginDateTime;
                             DateTime? EndDateTime = Model.TimeEditRequests[i].LogoutDateTime;
@@ -193,7 +193,7 @@
                                 }
                                 else
                                 {
-                                    <div class="clickable-text" title="Click to view movement" onclick="EditOrNewOuterPortRequest(@Model.TimeEditRequests[i].ID)">@(String.Format("{0}. {1}", (i + 1) + ((Model.Page > 1 ? Model.GridCount : 0) * Model.Page), Model.TimeEditRequests[i]._Personnel != null ? Model.TimeEditRequests[i]._Personnel.FullName : "N/A"))</div>
+                                    <div class="clickable-text" title="Click to view movement" onclick="EditOrNewTimeEditRequest(@Model.TimeEditRequests[i].ID)">@(String.Format("{0}. {1}", (i + 1) + ((Model.Page > 1 ? Model.GridCount : 0) * Model.Page), Model.TimeEditRequests[i]._Personnel != null ? Model.TimeEditRequests[i]._Personnel.FullName : "N/A"))</div>
                                 }
                             }
                         </td>
@@ -226,12 +226,12 @@
                                 {
                                     if ((Model.TimeEditRequests[i].Approved == null && Model.TimeEditRequests[i].Cancelled == null) || (Model.TimeEditRequests[i].Approved == false && Model.TimeEditRequests[i].Cancelled == false))
                                     {
-                                        <button type="button" name="id" class="btn btn-danger btn-sm btn-rounded CancelOuterPortRequest" value="@Model.TimeEditRequests[i].ID" title="Cancel"><i class="fa fa-ban"></i></button>
-                                        <button type="button" name="id" class="btn btn-primary btn-sm btn-rounded ApproveOuterPortRequest" value="@Model.TimeEditRequests[i].ID" title="Approve"><i class="fa fa-check"></i></button>
+                                        <button type="button" name="id" class="btn btn-danger btn-sm btn-rounded CancelTimeEditRequest" value="@Model.TimeEditRequests[i].ID" title="Cancel"><i class="fa fa-ban"></i></button>
+                                        <button type="button" name="id" class="btn btn-primary btn-sm btn-rounded ApproveTimeEditRequest" value="@Model.TimeEditRequests[i].ID" title="Approve"><i class="fa fa-check"></i></button>
                                     }
                                     else
                                     {
-                                        @*<button type="button" name="id" tpj-show-tab="#tab-3" class="btn btn-info btn-sm btn-rounded ViewOuterPortRequest" value="@Model.TimeEditRequests[i].ID" title="View"><i class="fa fa-eye"></i></button>*@
+                                        @*<button type="button" name="id" tpj-show-tab="#tab-3" class="btn btn-info btn-sm btn-rounded ViewTimeEditRequest" value="@Model.TimeEditRequests[i].ID" title="View"><i class="fa fa-eye"></i></button>*@
                                     }
                                 }
                             </div>

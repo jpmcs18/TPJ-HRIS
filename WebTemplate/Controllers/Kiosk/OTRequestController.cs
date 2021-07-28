@@ -15,8 +15,8 @@ namespace WebTemplate.Controllers.Kiosk
         public ActionResult Index(Index model)
         {
             model.Page = model.Page > 1 ? model.Page : 1;
-            model.OTRequests = OTRequestProcess.Instance.GetList(model.Key, model.IsExpired, model.IsPending, model.IsApproved, model.IsCancelled, model.StartDateTime, model.EndingDateTime, model.Page, model.GridCount, out int PageCount);
             model.Personnel = PersonnelProcess.GetByUserId(User.UserID);
+            model.OTRequests = OTRequestProcess.Instance.GetList(model.Personnel?.ID ?? 0, model.IsExpired, model.IsPending, model.IsApproved, model.IsCancelled, model.StartDateTime, model.EndingDateTime, model.Page, model.GridCount, out int PageCount);
             model.PageCount = PageCount;
 
             if (Request.IsAjaxRequest())
