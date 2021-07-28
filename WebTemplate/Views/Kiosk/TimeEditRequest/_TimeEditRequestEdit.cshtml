@@ -14,6 +14,11 @@
         <input hidden name="personnelid" value="@Model.PersonnelID" />
         <input hidden name="id" value="@Model.ID" />
 
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <label class="control-label">Request Date</label>
+            @Html.TextBox("RequestDate", String.Format("{0:yyyy'-'MM'-'dd}", Model.RequestDate), new { @class = "form-control js-datetimepicker", @placeholder = "" })
+        </div>
+
         <div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-6">
             <label class="control-label">Login Date & Time</label>
             @Html.TextBox("LoginDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.LoginDateTime), new { @type = "datetime-local", @class = "form-control" })

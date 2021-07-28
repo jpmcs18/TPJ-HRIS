@@ -12,20 +12,19 @@
 
 <div id="ToClearWhenNew">
     <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div id="RequestDate" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <label class="control-label">Request Date</label>
+            @Html.TextBox("RequestDate", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.TimeEditRequest.RequestDate), new { @type = "date", @class = "form-control" })
+        </div>
+
         <div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-6">
             <label class="control-label">Login Date & Time</label>
-            @*<input type="text" name="StartDateTime" class="form-control text-transform-none js-datetimepicker" placeholder="StartDateTime..." />*@
-            @Html.TextBox("LoginDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.LoginDateTime), new { @type = "datetime-local", @class = "form-control" })
-            @*@Html.TextBox("LoginDateTime", String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.TimeEditRequest.LoginDateTime), new { @class = "form-control js-datetimepicker", @placeholder = "" })
-            <span id="" class="clearInput" title="Clear"><i class="fa fa-times"></i></span>*@
+            @Html.TextBox("LoginDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.TimeEditRequest.LoginDateTime), new { @type = "datetime-local", @class = "form-control" })
         </div>
 
         <div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-6">
             <label class="control-label">Logout Date & Time</label>
-            @*<input type="text" name="EndingDateTime" class="form-control text-transform-none js-datetimepicker" placeholder="EndingDateTime..." />*@
-            @Html.TextBox("LogoutDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.LogoutDateTime), new { @type = "datetime-local", @class = "form-control" })
-            @*@Html.TextBox("LogoutDateTime", String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.TimeEditRequest.LogoutDateTime), new { @class = "form-control js-datetimepicker", @placeholder = "" })
-            <span id="" class="clearInput" title="Clear"><i class="fa fa-times"></i></span>*@
+            @Html.TextBox("LogoutDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.TimeEditRequest.LogoutDateTime), new { @type = "datetime-local", @class = "form-control" })
         </div>
 
         <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">

@@ -24,6 +24,11 @@
         }
     </div>*@
 
+<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <label class="control-label">Request Date</label>
+    <label class="form-control">@String.Format("{0:MM/dd/yyyy}", Model.RequestDate)</label>
+</div>
+
     <div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-6">
         <label class="control-label">Login Date & Time</label>
         <label class="form-control">@Model.LoginDateTime</label>

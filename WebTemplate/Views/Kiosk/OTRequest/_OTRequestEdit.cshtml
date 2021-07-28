@@ -53,7 +53,7 @@
 
 <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <label class="control-label">Request Date</label>
-    @Html.TextBox("RequestDate", String.Format("{0:MM/dd/yyyy}", Model.RequestDate), new { @class = "form-control js-datetimepicker", @placeholder = "" })
+    @Html.TextBox("RequestDate", String.Format("{0:yyyy'-'MM'-'dd}", Model.RequestDate), new { @class = "form-control js-datetimepicker", @placeholder = "" })
 </div>
 
 <div id="TimeStart" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="@((!Model.IsOffice && Model.OTType == ProcessLayer.Helpers.Enumerable.OTType.After) || Model.IsOffice ? "display: none;" : "")">

@@ -24,10 +24,10 @@
                 @Html.TextBox("EndingDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.EndingDateTime), new { @type = "datetime-local", @class = "form-control" })
             </div>
 
-            <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-2">
+            @*<div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-2">
                 <label class="control-label">Key</label>
                 @Html.TextBox("Key", Model.Key, new { @class = "form-control search-values", @placeholder = "Key..." })
-            </div>
+            </div>*@
 
             <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
                 <label class="control-label">OT Type</label>
@@ -178,7 +178,7 @@
                                         <input hidden name="id" value="@Model.OTRequests[i].ID" />
                                         <input hidden name="personnelid" value="@Model.OTRequests[i].PersonnelID" />
                                         <text class="font-bold-500 clickable-text" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;" title="N/A">
-                                            @(String.Format("{0}.", (i + 1) + (Model.Page > 1 ? Model.GridCount : 0) * Model.Page))
+                                      
                                             @Model.OTRequests[i].Reasons
                                         </text>
                                     </td>

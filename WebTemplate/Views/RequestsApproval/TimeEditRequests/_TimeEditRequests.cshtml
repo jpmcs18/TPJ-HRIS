@@ -134,6 +134,7 @@
                         </th>
 
                         <th style="text-align: left;">No.</th>
+                        <th style="text-align: left;">Request Date</th>
                         <th style="text-align: left;">Start Date & Time</th>
                         <th style="text-align: left;">End Date & Time</th>
                         <th style="text-align: left;">Reason/s</th>
@@ -197,6 +198,9 @@
                                 }
                             }
                         </td>
+                        <td class="text-left">
+                            @($"{Model.TimeEditRequests[i].RequestDate:MMM dd, yyyy}")
+                        </td>
                         <td style="text-align: left;">
                             @Html.Raw(String.Format("{0}{1}", StartDateTime.ToString() == DateTime.Now.ToString() ? "Today" : String.Format("<b>{0:MMM dd, yyyy}</b>", StartDateTime), (StartDateTime.ToString() == "" ? "" : " @ ") + String.Format("<b>{0:HH:mm tt}</b>", StartDateTime)))
                         </td>
@@ -214,7 +218,7 @@
                         <td class="text-left">
                             @Html.Raw(String.Format("{0}<br/>{1:MM/dd/yyyy hh:mm tt}", LastUser ?? "", LastDate))
                         </td>
-                     
+
                         <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
                             <text class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@Model.TimeEditRequests[i].Remarks">
                                 @Model.TimeEditRequests[i].Remarks
