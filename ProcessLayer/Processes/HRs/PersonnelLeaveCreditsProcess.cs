@@ -141,9 +141,10 @@ namespace ProcessLayer.Processes.HR
                 db.ExecuteNonQuery(PersonnelLeaveCreditsProcedures.Instance.Delete, Parameters);
             }
         }
-        public static void UpdateCredits(DBTools db, byte leaveTypeId, int year, double credits, int userid)
+        public static void UpdateCredits(DBTools db, long personnelId, byte leaveTypeId, int year, double credits, int userid)
         {
             var parameters = new Dictionary<string, object> {
+                { "@PersonnelID", personnelId },
                 { "@LeaveTypeId", leaveTypeId },
                 { "@UsedCredits", credits },
                 { "@YearValid", year },

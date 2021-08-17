@@ -57,7 +57,7 @@ namespace ReportLayer.Reports
                 WriteToCell(startrow, PrintTimeSheetHelper.Instance.DateColumn, timelog.Date.ToString("dd-MMM-yy-ddd"));
                 WriteToCell(startrow, PrintTimeSheetHelper.Instance.AssignedColumn, timelog.Assigned);
                 WriteToCell(startrow, PrintTimeSheetHelper.Instance.AMInColumn, timelog.Login?.ToString("hh:mm tt"));
-                WriteToCell(startrow, PrintTimeSheetHelper.Instance.PMOutColumn, timelog.Logout?.ToString("hh:mm tt"));
+                WriteToCell(startrow, PrintTimeSheetHelper.Instance.PMOutColumn, timelog.Login == timelog.Logout ? null : timelog.Logout?.ToString("hh:mm tt"));
                 WriteToCell(startrow, PrintTimeSheetHelper.Instance.NoofDaysColumn, timelog.NoofDays > 0 ? timelog.NoofDays.ToString("N3") : "");
                 WriteToCell(startrow, PrintTimeSheetHelper.Instance.RegularOTColumn, timelog.RegOTHours > 0 ? timelog.RegOTHours.ToString("N2") : "");
                 WriteToCell(startrow, PrintTimeSheetHelper.Instance.SundayOTColumn, timelog.SunOTHours > 0 ? timelog.SunOTHours.ToString("N2") : "");

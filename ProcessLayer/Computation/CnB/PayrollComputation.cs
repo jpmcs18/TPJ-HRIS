@@ -225,6 +225,8 @@ namespace ProcessLayer.Computation.CnB
                                         || (x.LoginDate <= starttime && x.LogoutDate <= endtime && x.LogoutDate >= endtime)
                                         || (x.LoginDate?.Date == start.Date)).OrderByDescending(x => x.LogoutDate).Select(x => x.LogoutDate).FirstOrDefault();
 
+                    LogoutDate = LogoutDate ?? LoginDate;
+
                     LoginDate = LoginDate?.AddSeconds(-(LoginDate?.Second ?? 0));
                     LogoutDate = LogoutDate?.AddSeconds(-(LogoutDate?.Second ?? 0));
                     #endregion

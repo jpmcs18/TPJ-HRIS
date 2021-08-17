@@ -29,17 +29,17 @@ namespace ProcessLayer.Processes.Lookups
         }
         public PersonnelType CreateOrUpdate(string item, int user)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         public void Delete(dynamic id, int user)
         {
-            throw new NotImplementedException();
         }
 
         public List<PersonnelType> Filter(string key, int page, int gridCount, out int pageCount)
         {
-            throw new NotImplementedException();
+            pageCount = 0;
+            return null;
         }
 
         public PersonnelType Get(dynamic id)

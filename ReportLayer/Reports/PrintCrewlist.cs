@@ -172,14 +172,5 @@ namespace ReportLayer.Reports
                 });
             }
         }
-
-        public override void Dispose()
-        {
-            Crews = null;
-            Vessel = null;
-            StartingDate = null;
-            EndingDate = null;
-            base.Dispose();
-        }
     }
 }

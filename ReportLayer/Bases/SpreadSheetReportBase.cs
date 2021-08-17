@@ -79,6 +79,10 @@ namespace ReportLayer.Bases
         {
             WorkSheet.Rows.InsertEmpty(row, cnt);
         }
+        protected void InsertRowCopy(int row, int cnt)
+        {
+            WorkSheet.Rows.InsertCopy(row, cnt, WorkSheet.Rows[row-1]);
+        }
 
         protected ExcelCell SetFontColor(string cell, SpreadsheetColor fontColor)
         {
@@ -153,7 +157,6 @@ namespace ReportLayer.Bases
 
         public virtual void Dispose()
         {
-
         }
     }
 }

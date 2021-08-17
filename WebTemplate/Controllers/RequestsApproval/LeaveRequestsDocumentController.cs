@@ -12,7 +12,6 @@ namespace WebTemplate.Controllers.RequestsApproval
 {
     public class LeaveRequestsDocumentController : BaseController
     {
-        private const string SAVE_LOCATION = "LeaveSaveLocation";
 
         // GET: LeaveRequestsDocument
         public ActionResult Index(Index model)
@@ -34,40 +33,5 @@ namespace WebTemplate.Controllers.RequestsApproval
             }
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public JsonResult UploadDocument(long leaveRequestId, HttpPostedFileBase fileBase)
-        {
-            try
-            {
-                var appSettingPath = ConfigurationManager.AppSettings[SAVE_LOCATION];
-                var directory = appSettingPath.Contains("~") ? Server.MapPath(appSettingPath) : appSettingPath;
-
-                if (fileBase != null && fileBase.ContentLength > 0)
-                {
-                    var fileName = Path.GetFileName(fileBase.FileName);
-                    var file = Hash(leaveRequestId.ToString()) + DateTime.Now.ToString("MMddyyyyHHmmss") + fileName;
-                    var path = Path.Combine(directory, file);
-
-                    if (!Directory.Exists(directory))
-                        Directory.CreateDirectory(directory);
-
-                    if (System.IO.File.Exists(path))
-                        System.IO.File.Delete(path);
-
-                    fileBase.SaveAs(path);
-
-                    LeaveRequestProcess.Instance.UploadDocument(leaveRequestId, file, User.UserID);
-                }
-                else
-                    return Json(new { msg = false, res = "Nothing to upload" });
-
-                return Json(new { msg = true, res = "Uploaded" });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { msg = false, res = ex.GetActualMessage() });
-            }
-        }
     }
 }

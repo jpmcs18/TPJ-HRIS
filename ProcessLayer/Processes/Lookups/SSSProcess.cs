@@ -68,6 +68,7 @@ namespace ProcessLayer.Processes.Lookups
             {
                 db.ExecuteNonQuery("lookup.CreateOrUpdateSSS", new Dictionary<string, object>() {
                     { "@ID", id },
+                    { "@Delete", true },
                     { "@LogBy", user },
                 });
             }

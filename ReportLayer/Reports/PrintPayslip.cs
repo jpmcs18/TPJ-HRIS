@@ -107,9 +107,26 @@ namespace ReportLayer.Reports
             WriteToCell(PrintPayslipHelper.Instance.AddTotalPayCell, payroll.SumOfAllAdditionalPay.ToString("N2"));
             WriteToCell(PrintPayslipHelper.Instance.SignatoryCell, payroll.Personnel.FullName);
 
+            int startRow = PrintPayslipHelper.Instance.LoanStartRow;
+            if (payroll.SSSCalamityLoan > 0) 
+            {
+                InsertRowCopy(startRow, 1);
+                WriteToCell(startRow, PrintPayslipHelper.Instance.PayrollPeriodColumn, "SSS Calamity Loan").SetHorizontalAlignment(HorizontalAlignmentStyle.Center);
+                WriteToCell(startRow, PrintPayslipHelper.Instance.DepartmentColumn, (payroll.SSSCalamityLoan + 1000).ToString("N2")).SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
+                startRow++;
+
+            }
+            if (payroll.PagibigCalamityLoan > 0)
+            {
+                InsertRowCopy(startRow, 1);
+                WriteToCell(startRow, PrintPayslipHelper.Instance.PayrollPeriodColumn, "Pag Ibig Calamity Loan").SetHorizontalAlignment(HorizontalAlignmentStyle.Center);
+                WriteToCell(startRow, PrintPayslipHelper.Instance.DepartmentColumn, (payroll.PagibigCalamityLoan + 100).ToString("N2")).SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
+            }
+
+
             var allowances = payroll.PayrollDetails.GroupBy(x => x.Location?.ID ?? 0);
 
-            int startRow = PrintPayslipHelper.Instance.AllowanceStartRow;
+            startRow = PrintPayslipHelper.Instance.AllowanceStartRow;
 
             addRow = allowances.Count() - PrintPayslipHelper.Instance.AllowanceMaxRow;
             if (addRow > 0)

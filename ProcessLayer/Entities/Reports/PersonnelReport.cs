@@ -2,7 +2,7 @@
 
 namespace ProcessLayer.Entities
 {
-    public sealed class PersonnelReport
+    public class PersonnelReport
     {
 	    public string FirstName { get; set; }
         public string MiddleName { get; set; }

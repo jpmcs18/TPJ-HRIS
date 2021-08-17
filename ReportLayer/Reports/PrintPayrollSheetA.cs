@@ -102,7 +102,7 @@ namespace ReportLayer.Reports
             WriteToCell(Row, PrintPayrollSheetAHelper.Instance.ColumnSSSLoan, "SSS Loan")
                 .SetWrapText();
 
-            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.ColumnProvidentFund, "Provident Fund")
+            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.ColumnProvidentFund, "SSS (MPF)")
                 .SetWrapText();
 
             WriteToCell(Row, PrintPayrollSheetAHelper.Instance.ColumnWithholdingTax, "Withholding Tax")
@@ -136,11 +136,11 @@ namespace ReportLayer.Reports
                 .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
             WriteToCell(Row, PrintPayrollSheetAHelper.Instance.ColumnPagibigFund, payroll.PagibigFund.ToString("N2"))
                 .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
-            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.ColumnPagibigLoan, payroll.PagibigLoan.ToString("N2"))
+            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.ColumnPagibigLoan, (payroll.PagibigLoan + payroll.PagibigCalamityLoan).ToString("N2"))
                 .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
             WriteToCell(Row, PrintPayrollSheetAHelper.Instance.ColumnSSS, payroll.SSS.ToString("N2"))
                 .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
-            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.ColumnSSSLoan, payroll.SSSLoan.ToString("N2"))
+            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.ColumnSSSLoan, (payroll.SalaryLoan + payroll.SSSCalamityLoan).ToString("N2"))
                 .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
             WriteToCell(Row, PrintPayrollSheetAHelper.Instance.ColumnProvidentFund, payroll.ProvidentFund.ToString("N2"))
                 .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);

@@ -70,6 +70,7 @@ namespace ProcessLayer.Processes.Lookups
             {
                 db.ExecuteNonQuery("lookup.CreateOrUpdatePhilHealth", new Dictionary<string, object>() {
                     { "@ID", id },
+                    { "@Delete", true },
                     { "@LogBy", user },
                 });
             }

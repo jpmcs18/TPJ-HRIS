@@ -10,12 +10,12 @@ namespace ProcessLayer.Entities.Kiosk
         public DateTime? EndDateTime { get; set; }
         public string File { get; set; }
         public string FilePath { get; set; }
-        public bool IsExpired { get { return Approved != true && Cancelled != true && CreatedOn != null && StartDateTime != null && ((DateTime.Now - CreatedOn).Value.TotalHours >= 48); } }
+        public bool IsExpired { get { return Approved != true && Cancelled != true && CreatedOn != null && StartDateTime != null && ((DateTime.Now - CreatedOn).Value.TotalHours >= 48) && false /*For Bypassing Expirationo*/; } }
         public string Remarks
         {
             get
             {
-                if ((Approved ?? false) && (_LeaveType?.HasDocumentNeeded ?? false) && string.IsNullOrEmpty(File))
+                if ((Approved ?? false) && (((_LeaveType?.HasDocumentNeeded ?? false) && string.IsNullOrEmpty(File)) || !(_LeaveType?.HasDocumentNeeded ?? false)))
                     return "Partialy approved, Waiting for document to upload";
 
                 if (IsExpired)

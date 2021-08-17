@@ -66,6 +66,7 @@ namespace ProcessLayer.Processes.Lookups
             {
                 db.ExecuteNonQuery("lookup.CreateOrUpdateHDMF", new Dictionary<string, object>() {
                     { "@ID", id },
+                    { "@Delete", true },
                     { "@LogBy", user },
                 });
             }
