@@ -134,19 +134,20 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td></td>
                                     <td class="font-bold-700" style="text-align: right;">Total:</td>
+                                    <td class="font-bold-700" style="text-align: right;">@Model.Payrolls.Sum(x => x.NOofDays).ToString("#,##0.00")</td>
                                     <td class="font-bold-700" style="text-align: right;">@Model.Payrolls.Sum(x => x.BasicPay).ToString("#,##0.00")</td>
                                     <td class="font-bold-700" style="text-align: right;">@Model.Payrolls.Sum(x => x.SumOfAllAllowance).ToString("#,##0.000")</td>
                                     <td class="font-bold-700" style="text-align: right;">@Model.Payrolls.Sum(x => x.TotalOTPay).ToString("#,##0.000")</td>
                                     <td class="font-bold-700" style="text-align: right;">@Model.Payrolls.Sum(x => x.TotalDeductions).ToString("#,##0.000")</td>
-                                    <td class="font-bold-700" style="text-align: right;">@Model.Payrolls.Sum(x => x.Tax).ToString("#,##0.000")</td>
+                                    @*<td class="font-bold-700" style="text-align: right;">@Model.Payrolls.Sum(x => x.Tax).ToString("#,##0.000")</td>*@
                                     <td class="font-bold-700" style="text-align: right;">@Model.Payrolls.Sum(x => x.NetPay).ToString("#,##0.000")</td>
+                                    <td></td>
                                     @*@if (PayrollPageAccess.Update || PayrollPageAccess.Delete)
-                                    {
-                                        <td>
-                                        </td>
-                                    }*@
+        {
+            <td>
+            </td>
+        }*@
                                 </tr>
                             </tfoot>
                         </table>
