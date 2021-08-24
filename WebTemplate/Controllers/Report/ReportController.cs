@@ -29,8 +29,8 @@ namespace WebTemplate.Controllers.HumanResource
         [HttpPost]
         public ActionResult PrintReport(ReportType reportType, int year, int month)
         {
-            try
-            {
+            //try
+            //{
                 using (var report = new PrintReport(Server.MapPath(PrintReportHelper.Instance.Template)))
                 {
                     report.ReportType = reportType;
@@ -40,12 +40,12 @@ namespace WebTemplate.Controllers.HumanResource
                     ViewBag.Content = report.SaveToPDF();
                 }
                 return View("~/Views/PrintingView.cshtml");
-            }
-            catch (Exception ex)
-            {
-                //return Json(new { msg = false, res = ex.GetActualMessage() });
-                return View("~/Views/Security/ServerError.cshtml", ex.GetActualMessage());
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    //return Json(new { msg = false, res = ex.GetActualMessage() });
+            //    return View("~/Views/Security/ServerError.cshtml", ex.GetActualMessage());
+            //}
         }
     }
 }

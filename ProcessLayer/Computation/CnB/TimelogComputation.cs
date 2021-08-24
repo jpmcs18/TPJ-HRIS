@@ -168,10 +168,10 @@ namespace ProcessLayer.Computation.CnB
                 {
                     prevDate = GlobalHelper.GetPrevSchedDate(timesheet.Personnel._Schedules, starttime, NonWorkingDays, outerPort?._Location?.ID ?? loc?.ID);
                 }
+                details.HighRiskRate = PayrollParameters.CNBInstance.HighRiskRate;
                 if ((highRisk?.ID ?? 0) > 0)
                 {
                     details.isHighRisk = true;
-                    details.HighRiskRate = PayrollParameters.CNBInstance.HighRiskRate;
                 }
                 if (!needTimeLog && details.isHazard)
                 {

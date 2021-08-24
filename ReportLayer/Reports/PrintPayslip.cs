@@ -150,50 +150,29 @@ namespace ReportLayer.Reports
             }
 
 
-            if (payroll.TotalAdditionalPay > 0)
+            addRow = PrintPayslipHelper.Instance.AddRow;
+
+            WriteToCell(addRow, PrintPayslipHelper.Instance.AddPayDescColumn, "No of Days");
+            WriteToCell(addRow, PrintPayslipHelper.Instance.AddNoofDaysColumn, payroll.HighRiskPresent.ToString("N3"));
+            WriteToCell(addRow, PrintPayslipHelper.Instance.AddRateColumn, payroll.HighRiskPayRate.ToString("N3"));
+            WriteToCell(addRow, PrintPayslipHelper.Instance.AddPayColumn, payroll.TotalHighRiskPay.ToString("N2"));
+            addRow++;
+            if (payroll.Allowance > 0)
             {
-                addRow = PrintPayslipHelper.Instance.AddRow;
-                if (payroll.Personnel.AdditionalHazardRate > 0)
-                {
-                    WriteToCell(addRow, PrintPayslipHelper.Instance.AddPayDescColumn, $"No of Days {(int)(payroll.Personnel.AdditionalHazardRate * 100)}{(payroll.Personnel.AdditionalHazardRate > 0 ? "%" : "")}");
-                    WriteToCell(addRow, PrintPayslipHelper.Instance.AddNoofDaysColumn, payroll.NoOfDaysPresent.ToString("N3"));
-                    WriteToCell(addRow, PrintPayslipHelper.Instance.AddRateColumn, payroll.AdditionalPayRate.ToString("N3"));
-                    WriteToCell(addRow, PrintPayslipHelper.Instance.AddPayColumn, (payroll.NoOfDaysPresent * payroll.AdditionalPayRate).ToString("N2"));
-                    addRow++;
-                    WriteToCell(addRow, PrintPayslipHelper.Instance.AddPayDescColumn, $"Allowance {(int)(payroll.Personnel.AdditionalHazardRate * 100)}{(payroll.Personnel.AdditionalHazardRate > 0 ? "%" : "")}");
-                    WriteToCell(addRow, PrintPayslipHelper.Instance.AddNoofDaysColumn, payroll.NoOfDaysPresent.ToString("N3"));
-                    WriteToCell(addRow, PrintPayslipHelper.Instance.AddRateColumn, payroll.AdditionalAllowanceRate.ToString("N3"));
-                    WriteToCell(addRow, PrintPayslipHelper.Instance.AddPayColumn, (payroll.NoOfDaysPresent * payroll.AdditionalPayRate).ToString("N2"));
-                    addRow++;
-                }
-
-                if (payroll.HighRiskRate > 0)
-                {
-
-                    WriteToCell(addRow, PrintPayslipHelper.Instance.AddPayDescColumn, $"No of Days (High Risk) {(int)(payroll.HighRiskRate * 100)}{(payroll.HighRiskRate > 0 ? "%" : "")}");
-                    WriteToCell(addRow, PrintPayslipHelper.Instance.AddNoofDaysColumn, payroll.HighRiskPresent.ToString("N3"));
-                    WriteToCell(addRow, PrintPayslipHelper.Instance.AddRateColumn, payroll.HighRiskPayRate.ToString("N3"));
-                    WriteToCell(addRow, PrintPayslipHelper.Instance.AddPayColumn, payroll.HighRiskPay.ToString("N2"));
-                    addRow++;
-                    WriteToCell(addRow, PrintPayslipHelper.Instance.AddPayDescColumn, $"Allowance (High Risk) {(int)(payroll.HighRiskRate * 100)}{(payroll.HighRiskRate > 0 ? "%" : "")}");
-                    WriteToCell(addRow, PrintPayslipHelper.Instance.AddNoofDaysColumn, payroll.HighRiskPresent.ToString("N3"));
-                    WriteToCell(addRow, PrintPayslipHelper.Instance.AddRateColumn, payroll.HighRiskPayAllowanceRate.ToString("N3"));
-                    WriteToCell(addRow, PrintPayslipHelper.Instance.AddPayColumn, payroll.HighRiskPayAllowance.ToString("N2"));
-                }
-
-                if (payroll.TotalAdditionalOvertimePay > 0)
-                {
-
-                    WriteToCell(addRow, PrintPayslipHelper.Instance.AddPayDescColumn, $"Overtime");
-                    WriteToCell(addRow, PrintPayslipHelper.Instance.AddPayColumn, payroll.TotalAdditionalOvertimePay.ToString("N2"));
-                    addRow++;
-                    WriteToCell(addRow, PrintPayslipHelper.Instance.AddPayDescColumn, $"Allowance (Overtime)");
-                    WriteToCell(addRow, PrintPayslipHelper.Instance.AddPayColumn, payroll.TotalAdditionalOvertimeAllowancePay.ToString("N2"));
-                }
-
+                WriteToCell(addRow, PrintPayslipHelper.Instance.AddPayDescColumn, "Allowance");
+                WriteToCell(addRow, PrintPayslipHelper.Instance.AddNoofDaysColumn, payroll.HighRiskPresent.ToString("N3"));
+                WriteToCell(addRow, PrintPayslipHelper.Instance.AddRateColumn, payroll.HighRiskAllowanceRate.ToString("N3"));
+                WriteToCell(addRow, PrintPayslipHelper.Instance.AddPayColumn, payroll.TotalHighRiskAllowancePay.ToString("N2"));
+                addRow++;
             }
-
-
+            WriteToCell(addRow, PrintPayslipHelper.Instance.AddPayDescColumn, "Overtime");
+            WriteToCell(addRow, PrintPayslipHelper.Instance.AddPayColumn, payroll.TotalAdditionalOvertimePay.ToString("N2"));
+            addRow++;
+            if (payroll.Allowance > 0)
+            {
+                WriteToCell(addRow, PrintPayslipHelper.Instance.AddPayDescColumn, "Allowance");
+                WriteToCell(addRow, PrintPayslipHelper.Instance.AddPayColumn, payroll.TotalAdditionalOvertimeAllowancePay.ToString("N2"));
+            }
             var basics = payroll.PayrollDetails.GroupBy(x => x.Location?.ID ?? 0);
 
             startRow = PrintPayslipHelper.Instance.BasicStartRow;

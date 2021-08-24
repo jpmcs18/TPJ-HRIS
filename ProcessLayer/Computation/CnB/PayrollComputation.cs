@@ -139,7 +139,8 @@ namespace ProcessLayer.Computation.CnB
             payroll.NightDifferentialRate2 = ((payroll.DailyRate / PayrollParameters.CNBInstance.DailyHours) * PayrollParameters.CNBInstance.NightDiffRate2).ToDecimalPlaces(3);
             payroll.AdditionalAllowanceRate = (payroll.Allowance * payroll.Personnel.AdditionalHazardRate).ToDecimalPlaces(3);
             payroll.AdditionalPayRate = (payroll.DailyRate * payroll.Personnel.AdditionalHazardRate).ToDecimalPlaces(3);
-
+            payroll.HighRiskPayRate = (payroll.DailyRate * PayrollParameters.CNBInstance.HighRiskRate).ToDecimalPlaces(3);
+            payroll.HighRiskAllowanceRate = (payroll.Allowance * PayrollParameters.CNBInstance.HighRiskRate).ToDecimalPlaces(3);
             if (!(payroll.Personnel.FixedSalary ?? false))
             {
                 DateTime start = periodStart.Date;
@@ -192,15 +193,11 @@ namespace ProcessLayer.Computation.CnB
                     {
                         details = payroll.PayrollDetails.Where(x => x.LoggedDate == start).First();
                         details.Location = default;
-                        details.HighRiskAllowanceRate = default;
                         details.TotalRegularMinutes = default;
                         details.TotalLeaveMinutes = default;
                         details.IsHoliday = default;
                         details.IsNonTaxable = default;
                         details.IsHighRisk = default;
-                        details.HighRiskRate = default;
-                        details.HighRiskPayRate = default;
-                        details.HighRiskAllowanceRate = default;
                         details.RegularOTMinutes = default;
                         details.SundayOTMinutes = default;
                         details.HolidayRegularOTMinutes = default;
@@ -280,12 +277,10 @@ namespace ProcessLayer.Computation.CnB
                         prevDate = GlobalHelper.GetPrevSchedDate(payroll.Personnel._Schedules, starttime, NonWorkingDays.ToList(), outerPort?._Location?.ID ?? loc?.ID);
                         details.IsHoliday = true;
                     }
+
                     if ((highRisk?.ID ?? 0) > 0)
                     {
                         details.IsHighRisk = true;
-                        details.HighRiskRate = PayrollParameters.CNBInstance.HighRiskRate;
-                        details.HighRiskPayRate = (payroll.DailyRate * details.HighRiskRate).ToDecimalPlaces(3);
-                        details.HighRiskAllowanceRate = (payroll.Allowance * details.HighRiskRate).ToDecimalPlaces(3);
                     }
                     if ((nonTaxableDay?.ID ?? 0) > 0)
                     {
@@ -344,8 +339,10 @@ namespace ProcessLayer.Computation.CnB
                 payroll.TotalAllowance = payroll.PayrollDetails.Where(x => (x.ID > 0 && x.Modified) || x.ID == 0).GroupBy(x => x.Location?.ID ?? 0).Sum(t => t.Sum(x => (payroll.Allowance * (x.IsHazard ? ((x.Location?.HazardRate ?? 0) + 1) : 1)).ToDecimalPlaces(3) * x.RegularDay).ToDecimalPlaces(2)).ToDecimalPlaces(2);
                 payroll.TotalAdditionalPay = payroll.PayrollDetails.Where(x => (x.ID > 0 && x.Modified) || x.ID == 0).Where(x => x.IsPresent).Sum(x => payroll.AdditionalPayRate * x.RegularDay).ToDecimalPlaces(2);
                 payroll.TotalAdditionalAllowancePay = payroll.PayrollDetails.Where(x => (x.ID > 0 && x.Modified) || x.ID == 0).Where(x => x.IsPresent).Sum(x => payroll.AdditionalAllowanceRate * x.RegularDay).ToDecimalPlaces(2);
-                payroll.TotalAdditionalPay += payroll.PayrollDetails.Where(x => (x.ID > 0 && x.Modified) || x.ID == 0).Where(x => x.IsHighRisk).Sum(x => x.HighRiskPayRate * 1).ToDecimalPlaces(2);
-                payroll.TotalAdditionalAllowancePay += payroll.PayrollDetails.Where(x => (x.ID > 0 && x.Modified) || x.ID == 0).Where(x => x.IsHighRisk).Sum(x => x.HighRiskAllowanceRate * 1).ToDecimalPlaces(2);
+                payroll.TotalHighRiskPay = payroll.PayrollDetails.Where(x => (x.ID > 0 && x.Modified) || x.ID == 0).Where(x => x.IsHighRisk).Sum(x => payroll.HighRiskPayRate).ToDecimalPlaces(2);
+                payroll.TotalHighRiskAllowancePay = payroll.PayrollDetails.Where(x => (x.ID > 0 && x.Modified) || x.ID == 0).Where(x => x.IsHighRisk).Sum(x => payroll.HighRiskAllowanceRate).ToDecimalPlaces(2);
+                payroll.TotalAdditionalPay += payroll.TotalHighRiskPay;
+                payroll.TotalAdditionalAllowancePay += payroll.TotalHighRiskAllowancePay;
                 var _RegularOTPay = payroll.PayrollDetails.Where(x => (x.ID > 0 && x.Modified) || x.ID == 0).Where(x => x.IsNonTaxable).Sum(x => payroll.RegularOTRate * x.RegularOTHours).ToDecimalPlaces(2);
                 var _SundayOTPay = payroll.PayrollDetails.Where(x => (x.ID > 0 && x.Modified) || x.ID == 0).Where(x => x.IsNonTaxable).Sum(x => payroll.SundayOTRate * x.SundayOTHours).ToDecimalPlaces(2);
                 var _HolidayOTPay = payroll.PayrollDetails.Where(x => (x.ID > 0 && x.Modified) || x.ID == 0).Where(x => x.IsNonTaxable).Sum(x => payroll.HolidayRegularOTRate * x.HolidayOTDays).ToDecimalPlaces(2);

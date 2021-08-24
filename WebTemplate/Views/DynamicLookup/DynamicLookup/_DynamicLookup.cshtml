@@ -14,7 +14,7 @@
         {
 <div class="form-group col-xs-12 col-sm-6 col-md-6 col-lg-6" id="lookupdata">
     <input type="hidden" id="id" name="ID" value="@(Model.Data == null ? null : Model.Data.ID)" class="form-control">
-    <label @(settings.Type == LookupDataType.boolean ? "for=" + settings.Name + " " : "") class="control-label">@settings.Display</label>
+    <label @(settings.Type == LookupDataType.boolean ? "for=" + settings.Name + " " : "") class="control-label">@(settings.Display + (settings.Type == LookupDataType.rate ? "(%)" : ""))</label>
     @if (settings.Type == LookupDataType.model)
     {
         lst = settings.LookupSource.GetList(settings.HasDefault);
@@ -27,6 +27,7 @@
         case LookupDataType.text:
         case LookupDataType.number:
         case LookupDataType.amount:
+        case LookupDataType.rate:
             <input type="text" name="@settings.Name" value="@(data == null ? "" : data)" class="form-control" @settings.ReadOnlyText>
             break;
         case LookupDataType.year:
@@ -82,6 +83,7 @@
                 //console.log('type: ', type);
                 switch (type) {
                     case 'amount':
+                    case 'rate':
                         $(this).attr('data-type', /^(\d{1,3})(,\d{1,3})*(\.\d{1,})?$/g);
                         break;
                     case 'number':

@@ -12,8 +12,8 @@ namespace WebTemplate.Controllers.RequestsApproval
         // GET: OTRequests
         public ActionResult Index(Models.RequestsApproval.OT_Request.Index model)
         {
-            try
-            {
+            //try
+            //{
                 model.Page = model.Page > 1 ? model.Page : 1;
                 model.OTRequests = OTRequestProcess.Instance.GetApprovingList(model.Personnel, model.IsExpired, model.IsPending, model.IsApproved, model.IsCancelled, model.StartDateTime, model.EndingDateTime, model.Page, model.GridCount, out int PageCount, User.UserID);
                 model.PageCount = PageCount;
@@ -27,14 +27,14 @@ namespace WebTemplate.Controllers.RequestsApproval
                 {
                     return ViewCustom("_OTRequestsIndex", model);
                 }
-            }
-            catch (Exception ex)
-            {
-                string msg = ex.Message.ToString();
-                ViewBag.Message = msg ?? "You don't have the right to access this page.";
-                return View("~/Views/Security/Unauthorized.cshtml");
-                //return View("ServerError.cshtml", ex.GetActualMessage());
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    string msg = ex.Message.ToString();
+            //    ViewBag.Message = msg ?? "You don't have the right to access this page.";
+            //    return View("~/Views/Security/Unauthorized.cshtml");
+            //    //return View("ServerError.cshtml", ex.GetActualMessage());
+            //}
         }
 
         [HttpPost]

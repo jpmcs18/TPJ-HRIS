@@ -178,8 +178,8 @@ namespace WebTemplate.Controllers.Movement
         [HttpPost]
         public ActionResult PrintVesselMovement(VesselMovement model)
         {
-            try
-            {
+            //try
+            //{
                 using (var report = new PrintVesselMovement(Server.MapPath(PrintVesselMovementHelper.Instance.Template)))
                 {
                     report.StartDate = model.StartinDate;
@@ -190,18 +190,18 @@ namespace WebTemplate.Controllers.Movement
                     ViewBag.Content = report.SaveToPDF();
                 }
                 return View("~/Views/PrintingView.cshtml");
-            }
-            catch (Exception ex)
-            {
-                //return Json(new { msg = false, res = ex.GetActualMessage() });
-                return View("~/Views/Security/ServerError.cshtml", ex.GetActualMessage());
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    //return Json(new { msg = false, res = ex.GetActualMessage() });
+            //    return View("~/Views/Security/ServerError.cshtml", ex.GetActualMessage());
+            //}
         }
         [HttpPost]
         public ActionResult PrintCrewList(CrewList model)
         {
-            try
-            {
+            //try
+            //{
                 using (var report = new PrintCrewlist(Server.MapPath(PrintCrewListHelper.Instance.Template)))
                 {
                     report.Crews = new System.Collections.Generic.List<CrewDetails>();
@@ -213,12 +213,12 @@ namespace WebTemplate.Controllers.Movement
                     ViewBag.Content = report.SaveToPDF();
                 }
                 return View("~/Views/PrintingView.cshtml");
-            }
-            catch (Exception ex)
-            {
-                //return Json(new { msg = false, res = ex.GetActualMessage() });
-                return View("~/Views/Security/ServerError.cshtml", ex.GetActualMessage());
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    //return Json(new { msg = false, res = ex.GetActualMessage() });
+            //    return View("~/Views/Security/ServerError.cshtml", ex.GetActualMessage());
+            //}
         }
         
     }

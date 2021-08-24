@@ -29,7 +29,7 @@ namespace ProcessLayer.Processes.Lookups
                 MaximumIncome = dr["Maximum Income"].ToNullableDecimal(),
                 FixedTax = dr["Fixed Tax"].ToNullableDecimal(),
                 AdditionalTax = dr["Additional Tax"].ToNullableDecimal(),
-                AdditionalTaxBaseline = dr["Additional Tax Baseline"].ToNullableDecimal(),
+                ExcessOver = dr["Excess Over"].ToNullableDecimal(),
                 TaxScheduleID = dr["Tax Schedule ID"].ToNullableByte(),
                 EffectiveStartDate = dr["Effective Start Date"].ToNullableDateTime(),
                 EffectiveEndDate = dr["Effective End Date"].ToNullableDateTime()
@@ -100,7 +100,7 @@ namespace ProcessLayer.Processes.Lookups
                     { "@MaximumIncome", taxtable.MaximumIncome}, 
                     { "@FixedTax", taxtable.FixedTax }, 
                     { "@AdditionalTax", taxtable.AdditionalTax }, 
-                    { "@AdditionalTaxBaseline", taxtable.AdditionalTaxBaseline }, 
+                    { "@ExcessOver", taxtable.ExcessOver }, 
                     { "@TaxScheduleID", taxtable.TaxScheduleID }, 
                     { "@EffectiveStartDate", taxtable.EffectiveStartDate }, 
                     { "@EffectiveEndDate", taxtable.EffectiveEndDate }, 

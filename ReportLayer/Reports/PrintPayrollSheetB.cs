@@ -16,9 +16,21 @@ namespace ReportLayer.Reports
         }
 
         public PayrollPeriod PayrollPeriod { get; set; }
-
-        private int Row { get; set; } = 1;
-
+        private int Row = 1;
+        private decimal TotalBasicPay = 0;
+        private decimal TotalAllowance = 0;
+        private decimal TotalOT = 0;
+        private decimal TotalAdditionalPay = 0;
+        private decimal TotalPagibigFund = 0;
+        private decimal TotalPagibigLoan = 0;
+        private decimal TotalSSS = 0;
+        private decimal TotalProvident = 0;
+        private decimal TotalSSSLoan = 0;
+        private decimal TotalTax = 0;
+        private decimal TotalPhilHealth = 0;
+        private decimal TotalVale = 0;
+        private decimal TotalOutStandingVale = 0;
+        private decimal TotalNetpay = 0;
         public override void GenerateReport()
         {
             base.GenerateReport();
@@ -30,8 +42,9 @@ namespace ReportLayer.Reports
             int endRow = PrintPayrollSheetBHelper.Instance.EndPageRow;
             foreach (var payroll in PayrollPeriod.Payrolls)
             {
-                if (cnt == PrintPayrollSheetBHelper.Instance.MaxItem)
+                if (cnt == PrintPayrollSheetBHelper.Instance.MaxItem-1)
                 {
+                    WriteTotal();
                     Row = endRow + 1;
                     WriteHeader();
                     cnt = 0;
@@ -40,10 +53,70 @@ namespace ReportLayer.Reports
                 WriteDetails(payroll, ++index);
                 cnt++;
             }
-
+            if(cnt > 0)
+            {
+                WriteTotal();
+            }
             WriteFooter();
         }
+        private void WriteTotal()
+        {
+            CellBorder(Row, 0, Row, PrintPayrollSheetBHelper.Instance.ColumnNetAmount, MultipleBorders.Horizontal, LineStyle.Medium);
 
+            MergeCell(Row, 0, Row, PrintPayrollSheetBHelper.Instance.ColumnRate)
+                .WriteToCell("TOTAL AMOUNT :")
+                .SetHorizontalAlignment(HorizontalAlignmentStyle.Center);
+
+            WriteToCell(Row, PrintPayrollSheetBHelper.Instance.ColumnSalary, TotalBasicPay.ToString("N2"))
+                .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
+            WriteToCell(Row, PrintPayrollSheetBHelper.Instance.ColumnAllowance, TotalAllowance.ToString("N2"))
+                .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
+            WriteToCell(Row, PrintPayrollSheetBHelper.Instance.ColumnOT, TotalOT.ToString("N2"))
+                .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
+            WriteToCell(Row, PrintPayrollSheetBHelper.Instance.ColumnAdditionalPay, TotalAdditionalPay.ToString("N2"))
+                .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
+            WriteToCell(Row, PrintPayrollSheetBHelper.Instance.ColumnPagibigFund, TotalPagibigFund.ToString("N2"))
+                .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
+            WriteToCell(Row, PrintPayrollSheetBHelper.Instance.ColumnPagibigLoan, TotalPagibigLoan.ToString("N2"))
+                .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
+            WriteToCell(Row, PrintPayrollSheetBHelper.Instance.ColumnSSS, TotalSSS.ToString("N2"))
+                .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
+            WriteToCell(Row, PrintPayrollSheetBHelper.Instance.ColumnProvidentFund, TotalProvident.ToString("N2"))
+                .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
+            WriteToCell(Row, PrintPayrollSheetBHelper.Instance.ColumnSSSLoan, TotalSSSLoan.ToString("N2"))
+                .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
+            WriteToCell(Row, PrintPayrollSheetBHelper.Instance.ColumnWithholdingTax, TotalTax.ToString("N2"))
+                .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
+            WriteToCell(Row, PrintPayrollSheetBHelper.Instance.ColumnPhilHealth, TotalPhilHealth.ToString("N2"))
+                .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
+            WriteToCell(Row, PrintPayrollSheetBHelper.Instance.ColumnVale, TotalVale.ToString("N2"))
+                .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
+            WriteToCell(Row, PrintPayrollSheetBHelper.Instance.ColumnOutstandingVale, TotalOutStandingVale.ToString("N2"))
+                .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
+            WriteToCell(Row, PrintPayrollSheetBHelper.Instance.ColumnNetAmount, TotalNetpay.ToString("N2"))
+                .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
+            Row++;
+
+            ResetTotal();
+
+        }
+        private void ResetTotal()
+        {
+            TotalBasicPay = 0;
+            TotalAllowance = 0;
+            TotalOT = 0;
+            TotalAdditionalPay = 0;
+            TotalPagibigFund = 0;
+            TotalPagibigLoan = 0;
+            TotalSSS = 0;
+            TotalProvident = 0;
+            TotalSSSLoan = 0;
+            TotalTax = 0;
+            TotalPhilHealth = 0;
+            TotalVale = 0;
+            TotalOutStandingVale = 0;
+            TotalNetpay = 0;
+        }
         private void WriteHeader()
         {
             MergeCell(Row, 0, Row, PrintPayrollSheetBHelper.Instance.ColumnNetAmount)
@@ -137,7 +210,7 @@ namespace ReportLayer.Reports
         private void WriteDetails(Payroll payroll, int index)
         {
             decimal noofdays = payroll.PayrollDetails.Where(x => !x.IsHazard).Sum(x => x.RegularDay).ToDecimalPlaces(3);
-            decimal basicpay = payroll.PayrollDetails.Where(x => !x.IsHazard).Sum(x => (payroll.DailyRate * (x.IsHazard ? ((x.Location?.HazardRate ?? 0) + 1) : 1)).ToDecimalPlaces(3) * x.RegularDay).ToDecimalPlaces(2);
+            decimal basicpay = payroll.PayrollDetails.Where(x => !x.IsHazard).Sum(x => payroll.DailyRate * x.RegularDay).ToDecimalPlaces(2);
 
             WriteToCell(Row, PrintPayrollSheetBHelper.Instance.ColumnNo, index.ToString())
                 .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
@@ -180,6 +253,22 @@ namespace ReportLayer.Reports
                 .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
             Row++;
 
+
+            TotalBasicPay += basicpay;
+            TotalAllowance += payroll.SumOfAllAllowance;
+            TotalOT += payroll.TotalOTPay;
+            TotalAdditionalPay += payroll.SumOfAllAdditionalPay;
+            TotalPagibigFund += payroll.PagibigFund;
+            TotalPagibigLoan += (payroll.PagibigLoan + payroll.PagibigCalamityLoan);
+            TotalSSS += payroll.SSS;
+            TotalProvident += payroll.ProvidentFund;
+            TotalSSSLoan += (payroll.SalaryLoan + payroll.SSSCalamityLoan);
+            TotalTax += payroll.Tax;
+            TotalPhilHealth += payroll.PhilHealth;
+            TotalVale += payroll.Vale;
+            TotalOutStandingVale += (-1 * payroll.OutstandingVale);
+            TotalNetpay += payroll.NetPay;
+
             var locations = payroll.PayrollDetails.Where(x => x.IsHazard).GroupBy(x => x.Location.ID);
             foreach (var location in locations)
             {
@@ -193,6 +282,7 @@ namespace ReportLayer.Reports
                     .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
                 WriteToCell(Row, PrintPayrollSheetBHelper.Instance.ColumnSalary, basicpay.ToString("N2"))
                     .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
+                TotalBasicPay += basicpay;
 
                 Row++;
             }

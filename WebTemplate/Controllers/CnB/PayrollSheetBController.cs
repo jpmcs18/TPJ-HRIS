@@ -57,20 +57,20 @@ namespace WebTemplate.Controllers.CnB
         [ValidateAntiForgeryToken]
         public ActionResult RecomputePersonnelPayroll(long payrollId)
         {
-            try
-            {
+            //try
+            //{
                 Payroll model = PayrollProcess.Instance.RecomputePayroll(payrollId, User.UserID);
 
                 ModelState.Clear();
 
                 return PartialViewCustom("_Payroll", model);
-            }
-            catch (Exception ex)
-            {
-                //return Json(new { msg = false, res = ex.GetActualMessage() });
-                ViewBag.ErrorID = 0;
-                return View("ServerError.cshtml", ex.GetActualMessage());
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    //return Json(new { msg = false, res = ex.GetActualMessage() });
+            //        ViewBag.ErrorID = 0;
+            //    return View("~/Views/Security/ServerError.cshtml", ex.GetActualMessage());
+            //}
         }
 
         [HttpPost]
@@ -141,8 +141,8 @@ namespace WebTemplate.Controllers.CnB
         [HttpPost]
         public ActionResult PrintPayroll(long id)
         {
-            try
-            {
+            //try
+            //{
                 using (var report = new PrintPayrollSheetB(Server.MapPath(PrintPayrollSheetBHelper.Instance.Template)))
                 {
                     report.PayrollPeriod = PayrollProcess.Instance.GetPayrollBase(id);
@@ -152,19 +152,19 @@ namespace WebTemplate.Controllers.CnB
                     ViewBag.Title = $"Payroll Sheet - B | {report.PayrollPeriod.StartDate:MMMM dd yyyy} - {report.PayrollPeriod.EndDate:MMMM dd yyyy}";
                 }
                 return View("~/Views/PrintingView.cshtml");
-            }
-            catch (Exception ex)
-            {
-                //return Json(new { msg = false, res = ex.GetActualMessage() });
-                return View("~/Views/Security/ServerError.cshtml", ex.GetActualMessage());
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    //return Json(new { msg = false, res = ex.GetActualMessage() });
+            //    return View("~/Views/Security/ServerError.cshtml", ex.GetActualMessage());
+            //}
         }
 
         [HttpPost]
         public ActionResult PrintPayslip(long id)
         {
-            try
-            {
+            //try
+            //{
                 using (var report = new PrintPayslip(Server.MapPath(PrintPayslipHelper.Instance.Template)))
                 {
                     report.PayrollPeriod = PayrollProcess.Instance.GetPayrollBase(id);
@@ -174,19 +174,19 @@ namespace WebTemplate.Controllers.CnB
                     ViewBag.Title = $"Payslip | {report.PayrollPeriod.StartDate:MMMM dd yyyy} - {report.PayrollPeriod.EndDate:MMMM dd yyyy}";
                 }
                 return View("~/Views/PrintingView.cshtml");
-            }
-            catch (Exception ex)
-            {
-                //return Json(new { msg = false, res = ex.GetActualMessage() });
-                return View("~/Views/Security/ServerError.cshtml", ex.GetActualMessage());
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    //return Json(new { msg = false, res = ex.GetActualMessage() });
+            //    return View("~/Views/Security/ServerError.cshtml", ex.GetActualMessage());
+            //}
         }
 
         [HttpPost]
         public ActionResult PrintIndividualPayslip(long personnelId, long payPeriodid)
         {
-            try
-            {
+            //try
+            //{
                 using (var report = new PrintPayslip(Server.MapPath(PrintPayslipHelper.Instance.Template)))
                 {
                     report.PayrollPeriod = PayrollProcess.Instance.GetPersonnelPayroll(personnelId, payPeriodid);
@@ -196,19 +196,19 @@ namespace WebTemplate.Controllers.CnB
                     ViewBag.Title = $"Individual Payslip | {report.PayrollPeriod.StartDate:MMMM dd yyyy} - {report.PayrollPeriod.EndDate:MMMM dd yyyy}";
                 }
                 return View("~/Views/PrintingView.cshtml");
-            }
-            catch (Exception ex)
-            {
-                //return Json(new { msg = false, res = ex.GetActualMessage() });
-                return View("~/Views/Security/ServerError.cshtml", ex.GetActualMessage());
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    //return Json(new { msg = false, res = ex.GetActualMessage() });
+            //    return View("~/Views/Security/ServerError.cshtml", ex.GetActualMessage());
+            //}
         }
 
         [HttpPost]
         public ActionResult PrintPayslipPerEmployee(long personnelId, int month, int year, int cutOff)
         {
-            try
-            {
+            //try
+            //{
                 using (var report = new PrintPayslip(Server.MapPath(PrintPayslipHelper.Instance.Template)))
                 {
                     report.PayrollPeriod = PayrollProcess.Instance.GetPersonnelPayroll(personnelId, month, year, cutOff);
@@ -218,12 +218,12 @@ namespace WebTemplate.Controllers.CnB
                     ViewBag.Title = $"Individual Payslip | {report.PayrollPeriod.StartDate:MMMM dd yyyy} - {report.PayrollPeriod.EndDate:MMMM dd yyyy}";
                 }
                 return View("~/Views/PrintingView.cshtml");
-            }
-            catch (Exception ex)
-            {
-                //return Json(new { msg = false, res = ex.GetActualMessage() });
-                return View("~/Views/Security/ServerError.cshtml", ex.GetActualMessage());
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    //return Json(new { msg = false, res = ex.GetActualMessage() });
+            //    return View("~/Views/Security/ServerError.cshtml", ex.GetActualMessage());
+            //}
         }
     }
 }

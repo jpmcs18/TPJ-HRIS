@@ -28,10 +28,8 @@ namespace ProcessLayer.Processes.Lookups
                 ID = dr["ID"].ToShort(),
                 MinSalary = dr["Min Salary"].ToNullableDecimal(),
                 MaxSalary = dr["Max Salary"].ToNullableDecimal(),
-                EmployeeShare = dr["Employee Share"].ToNullableDecimal(),
-                EmployerShare = dr["Employer Share"].ToNullableDecimal(),
-                EmployeePercentage = dr["Employee Percentage"].ToNullableDecimal(),
-                EmployerPercentage = dr["Employer Percentage"].ToNullableDecimal(),
+                Share = dr["Share"].ToNullableDecimal(),
+                Rate = dr["Rate"].ToNullableDecimal(),
                 DateStart = dr["Date Start"].ToNullableDateTime(),
                 DateEnd = dr["Date End"].ToNullableDateTime()
             };
@@ -49,10 +47,8 @@ namespace ProcessLayer.Processes.Lookups
                 db.ExecuteNonQuery("lookup.CreateOrUpdatePhilHealth", ref outparams, new Dictionary<string, object>() {
                     { "@MinSalary", philhealth.MinSalary },
                     { "@MaxSalary", philhealth.MaxSalary },
-                    { "@EmployeeShare", philhealth.EmployeeShare },
-                    { "@EmployerShare", philhealth.EmployerShare },
-                    { "@EmployeePercentage", philhealth.EmployeePercentage },
-                    { "@EmployerPercentage", philhealth.EmployerPercentage },
+                    { "@Share", philhealth.Share },
+                    { "@Rate", philhealth.Rate },
                     { "@DateStart", philhealth.DateStart },
                     { "@DateEnd", philhealth.DateEnd },
                     { "@LogBy", user },

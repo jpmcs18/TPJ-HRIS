@@ -85,6 +85,11 @@
                                                 @(data == null ? "" : data.ToString("N2"))
                                             </td>
                                             break;
+                                        case LookupDataType.rate:
+                                            <td style="text-align: center;">
+                                                @(data == null ? "" : data.ToString("N2") + "%")
+                                            </td>
+                                            break;
                                         default:
                                             <td style="text-align: center;">
                                                 @data

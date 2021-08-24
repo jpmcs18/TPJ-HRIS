@@ -40,6 +40,7 @@ namespace WebTemplate.Models.DynamicLookup
     }
     public enum LookupDataType
     {
+        rate,
         amount,
         number,
         text,
@@ -170,26 +171,24 @@ namespace WebTemplate.Models.DynamicLookup
                 , new LookupSetting("MinimumIncome", "Minimum Income", LookupDataType.amount)
                 , new LookupSetting("MaximumIncome", "Maximum Income", LookupDataType.amount)
                 , new LookupSetting("FixedTax", "Fixed Tax", LookupDataType.amount)
-                , new LookupSetting("AdditionalTax", "Additional Tax", LookupDataType.amount)
-                , new LookupSetting("AdditionalTaxBaseline", "Additional Tax Baseline", LookupDataType.amount)
+                , new LookupSetting("ExcessOver", "Excess Over", LookupDataType.amount)
+                , new LookupSetting("AdditionalTax", "Tax Rate", LookupDataType.rate)
                 , new LookupSetting("EffectiveStartDate", "Effective Start Date", LookupDataType.date)
                 , new LookupSetting("EffectiveEndDate", "Effective End Date", LookupDataType.date) },
              { Lookups.PhilHealth
                 , new LookupSetting("MinSalary", "Minimum Salary", LookupDataType.amount)
                 , new LookupSetting("MaxSalary", "Maximum Salary", LookupDataType.amount)
-                , new LookupSetting("EmployeeShare", "Employee Share", LookupDataType.amount)
-                , new LookupSetting("EmployeePercentage", "Employee Percentage", LookupDataType.amount)
-                , new LookupSetting("EmployerShare", "Employer Share", LookupDataType.amount)
-                , new LookupSetting("EmployerPercentage", "Employer Percentage", LookupDataType.amount)
+                , new LookupSetting("Share", "Share", LookupDataType.amount)
+                , new LookupSetting("Rate", "Rate", LookupDataType.rate)
                 , new LookupSetting("DateStart", "Date Start", LookupDataType.date)
                 , new LookupSetting("DateEnd", "Date End", LookupDataType.date) },
              { Lookups.HDMF
                 , new LookupSetting("MinSalary", "Minimum Salary", LookupDataType.amount)
                 , new LookupSetting("MaxSalary", "Maximum Salary", LookupDataType.amount)
                 , new LookupSetting("EmployeeShare", "Employee Share", LookupDataType.amount)
-                , new LookupSetting("EmployeePercentage", "Employee Percentage", LookupDataType.amount)
+                , new LookupSetting("EmployeePercentage", "Employee Percentage", LookupDataType.rate)
                 , new LookupSetting("EmployerShare", "Employer Share", LookupDataType.amount)
-                , new LookupSetting("EmployerPercentage", "Employer Percentage", LookupDataType.amount)
+                , new LookupSetting("EmployerPercentage", "Employer Percentage", LookupDataType.rate)
                 , new LookupSetting("DateStart", "Date Start", LookupDataType.date)
                 , new LookupSetting("DateEnd", "Date End", LookupDataType.date) },
              { Lookups.SSS

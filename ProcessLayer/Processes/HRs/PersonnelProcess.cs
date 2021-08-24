@@ -473,9 +473,6 @@ namespace ProcessLayer.Processes
                 { PersonnelParameters.ReferenceContactNo, personnel.ReferenceContactNo },
                 { PersonnelParameters.WalkIn, personnel.WalkIn },
                 { PersonnelParameters.PayrollTypeID, personnel.PayrollTypeID },
-                { PersonnelParameters.AutoOT, personnel.AutoOT },
-                { PersonnelParameters.AdditionalHazardRate, personnel.AdditionalHazardRate },
-                { PersonnelParameters.BiometricsID, personnel.BiometricsID },
                 { CredentialParameters.LogBy, userid }
             };
 

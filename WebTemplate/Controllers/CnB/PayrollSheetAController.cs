@@ -165,8 +165,8 @@ namespace WebTemplate.Controllers.CnB
         [HttpPost]
         public ActionResult PrintPayroll(long id)
         {
-            try
-            {
+            //try
+            //{
                 using (var report = new PrintPayrollSheetA(Server.MapPath(PrintPayrollSheetAHelper.Instance.Template)))
                 {
                     report.PayrollPeriod = PayrollProcess.Instance.GetPayrollBase(id);
@@ -175,12 +175,12 @@ namespace WebTemplate.Controllers.CnB
                     ViewBag.Title = $"Payroll Sheet - A | {report.PayrollPeriod.StartDate:MMMM dd yyyy} - {report.PayrollPeriod.EndDate:MMMM dd yyyy}";
                 }
                 return View("~/Views/PrintingView.cshtml");
-            }
-            catch (Exception ex)
-            {
-                //return Json(new { msg = false, res = ex.GetActualMessage() });
-                return View("~/Views/Security/ServerError.cshtml", ex.GetActualMessage());
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    //return Json(new { msg = false, res = ex.GetActualMessage() });
+            //    return View("~/Views/Security/ServerError.cshtml", ex.GetActualMessage());
+            //}
         }
     }
 }
