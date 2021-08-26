@@ -4,11 +4,11 @@
     var CrewPageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("HumanResource/Crew");
 
     ViewBag.title = CrewPageAccess.PageName;
-    var vessels = ProcessLayer.Processes.VesselProcess.Instance.GetList();
+    var vessels = ProcessLayer.Processes.VesselProcess.Instance.Value.GetList();
     var crews = ProcessLayer.Processes.PersonnelProcess.GetList();
-    var positions = ProcessLayer.Processes.PositionProcess.Instance.GetList();
-    var departments = ProcessLayer.Processes.Lookups.DepartmentProcess.Instance.GetListOffice(isOffice: true);
-    var positionDepartment = ProcessLayer.Processes.DepartmentPositionProcess.Instance.GetList();
+    var positions = ProcessLayer.Processes.PositionProcess.Instance.Value.GetList();
+    var departments = ProcessLayer.Processes.Lookups.DepartmentProcess.Instance.Value.GetListOffice(isOffice: true);
+    var positionDepartment = ProcessLayer.Processes.DepartmentPositionProcess.Instance.Value.GetList();
 }
 
 <div class="wrapper wrapper-content">

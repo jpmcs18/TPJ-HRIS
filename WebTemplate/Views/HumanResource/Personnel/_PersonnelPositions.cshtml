@@ -3,7 +3,7 @@
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
     var PositionPageAccess = credential.GetPage("Personnel Positions") ?? new DataAccessLayer.System.Page();
 
-    var positions = ProcessLayer.Processes.PositionProcess.Instance.GetList();
+    var positions = ProcessLayer.Processes.PositionProcess.Instance.Value.GetList();
 }
 
 <div class="table-responsive table-scroll" style="">

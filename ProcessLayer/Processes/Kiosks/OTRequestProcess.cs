@@ -9,34 +9,34 @@ using System.Data;
 
 namespace ProcessLayer.Processes.Kiosk
 {
-    public class OTRequestProcess
+    public sealed class OTRequestProcess
     {
-        private static OTRequestProcess _instance;
-        public static OTRequestProcess Instance { get { if (_instance == null) { _instance = new OTRequestProcess(); } return _instance; } }
+        public static readonly Lazy<OTRequestProcess> Instance = new Lazy<OTRequestProcess>(() => new OTRequestProcess());
+        private OTRequestProcess() { }
         internal bool IsOTRequestOnly = false;
         internal OTRequest Converter(DataRow dr)
         { 
             var o = new OTRequest
             {
-                ID = dr[OTRequestFields.Instance.ID].ToLong(),
-                PersonnelID = dr[OTRequestFields.Instance.PersonnelID].ToNullableLong(),
-                IsOffice = dr[OTRequestFields.Instance.IsOffice].ToNullableBoolean() ?? false,
-                OTType = dr[OTRequestFields.Instance.OTType].ToOTTYpe(),
-                RequestDate = dr[OTRequestFields.Instance.RequestDate].ToDateTime(),
-                StartDateTime = dr[OTRequestFields.Instance.StartDateTime].ToNullableDateTime(),
-                EndDateTime = dr[OTRequestFields.Instance.EndDateTime].ToNullableDateTime(),
-                Reasons = dr[OTRequestFields.Instance.Reasons].ToString(),
-                Approved = dr[OTRequestFields.Instance.Approved].ToNullableBoolean(),
-                ApprovedBy = dr[OTRequestFields.Instance.ApprovedBy].ToNullableInt(),
-                ApprovedOn = dr[OTRequestFields.Instance.ApprovedOn].ToNullableDateTime(),
-                Cancelled = dr[OTRequestFields.Instance.Cancelled].ToNullableBoolean(),
-                CancelledBy = dr[OTRequestFields.Instance.CancelledBy].ToNullableInt(),
-                CancelledOn = dr[OTRequestFields.Instance.CancelledOn].ToNullableDateTime(),
-                CancellationRemarks = dr[OTRequestFields.Instance.CancellationRemarks].ToString(),
-                CreatedBy = dr[OTRequestFields.Instance.CreatedBy].ToNullableInt(),
-                CreatedOn = dr[OTRequestFields.Instance.CreatedOn].ToNullableDateTime(),
-                ModifiedBy = dr[OTRequestFields.Instance.ModifiedBy].ToNullableInt(),
-                ModifiedOn = dr[OTRequestFields.Instance.ModifiedOn].ToNullableDateTime()
+                ID = dr[OTRequestFields.ID].ToLong(),
+                PersonnelID = dr[OTRequestFields.PersonnelID].ToNullableLong(),
+                IsOffice = dr[OTRequestFields.IsOffice].ToNullableBoolean() ?? false,
+                OTType = dr[OTRequestFields.OTType].ToOTTYpe(),
+                RequestDate = dr[OTRequestFields.RequestDate].ToDateTime(),
+                StartDateTime = dr[OTRequestFields.StartDateTime].ToNullableDateTime(),
+                EndDateTime = dr[OTRequestFields.EndDateTime].ToNullableDateTime(),
+                Reasons = dr[OTRequestFields.Reasons].ToString(),
+                Approved = dr[OTRequestFields.Approved].ToNullableBoolean(),
+                ApprovedBy = dr[OTRequestFields.ApprovedBy].ToNullableInt(),
+                ApprovedOn = dr[OTRequestFields.ApprovedOn].ToNullableDateTime(),
+                Cancelled = dr[OTRequestFields.Cancelled].ToNullableBoolean(),
+                CancelledBy = dr[OTRequestFields.CancelledBy].ToNullableInt(),
+                CancelledOn = dr[OTRequestFields.CancelledOn].ToNullableDateTime(),
+                CancellationRemarks = dr[OTRequestFields.CancellationRemarks].ToString(),
+                CreatedBy = dr[OTRequestFields.CreatedBy].ToNullableInt(),
+                CreatedOn = dr[OTRequestFields.CreatedOn].ToNullableDateTime(),
+                ModifiedBy = dr[OTRequestFields.ModifiedBy].ToNullableInt(),
+                ModifiedOn = dr[OTRequestFields.ModifiedOn].ToNullableDateTime()
             };
 
             if (!IsOTRequestOnly)
@@ -55,12 +55,12 @@ namespace ProcessLayer.Processes.Kiosk
             var ots = new List<OTRequest>();
             var parameters = new Dictionary<string, object> {
                 { "@PersonnelID", personnelId },
-                { OTRequestParameters.Instance.IsExpired, isExpired },
-                { OTRequestParameters.Instance.IsPending, isPending },
-                { OTRequestParameters.Instance.IsApproved, isApproved },
-                { OTRequestParameters.Instance.IsCancelled, isCancelled },
-                { OTRequestParameters.Instance.StartDate, startdatetime },
-                { OTRequestParameters.Instance.EndDate, enddatetime },
+                { OTRequestParameters.IsExpired, isExpired },
+                { OTRequestParameters.IsPending, isPending },
+                { OTRequestParameters.IsApproved, isApproved },
+                { OTRequestParameters.IsCancelled, isCancelled },
+                { OTRequestParameters.StartDate, startdatetime },
+                { OTRequestParameters.EndDate, enddatetime },
                 { FilterParameters.PageNumber, page },
                 { FilterParameters.GridCount, gridCount }
             };
@@ -72,7 +72,7 @@ namespace ProcessLayer.Processes.Kiosk
 
             using (var db = new DBTools())
             {
-                using (var ds = db.ExecuteReader(OTRequestProcedures.Instance.Filter, ref outParameters, parameters))
+                using (var ds = db.ExecuteReader(OTRequestProcedures.Filter, ref outParameters, parameters))
                 {
                     ots = ds.GetList(Converter);
                     PageCount = outParameters.Get(FilterParameters.PageCount).ToInt();
@@ -86,15 +86,15 @@ namespace ProcessLayer.Processes.Kiosk
         {
             var ots = new List<OTRequest>();
             var parameters = new Dictionary<string, object> {
-                { OTRequestParameters.Instance.Personnel, personnel },
-                { OTRequestParameters.Instance.IsPending, isPending },
-                { OTRequestParameters.Instance.IsApproved, isApproved },
-                { OTRequestParameters.Instance.IsCancelled, isCancelled },
-                { OTRequestParameters.Instance.StartDate, startdatetime },
-                { OTRequestParameters.Instance.EndDate, enddatetime },
+                { OTRequestParameters.Personnel, personnel },
+                { OTRequestParameters.IsPending, isPending },
+                { OTRequestParameters.IsApproved, isApproved },
+                { OTRequestParameters.IsCancelled, isCancelled },
+                { OTRequestParameters.StartDate, startdatetime },
+                { OTRequestParameters.EndDate, enddatetime },
                 { FilterParameters.PageNumber, page },
                 { FilterParameters.GridCount, gridCount },
-                { OTRequestParameters.Instance.Approver, approver }
+                { OTRequestParameters.Approver, approver }
             };
 
             var outParameters = new List<OutParameters>
@@ -105,7 +105,7 @@ namespace ProcessLayer.Processes.Kiosk
 
             using (var db = new DBTools())
             {
-                using (var ds = db.ExecuteReader(OTRequestProcedures.Instance.FiltrApproving, ref outParameters, parameters))
+                using (var ds = db.ExecuteReader(OTRequestProcedures.FiltrApproving, ref outParameters, parameters))
                 {
                     ots = ds.GetList(Converter);
                     PageCount = outParameters.Get(FilterParameters.PageCount).ToInt();
@@ -118,12 +118,12 @@ namespace ProcessLayer.Processes.Kiosk
         {
             var ots = new List<OTRequest>();
             var parameters = new Dictionary<string, object> {
-                { OTRequestParameters.Instance.PersonnelID, personnelid }
+                { OTRequestParameters.PersonnelID, personnelid }
             };
 
             using (var db = new DBTools())
             {
-                using (var ds = db.ExecuteReader(OTRequestProcedures.Instance.Get, parameters))
+                using (var ds = db.ExecuteReader(OTRequestProcedures.Get, parameters))
                 {
                     ots = ds.GetList(Converter);
                 }
@@ -136,13 +136,13 @@ namespace ProcessLayer.Processes.Kiosk
         {
             var ots = new List<OTRequest>();
             var parameters = new Dictionary<string, object>{
-                { OTRequestParameters.Instance.PersonnelID, personnelid },
-                { OTRequestParameters.Instance.StartDate, startdatetime },
-                { OTRequestParameters.Instance.EndDate, enddatetime }
+                { OTRequestParameters.PersonnelID, personnelid },
+                { OTRequestParameters.StartDate, startdatetime },
+                { OTRequestParameters.EndDate, enddatetime }
             };
             using (var db = new DBTools())
             {
-                using (var ds = db.ExecuteReader(OTRequestProcedures.Instance.GetApprovedOT, parameters))
+                using (var ds = db.ExecuteReader(OTRequestProcedures.GetApprovedOT, parameters))
                 {
                     ots = ds.GetList(Converter);
                 }
@@ -154,12 +154,12 @@ namespace ProcessLayer.Processes.Kiosk
 
             var ot = new OTRequest();
             var parameters = new Dictionary<string, object> {
-                { OTRequestParameters.Instance.ID, id }
+                { OTRequestParameters.ID, id }
             };
 
             using (var db = new DBTools())
             {
-                using (var ds = db.ExecuteReader(OTRequestProcedures.Instance.Get, parameters))
+                using (var ds = db.ExecuteReader(OTRequestProcedures.Get, parameters))
                 {
                     ot = ds.Get(Converter);
                 }
@@ -171,24 +171,24 @@ namespace ProcessLayer.Processes.Kiosk
         public OTRequest CreateOrUpdate(OTRequest ot, int userid)
         {
             var parameters = new Dictionary<string, object> {
-                { OTRequestParameters.Instance.PersonnelID, ot.PersonnelID }
-                , { OTRequestParameters.Instance.IsOffice, ot.IsOffice }
-                , { OTRequestParameters.Instance.OTType, ot.OTType }
-                , { OTRequestParameters.Instance.RequestDate, ot.RequestDate }
-                , { OTRequestParameters.Instance.StartDateTime, ot.StartDateTime }
-                , { OTRequestParameters.Instance.EndDateTime, ot.EndDateTime }
-                , { OTRequestParameters.Instance.Reasons, ot.Reasons }
+                { OTRequestParameters.PersonnelID, ot.PersonnelID }
+                , { OTRequestParameters.IsOffice, ot.IsOffice }
+                , { OTRequestParameters.OTType, ot.OTType }
+                , { OTRequestParameters.RequestDate, ot.RequestDate }
+                , { OTRequestParameters.StartDateTime, ot.StartDateTime }
+                , { OTRequestParameters.EndDateTime, ot.EndDateTime }
+                , { OTRequestParameters.Reasons, ot.Reasons }
                 , { CredentialParameters.LogBy, userid }
             };
 
             var outparameter = new List<OutParameters> {
-                { OTRequestParameters.Instance.ID, SqlDbType.BigInt, ot.ID }
+                { OTRequestParameters.ID, SqlDbType.BigInt, ot.ID }
             };
 
             using (var db = new DBTools())
             {
-                db.ExecuteNonQuery(OTRequestProcedures.Instance.CreateOrUpdate, ref outparameter, parameters);
-                ot = Get(outparameter.Get(OTRequestParameters.Instance.ID).ToLong());
+                db.ExecuteNonQuery(OTRequestProcedures.CreateOrUpdate, ref outparameter, parameters);
+                ot = Get(outparameter.Get(OTRequestParameters.ID).ToLong());
             }
 
             return ot;
@@ -197,39 +197,39 @@ namespace ProcessLayer.Processes.Kiosk
         public void Approve(OTRequest ot, int userid)
         {
             var parameters = new Dictionary<string, object> {
-                { OTRequestParameters.Instance.ID, ot.ID }
+                { OTRequestParameters.ID, ot.ID }
                 , { CredentialParameters.LogBy, userid }
             };
 
             using (var db = new DBTools())
             {
-                db.ExecuteNonQuery(OTRequestProcedures.Instance.Approve, parameters);
+                db.ExecuteNonQuery(OTRequestProcedures.Approve, parameters);
             }
         }
 
         public void Cancel(OTRequest ot, int userid)
         {
             var parameters = new Dictionary<string, object> {
-                { OTRequestParameters.Instance.ID, ot.ID },
-                { OTRequestParameters.Instance.CancellationRemarks, ot.CancellationRemarks }
+                { OTRequestParameters.ID, ot.ID },
+                { OTRequestParameters.CancellationRemarks, ot.CancellationRemarks }
                 , { CredentialParameters.LogBy, userid }
             };
 
             using (var db = new DBTools())
             {
-                db.ExecuteNonQuery(OTRequestProcedures.Instance.Cancel, parameters);
+                db.ExecuteNonQuery(OTRequestProcedures.Cancel, parameters);
             }
         }
 
         public void Delete(OTRequest ot)
         {
             var parameters = new Dictionary<string, object> {
-                { OTRequestParameters.Instance.ID, ot.ID }
+                { OTRequestParameters.ID, ot.ID }
             };
 
             using (var db = new DBTools())
             {
-                db.ExecuteNonQuery(OTRequestProcedures.Instance.Delete, parameters);
+                db.ExecuteNonQuery(OTRequestProcedures.Delete, parameters);
             }
         }
     }

@@ -10,15 +10,10 @@ using System.Threading.Tasks;
 
 namespace ProcessLayer.Processes.CnB
 {
-    public class AdditionalLoanProcess
+    public sealed class AdditionalLoanProcess
     {
-        private static AdditionalLoanProcess _instance;
-
-        public static AdditionalLoanProcess Instance
-        {
-            get { if (_instance == null) _instance = new AdditionalLoanProcess(); return _instance; }
-        }
-
+        public static readonly Lazy<AdditionalLoanProcess> Instance = new Lazy<AdditionalLoanProcess>(() => new AdditionalLoanProcess());
+        private AdditionalLoanProcess() { }
         internal  AdditionalLoanForApproval Converter(DataRow dr)
         {
             var al = new AdditionalLoanForApproval

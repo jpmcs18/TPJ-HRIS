@@ -24,7 +24,7 @@ namespace WebTemplate.Controllers
             model.ExpiringLicensesToday = PersonnelLicenseProcess.GetExpiringLicensesThisDay().ToList();
             model.ExpiringLicensesUpcoming = PersonnelLicenseProcess.GetExpiringLicensesThisMonthUpcoming().ToList();
 
-            model.KioskNotifications = KioskNotificationProcess.Instance.GetList(User.UserID)?.Where(c => c.Count > 0)?.ToList();
+            model.KioskNotifications = KioskNotificationProcess.Instance.Value.GetList(User.UserID)?.Where(c => c.Count > 0)?.ToList();
 
             if (Request.IsAjaxRequest())
             {

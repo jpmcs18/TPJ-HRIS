@@ -10,16 +10,11 @@ using System.Threading.Tasks;
 
 namespace ProcessLayer.Processes.Lookups
 {
-    public class PersonnelTypeProcess : ILookupProcess<PersonnelType>, ILookupSourceProcess<PersonnelType>
+    public sealed class PersonnelTypeProcess : ILookupProcess<PersonnelType>, ILookupSourceProcess<PersonnelType>
     {
-        private static PersonnelTypeProcess _instance;
-
-        public static PersonnelTypeProcess Instance
-        {
-            get { if (_instance == null) _instance = new PersonnelTypeProcess(); return _instance; }
-        }
-
-        protected PersonnelType Converter(DataRow dr)
+        public static readonly Lazy<PersonnelTypeProcess> Instance = new Lazy<PersonnelTypeProcess>(() => new PersonnelTypeProcess());
+        private PersonnelTypeProcess() { }
+        internal PersonnelType Converter(DataRow dr)
         {
             return new PersonnelType()
             {

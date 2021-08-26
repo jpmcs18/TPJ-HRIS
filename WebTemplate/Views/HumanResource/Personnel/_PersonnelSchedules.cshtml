@@ -6,7 +6,7 @@
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
     var SchedulesTabAccess = credential.GetPage("Schedules") ?? new DataAccessLayer.System.Page();
 
-    var sched = ProcessLayer.Processes.Lookups.ScheduleTypeProcess.Instance.GetList();
+    var sched = ProcessLayer.Processes.Lookups.ScheduleTypeProcess.Instance.Value.GetList();
     var ordered = Model._Schedules.OrderByDescending(m => m.EffectivityDate).ToList();
 }
 

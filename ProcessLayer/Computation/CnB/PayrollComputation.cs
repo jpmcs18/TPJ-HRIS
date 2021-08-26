@@ -17,18 +17,17 @@ using System.Linq;
 
 namespace ProcessLayer.Computation.CnB
 {
-    public class PayrollComputation
+    public sealed class PayrollComputation
     {
-        private static PayrollComputation _instance;
-        public static PayrollComputation Instance { get { if (_instance == null) _instance = new PayrollComputation(); return _instance; } }
+        public static readonly Lazy<PayrollComputation> Instance = new Lazy<PayrollComputation>(() => new PayrollComputation());
+        private PayrollComputation()
+        {
+            LateDeductions = LateDeductionProcess.Instance.Value.GetList();
+        }
         private IEnumerable<NonWorkingDays> NonWorkingDays { get; set; }
         private IEnumerable<NonTaxableDay> NonTaxableDays { get; set; }
         private IEnumerable<LateDeduction> LateDeductions { get; set; }
         public PayrollType Monthly { get; set; }
-        public PayrollComputation()
-        {
-            LateDeductions = LateDeductionProcess.Instance.GetList();
-        }
         public PayrollPeriod GeneratePayroll(PayrollPeriod payrollPeriod)
         {
             List<Personnel> personnels = PersonnelProcess.GetForPayroll(payrollPeriod.StartDate, payrollPeriod.EndDate, payrollPeriod.Type);
@@ -38,8 +37,8 @@ namespace ProcessLayer.Computation.CnB
 
             if (personnels?.Any() ?? false)
             {
-                NonWorkingDays = NonWorkingDaysProcess.Instance.GetNonWorkingDays(payrollPeriod.StartDate, payrollPeriod.EndDate);
-                NonTaxableDays = NonTaxableDayProcess.Instance.GetList(payrollPeriod.StartDate, payrollPeriod.EndDate);
+                NonWorkingDays = NonWorkingDaysProcess.Instance.Value.GetNonWorkingDays(payrollPeriod.StartDate, payrollPeriod.EndDate);
+                NonTaxableDays = NonTaxableDayProcess.Instance.Value.GetList(payrollPeriod.StartDate, payrollPeriod.EndDate);
                 payrollPeriod.Payrolls = new List<Payroll>();
 
                 personnels.ForEach(personnel =>
@@ -54,7 +53,7 @@ namespace ProcessLayer.Computation.CnB
                 {
                     foreach (Payroll payroll in payrollPeriod.Payrolls)
                     {
-                        List<PersonnelCompensation> compensation = PersonnelCompensationProcess.Instance.GetByPersonnelID(payroll.Personnel.ID);
+                        List<PersonnelCompensation> compensation = PersonnelCompensationProcess.Instance.Value.GetByPersonnelID(payroll.Personnel.ID);
                         if (!(payroll.Personnel._AssignedLocation?.Any() ?? false)) throw new Exception("Cannot compute payroll for " + payroll.Personnel.FullName + ". No Assigned Location found.");
 
                         if (string.IsNullOrEmpty(payroll.Personnel._PayrollType?.Description)) throw new Exception("Cannot compute payroll for " + payroll.Personnel.FullName + ". No Payroll Type found.");
@@ -79,8 +78,8 @@ namespace ProcessLayer.Computation.CnB
         }
         public Payroll Recompute(Payroll payroll, PayrollPeriod payrollPeriod)
         {
-            NonWorkingDays = NonWorkingDaysProcess.Instance.GetNonWorkingDays(payrollPeriod.StartDate, payrollPeriod.EndDate);
-            NonTaxableDays = NonTaxableDayProcess.Instance.GetList(payrollPeriod.StartDate, payrollPeriod.EndDate);
+            NonWorkingDays = NonWorkingDaysProcess.Instance.Value.GetNonWorkingDays(payrollPeriod.StartDate, payrollPeriod.EndDate);
+            NonTaxableDays = NonTaxableDayProcess.Instance.Value.GetList(payrollPeriod.StartDate, payrollPeriod.EndDate);
 
             Compute(payroll, payrollPeriod.Type, payrollPeriod.StartDate, payrollPeriod.EndDate);
 
@@ -89,7 +88,7 @@ namespace ProcessLayer.Computation.CnB
 
         private void Compute(Payroll payroll, PayrollSheet type, DateTime periodStart, DateTime periodEnd)
         {
-            List<PersonnelCompensation> compensation = PersonnelCompensationProcess.Instance.GetByPersonnelID(payroll.Personnel.ID);
+            List<PersonnelCompensation> compensation = PersonnelCompensationProcess.Instance.Value.GetByPersonnelID(payroll.Personnel.ID);
             PersonnelCompensation comp = compensation.Where(x => x._Compensation.SupplementarySalary ?? false).FirstOrDefault();
             decimal rate = (comp?.Amount ?? 0).ToDecimalPlaces(3);
             decimal noofdays = payroll.Personnel._PayrollType?.NoofDays ?? 0;
@@ -102,9 +101,9 @@ namespace ProcessLayer.Computation.CnB
 
             List<PersonnelLoan> deductibleLoans = new List<PersonnelLoan>();
             if(type == PayrollSheet.B)
-                deductibleLoans = PersonnelLoanProcess.Instance.GetDeductibleAmount(payroll.ID, payroll.Personnel.ID, periodEnd);
+                deductibleLoans = PersonnelLoanProcess.Instance.Value.GetDeductibleAmount(payroll.ID, payroll.Personnel.ID, periodEnd);
             else
-                deductibleLoans = PersonnelLoanProcess.Instance.GetPayrollBGovernmentLoanDeductions(payroll.Personnel.ID, periodStart, periodEnd);
+                deductibleLoans = PersonnelLoanProcess.Instance.Value.GetPayrollBGovernmentLoanDeductions(payroll.Personnel.ID, periodStart, periodEnd);
 
             if(payroll.ID > 0)
             {
@@ -119,28 +118,28 @@ namespace ProcessLayer.Computation.CnB
             List<PersonnelDeduction> deductions = PersonnelDeductionProcess.GetByPersonnelID(payroll.Personnel.ID);
 
             List<TimeLog> timelogs = TimeLogProcess.Get(payroll.Personnel.ID, periodStart.AddDays(-5), periodEnd);
-            List<OTRequest> approvedotrequests = OTRequestProcess.Instance.GetApprovedOT(payroll.Personnel.ID, periodStart, periodEnd);
-            List<LeaveRequest> approvedleaverequests = LeaveRequestProcess.Instance.GetApprovedLeave(payroll.Personnel.ID, null, periodStart, periodEnd);
-            List<OuterPortRequest> approvedouterportrequests = OuterPortRequestProcess.Instance.GetApprovedOuterPort(payroll.Personnel.ID, null, periodStart, periodEnd);
-            List<HighRiskRequest> approvedhighriskrequests = HighRiskRequestProcess.Instance.GetApproved(payroll.Personnel.ID, periodStart, periodEnd);
+            List<OTRequest> approvedotrequests = OTRequestProcess.Instance.Value.GetApprovedOT(payroll.Personnel.ID, periodStart, periodEnd);
+            List<LeaveRequest> approvedleaverequests = LeaveRequestProcess.Instance.Value.GetApprovedLeave(payroll.Personnel.ID, null, periodStart, periodEnd, payroll.ID > 0);
+            List<OuterPortRequest> approvedouterportrequests = OuterPortRequestProcess.Instance.Value.GetApprovedOuterPort(payroll.Personnel.ID, null, periodStart, periodEnd);
+            List<HighRiskRequest> approvedhighriskrequests = HighRiskRequestProcess.Instance.Value.GetApproved(payroll.Personnel.ID, periodStart, periodEnd);
 
             payroll.Department = PersonnelDepartmentProcess.GetList(payroll.Personnel.ID).Where(x => x.StartDate <= periodStart).OrderByDescending(x => x.StartDate).FirstOrDefault()?._Department?.Description;
             payroll.Position = PersonnelPositionProcess.GetList(payroll.Personnel.ID).Where(x => x.StartDate <= periodStart).OrderByDescending(x => x.StartDate).FirstOrDefault()?._Position?.Description;
             payroll.Allowance = (compensation.Where(x => (x._Compensation?.Taxable ?? false) == false && (x._Compensation?.SupplementarySalary ?? false) == false).Sum(x => x.Amount) ?? 0).ToDecimalPlaces(3);
-            payroll.RegularOTAllowance = ((payroll.Allowance / PayrollParameters.CNBInstance.DailyHours) * PayrollParameters.CNBInstance.RegularOTRate).ToDecimalPlaces(3);
-            payroll.SundayOTAllowance = ((payroll.Allowance / PayrollParameters.CNBInstance.DailyHours) * PayrollParameters.CNBInstance.SundayOTRate).ToDecimalPlaces(3);
+            payroll.RegularOTAllowance = ((payroll.Allowance / PayrollParameters.CNBInstance.Value.DailyHours) * PayrollParameters.CNBInstance.Value.RegularOTRate).ToDecimalPlaces(3);
+            payroll.SundayOTAllowance = ((payroll.Allowance / PayrollParameters.CNBInstance.Value.DailyHours) * PayrollParameters.CNBInstance.Value.SundayOTRate).ToDecimalPlaces(3);
             payroll.HolidayRegularOTAllowance = payroll.Allowance.ToDecimalPlaces(3);
-            payroll.HolidayExcessOTAllowance = ((payroll.Allowance / PayrollParameters.CNBInstance.DailyHours) * PayrollParameters.CNBInstance.HolidayOTRate).ToDecimalPlaces(3);
-            payroll.RegularOTRate = ((payroll.DailyRate / PayrollParameters.CNBInstance.DailyHours) * PayrollParameters.CNBInstance.RegularOTRate).ToDecimalPlaces(3);
-            payroll.SundayOTRate = ((payroll.DailyRate / PayrollParameters.CNBInstance.DailyHours) * PayrollParameters.CNBInstance.SundayOTRate).ToDecimalPlaces(3);
+            payroll.HolidayExcessOTAllowance = ((payroll.Allowance / PayrollParameters.CNBInstance.Value.DailyHours) * PayrollParameters.CNBInstance.Value.HolidayOTRate).ToDecimalPlaces(3);
+            payroll.RegularOTRate = ((payroll.DailyRate / PayrollParameters.CNBInstance.Value.DailyHours) * PayrollParameters.CNBInstance.Value.RegularOTRate).ToDecimalPlaces(3);
+            payroll.SundayOTRate = ((payroll.DailyRate / PayrollParameters.CNBInstance.Value.DailyHours) * PayrollParameters.CNBInstance.Value.SundayOTRate).ToDecimalPlaces(3);
             payroll.HolidayRegularOTRate = payroll.DailyRate.ToDecimalPlaces(3);
-            payroll.HolidayExcessOTRate = ((payroll.DailyRate / PayrollParameters.CNBInstance.DailyHours) * PayrollParameters.CNBInstance.RegularOTRate).ToDecimalPlaces(3);
-            payroll.NightDifferentialRate1 = ((payroll.DailyRate / PayrollParameters.CNBInstance.DailyHours) * PayrollParameters.CNBInstance.NightDiffRate1).ToDecimalPlaces(3);
-            payroll.NightDifferentialRate2 = ((payroll.DailyRate / PayrollParameters.CNBInstance.DailyHours) * PayrollParameters.CNBInstance.NightDiffRate2).ToDecimalPlaces(3);
+            payroll.HolidayExcessOTRate = ((payroll.DailyRate / PayrollParameters.CNBInstance.Value.DailyHours) * PayrollParameters.CNBInstance.Value.RegularOTRate).ToDecimalPlaces(3);
+            payroll.NightDifferentialRate1 = ((payroll.DailyRate / PayrollParameters.CNBInstance.Value.DailyHours) * PayrollParameters.CNBInstance.Value.NightDiffRate1).ToDecimalPlaces(3);
+            payroll.NightDifferentialRate2 = ((payroll.DailyRate / PayrollParameters.CNBInstance.Value.DailyHours) * PayrollParameters.CNBInstance.Value.NightDiffRate2).ToDecimalPlaces(3);
             payroll.AdditionalAllowanceRate = (payroll.Allowance * payroll.Personnel.AdditionalHazardRate).ToDecimalPlaces(3);
             payroll.AdditionalPayRate = (payroll.DailyRate * payroll.Personnel.AdditionalHazardRate).ToDecimalPlaces(3);
-            payroll.HighRiskPayRate = (payroll.DailyRate * PayrollParameters.CNBInstance.HighRiskRate).ToDecimalPlaces(3);
-            payroll.HighRiskAllowanceRate = (payroll.Allowance * PayrollParameters.CNBInstance.HighRiskRate).ToDecimalPlaces(3);
+            payroll.HighRiskPayRate = (payroll.DailyRate * PayrollParameters.CNBInstance.Value.HighRiskRate).ToDecimalPlaces(3);
+            payroll.HighRiskAllowanceRate = (payroll.Allowance * PayrollParameters.CNBInstance.Value.HighRiskRate).ToDecimalPlaces(3);
             if (!(payroll.Personnel.FixedSalary ?? false))
             {
                 DateTime start = periodStart.Date;
@@ -154,10 +153,10 @@ namespace ProcessLayer.Computation.CnB
                     DateTime breaktime = start;
                     DateTime breaktimeend = start;
                     DateTime endtime = start;
-                    DateTime startnight1 = start + PayrollParameters.CNBInstance.NightDiffStartTime1;
-                    DateTime endnight1 = start + PayrollParameters.CNBInstance.NightDiffEndTime1;
-                    DateTime startnight2 = start + PayrollParameters.CNBInstance.NightDiffStartTime2;
-                    DateTime endnight2 = start + PayrollParameters.CNBInstance.NightDiffEndTime2;
+                    DateTime startnight1 = start + PayrollParameters.CNBInstance.Value.NightDiffStartTime1;
+                    DateTime endnight1 = start + PayrollParameters.CNBInstance.Value.NightDiffEndTime1;
+                    DateTime startnight2 = start + PayrollParameters.CNBInstance.Value.NightDiffStartTime2;
+                    DateTime endnight2 = start + PayrollParameters.CNBInstance.Value.NightDiffEndTime2;
 
                     if (endnight1 < startnight1)
                         endnight1 = endnight1.AddDays(1);
@@ -178,8 +177,8 @@ namespace ProcessLayer.Computation.CnB
                             endtime = endtime.AddDays(1);
                     }
                     #endregion
-                    DateTime defbt = start + PayrollParameters.CNBInstance.DefaultBreaktime;
-                    DateTime defbtend = defbt.AddHours(PayrollParameters.CNBInstance.DefaultBreaktimeHour);
+                    DateTime defbt = start + PayrollParameters.CNBInstance.Value.DefaultBreaktime;
+                    DateTime defbtend = defbt.AddHours(PayrollParameters.CNBInstance.Value.DefaultBreaktimeHour);
                     var loc = PersonnelAssignedLocationProcess.GetCurrent(payroll.Personnel.ID, start)?._Location ?? new Location();
 
                     PayrollDetails details = new PayrollDetails
@@ -227,17 +226,21 @@ namespace ProcessLayer.Computation.CnB
                     LoginDate = LoginDate?.AddSeconds(-(LoginDate?.Second ?? 0));
                     LogoutDate = LogoutDate?.AddSeconds(-(LogoutDate?.Second ?? 0));
                     #endregion
-                    LeaveRequest leave = approvedleaverequests.Where(x => starttime.Date >= x.StartDateTime?.Date && starttime.Date <= x.EndDateTime?.Date && x.ApprovedLeaveCredits.HasValue && x.ApprovedLeaveCredits > 0).FirstOrDefault();
+                    LeaveRequest leave = approvedleaverequests.Where(x => starttime.Date >= x.RequestedDate && x.ApprovedLeaveCredits.HasValue && x.ApprovedLeaveCredits > 0).FirstOrDefault();
 
-                    details.TotalLeaveMinutes = (leave?.ID ?? 0) == 0 ? 0 : GlobalHelper.SubtractDate(leave.EndDateTime, leave.StartDateTime);
-                    details.TotalLeaveMinutes = (details.TotalLeaveMinutes > PayrollParameters.CNBInstance.DefaultHalfdayMinutes ?
-                            (details.TotalLeaveMinutes < PayrollParameters.CNBInstance.DefaultHalfdayMinutesWithBreaktime ?
-                                (int)PayrollParameters.CNBInstance.DefaultHalfdayMinutes :
-                                (details.TotalLeaveMinutes - (int)PayrollParameters.CNBInstance.DefaultBreaktimeMinutes)) :
-                                details.TotalLeaveMinutes);
+                    if ((leave?.ID ?? 0) > 0)
+                    {
+                        details.TotalLeaveMinutes = (int)(((leave.ApprovedLeaveCredits > 1 ? 1 : leave.ApprovedLeaveCredits) * sched.TotalWorkingHours) * 60);
+                    }
+                    //details.TotalLeaveMinutes = (leave?.ID ?? 0) == 0 ? 0 : GlobalHelper.SubtractDate(leave.EndDateTime, leave.StartDateTime);
+                    //details.TotalLeaveMinutes = (details.TotalLeaveMinutes > PayrollParameters.CNBInstance.Value.DefaultHalfdayMinutes ?
+                    //        (details.TotalLeaveMinutes < PayrollParameters.CNBInstance.Value.DefaultHalfdayMinutesWithBreaktime ?
+                    //            (int)PayrollParameters.CNBInstance.Value.DefaultHalfdayMinutes :
+                    //            (details.TotalLeaveMinutes - (int)PayrollParameters.CNBInstance.Value.DefaultBreaktimeMinutes)) :
+                    //            details.TotalLeaveMinutes);
 
-                    LoginDate = (leave?.ID ?? 0) == 0 ? LoginDate : (!LoginDate.HasValue ? leave.StartDateTime : (leave.StartDateTime < LoginDate ? leave.StartDateTime : LoginDate));
-                    LogoutDate = (leave?.ID ?? 0) == 0 ? LogoutDate : (!LogoutDate.HasValue ? leave.EndDateTime : (leave.EndDateTime > LogoutDate ? leave.EndDateTime : LogoutDate));
+                    //LoginDate = (leave?.ID ?? 0) == 0 ? LoginDate : (!LoginDate.HasValue ? leave.StartDateTime : (leave.StartDateTime < LoginDate ? leave.StartDateTime : LoginDate));
+                    //LogoutDate = (leave?.ID ?? 0) == 0 ? LogoutDate : (!LogoutDate.HasValue ? leave.EndDateTime : (leave.EndDateTime > LogoutDate ? leave.EndDateTime : LogoutDate));
 
                     OTRequest earlyOT = approvedotrequests.Where(x => x.RequestDate.Date == starttime.Date && x.OTType == OTType.Early).FirstOrDefault();
                     OTRequest afterWorkOT = approvedotrequests.Where(x => x.RequestDate.Date == starttime.Date && x.OTType == OTType.After).FirstOrDefault();
@@ -277,7 +280,6 @@ namespace ProcessLayer.Computation.CnB
                         prevDate = GlobalHelper.GetPrevSchedDate(payroll.Personnel._Schedules, starttime, NonWorkingDays.ToList(), outerPort?._Location?.ID ?? loc?.ID);
                         details.IsHoliday = true;
                     }
-
                     if ((highRisk?.ID ?? 0) > 0)
                     {
                         details.IsHighRisk = true;
@@ -286,11 +288,9 @@ namespace ProcessLayer.Computation.CnB
                     {
                         details.IsNonTaxable = true;
                     }
-
-
                     if (!needTimeLog && details.IsHazard)
                     {
-                        details.TotalRegularMinutes = PayrollParameters.CNBInstance.TotalMinutesPerDay;
+                        details.TotalRegularMinutes = PayrollParameters.CNBInstance.Value.TotalMinutesPerDay;
                         if(details.ID == 0)
                             payroll.PayrollDetails.Add(details);
                     }
@@ -322,6 +322,7 @@ namespace ProcessLayer.Computation.CnB
                             }
                         }
                     }
+
                     start = start.AddDays(1);
                 }
             }
@@ -365,7 +366,7 @@ namespace ProcessLayer.Computation.CnB
 
             ComputeDeductions(payroll, periodStart, cutoff, deductions);
 
-            payroll.Tax += PayrollProcess.Instance.GetTax(payroll.Personnel?.ID ?? 0, type, payroll.GrossPay, cutoff, periodStart) ?? 0;
+            payroll.Tax += PayrollProcess.Instance.Value.GetTax(payroll.Personnel?.ID ?? 0, type, payroll.GrossPay, cutoff, periodStart) ?? 0;
             payroll.TotalDeductions += payroll.Tax.ToDecimalPlaces(2);
             payroll.NetPay += payroll.GrossPay.ToDecimalPlaces(2) + payroll.SumOfAllAllowance.ToDecimalPlaces(2) - payroll.TotalDeductions.ToDecimalPlaces(2) + payroll.SumOfAllAdditionalPay.ToDecimalPlaces(2);
 
@@ -400,7 +401,7 @@ namespace ProcessLayer.Computation.CnB
                     if ((lateded?.ID ?? 0) > 0)
                     {
                         if (lateded.DeductedHours.HasValue)
-                            late = (lateded.DeductedHours ?? 0) * (int)PayrollParameters.CNBInstance.Minutes;
+                            late = (lateded.DeductedHours ?? 0) * (int)PayrollParameters.CNBInstance.Value.Minutes;
                     }
 
                     if (sched.BreakTime.HasValue && sched.BreakTimeHour.HasValue)
@@ -502,7 +503,7 @@ namespace ProcessLayer.Computation.CnB
         {
             if (isholiday && (sched?.ID ?? 0) != 0)
             {
-                details.TotalRegularMinutes = PayrollParameters.CNBInstance.TotalMinutesPerDay;
+                details.TotalRegularMinutes = PayrollParameters.CNBInstance.Value.TotalMinutesPerDay;
                 details.IsHoliday = true;
             }
 
@@ -525,19 +526,19 @@ namespace ProcessLayer.Computation.CnB
                     }
                     else if (LoginDate < defbt && LogoutDate > defbtend)
                     {
-                        mins = GlobalHelper.SubtractDate(LogoutDate, LoginDate) - (int)PayrollParameters.CNBInstance.DefaultBreaktimeMinutes;
+                        mins = GlobalHelper.SubtractDate(LogoutDate, LoginDate) - (int)PayrollParameters.CNBInstance.Value.DefaultBreaktimeMinutes;
                     }
 
                     if (start.DayOfWeek == DayOfWeek.Sunday && (sched?.ID ?? 0) == 0)
                     {
                         details.IsSunday = true;
-                        int regminutes = mins - PayrollParameters.CNBInstance.SundayTotalMinutes;
+                        int regminutes = mins - PayrollParameters.CNBInstance.Value.SundayTotalMinutes;
                         if (regminutes > 0
                             && timelogs.Where(x => x.LoginDate?.Date == starttime.AddDays(-1).Date).Any()
                             && timelogs.Where(x => x.LoginDate?.Date == starttime.AddDays(1).Date).Any())
                         {
                             details.IsPresent = true;
-                            details.TotalRegularMinutes = PayrollParameters.CNBInstance.TotalMinutesPerDay;
+                            details.TotalRegularMinutes = PayrollParameters.CNBInstance.Value.TotalMinutesPerDay;
                             details.SundayOTMinutes = regminutes;
                         }
                         else
@@ -547,12 +548,12 @@ namespace ProcessLayer.Computation.CnB
                     else if (isholiday)
                     {
                         details.IsHoliday = true;
-                        int regminutes = mins - PayrollParameters.CNBInstance.HolidayTotalMinutes;
+                        int regminutes = mins - PayrollParameters.CNBInstance.Value.HolidayTotalMinutes;
                         if (regminutes > 0
                             && timelogs.Where(x => x.LoginDate?.Date == prevDate?.Date).Any())
                         {
                             details.IsPresent = true;
-                            details.HolidayRegularOTMinutes = PayrollParameters.CNBInstance.HolidayTotalMinutes;
+                            details.HolidayRegularOTMinutes = PayrollParameters.CNBInstance.Value.HolidayTotalMinutes;
                             details.HolidayExcessOTMinutes = regminutes;
 
                         }
@@ -636,11 +637,10 @@ namespace ProcessLayer.Computation.CnB
                         payroll.PayrollDeductions.Add(new PayrollDeductions { Deduction = d._Deduction, Amount = d.Amount });
                 });
             }
-
-            PayrollDeductions HDMF = PayrollProcess.Instance.GetHDMF(payroll.Personnel?.ID, payroll.GrossPay, cutoff, periodStart);
-            PayrollDeductions PhilHealth = PayrollProcess.Instance.GetPhilHealth(payroll.Personnel?.ID, payroll.GrossPay, cutoff, periodStart);
-            PayrollDeductions SSS = PayrollProcess.Instance.GetSSS(payroll.Personnel?.ID, payroll.GrossPay, cutoff, periodStart);
-            PayrollDeductions ProvFund = PayrollProcess.Instance.GetProvidentFund(payroll.Personnel?.ID, payroll.GrossPay, cutoff, periodStart);
+            PayrollDeductions HDMF = PayrollProcess.Instance.Value.GetHDMF(payroll.Personnel?.ID, payroll.GrossPay, cutoff, periodStart);
+            PayrollDeductions PhilHealth = PayrollProcess.Instance.Value.GetPhilHealth(payroll.Personnel?.ID, payroll.GrossPay, cutoff, periodStart);
+            PayrollDeductions SSS = PayrollProcess.Instance.Value.GetSSS(payroll.Personnel?.ID, payroll.GrossPay, cutoff, periodStart);
+            PayrollDeductions ProvFund = PayrollProcess.Instance.Value.GetProvidentFund(payroll.Personnel?.ID, payroll.GrossPay, cutoff, periodStart);
 
             if ((PhilHealth?.Amount ?? 0) > 0)
             {
@@ -678,7 +678,7 @@ namespace ProcessLayer.Computation.CnB
                     ded.Amount = SSS.Amount;
                 }
                 else
-                payroll.PayrollDeductions.Add(SSS);
+                    payroll.PayrollDeductions.Add(SSS);
             }
 
             if ((ProvFund?.Amount ?? 0) > 0)
@@ -691,7 +691,7 @@ namespace ProcessLayer.Computation.CnB
                     ded.Amount = ProvFund.Amount;
                 }
                 else
-                payroll.PayrollDeductions.Add(ProvFund);
+                    payroll.PayrollDeductions.Add(ProvFund);
             }
         }
 
@@ -721,21 +721,21 @@ namespace ProcessLayer.Computation.CnB
                     }
                     else if (LoginDate < breaktime && LogoutDate > breaktimeend)
                     {
-                        totalminutes = GlobalHelper.SubtractDate(LogoutDate, LoginDate) - ((int)PayrollParameters.CNBInstance.Minutes * (sched.BreakTimeHour ?? 0));
+                        totalminutes = GlobalHelper.SubtractDate(LogoutDate, LoginDate) - ((int)PayrollParameters.CNBInstance.Value.Minutes * (sched.BreakTimeHour ?? 0));
                     }
                 }
                 else if (sched.BreakTimeHour.HasValue)
                 {
-                    totalminutes = totalminutes > PayrollParameters.CNBInstance.DefaultHalfdayMinutes ?
-                            (totalminutes < PayrollParameters.CNBInstance.DefaultHalfdayMinutesWithBreaktime ?
-                                PayrollParameters.CNBInstance.DefaultHalfdayMinutes
-                                : (totalminutes - PayrollParameters.CNBInstance.DefaultHalfdayMinutes))
+                    totalminutes = totalminutes > PayrollParameters.CNBInstance.Value.DefaultHalfdayMinutes ?
+                            (totalminutes < PayrollParameters.CNBInstance.Value.DefaultHalfdayMinutesWithBreaktime ?
+                                PayrollParameters.CNBInstance.Value.DefaultHalfdayMinutes
+                                : (totalminutes - PayrollParameters.CNBInstance.Value.DefaultHalfdayMinutes))
                             : totalminutes;
                 }
-                DateTime? timeotmuststart = LoginDate?.AddMinutes((sched.BreakTimeHour.HasValue ? PayrollParameters.CNBInstance.TotalMinutesPerDayWithBreak : PayrollParameters.CNBInstance.TotalMinutesPerDay));
+                DateTime? timeotmuststart = LoginDate?.AddMinutes((sched.BreakTimeHour.HasValue ? PayrollParameters.CNBInstance.Value.TotalMinutesPerDayWithBreak : PayrollParameters.CNBInstance.Value.TotalMinutesPerDay));
                 if (LogoutDate > timeotmuststart && (leave?.ID ?? 0) == 0)
                 {
-                    totalminutes = PayrollParameters.CNBInstance.TotalMinutesPerDay;
+                    totalminutes = PayrollParameters.CNBInstance.Value.TotalMinutesPerDay;
                     //compute ot
                     if ((ot?.ID ?? 0) > 0 || payroll.Personnel.AutoOT)
                     {

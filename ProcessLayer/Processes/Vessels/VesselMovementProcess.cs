@@ -30,7 +30,7 @@ namespace ProcessLayer.Processes
 
             if(!IsVesselMovementOnly)
             {
-                v._Vessel = VesselProcess.Instance.Get(v.VesselID);
+                v._Vessel = VesselProcess.Instance.Value.Get(v.VesselID);
                 v._VesselMovementType = LookupProcess.GetVesselMovementType(v.MovementTypeID);
             }
 
@@ -201,7 +201,7 @@ namespace ProcessLayer.Processes
                 db.ExecuteNonQuery(VesselMovementProcedures.CreateOrUpdate, ref outparameters, parameters);
                 vessel.ID = outparameters.Get(VesselMovementParameters.ID).ToLong();
 
-                vessel._Vessel = VesselProcess.Instance.Get(vessel.VesselID);
+                vessel._Vessel = VesselProcess.Instance.Value.Get(vessel.VesselID);
                 vessel._VesselMovementType = LookupProcess.GetVesselMovementType(vessel.MovementTypeID);
             }
             return vessel;

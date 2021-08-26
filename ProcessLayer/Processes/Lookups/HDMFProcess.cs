@@ -3,19 +3,16 @@ using Newtonsoft.Json;
 using ProcessLayer.Entities;
 using ProcessLayer.Helpers;
 using ProcessLayer.Helpers.ObjectParameter;
+using System;
 using System.Collections.Generic;
 using System.Data;
 
 namespace ProcessLayer.Processes.Lookups
 {
-    public class HDMFProcess : ILookupProcess<HDMF>
+    public sealed class HDMFProcess : ILookupProcess<HDMF>
     {
-        private static HDMFProcess _instance;
-
-        public static HDMFProcess Instance
-        {
-            get { if (_instance == null) _instance = new HDMFProcess(); return _instance; }
-        }
+        public static readonly Lazy<HDMFProcess> Instance = new Lazy<HDMFProcess>(() => new HDMFProcess());
+        private HDMFProcess() { }
 
         internal HDMF Converter(DataRow dr)
         {

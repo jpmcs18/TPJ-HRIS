@@ -18,7 +18,7 @@ namespace WebTemplate.Controllers.RequestsApproval
             //try
             //{
                 model.Page = model.Page > 1 ? model.Page : 1;
-                model.TimeEditRequests = TimeEditRequestProcess.Instance.GetApprovingList(model.Personnel, model.IsPending, model.IsApproved, model.IsCancelled, model.LoginDateTime, model.LogoutDateTime, model.Page, model.GridCount, out int PageCount, User.UserID);
+                model.TimeEditRequests = TimeEditRequestProcess.Instance.Value.GetApprovingList(model.Personnel, model.IsPending, model.IsApproved, model.IsCancelled, model.LoginDateTime, model.LogoutDateTime, model.Page, model.GridCount, out int PageCount, User.UserID);
                 model.PageCount = PageCount;
 
                 if (Request.IsAjaxRequest())
@@ -90,7 +90,7 @@ namespace WebTemplate.Controllers.RequestsApproval
 
         public void ApproveRequestSingle(long? id)
         {
-            TimeEditRequestProcess.Instance.Approve(id ?? 0, User.UserID);
+            TimeEditRequestProcess.Instance.Value.Approve(id ?? 0, User.UserID);
         }
 
         [HttpPost]
@@ -101,7 +101,7 @@ namespace WebTemplate.Controllers.RequestsApproval
             {
                 try
                 {
-                    TimeEditRequestProcess.Instance.Cancel(te, User.UserID);
+                    TimeEditRequestProcess.Instance.Value.Cancel(te, User.UserID);
                     return Json(new { msg = true, res = "Request Cancelled!" });
 
                 }

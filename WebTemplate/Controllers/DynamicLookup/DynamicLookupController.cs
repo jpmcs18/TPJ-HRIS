@@ -154,37 +154,37 @@ namespace WebTemplate.Controllers.DynamicLookup
             switch (lookup)
             {
                 case Lookups.Position:
-                    return PositionProcess.Instance;
+                    return PositionProcess.Instance.Value;
                 case Lookups.Location:
-                    return LocationProcess.Instance;
+                    return LocationProcess.Instance.Value;
                 case Lookups.Late_Deduction:
-                    return LateDeductionProcess.Instance;
+                    return LateDeductionProcess.Instance.Value;
                 case Lookups.Deduction:
-                    return DeductionProcess.Instance;
+                    return DeductionProcess.Instance.Value;
                 case Lookups.Leave_Type:
-                    return LeaveTypeProcess.Instance;
+                    return LeaveTypeProcess.Instance.Value;
                 case Lookups.Payroll_Parameters:
-                    return ParametersProcess.Instance;
+                    return ParametersProcess.Instance.Value;
                 case Lookups.Non_Working_Days:
-                    return NonWorkingDaysProcess.Instance;
+                    return NonWorkingDaysProcess.Instance.Value;
                 case Lookups.Schedule:
-                    return ScheduleTypeProcess.Instance;
+                    return ScheduleTypeProcess.Instance.Value;
                 case Lookups.Tax_Table:
-                    return TaxTableProcess.Instance;
+                    return TaxTableProcess.Instance.Value;
                 case Lookups.PhilHealth:
-                    return PhilHealthProcess.Instance;
+                    return PhilHealthProcess.Instance.Value;
                 case Lookups.HDMF:
-                    return HDMFProcess.Instance;
+                    return HDMFProcess.Instance.Value;
                 case Lookups.SSS:
-                    return SSSProcess.Instance;
+                    return SSSProcess.Instance.Value;
                 case Lookups.Department_Position:
-                    return DepartmentPositionProcess.Instance;
+                    return DepartmentPositionProcess.Instance.Value;
                 case Lookups.Vessel:
-                    return VesselProcess.Instance;
+                    return VesselProcess.Instance.Value;
                 case Lookups.Non_Taxable_Days:
-                    return NonTaxableDayProcess.Instance;
+                    return NonTaxableDayProcess.Instance.Value;
                 default:
-                    return DynamicLookupProcess.Instance;
+                    return DynamicLookupProcess.Instance.Value;
             }
         }
     }

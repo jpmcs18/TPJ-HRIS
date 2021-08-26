@@ -64,11 +64,11 @@ namespace ProcessLayer.Processes
             if (!IsCrewMovementOnly)
             {
                 c._Personnel = PersonnelProcess.Get(c.PersonnelID, true);
-                c._Department = DepartmentProcess.Instance.Get(c.DepartmentID ?? 0);
-                c._Position = PositionProcess.Instance.Get(c.PositionID);
-                c._Vessel = VesselProcess.Instance.Get(c.VesselID);
-                c._SNPosition = PositionProcess.Instance.Get(c.SNPositionID);
-                c._SNVessel = VesselProcess.Instance.Get(c.SNVesselID);
+                c._Department = DepartmentProcess.Instance.Value.Get(c.DepartmentID ?? 0);
+                c._Position = PositionProcess.Instance.Value.Get(c.PositionID);
+                c._Vessel = VesselProcess.Instance.Value.Get(c.VesselID);
+                c._SNPosition = PositionProcess.Instance.Value.Get(c.SNPositionID);
+                c._SNVessel = VesselProcess.Instance.Value.Get(c.SNVesselID);
             }
             return c;
         }

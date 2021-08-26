@@ -1,15 +1,13 @@
 ﻿using ProcessLayer.Helpers;
+using System;
 
 namespace ReportLayer.Helpers
 {
-    public class PrintReportHelper : ReportHelperBase
+    public sealed class PrintReportHelper : ReportHelperBase
     {
-        private static PrintReportHelper instance;
-        public static PrintReportHelper Instance
-        {
-            get { if (instance == null) instance = new PrintReportHelper(); return instance; }
-        }
-        public PrintReportHelper() : base("Report")
+        public static readonly Lazy<PrintReportHelper> Instance = new Lazy<PrintReportHelper>(() => new PrintReportHelper());
+
+        private PrintReportHelper() : base("Report")
         {
             TitleCell = Get(nameof(TitleCell)).ToString();
             MonthYearCell = Get(nameof(MonthYearCell)).ToString();

@@ -14,7 +14,7 @@ namespace WebTemplate.Controllers.RequestsApproval
         {
             //try { 
                 model.Page = model.Page > 1 ? model.Page : 1;
-                model.HighRiskRequests = HighRiskRequestProcess.Instance.GetApprovingList(model.Personnel, model.IsExpired, model.IsPending, model.IsApproved, model.IsCancelled, model.StartDateTime, model.EndingDateTime, model.Page, model.GridCount, out int PageCount);
+                model.HighRiskRequests = HighRiskRequestProcess.Instance.Value.GetApprovingList(model.Personnel, model.IsExpired, model.IsPending, model.IsApproved, model.IsCancelled, model.StartDateTime, model.EndingDateTime, model.Page, model.GridCount, out int PageCount);
                 model.PageCount = PageCount;
 
                 if (Request.IsAjaxRequest())
@@ -44,7 +44,7 @@ namespace WebTemplate.Controllers.RequestsApproval
             {
                 try
                 {
-                    HighRiskRequestProcess.Instance.Approve(id ?? 0, User.UserID);
+                    HighRiskRequestProcess.Instance.Value.Approve(id ?? 0, User.UserID);
                     return Json(new { msg = true, res = "Request Approved!" });
 
                 }
@@ -66,7 +66,7 @@ namespace WebTemplate.Controllers.RequestsApproval
             {
                 try
                 {
-                    HighRiskRequestProcess.Instance.Cancel(Leave, User.UserID);
+                    HighRiskRequestProcess.Instance.Value.Cancel(Leave, User.UserID);
                     return Json(new { msg = true, res = "Request Cancelled!" });
 
                 }

@@ -10,16 +10,11 @@ using System.Data;
 
 namespace ProcessLayer.Processes
 {
-    public class ParametersProcess : ILookupProcess<Parameters> {
-
-        private static ParametersProcess _instance;
-        public static ParametersProcess Instance
-        {
-            get { if (_instance == null) _instance = new ParametersProcess(); return _instance; }
-        }
-
-
-        protected Parameters Converter(DataRow dr)
+    public sealed class ParametersProcess : ILookupProcess<Parameters> 
+    {
+        public static readonly Lazy<ParametersProcess> Instance = new Lazy<ParametersProcess>(() => new ParametersProcess());
+        private ParametersProcess() { }
+        internal Parameters Converter(DataRow dr)
         {
             return new Parameters
             {

@@ -1,18 +1,14 @@
 ﻿using ProcessLayer.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace ProcessLayer.Processes.Lookups
 {
-    public class NonWorkingTypeProcess : ILookupSourceProcess<Lookup>
+    public sealed class NonWorkingTypeProcess : ILookupSourceProcess<Lookup>
     {
-
-        private static NonWorkingTypeProcess _instance;
-        public static NonWorkingTypeProcess Instance
-        {
-            get { if (_instance == null) _instance = new NonWorkingTypeProcess(); return _instance; }
-        }
-
+        public static readonly Lazy<NonWorkingTypeProcess> Instance = new Lazy<NonWorkingTypeProcess>(() => new NonWorkingTypeProcess());
+        private NonWorkingTypeProcess() { }
         private List<Lookup> List { get; } = new List<Lookup>() {
             new Lookup() {ID = 1, Description = "Regular Holiday"},
             new Lookup() {ID = 2, Description = "Special Holiday"},

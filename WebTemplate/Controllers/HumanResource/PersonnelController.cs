@@ -181,7 +181,7 @@ namespace WebTemplate.Controllers.HumanResource
             {
                 var response = new PositionResponse
                 {
-                    Positions = PositionProcess.Instance.GetByDepartmentAndPersonnelType(departmentId, personnelTypeId).ToList()
+                    Positions = PositionProcess.Instance.Value.GetByDepartmentAndPersonnelType(departmentId, personnelTypeId).ToList()
                 };
 
                 return Json(new { msg = true, res = response });
@@ -523,7 +523,7 @@ namespace WebTemplate.Controllers.HumanResource
                 CompensationsAndDeductions model = new CompensationsAndDeductions
                 {
                     PersonnelID = PersonnelID,
-                    Compensation = PersonnelCompensationProcess.Instance.GetByPersonnelID(PersonnelID),
+                    Compensation = PersonnelCompensationProcess.Instance.Value.GetByPersonnelID(PersonnelID),
                     AssumedDeductions = PersonnelDeductionProcess.GetAssumed(PersonnelID)
                     //Deduction = PersonnelDeductionProcess.GetByPersonnelID(PersonnelID)
                 };
@@ -560,7 +560,7 @@ namespace WebTemplate.Controllers.HumanResource
         {
             try
             {
-                PersonnelCompensation model = PersonnelCompensationProcess.Instance.Get(ID);
+                PersonnelCompensation model = PersonnelCompensationProcess.Instance.Value.Get(ID);
                 ModelState.Clear();
                 return PartialViewCustom("_PersonnelCompensation", model);
             }
@@ -576,7 +576,7 @@ namespace WebTemplate.Controllers.HumanResource
         {
             try
             {
-                model = PersonnelCompensationProcess.Instance.CreateOrUpdate(model, User.UserID);
+                model = PersonnelCompensationProcess.Instance.Value.CreateOrUpdate(model, User.UserID);
 
                 ModelState.Clear();
                 return PartialViewCustom("_PersonnelCompensation", model);
@@ -595,7 +595,7 @@ namespace WebTemplate.Controllers.HumanResource
             {
                 try
                 {
-                    PersonnelCompensationProcess.Instance.Delete(id.Value, User.UserID);
+                    PersonnelCompensationProcess.Instance.Value.Delete(id.Value, User.UserID);
                 }
                 catch
                 {
@@ -1517,7 +1517,7 @@ namespace WebTemplate.Controllers.HumanResource
                 PersonnelLeaveCredits model = new PersonnelLeaveCredits
                 {
                     PersonnelID = PersonnelID,
-                    PersonnelLeaveCredit = PersonnelLeaveCreditProcess.GetByPersonnelID(PersonnelID)
+                    PersonnelLeaveCredit = PersonnelLeaveCreditProcess.Instance.Value.GetByPersonnelID(PersonnelID)
             };
 
                 return PartialViewCustom("_PersonnelLeaveCredits", model);
@@ -1551,7 +1551,7 @@ namespace WebTemplate.Controllers.HumanResource
         {
             try
             {
-                PersonnelLeaveCredit model = PersonnelLeaveCreditProcess.Get(ID);
+                PersonnelLeaveCredit model = PersonnelLeaveCreditProcess.Instance.Value.Get(ID);
                 ModelState.Clear();
                 return PartialViewCustom("_PersonnelLeaveCredit", model);
             }
@@ -1567,7 +1567,7 @@ namespace WebTemplate.Controllers.HumanResource
         {
             try
             {
-                model = PersonnelLeaveCreditProcess.CreateOrUpdate(model, User.UserID);
+                model = PersonnelLeaveCreditProcess.Instance.Value.CreateOrUpdate(model, User.UserID);
                 ModelState.Clear();
                 return PartialViewCustom("_PersonnelLeaveCredit", model);
             }
@@ -1586,7 +1586,7 @@ namespace WebTemplate.Controllers.HumanResource
                 PersonnelLoans model = new PersonnelLoans
                 {
                     PersonnelID = PersonnelID,
-                    PersonnelLoan = PersonnelLoanProcess.Instance.GetList(PersonnelID)
+                    PersonnelLoan = PersonnelLoanProcess.Instance.Value.GetList(PersonnelID)
                 };
 
                 return PartialViewCustom("_PersonnelLoans", model);
@@ -1604,7 +1604,7 @@ namespace WebTemplate.Controllers.HumanResource
                 PersonnelLoanDeductions model = new PersonnelLoanDeductions
                 {
                     PersonnelLoanId = PersonnelLoanID,
-                    LoanDeductions = PayrollProcess.Instance.GetPersonnelLoanDeductions(PersonnelLoanID)
+                    LoanDeductions = PayrollProcess.Instance.Value.GetPersonnelLoanDeductions(PersonnelLoanID)
                 };
 
                 return PartialViewCustom("_PersonnelLoanDetails", model);
@@ -1639,7 +1639,7 @@ namespace WebTemplate.Controllers.HumanResource
         {
             try
             {
-                PersonnelLoan model = PersonnelLoanProcess.Instance.Get(ID);
+                PersonnelLoan model = PersonnelLoanProcess.Instance.Value.Get(ID);
                 ModelState.Clear();
                 return PartialViewCustom("_PersonnelLoan", model);
             }
@@ -1656,7 +1656,7 @@ namespace WebTemplate.Controllers.HumanResource
         {
             try
             {
-                model = PersonnelLoanProcess.Instance.CreateOrUpdate(model, User.UserID);
+                model = PersonnelLoanProcess.Instance.Value.CreateOrUpdate(model, User.UserID);
 
                 ModelState.Clear();
                 return PartialViewCustom("_PersonnelLoan", model);
@@ -1674,7 +1674,7 @@ namespace WebTemplate.Controllers.HumanResource
         {
             try
             {
-                PersonnelLoanProcess.Instance.Delete(model, User.UserID);
+                PersonnelLoanProcess.Instance.Value.Delete(model, User.UserID);
                 return Json(new { msg = true });
             }
             catch (Exception ex)
@@ -1694,8 +1694,8 @@ namespace WebTemplate.Controllers.HumanResource
             {
                 AdditionalLoans model = new AdditionalLoans
                 {
-                    PersonnelLoans = PersonnelLoanProcess.Instance.GetList(PersonnelID),
-                    AdditionalLoanForApproval = AdditionalLoanProcess.Instance.GetList(PersonnelID)
+                    PersonnelLoans = PersonnelLoanProcess.Instance.Value.GetList(PersonnelID),
+                    AdditionalLoanForApproval = AdditionalLoanProcess.Instance.Value.GetList(PersonnelID)
                 };
 
                 return PartialViewCustom("_AdditionalLoans", model);
@@ -1713,11 +1713,11 @@ namespace WebTemplate.Controllers.HumanResource
         {
             try
             {
-                PersonnelLoanProcess.Instance.MergeAdditionalToExistingLoan(merge.PersonnelLoanID, merge.AdditionalLoanID, merge.Amount, User.UserID);
+                PersonnelLoanProcess.Instance.Value.MergeAdditionalToExistingLoan(merge.PersonnelLoanID, merge.AdditionalLoanID, merge.Amount, User.UserID);
                 AdditionalLoans model = new AdditionalLoans
                 {
-                    PersonnelLoans = PersonnelLoanProcess.Instance.GetList(merge.PersonnelID),
-                    AdditionalLoanForApproval = AdditionalLoanProcess.Instance.GetList(merge.PersonnelID)
+                    PersonnelLoans = PersonnelLoanProcess.Instance.Value.GetList(merge.PersonnelID),
+                    AdditionalLoanForApproval = AdditionalLoanProcess.Instance.Value.GetList(merge.PersonnelID)
                 };
 
                 return PartialViewCustom("_AdditionalLoans", model);
@@ -1735,7 +1735,7 @@ namespace WebTemplate.Controllers.HumanResource
         {
             try
             {
-                var al = AdditionalLoanProcess.Instance.Get(AdditionalLoanID);
+                var al = AdditionalLoanProcess.Instance.Value.Get(AdditionalLoanID);
                 if (al != null)
                 {
 
@@ -1770,11 +1770,11 @@ namespace WebTemplate.Controllers.HumanResource
         {
             try
             {
-                PersonnelLoanProcess.Instance.InsertAdditionalLoanToPersonnelLoan(loan.AdditionalLoanID ?? 0, loan.PersonnelLoan, User.UserID);
+                PersonnelLoanProcess.Instance.Value.InsertAdditionalLoanToPersonnelLoan(loan.AdditionalLoanID ?? 0, loan.PersonnelLoan, User.UserID);
                 AdditionalLoans model = new AdditionalLoans
                 {
-                    PersonnelLoans = PersonnelLoanProcess.Instance.GetList(loan.PersonnelLoan.PersonnelID ?? 0),
-                    AdditionalLoanForApproval = AdditionalLoanProcess.Instance.GetList(loan.PersonnelLoan.PersonnelID ?? 0)
+                    PersonnelLoans = PersonnelLoanProcess.Instance.Value.GetList(loan.PersonnelLoan.PersonnelID ?? 0),
+                    AdditionalLoanForApproval = AdditionalLoanProcess.Instance.Value.GetList(loan.PersonnelLoan.PersonnelID ?? 0)
                 };
 
                 return PartialViewCustom("_AdditionalLoans", model);
@@ -1810,7 +1810,7 @@ namespace WebTemplate.Controllers.HumanResource
         {
             try
             {
-                PersonnelSchedule model = PersonnelScheduleProcess.Instance.Get(ID);
+                PersonnelSchedule model = PersonnelScheduleProcess.Instance.Value.Get(ID);
                 ModelState.Clear();
                 return PartialViewCustom("_PersonnelSchedule", model);
             }
@@ -1832,7 +1832,7 @@ namespace WebTemplate.Controllers.HumanResource
                 if (model.EffectivityDate == null)
                     return Json(new { msg = false, res = "Effectivity Date is required." });
 
-                model = PersonnelScheduleProcess.Instance.CreateOrUpdate(model, User.UserID);
+                model = PersonnelScheduleProcess.Instance.Value.CreateOrUpdate(model, User.UserID);
                 ModelState.Clear();
                 return PartialViewCustom("_PersonnelSchedule", model);
             }
@@ -1850,7 +1850,7 @@ namespace WebTemplate.Controllers.HumanResource
             {
                 try
                 {
-                    PersonnelScheduleProcess.Instance.Delete(id.Value, User.UserID);
+                    PersonnelScheduleProcess.Instance.Value.Delete(id.Value, User.UserID);
                 }
                 catch
                 {

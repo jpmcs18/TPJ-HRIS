@@ -17,9 +17,9 @@ namespace WebTemplate.Controllers.RequestsApproval
         public ActionResult Index(Index model)
         {
             model.Page = model.Page > 1 ? model.Page : 1;
-            model.LeaveRequests = LeaveRequestProcess.Instance.GetRequestThatNeedDocument(model.Personnel, model.LeaveTypeID, model.IsExpired, model.IsPending, model.IsApproved, model.IsCancelled, model.StartDateTime, model.EndingDateTime, model.Page, model.GridCount, out int PageCount);
-            model._LeaveType = LeaveTypeProcess.Instance.Get(model.LeaveTypeID);
-            model.LeaveTypes = LeaveTypeProcess.Instance.GetLeaveTypesThatHasDocumentNeeded();
+            model.LeaveRequests = LeaveRequestProcess.Instance.Value.GetRequestThatNeedDocument(model.Personnel, model.LeaveTypeID, model.IsExpired, model.IsPending, model.IsApproved, model.IsCancelled, model.StartDateTime, model.EndingDateTime, model.Page, model.GridCount, out int PageCount);
+            model._LeaveType = LeaveTypeProcess.Instance.Value.Get(model.LeaveTypeID);
+            model.LeaveTypes = LeaveTypeProcess.Instance.Value.GetLeaveTypesThatHasDocumentNeeded();
             model.PageCount = PageCount;
 
             if (Request.IsAjaxRequest())

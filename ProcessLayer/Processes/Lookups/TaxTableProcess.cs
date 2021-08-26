@@ -12,13 +12,10 @@ using System.Threading.Tasks;
 
 namespace ProcessLayer.Processes.Lookups
 {
-    public class TaxTableProcess : ILookupProcess<TaxTable>
+    public sealed class TaxTableProcess : ILookupProcess<TaxTable>
     {
-        private static TaxTableProcess _instance;
-        public static TaxTableProcess Instance
-        {
-            get { if (_instance == null) _instance = new TaxTableProcess(); return _instance; }
-        }
+        public static readonly Lazy<TaxTableProcess> Instance = new Lazy<TaxTableProcess>(() => new TaxTableProcess());
+        private TaxTableProcess() { }
 
         internal TaxTable Converter(DataRow dr)
         {
@@ -35,7 +32,7 @@ namespace ProcessLayer.Processes.Lookups
                 EffectiveEndDate = dr["Effective End Date"].ToNullableDateTime()
             };
 
-            tax.TaxSchedule = TaxScheduleProcess.Instance.Get(tax.TaxScheduleID ?? 0);
+            tax.TaxSchedule = TaxScheduleProcess.Instance.Value.Get(tax.TaxScheduleID ?? 0);
             return tax;
         }
 

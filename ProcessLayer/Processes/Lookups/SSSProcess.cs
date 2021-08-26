@@ -3,19 +3,16 @@ using Newtonsoft.Json;
 using ProcessLayer.Entities;
 using ProcessLayer.Helpers;
 using ProcessLayer.Helpers.ObjectParameter;
+using System;
 using System.Collections.Generic;
 using System.Data;
 
 namespace ProcessLayer.Processes.Lookups
 {
-    public class SSSProcess : ILookupProcess<SSS>
+    public sealed class SSSProcess : ILookupProcess<SSS>
     {
-        private static SSSProcess _instance;
-
-        public static SSSProcess Instance
-        {
-            get { if (_instance == null) _instance = new SSSProcess(); return _instance; }
-        }
+        public static readonly Lazy<SSSProcess> Instance = new Lazy<SSSProcess>(() => new SSSProcess());
+        private SSSProcess() { }
 
         internal SSS Converter(DataRow dr)
         {

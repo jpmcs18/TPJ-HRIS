@@ -13,14 +13,10 @@ using System.Threading.Tasks;
 
 namespace ProcessLayer.Processes.Lookups
 {
-    public class ScheduleTypeProcess : ILookupProcess<ScheduleType>, ILookupSourceProcess<ScheduleType>
+    public sealed class ScheduleTypeProcess : ILookupProcess<ScheduleType>, ILookupSourceProcess<ScheduleType>
     {
-        private static ScheduleTypeProcess _instance;
-
-        public static ScheduleTypeProcess Instance
-        {
-            get { if (_instance == null) _instance = new ScheduleTypeProcess(); return _instance; }
-        }
+        public static readonly Lazy<ScheduleTypeProcess> Instance = new Lazy<ScheduleTypeProcess>(() => new ScheduleTypeProcess());
+        private ScheduleTypeProcess() { }
 
         internal ScheduleType Converter(DataRow dr)
         {

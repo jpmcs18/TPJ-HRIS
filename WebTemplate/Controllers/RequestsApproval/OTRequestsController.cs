@@ -15,7 +15,7 @@ namespace WebTemplate.Controllers.RequestsApproval
             //try
             //{
                 model.Page = model.Page > 1 ? model.Page : 1;
-                model.OTRequests = OTRequestProcess.Instance.GetApprovingList(model.Personnel, model.IsExpired, model.IsPending, model.IsApproved, model.IsCancelled, model.StartDateTime, model.EndingDateTime, model.Page, model.GridCount, out int PageCount, User.UserID);
+                model.OTRequests = OTRequestProcess.Instance.Value.GetApprovingList(model.Personnel, model.IsExpired, model.IsPending, model.IsApproved, model.IsCancelled, model.StartDateTime, model.EndingDateTime, model.Page, model.GridCount, out int PageCount, User.UserID);
                 model.PageCount = PageCount;
 
                 if (Request.IsAjaxRequest())
@@ -46,8 +46,8 @@ namespace WebTemplate.Controllers.RequestsApproval
             {
                 try
                 {
-                    OTRequestProcess.Instance.Approve(ot, User.UserID);
-                    OTRequest model = OTRequestProcess.Instance.Get(ot.ID);
+                    OTRequestProcess.Instance.Value.Approve(ot, User.UserID);
+                    OTRequest model = OTRequestProcess.Instance.Value.Get(ot.ID);
                     ModelState.Clear();
 
                     //return PartialViewCustom("_OTRequests", model);
@@ -70,8 +70,8 @@ namespace WebTemplate.Controllers.RequestsApproval
             {
                 try
                 {
-                    OTRequestProcess.Instance.Cancel(ot, User.UserID);
-                    OTRequest model = OTRequestProcess.Instance.Get(ot.ID);
+                    OTRequestProcess.Instance.Value.Cancel(ot, User.UserID);
+                    OTRequest model = OTRequestProcess.Instance.Value.Get(ot.ID);
                     ModelState.Clear();
 
                     //return PartialViewCustom("_OTRequests", model);

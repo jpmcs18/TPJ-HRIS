@@ -12,15 +12,10 @@ using System.Threading.Tasks;
 
 namespace ProcessLayer.Processes.Lookups
 {
-    public class PhilHealthProcess : ILookupProcess<PhilHealth>
+    public sealed class PhilHealthProcess : ILookupProcess<PhilHealth>
     {
-        private static PhilHealthProcess _instance;
-
-        public static PhilHealthProcess Instance
-        {
-            get { if (_instance == null) _instance = new PhilHealthProcess(); return _instance; }
-        }
-
+        public static readonly Lazy<PhilHealthProcess> Instance = new Lazy<PhilHealthProcess>(() => new PhilHealthProcess());
+        private PhilHealthProcess() { }
         internal PhilHealth Converter(DataRow dr)
         {
             return new PhilHealth()

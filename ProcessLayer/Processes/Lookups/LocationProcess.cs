@@ -5,20 +5,16 @@ using ProcessLayer.Helpers;
 using ProcessLayer.Helpers.ObjectParameter;
 using ProcessLayer.Helpers.ObjectParameter.LookUp;
 using ProcessLayer.Processes.Lookups;
+using System;
 using System.Collections.Generic;
 using System.Data;
 
 namespace ProcessLayer.Processes
 {
-    public class LocationProcess : ILookupProcess<Location>, ILookupSourceProcess<Location>
+    public sealed class LocationProcess : ILookupProcess<Location>, ILookupSourceProcess<Location>
     {
-        private static LocationProcess _instance;
-
-        public static LocationProcess Instance
-        {
-            get { if (_instance == null) _instance = new LocationProcess(); return _instance; }
-        }
-
+        public static readonly Lazy<LocationProcess> Instance = new Lazy<LocationProcess>(() => new LocationProcess());
+        private LocationProcess() { }
         internal Location Converter(DataRow dr)
         {
             return new Location

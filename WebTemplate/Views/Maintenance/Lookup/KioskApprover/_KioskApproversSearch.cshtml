@@ -3,7 +3,7 @@
 @{
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
     var KioskApproverPageAccess = credential.GetPage("Maintenance/Lookup/KioskApprover") ?? new DataAccessLayer.System.Page();
-    var departments = ProcessLayer.Processes.Lookups.DepartmentProcess.Instance.GetList();
+    var departments = ProcessLayer.Processes.Lookups.DepartmentProcess.Instance.Value.GetList();
 }
 
 <div id="form_search_params">

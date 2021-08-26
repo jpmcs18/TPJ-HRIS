@@ -11,14 +11,10 @@ using System.Data;
 
 namespace ProcessLayer.Processes
 {
-    public class VesselProcess : ILookupProcess<Vessel>
+    public sealed class VesselProcess : ILookupProcess<Vessel>
     {
-        private static VesselProcess _instace;
-        public static VesselProcess Instance
-        {
-            get { if (_instace == null) _instace = new VesselProcess(); return _instace; }
-        }
-
+        public static readonly Lazy<VesselProcess> Instance = new Lazy<VesselProcess>(() => new VesselProcess());
+        private VesselProcess() { }
         internal Vessel Converter(DataRow dr)
         {
             var c = new Vessel

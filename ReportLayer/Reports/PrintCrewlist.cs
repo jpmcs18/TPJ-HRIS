@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 namespace ReportLayer.Reports
 {
-    public sealed class PrintCrewlist : SpreadSheetReportBase
+    public class PrintCrewlist : SpreadSheetReportBase
     {
         public PrintCrewlist(string template) : base(template)
         {
@@ -22,7 +22,7 @@ namespace ReportLayer.Reports
         {
             base.GenerateReport();
 
-            var row = PrintCrewListHelper.Instance.StartRow;
+            var row = PrintCrewListHelper.Instance.Value.StartRow;
             var number = "";
             var isnonumberstart = false;
             int cnt = 0;
@@ -30,8 +30,8 @@ namespace ReportLayer.Reports
             int largestcount = 0;
             var daterange = "Crew List (" + StartingDate?.ToString("MMMM dd") + " - " + EndingDate?.ToString("MMMM dd, yyyy") + ")";
             var str = "";
-            WriteToCell(PrintCrewListHelper.Instance.VesselCell, Vessel?.Description);
-            WriteToCell(PrintCrewListHelper.Instance.DateRangeCell, daterange);
+            WriteToCell(PrintCrewListHelper.Instance.Value.VesselCell, Vessel?.Description);
+            WriteToCell(PrintCrewListHelper.Instance.Value.DateRangeCell, daterange);
 
 
             if (Crews != null && Crews.Any())
@@ -41,7 +41,7 @@ namespace ReportLayer.Reports
                     if (crew.FromCrew?.VesselID == null && crew.FromCrew?.SNVesselID == null)
                     {
                         number = (++cnt).ToString().PadLeft(2, '0');
-                        WriteToCell(row, PrintCrewListHelper.Instance.NumberColumn, number);
+                        WriteToCell(row, PrintCrewListHelper.Instance.Value.NumberColumn, number);
                     }
                     else
                     {
@@ -58,7 +58,7 @@ namespace ReportLayer.Reports
                     {
                         if ((str + (string.IsNullOrEmpty(str) ? "" : " ") + d).Length > 22 && !string.IsNullOrEmpty(str))
                         {
-                            WriteToCell(row + foreachcounter, PrintCrewListHelper.Instance.NameColumn, str);
+                            WriteToCell(row + foreachcounter, PrintCrewListHelper.Instance.Value.NameColumn, str);
                             foreachcounter++;
                             str = d;
                         }
@@ -68,7 +68,7 @@ namespace ReportLayer.Reports
                         }
                     });
 
-                    WriteToCell(row + foreachcounter, PrintCrewListHelper.Instance.NameColumn, str);
+                    WriteToCell(row + foreachcounter, PrintCrewListHelper.Instance.Value.NameColumn, str);
 
                     largestcount = largestcount > foreachcounter ? largestcount : foreachcounter;
                     foreachcounter = 0;
@@ -77,7 +77,7 @@ namespace ReportLayer.Reports
                     {
                         if ((str + (string.IsNullOrEmpty(str) ? "" : " ") + d).Length > 8 && !string.IsNullOrEmpty(str))
                         {
-                            WriteToCell(row + foreachcounter, PrintCrewListHelper.Instance.PositionColumn, str);
+                            WriteToCell(row + foreachcounter, PrintCrewListHelper.Instance.Value.PositionColumn, str);
                             foreachcounter++;
                             str = d;
                         }
@@ -86,11 +86,11 @@ namespace ReportLayer.Reports
                             str += (string.IsNullOrEmpty(str) ? "" : " ") + d;
                         }
                     });
-                    WriteToCell(row + foreachcounter, PrintCrewListHelper.Instance.PositionColumn, str);
+                    WriteToCell(row + foreachcounter, PrintCrewListHelper.Instance.Value.PositionColumn, str);
 
                     largestcount = largestcount > foreachcounter ? largestcount : foreachcounter;
 
-                    WriteToCell(row, PrintCrewListHelper.Instance.OnBoardColumn, crew.Crew?.OnboardDate?.ToString("MM/dd/yyyy"));
+                    WriteToCell(row, PrintCrewListHelper.Instance.Value.OnBoardColumn, crew.Crew?.OnboardDate?.ToString("MM/dd/yyyy"));
 
                     foreachcounter = 0;
                     str = "";
@@ -98,7 +98,7 @@ namespace ReportLayer.Reports
                     {
                         if ((str + (string.IsNullOrEmpty(str) ? "" : " ") + d).Length > 8 && !string.IsNullOrEmpty(str))
                         {
-                            WriteToCell(row + foreachcounter, PrintCrewListHelper.Instance.FromPositionColumn, str);
+                            WriteToCell(row + foreachcounter, PrintCrewListHelper.Instance.Value.FromPositionColumn, str);
                             foreachcounter++;
                             str = d;
                         }
@@ -107,7 +107,7 @@ namespace ReportLayer.Reports
                             str += (string.IsNullOrEmpty(str) ? "" : " ") + d;
                         }
                     });
-                    WriteToCell(row + foreachcounter, PrintCrewListHelper.Instance.FromPositionColumn, str);
+                    WriteToCell(row + foreachcounter, PrintCrewListHelper.Instance.Value.FromPositionColumn, str);
 
                     largestcount = largestcount > foreachcounter ? largestcount : foreachcounter;
                     foreachcounter = 0;
@@ -116,7 +116,7 @@ namespace ReportLayer.Reports
                     {
                         if ((str + (string.IsNullOrEmpty(str) ? "" : " ") + d).Length > 15 && !string.IsNullOrEmpty(str))
                         {
-                            WriteToCell(row + foreachcounter, PrintCrewListHelper.Instance.FromVesselColumn, str);
+                            WriteToCell(row + foreachcounter, PrintCrewListHelper.Instance.Value.FromVesselColumn, str);
                             foreachcounter++;
                             str = d;
                         }
@@ -126,9 +126,9 @@ namespace ReportLayer.Reports
                         }
                     });
                     largestcount = largestcount > foreachcounter ? largestcount : foreachcounter;
-                    WriteToCell(row + foreachcounter, PrintCrewListHelper.Instance.FromVesselColumn, str);
+                    WriteToCell(row + foreachcounter, PrintCrewListHelper.Instance.Value.FromVesselColumn, str);
 
-                    WriteToCell(row, PrintCrewListHelper.Instance.FromDateColumn, crew.FromCrew?.OnboardDate?.ToString("MM/dd/yyyy HHmm"));
+                    WriteToCell(row, PrintCrewListHelper.Instance.Value.FromDateColumn, crew.FromCrew?.OnboardDate?.ToString("MM/dd/yyyy HHmm"));
 
                     foreachcounter = 0;
                     str = "";
@@ -136,7 +136,7 @@ namespace ReportLayer.Reports
                     {
                         if ((str + (string.IsNullOrEmpty(str) ? "" : " ") + d).Length > 8 && !string.IsNullOrEmpty(str))
                         {
-                            WriteToCell(row + foreachcounter, PrintCrewListHelper.Instance.ToPositionColumn, str);
+                            WriteToCell(row + foreachcounter, PrintCrewListHelper.Instance.Value.ToPositionColumn, str);
                             foreachcounter++;
                             str = d;
                         }
@@ -146,7 +146,7 @@ namespace ReportLayer.Reports
                         }
                     });
 
-                    WriteToCell(row + foreachcounter, PrintCrewListHelper.Instance.ToPositionColumn, str);
+                    WriteToCell(row + foreachcounter, PrintCrewListHelper.Instance.Value.ToPositionColumn, str);
                     largestcount = largestcount > foreachcounter ? largestcount : foreachcounter;
                     foreachcounter = 0;
                     str = "";
@@ -154,7 +154,7 @@ namespace ReportLayer.Reports
                     {
                         if ((str + (string.IsNullOrEmpty(str) ? "" : " ") + d).Length > 15 && !string.IsNullOrEmpty(str))
                         {
-                            WriteToCell(row + foreachcounter, PrintCrewListHelper.Instance.ToVesselColumn, str);
+                            WriteToCell(row + foreachcounter, PrintCrewListHelper.Instance.Value.ToVesselColumn, str);
                             foreachcounter++;
                             str = d;
                         }
@@ -163,11 +163,11 @@ namespace ReportLayer.Reports
                             str += (string.IsNullOrEmpty(str) ? "" : " ") + d;
                         }
                     });
-                    WriteToCell(row + foreachcounter, PrintCrewListHelper.Instance.ToVesselColumn, str);
+                    WriteToCell(row + foreachcounter, PrintCrewListHelper.Instance.Value.ToVesselColumn, str);
                     largestcount = largestcount > foreachcounter ? largestcount : foreachcounter;
-                    WriteToCell(row, PrintCrewListHelper.Instance.ToDateColumn, crew.ToCrew?.OnboardDate?.ToString("MM/dd/yyyy HHmm"));
-                    WriteToCell(row, PrintCrewListHelper.Instance.DisembarkedColumn, crew.Disembarked?.ToString("MM/dd/yyyy"));
-                    WriteToCell(row, PrintCrewListHelper.Instance.ReferenceColumn, crew.Reference);
+                    WriteToCell(row, PrintCrewListHelper.Instance.Value.ToDateColumn, crew.ToCrew?.OnboardDate?.ToString("MM/dd/yyyy HHmm"));
+                    WriteToCell(row, PrintCrewListHelper.Instance.Value.DisembarkedColumn, crew.Disembarked?.ToString("MM/dd/yyyy"));
+                    WriteToCell(row, PrintCrewListHelper.Instance.Value.ReferenceColumn, crew.Reference);
                     row = row + largestcount + 1;
                 });
             }

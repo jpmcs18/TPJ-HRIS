@@ -1,22 +1,13 @@
 ﻿using ProcessLayer.Helpers;
+using System;
 
 namespace ReportLayer.Helpers
 {
-    public class PrintVesselMovementHelper : ReportHelperBase
+    public sealed class PrintVesselMovementHelper : ReportHelperBase
     {
+        public static readonly Lazy<PrintVesselMovementHelper> Instance = new Lazy<PrintVesselMovementHelper>(() => new PrintVesselMovementHelper());
 
-        private static PrintVesselMovementHelper instance;
-        public static PrintVesselMovementHelper Instance
-        {
-            get
-            {
-                if (instance == null)
-                    instance = new PrintVesselMovementHelper();
-                return instance;
-            }
-        }
-
-        public PrintVesselMovementHelper() : base("VesselMovement")
+        private PrintVesselMovementHelper() : base("VesselMovement")
         {
             VesselNameCell = Get(nameof(VesselNameCell)).ToString();
             DateCell = Get(nameof(DateCell)).ToString();

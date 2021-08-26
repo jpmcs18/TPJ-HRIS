@@ -1,21 +1,13 @@
-﻿namespace ProcessLayer.Helpers.ObjectParameter.Personnel
+﻿using System;
+
+namespace ProcessLayer.Helpers.ObjectParameter.Personnel
 {
     public class PersonnelLeaveCreditsParameters
     {
-        private static PersonnelLeaveCreditsParameters _instance;
-        public static PersonnelLeaveCreditsParameters Instance
-        {
-            get
-            {
-                if (_instance == null) _instance = new PersonnelLeaveCreditsParameters();
-                return _instance;
-            }
-        }
-
-        public string ID = "@ID";
-        public string PersonnelID = "@PersonnelID";
-        public string LeaveTypeID = "@LeaveTypeID";
-        public string LeaveCredits = "@LeaveCredits";
-        public string YearValid = "@YearValid";
+        public const string ID = "@ID";
+        public const string PersonnelID = "@PersonnelID";
+        public const string LeaveTypeID = "@LeaveTypeID";
+        public const string LeaveCredits = "@LeaveCredits";
+        public const string YearValid = "@YearValid";
     }
 }

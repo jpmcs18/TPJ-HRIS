@@ -9,32 +9,32 @@ using System.Data;
 
 namespace ProcessLayer.Processes.Kiosk
 {
-    public class TimeEditRequestProcess
+    public sealed class TimeEditRequestProcess
     {
-        private static TimeEditRequestProcess _instance;
-        public static TimeEditRequestProcess Instance { get { if (_instance == null) { _instance = new TimeEditRequestProcess(); } return _instance;  } }
+        public static readonly Lazy<TimeEditRequestProcess> Instance = new Lazy<TimeEditRequestProcess>(() => new TimeEditRequestProcess());
+        private TimeEditRequestProcess() { }
         internal bool IsTimeEditRequestOnly = false;
         internal TimeEditRequest Converter(DataRow dr)
         {
             var o = new TimeEditRequest
             {
-                ID = dr[TimeEditRequestFields.Instance.ID].ToLong(),
-                PersonnelID = dr[TimeEditRequestFields.Instance.PersonnelID].ToNullableLong(),
+                ID = dr[TimeEditRequestFields.ID].ToLong(),
+                PersonnelID = dr[TimeEditRequestFields.PersonnelID].ToNullableLong(),
                 RequestDate = dr["Request Date"].ToDateTime(),
-                LoginDateTime = dr[TimeEditRequestFields.Instance.LoginDateTime].ToNullableDateTime(),
-                LogoutDateTime = dr[TimeEditRequestFields.Instance.LogoutDateTime].ToNullableDateTime(),
-                Reasons = dr[TimeEditRequestFields.Instance.Reasons].ToString(),
-                Approved = dr[TimeEditRequestFields.Instance.Approved].ToNullableBoolean(),
-                ApprovedBy = dr[TimeEditRequestFields.Instance.ApprovedBy].ToNullableInt(),
-                ApprovedOn = dr[TimeEditRequestFields.Instance.ApprovedOn].ToNullableDateTime(),
-                Cancelled = dr[TimeEditRequestFields.Instance.Cancelled].ToNullableBoolean(),
-                CancelledBy = dr[TimeEditRequestFields.Instance.CancelledBy].ToNullableInt(),
-                CancelledOn = dr[TimeEditRequestFields.Instance.CancelledOn].ToNullableDateTime(),
-                CancellationRemarks = dr[TimeEditRequestFields.Instance.CancellationRemarks].ToString(),
-                CreatedBy = dr[TimeEditRequestFields.Instance.CreatedBy].ToNullableInt(),
-                CreatedOn = dr[TimeEditRequestFields.Instance.CreatedOn].ToNullableDateTime(),
-                ModifiedBy = dr[TimeEditRequestFields.Instance.ModifiedBy].ToNullableInt(),
-                ModifiedOn = dr[TimeEditRequestFields.Instance.ModifiedOn].ToNullableDateTime()
+                LoginDateTime = dr[TimeEditRequestFields.LoginDateTime].ToNullableDateTime(),
+                LogoutDateTime = dr[TimeEditRequestFields.LogoutDateTime].ToNullableDateTime(),
+                Reasons = dr[TimeEditRequestFields.Reasons].ToString(),
+                Approved = dr[TimeEditRequestFields.Approved].ToNullableBoolean(),
+                ApprovedBy = dr[TimeEditRequestFields.ApprovedBy].ToNullableInt(),
+                ApprovedOn = dr[TimeEditRequestFields.ApprovedOn].ToNullableDateTime(),
+                Cancelled = dr[TimeEditRequestFields.Cancelled].ToNullableBoolean(),
+                CancelledBy = dr[TimeEditRequestFields.CancelledBy].ToNullableInt(),
+                CancelledOn = dr[TimeEditRequestFields.CancelledOn].ToNullableDateTime(),
+                CancellationRemarks = dr[TimeEditRequestFields.CancellationRemarks].ToString(),
+                CreatedBy = dr[TimeEditRequestFields.CreatedBy].ToNullableInt(),
+                CreatedOn = dr[TimeEditRequestFields.CreatedOn].ToNullableDateTime(),
+                ModifiedBy = dr[TimeEditRequestFields.ModifiedBy].ToNullableInt(),
+                ModifiedOn = dr[TimeEditRequestFields.ModifiedOn].ToNullableDateTime()
             };
 
             if(!IsTimeEditRequestOnly)
@@ -53,12 +53,12 @@ namespace ProcessLayer.Processes.Kiosk
             var TimeEdits = new List<TimeEditRequest>();
             var parameters = new Dictionary<string, object> {
                 { "@PersonnelID", personnelId },
-                { TimeEditRequestParameters.Instance.IsExpired, isExpired },
-                { TimeEditRequestParameters.Instance.IsPending, isPending },
-                { TimeEditRequestParameters.Instance.IsApproved, isApproved },
-                { TimeEditRequestParameters.Instance.IsCancelled, isCancelled },
-                { TimeEditRequestParameters.Instance.LoginDateTime, logindatetime },
-                { TimeEditRequestParameters.Instance.LogoutDateTime, logoutdatetime },
+                { TimeEditRequestParameters.IsExpired, isExpired },
+                { TimeEditRequestParameters.IsPending, isPending },
+                { TimeEditRequestParameters.IsApproved, isApproved },
+                { TimeEditRequestParameters.IsCancelled, isCancelled },
+                { TimeEditRequestParameters.LoginDateTime, logindatetime },
+                { TimeEditRequestParameters.LogoutDateTime, logoutdatetime },
                 { FilterParameters.PageNumber, page },
                 { FilterParameters.GridCount, gridCount },
             };
@@ -71,7 +71,7 @@ namespace ProcessLayer.Processes.Kiosk
 
             using (var db = new DBTools())
             {
-                using (var ds = db.ExecuteReader(TimeEditRequestProcedures.Instance.Filter, ref outParameters, parameters))
+                using (var ds = db.ExecuteReader(TimeEditRequestProcedures.Filter, ref outParameters, parameters))
                 {
                     TimeEdits = ds.GetList(Converter);
                     PageCount = outParameters.Get(FilterParameters.PageCount).ToInt();
@@ -85,15 +85,15 @@ namespace ProcessLayer.Processes.Kiosk
         {
             var TimeEdits = new List<TimeEditRequest>();
             var parameters = new Dictionary<string, object> {
-                { TimeEditRequestParameters.Instance.Personnel, personnel },
-                { TimeEditRequestParameters.Instance.IsPending, isPending },
-                { TimeEditRequestParameters.Instance.IsApproved, isApproved },
-                { TimeEditRequestParameters.Instance.IsCancelled, isCancelled },
-                { TimeEditRequestParameters.Instance.LoginDateTime, logindatetime },
-                { TimeEditRequestParameters.Instance.LogoutDateTime, logoutdatetime },
+                { TimeEditRequestParameters.Personnel, personnel },
+                { TimeEditRequestParameters.IsPending, isPending },
+                { TimeEditRequestParameters.IsApproved, isApproved },
+                { TimeEditRequestParameters.IsCancelled, isCancelled },
+                { TimeEditRequestParameters.LoginDateTime, logindatetime },
+                { TimeEditRequestParameters.LogoutDateTime, logoutdatetime },
                 { FilterParameters.PageNumber, page },
                 { FilterParameters.GridCount, gridCount },
-                { TimeEditRequestParameters.Instance.Approver, approver }
+                { TimeEditRequestParameters.Approver, approver }
             };
 
             var outParameters = new List<OutParameters>
@@ -104,7 +104,7 @@ namespace ProcessLayer.Processes.Kiosk
 
             using (var db = new DBTools())
             {
-                using (var ds = db.ExecuteReader(TimeEditRequestProcedures.Instance.FilterApproving, ref outParameters, parameters))
+                using (var ds = db.ExecuteReader(TimeEditRequestProcedures.FilterApproving, ref outParameters, parameters))
                 {
                     TimeEdits = ds.GetList(Converter);
                     PageCount = outParameters.Get(FilterParameters.PageCount).ToInt();
@@ -117,12 +117,12 @@ namespace ProcessLayer.Processes.Kiosk
         {
             var TimeEdits = new List<TimeEditRequest>();
             var parameters = new Dictionary<string, object> {
-                { TimeEditRequestParameters.Instance.PersonnelID, personnelid }
+                { TimeEditRequestParameters.PersonnelID, personnelid }
             };
 
             using (var db = new DBTools())
             {
-                using (var ds = db.ExecuteReader(TimeEditRequestProcedures.Instance.Get, parameters))
+                using (var ds = db.ExecuteReader(TimeEditRequestProcedures.Get, parameters))
                 {
                     TimeEdits = ds.GetList(Converter);
                 }
@@ -135,13 +135,13 @@ namespace ProcessLayer.Processes.Kiosk
         {
             var TimeEdits = new List<TimeEditRequest>();
             var parameters = new Dictionary<string, object>{
-                { TimeEditRequestParameters.Instance.PersonnelID, personnelid },
-                { TimeEditRequestParameters.Instance.LoginDateTime, logindatetime },
-                { TimeEditRequestParameters.Instance.LogoutDateTime, logoutdatetime }
+                { TimeEditRequestParameters.PersonnelID, personnelid },
+                { TimeEditRequestParameters.LoginDateTime, logindatetime },
+                { TimeEditRequestParameters.LogoutDateTime, logoutdatetime }
             };
             using (var db = new DBTools())
             {
-                using (var ds = db.ExecuteReader(TimeEditRequestProcedures.Instance.GetApprovedTimeEdit, parameters))
+                using (var ds = db.ExecuteReader(TimeEditRequestProcedures.GetApprovedTimeEdit, parameters))
                 {
                     TimeEdits = ds.GetList(Converter);
                 }
@@ -153,12 +153,12 @@ namespace ProcessLayer.Processes.Kiosk
 
             var TimeEdit = new TimeEditRequest();
             var parameters = new Dictionary<string, object> {
-                { TimeEditRequestParameters.Instance.ID, id }
+                { TimeEditRequestParameters.ID, id }
             };
 
             using (var db = new DBTools())
             {
-                using (var ds = db.ExecuteReader(TimeEditRequestProcedures.Instance.Get, parameters))
+                using (var ds = db.ExecuteReader(TimeEditRequestProcedures.Get, parameters))
                 {
                     TimeEdit = ds.Get(Converter);
                 }
@@ -170,22 +170,22 @@ namespace ProcessLayer.Processes.Kiosk
         public TimeEditRequest CreateOrUpdate(TimeEditRequest timeedit, int userid)
         {
             var parameters = new Dictionary<string, object> {
-                { TimeEditRequestParameters.Instance.PersonnelID, timeedit.PersonnelID }
+                { TimeEditRequestParameters.PersonnelID, timeedit.PersonnelID }
                 , { "@RequestDate", timeedit.RequestDate }
-                , { TimeEditRequestParameters.Instance.LoginDateTime, timeedit.LoginDateTime }
-                , { TimeEditRequestParameters.Instance.LogoutDateTime, timeedit.LogoutDateTime }
-                , { TimeEditRequestParameters.Instance.Reasons, timeedit.Reasons }
+                , { TimeEditRequestParameters.LoginDateTime, timeedit.LoginDateTime }
+                , { TimeEditRequestParameters.LogoutDateTime, timeedit.LogoutDateTime }
+                , { TimeEditRequestParameters.Reasons, timeedit.Reasons }
                 , { CredentialParameters.LogBy, userid }
             };
 
             var outparameter = new List<OutParameters> {
-                { TimeEditRequestParameters.Instance.ID, SqlDbType.BigInt, timeedit.ID }
+                { TimeEditRequestParameters.ID, SqlDbType.BigInt, timeedit.ID }
             };
 
             using (var db = new DBTools())
             {
-                db.ExecuteNonQuery(TimeEditRequestProcedures.Instance.CreateOrUpdate, ref outparameter, parameters);
-                timeedit = Get(outparameter.Get(TimeEditRequestParameters.Instance.ID).ToLong());
+                db.ExecuteNonQuery(TimeEditRequestProcedures.CreateOrUpdate, ref outparameter, parameters);
+                timeedit = Get(outparameter.Get(TimeEditRequestParameters.ID).ToLong());
             }
 
             return timeedit;
@@ -194,39 +194,39 @@ namespace ProcessLayer.Processes.Kiosk
         public void Approve(long id, int userid)
         {
             var parameters = new Dictionary<string, object> {
-                { TimeEditRequestParameters.Instance.ID, id }
+                { TimeEditRequestParameters.ID, id }
                 , { CredentialParameters.LogBy, userid }
             };
             
             using (var db = new DBTools())
             {
-                db.ExecuteNonQuery(TimeEditRequestProcedures.Instance.Approve, parameters);
+                db.ExecuteNonQuery(TimeEditRequestProcedures.Approve, parameters);
             }
         }
 
         public void Cancel(TimeEditRequest timeedit, int userid)
         {
             var parameters = new Dictionary<string, object> {
-                { TimeEditRequestParameters.Instance.ID, timeedit.ID },
-                { TimeEditRequestParameters.Instance.CancellationRemarks, timeedit.CancellationRemarks }
+                { TimeEditRequestParameters.ID, timeedit.ID },
+                { TimeEditRequestParameters.CancellationRemarks, timeedit.CancellationRemarks }
                 , { CredentialParameters.LogBy, userid }
             };
 
             using (var db = new DBTools())
             {
-                db.ExecuteNonQuery(TimeEditRequestProcedures.Instance.Cancel, parameters);
+                db.ExecuteNonQuery(TimeEditRequestProcedures.Cancel, parameters);
             }
         }
 
         public void Delete(TimeEditRequest ot)
         {
             var parameters = new Dictionary<string, object> {
-                { TimeEditRequestParameters.Instance.ID, ot.ID }
+                { TimeEditRequestParameters.ID, ot.ID }
             };
 
             using (var db = new DBTools())
             {
-                db.ExecuteNonQuery(TimeEditRequestProcedures.Instance.Delete, parameters);
+                db.ExecuteNonQuery(TimeEditRequestProcedures.Delete, parameters);
             }
         }
     }

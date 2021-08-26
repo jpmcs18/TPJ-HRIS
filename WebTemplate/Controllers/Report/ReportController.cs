@@ -13,7 +13,7 @@ namespace WebTemplate.Controllers.HumanResource
     {
         public ActionResult Index(M.Index model)
         {
-            model.Personnels = ReportProcess.Instance.GetList(model.ReportType, model.Year, model.Month);
+            model.Personnels = ReportProcess.Instance.Value.GetList(model.ReportType, model.Year, model.Month);
 
             if (Request.IsAjaxRequest())
             {
@@ -31,7 +31,7 @@ namespace WebTemplate.Controllers.HumanResource
         {
             //try
             //{
-                using (var report = new PrintReport(Server.MapPath(PrintReportHelper.Instance.Template)))
+                using (var report = new PrintReport(Server.MapPath(PrintReportHelper.Instance.Value.Template)))
                 {
                     report.ReportType = reportType;
                     report.Month = month;

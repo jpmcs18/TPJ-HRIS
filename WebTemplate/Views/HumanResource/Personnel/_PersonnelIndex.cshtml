@@ -7,14 +7,14 @@
     ViewBag.title = SearchPageAccess.PageName;
     var educationalLevels = ProcessLayer.Processes.LookupProcess.GetEducationalLevel();
     //var religions = ProcessLayer.Processes.LookupProcess.GetReligion();
-    //var personnelLocations = ProcessLayer.Processes.LocationProcess.Instance.GetList();
+    //var personnelLocations = ProcessLayer.Processes.LocationProcess.Instance.Value.GetList();
     var licenseTypes = ProcessLayer.Processes.LookupProcess.GetLicenseType();
     //var vaccineTypes = ProcessLayer.Processes.LookupProcess.GetVaccineType();
-    //var departments = ProcessLayer.Processes.Lookups.DepartmentProcess.Instance.GetList();
-    var positionDepartments = ProcessLayer.Processes.DepartmentPositionProcess.Instance.GetList();
-    var positions = ProcessLayer.Processes.PositionProcess.Instance.GetList();
+    //var departments = ProcessLayer.Processes.Lookups.DepartmentProcess.Instance.Value.GetList();
+    var positionDepartments = ProcessLayer.Processes.DepartmentPositionProcess.Instance.Value.GetList();
+    var positions = ProcessLayer.Processes.PositionProcess.Instance.Value.GetList();
     //var employmentStatuses = ProcessLayer.Processes.LookupProcess.GetEmployementStatus();
-    var leaveTypes = ProcessLayer.Processes.LeaveTypeProcess.Instance.GetList();
+    var leaveTypes = ProcessLayer.Processes.LeaveTypeProcess.Instance.Value.GetList();
 
     var noCourseEducation = ProcessLayer.Helpers.Web.NoCourseIDs(educationalLevels);
     var perpetualLicenseIDs = ProcessLayer.Helpers.Web.PerpetialLicenseIDs(licenseTypes);

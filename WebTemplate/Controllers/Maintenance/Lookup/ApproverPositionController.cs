@@ -35,7 +35,7 @@ namespace WebTemplate.Controllers.Maintenance.Lookup
             {
                 Management model = new Management()
                 {
-                    PositionList = PositionProcess.Instance.GetList().ToList()
+                    PositionList = PositionProcess.Instance.Value.GetList().ToList()
                 };
 
                 if (uid.HasValue)

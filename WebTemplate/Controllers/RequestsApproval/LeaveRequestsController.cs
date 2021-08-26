@@ -20,9 +20,9 @@ namespace WebTemplate.Controllers.RequestsApproval
             //try
             //{
                 model.Page = model.Page > 1 ? model.Page : 1;
-                model.LeaveRequests = LeaveRequestProcess.Instance.GetApprovingList(model.Personnel, model.LeaveTypeID, model.IsExpired, model.IsPending, model.IsApproved, model.IsCancelled, model.StartDateTime, model.EndingDateTime, model.Page, model.GridCount, out int PageCount, User.UserID);
-                model._LeaveType = LeaveTypeProcess.Instance.Get(model.LeaveTypeID);
-                model.LeaveTypes = LeaveTypeProcess.Instance.GetList();
+                model.LeaveRequests = LeaveRequestProcess.Instance.Value.GetApprovingList(model.Personnel, model.LeaveTypeID, model.IsExpired, model.IsPending, model.IsApproved, model.IsCancelled, model.StartDateTime, model.EndingDateTime, model.Page, model.GridCount, out int PageCount, User.UserID);
+                model._LeaveType = LeaveTypeProcess.Instance.Value.Get(model.LeaveTypeID);
+                model.LeaveTypes = LeaveTypeProcess.Instance.Value.GetList();
                 model.PageCount = PageCount;
 
                 if (Request.IsAjaxRequest())
@@ -66,7 +66,7 @@ namespace WebTemplate.Controllers.RequestsApproval
 
                     fileBase.SaveAs(path);
 
-                    LeaveRequestProcess.Instance.UploadDocument(leaveRequestId, file, User.UserID);
+                    LeaveRequestProcess.Instance.Value.UploadDocument(leaveRequestId, file, User.UserID);
                 }
                 else
                     return Json(new { msg = false, res = "Nothing to upload" });
@@ -87,7 +87,7 @@ namespace WebTemplate.Controllers.RequestsApproval
             {
                 try
                 {
-                    LeaveRequestProcess.Instance.Approve(id ?? 0, User.UserID);
+                    LeaveRequestProcess.Instance.Value.Approve(id ?? 0, User.UserID);
                     return Json(new { msg = true, res = "Request Approved!" });
 
                 }
@@ -108,7 +108,7 @@ namespace WebTemplate.Controllers.RequestsApproval
             {
                 try
                 {
-                    LeaveRequestProcess.Instance.Cancel(Leave, User.UserID);
+                    LeaveRequestProcess.Instance.Value.Cancel(Leave, User.UserID);
                     return Json(new { msg = true, res = "Request Cancelled!" });
 
                 }

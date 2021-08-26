@@ -11,13 +11,10 @@ using System.Threading.Tasks;
 
 namespace ProcessLayer.Processes.Lookups
 {
-    public class DefaultLookupProcess
+    public sealed class DefaultLookupProcess
     {
-        private static DefaultLookupProcess _instance;
-        public static DefaultLookupProcess Instance
-        {
-            get { if (_instance == null) _instance = new DefaultLookupProcess(); return _instance; }
-        }
+        public static readonly Lazy<DefaultLookupProcess> Instance = new Lazy<DefaultLookupProcess>(() => new DefaultLookupProcess());
+        private DefaultLookupProcess() { }
         internal Lookup Converter(DataRow dr)
         {
             return new Lookup

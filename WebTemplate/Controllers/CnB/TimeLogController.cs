@@ -127,7 +127,7 @@ namespace WebTemplate.Controllers.HumanResource
         {
             try
             {
-                using (var timesheet = new PrintTimeSheet(Server.MapPath(PrintTimeSheetHelper.Instance.Template)))
+                using (var timesheet = new PrintTimeSheet(Server.MapPath(PrintTimeSheetHelper.Instance.Value.Template)))
                 {
                     timesheet.PersonnelID = personnelId;
                     timesheet.DepartmentID = departmentId;
@@ -171,7 +171,7 @@ namespace WebTemplate.Controllers.HumanResource
             try
             {
                 var model = new DepartmentList();
-                model.Departments = DepartmentProcess.Instance.Search(key);
+                model.Departments = DepartmentProcess.Instance.Value.Search(key);
                 ModelState.Clear();
                 return PartialViewCustom("_TimeLogs", model);
             }

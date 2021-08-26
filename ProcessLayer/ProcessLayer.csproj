@@ -60,6 +60,7 @@
     <Compile Include="Entities\CnBs\PersonnelTimesheet.cs" />
     <Compile Include="Entities\CnBs\ComputedTimelog.cs" />
     <Compile Include="Entities\HRs\AssumedPersonnelDeduction.cs" />
+    <Compile Include="Entities\Kiosks\ComputedLeaveCredits.cs" />
     <Compile Include="Entities\Kiosks\HighRiskRequest.cs" />
     <Compile Include="Entities\Kiosks\KioskNotification.cs" />
     <Compile Include="Entities\Lookups\Department.cs" />

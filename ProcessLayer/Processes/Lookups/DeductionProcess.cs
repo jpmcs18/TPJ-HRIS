@@ -6,16 +6,14 @@ using ProcessLayer.Helpers;
 using ProcessLayer.Helpers.ObjectParameter;
 using ProcessLayer.Processes.Lookups;
 using Newtonsoft.Json;
+using System;
 
 namespace ProcessLayer.Processes
 {
-    public class DeductionProcess : ILookupProcess<Deduction>
+    public sealed class DeductionProcess : ILookupProcess<Deduction>
     {
-        private static DeductionProcess _instance;
-        public static DeductionProcess Instance
-        {
-            get { if (_instance == null) _instance = new DeductionProcess(); return _instance; }
-        }
+        public static readonly Lazy<DeductionProcess> Instance = new Lazy<DeductionProcess>(() => new DeductionProcess());
+        private DeductionProcess() { }
 
         public Deduction Converter(DataRow dr)
         {
@@ -27,7 +25,7 @@ namespace ProcessLayer.Processes
                 AutoCompute = dr["Auto Compute"].ToNullableBoolean(),
                 ComputedThruSalary = dr["Computed thru Salary"].ToNullableBoolean()
             };
-            r.Deduct = WhenToDeductProcess.Instance.Get(r.WhenToDeduct ?? 0);
+            r.Deduct = WhenToDeductProcess.Instance.Value.Get(r.WhenToDeduct ?? 0);
             return r;
         }
 

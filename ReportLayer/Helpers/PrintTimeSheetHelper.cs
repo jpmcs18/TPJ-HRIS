@@ -1,17 +1,12 @@
 ﻿using ProcessLayer.Helpers;
+using System;
 
 namespace ReportLayer.Helpers
 {
-    public class PrintTimeSheetHelper : ReportHelperBase
+    public sealed class PrintTimeSheetHelper : ReportHelperBase
     {
-        private static PrintTimeSheetHelper _instance;
-
-        public static PrintTimeSheetHelper Instance
-        {
-            get { if (_instance == null) _instance = new PrintTimeSheetHelper(); return _instance; }
-        }
-
-        public PrintTimeSheetHelper() : base("TimeSheet") {
+        public static readonly Lazy<PrintTimeSheetHelper> Instance = new Lazy<PrintTimeSheetHelper>(() => new PrintTimeSheetHelper());
+        private PrintTimeSheetHelper() : base("TimeSheet") {
             CutoffCell = Get(nameof(CutoffCell)).ToString();
             NameCell = Get(nameof(NameCell)).ToString();
             ScheduleCell = Get(nameof(ScheduleCell)).ToString();

@@ -241,7 +241,7 @@ namespace WebTemplate.Controllers.Movement
         {
             //try
             //{
-                using (var report = new PrintCrewMovementForm(Server.MapPath(PrintCrewMovementFormHelper.Instance.Template)))
+                using (var report = new PrintCrewMovementForm(Server.MapPath(PrintCrewMovementFormHelper.Instance.Value.Template)))
                 {
                     report.CrewMovement = CrewMovementProcess.Get(id);
                     report.GenerateReport();

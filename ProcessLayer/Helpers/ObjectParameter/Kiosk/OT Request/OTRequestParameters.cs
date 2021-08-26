@@ -2,17 +2,12 @@
 {
     public class OTRequestParameters : KioskParametersBase
     {
-        public OTRequestParameters() { }
-        private static OTRequestParameters _instance;
-        public static OTRequestParameters Instance { get { if (_instance == null) _instance = new OTRequestParameters(); return _instance; } }
-
-        public string StartDate = "@StartDate";
-        public string EndDate = "@EndDate";
-
-        public string StartDateTime = "@StartDateTime";
-        public string EndDateTime = "@EndDateTime";
-        public string RequestDate = "@RequestDate";
-        public string IsOffice = "@IsOffice";
-        public string OTType = "@OTType";
+        public const string StartDate = "@StartDate";
+        public const string EndDate = "@EndDate";
+        public const string StartDateTime = "@StartDateTime";
+        public const string EndDateTime = "@EndDateTime";
+        public const string RequestDate = "@RequestDate";
+        public const string IsOffice = "@IsOffice";
+        public const string OTType = "@OTType";
     }
 }

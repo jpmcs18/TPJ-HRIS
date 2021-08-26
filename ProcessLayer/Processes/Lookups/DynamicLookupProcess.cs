@@ -2,19 +2,16 @@
 using Newtonsoft.Json;
 using ProcessLayer.Entities;
 using ProcessLayer.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Data;
 
 namespace ProcessLayer.Processes.Lookups
 {
-    public class DynamicLookupProcess : ILookupProcess
+    public sealed class DynamicLookupProcess : ILookupProcess
     {
-        private static DynamicLookupProcess _instance;
-
-        public static DynamicLookupProcess Instance
-        {
-            get { if (_instance == null) _instance = new DynamicLookupProcess(); return _instance; }
-        }
+        public static readonly Lazy<DynamicLookupProcess> Instance = new Lazy<DynamicLookupProcess>(() => new DynamicLookupProcess());
+        private DynamicLookupProcess() { }
         internal Lookup Converter(DataRow dr)
         {
             return new Lookup

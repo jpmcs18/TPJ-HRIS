@@ -2,16 +2,14 @@
 using System.Collections.Generic;
 using ProcessLayer.Processes.Lookups;
 using System.Linq;
+using System;
 
 namespace ProcessLayer.Processes
 {
-    public class WhenToDeductProcess : ILookupSourceProcess<WhenToDeduct>
+    public sealed class WhenToDeductProcess : ILookupSourceProcess<WhenToDeduct>
     {
-        private static WhenToDeductProcess _instance;
-        public static WhenToDeductProcess Instance
-        {
-            get { if (_instance == null) _instance = new WhenToDeductProcess(); return _instance; }
-        }
+        public static readonly Lazy<WhenToDeductProcess> Instance = new Lazy<WhenToDeductProcess>(() => new WhenToDeductProcess());
+        private WhenToDeductProcess() { }
 
         public List<WhenToDeduct> WhenToDeducts { get; } = new List<WhenToDeduct> {   
                 new WhenToDeduct{ ID= 1, Description = "1st Cutoff" },

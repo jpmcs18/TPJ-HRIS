@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace ReportLayer.Reports
 {
-    public sealed class PrintPayrollSheetA : SpreadSheetReportBase
+    public class PrintPayrollSheetA : SpreadSheetReportBase
     {
         public PrintPayrollSheetA(string template) : base(template)
         {
@@ -27,15 +27,15 @@ namespace ReportLayer.Reports
             WriteHeader();
             int index = 0;
             int cnt = 0;
-            int endRow = PrintPayrollSheetAHelper.Instance.EndPageRow;
+            int endRow = PrintPayrollSheetAHelper.Instance.Value.EndPageRow;
             foreach (var payroll in PayrollPeriod.Payrolls)
             {
-                if (cnt == PrintPayrollSheetAHelper.Instance.MaxItem)
+                if (cnt == PrintPayrollSheetAHelper.Instance.Value.MaxItem)
                 {
                     Row = endRow + 1;
                     WriteHeader();
                     cnt = 0;
-                    endRow += PrintPayrollSheetAHelper.Instance.EndPageRow;
+                    endRow += PrintPayrollSheetAHelper.Instance.Value.EndPageRow;
                 }
                 WriteDetails(payroll, ++index);
                 cnt++;
@@ -45,70 +45,70 @@ namespace ReportLayer.Reports
 
         private void WriteHeader()
         {
-            MergeCell(Row, 0, Row, PrintPayrollSheetAHelper.Instance.ColumnNetAmount)
+            MergeCell(Row, 0, Row, PrintPayrollSheetAHelper.Instance.Value.ColumnNetAmount)
                 .WriteToCell($"PAYROLL SHEET - {PayrollPeriod.Type}")
                 .SetHorizontalAlignment(HorizontalAlignmentStyle.Center);
             Row++;
 
-            MergeCell(Row, PrintPayrollSheetAHelper.Instance.ColumnMiddle + 1, Row, PrintPayrollSheetAHelper.Instance.ColumnNetAmount)
+            MergeCell(Row, PrintPayrollSheetAHelper.Instance.Value.ColumnMiddle + 1, Row, PrintPayrollSheetAHelper.Instance.Value.ColumnNetAmount)
                 .WriteToCell(GetPeriod())
                 .SetHorizontalAlignment(HorizontalAlignmentStyle.Center);
 
             Row++;
-            GetRange(Row, PrintPayrollSheetAHelper.Instance.ColumnNo, Row + 1, PrintPayrollSheetAHelper.Instance.ColumnNetAmount)
+            GetRange(Row, PrintPayrollSheetAHelper.Instance.Value.ColumnNo, Row + 1, PrintPayrollSheetAHelper.Instance.Value.ColumnNetAmount)
                 .SetHorizontalAlignment(HorizontalAlignmentStyle.Center)
                 .SetBorder(MultipleBorders.All);
 
             SetRowHeight(Row, 1);
             SetRowHeight(Row + 1, 1);
-            MergeCell(Row, PrintPayrollSheetAHelper.Instance.ColumnNo, Row + 1, PrintPayrollSheetAHelper.Instance.ColumnEmployeeName)
+            MergeCell(Row, PrintPayrollSheetAHelper.Instance.Value.ColumnNo, Row + 1, PrintPayrollSheetAHelper.Instance.Value.ColumnEmployeeName)
                 .WriteToCell("NAME OF EMPLOYEE");
 
-            MergeCell(Row, PrintPayrollSheetAHelper.Instance.ColumnDesignation, Row + 1, PrintPayrollSheetAHelper.Instance.ColumnDesignation)
+            MergeCell(Row, PrintPayrollSheetAHelper.Instance.Value.ColumnDesignation, Row + 1, PrintPayrollSheetAHelper.Instance.Value.ColumnDesignation)
                 .WriteToCell("DESG");
 
-            MergeCell(Row, PrintPayrollSheetAHelper.Instance.ColumnNoOfDays, Row + 1, PrintPayrollSheetAHelper.Instance.ColumnNoOfDays)
+            MergeCell(Row, PrintPayrollSheetAHelper.Instance.Value.ColumnNoOfDays, Row + 1, PrintPayrollSheetAHelper.Instance.Value.ColumnNoOfDays)
                 .WriteToCell("No. of Days")
                 .SetWrapText();
 
-            MergeCell(Row, PrintPayrollSheetAHelper.Instance.ColumnRate, Row + 1, PrintPayrollSheetAHelper.Instance.ColumnRate)
+            MergeCell(Row, PrintPayrollSheetAHelper.Instance.Value.ColumnRate, Row + 1, PrintPayrollSheetAHelper.Instance.Value.ColumnRate)
                 .WriteToCell("RATE");
 
-            MergeCell(Row, PrintPayrollSheetAHelper.Instance.ColumnSalary, Row + 1, PrintPayrollSheetAHelper.Instance.ColumnSalary)
+            MergeCell(Row, PrintPayrollSheetAHelper.Instance.Value.ColumnSalary, Row + 1, PrintPayrollSheetAHelper.Instance.Value.ColumnSalary)
                 .WriteToCell("SALARY");
 
-            MergeCell(Row, PrintPayrollSheetAHelper.Instance.ColumnOT, Row + 1, PrintPayrollSheetAHelper.Instance.ColumnOT)
+            MergeCell(Row, PrintPayrollSheetAHelper.Instance.Value.ColumnOT, Row + 1, PrintPayrollSheetAHelper.Instance.Value.ColumnOT)
                 .WriteToCell("OT");
 
-            MergeCell(Row, PrintPayrollSheetAHelper.Instance.ColumnPagibigFund, Row, PrintPayrollSheetAHelper.Instance.ColumnPhilHealth)
+            MergeCell(Row, PrintPayrollSheetAHelper.Instance.Value.ColumnPagibigFund, Row, PrintPayrollSheetAHelper.Instance.Value.ColumnPhilHealth)
                 .WriteToCell("DEDUCTIONS");
            
-            MergeCell(Row, PrintPayrollSheetAHelper.Instance.ColumnNetAmount, Row + 1, PrintPayrollSheetAHelper.Instance.ColumnNetAmount)
+            MergeCell(Row, PrintPayrollSheetAHelper.Instance.Value.ColumnNetAmount, Row + 1, PrintPayrollSheetAHelper.Instance.Value.ColumnNetAmount)
                 .SetHorizontalAlignment(HorizontalAlignmentStyle.Center)
                 .SetVerticalAlignment(VerticalAlignmentStyle.Center)
                 .WriteToCell("NET AMOUNT");
 
             Row++;
 
-            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.ColumnPagibigFund, "Pag-IBIG Fund")
+            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.Value.ColumnPagibigFund, "Pag-IBIG Fund")
                 .SetWrapText();
 
-            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.ColumnPagibigLoan, "Pag-IBIG Loan")
+            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.Value.ColumnPagibigLoan, "Pag-IBIG Loan")
                 .SetWrapText();
 
-            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.ColumnSSS, "SSS")
+            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.Value.ColumnSSS, "SSS")
                 .SetWrapText();
 
-            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.ColumnSSSLoan, "SSS Loan")
+            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.Value.ColumnSSSLoan, "SSS Loan")
                 .SetWrapText();
 
-            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.ColumnProvidentFund, "SSS (MPF)")
+            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.Value.ColumnProvidentFund, "SSS (MPF)")
                 .SetWrapText();
 
-            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.ColumnWithholdingTax, "Withholding Tax")
+            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.Value.ColumnWithholdingTax, "Withholding Tax")
                 .SetWrapText();
 
-            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.ColumnPhilHealth, "PhilHealth Contribution")
+            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.Value.ColumnPhilHealth, "PhilHealth Contribution")
                 .SetWrapText();
 
             Row++;
@@ -119,36 +119,36 @@ namespace ReportLayer.Reports
             decimal noofdays = payroll.PayrollDetails.Where(x => !x.IsHazard).Sum(x => x.RegularDay).ToDecimalPlaces(3);
             decimal basicpay = payroll.PayrollDetails.Where(x => !x.IsHazard).Sum(x => (payroll.DailyRate * (x.IsHazard ? ((x.Location?.HazardRate ?? 0) + 1) : 1)).ToDecimalPlaces(3) * x.RegularDay).ToDecimalPlaces(2);
 
-            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.ColumnNo, index.ToString())
+            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.Value.ColumnNo, index.ToString())
                 .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
-            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.ColumnEmployeeName, payroll.Personnel.FullName)
+            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.Value.ColumnEmployeeName, payroll.Personnel.FullName)
                 .SetWrapText()
                 .SetHorizontalAlignment(HorizontalAlignmentStyle.Left);
-            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.ColumnDesignation, payroll.Position)
+            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.Value.ColumnDesignation, payroll.Position)
                 .SetHorizontalAlignment(HorizontalAlignmentStyle.Center);
-            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.ColumnNoOfDays, noofdays.ToString("N3"))
+            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.Value.ColumnNoOfDays, noofdays.ToString("N3"))
                 .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
-            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.ColumnRate, payroll.DailyRate.ToString("N3"))
+            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.Value.ColumnRate, payroll.DailyRate.ToString("N3"))
                 .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
-            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.ColumnSalary, basicpay.ToString("N2"))
+            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.Value.ColumnSalary, basicpay.ToString("N2"))
                 .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
-            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.ColumnOT, payroll.TotalOTPay.ToString("N2"))
+            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.Value.ColumnOT, payroll.TotalOTPay.ToString("N2"))
                 .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
-            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.ColumnPagibigFund, payroll.PagibigFund.ToString("N2"))
+            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.Value.ColumnPagibigFund, payroll.PagibigFund.ToString("N2"))
                 .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
-            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.ColumnPagibigLoan, (payroll.PagibigLoan + payroll.PagibigCalamityLoan).ToString("N2"))
+            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.Value.ColumnPagibigLoan, (payroll.PagibigLoan + payroll.PagibigCalamityLoan).ToString("N2"))
                 .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
-            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.ColumnSSS, payroll.SSS.ToString("N2"))
+            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.Value.ColumnSSS, payroll.SSS.ToString("N2"))
                 .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
-            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.ColumnSSSLoan, (payroll.SalaryLoan + payroll.SSSCalamityLoan).ToString("N2"))
+            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.Value.ColumnSSSLoan, (payroll.SalaryLoan + payroll.SSSCalamityLoan).ToString("N2"))
                 .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
-            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.ColumnProvidentFund, payroll.ProvidentFund.ToString("N2"))
+            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.Value.ColumnProvidentFund, payroll.ProvidentFund.ToString("N2"))
                 .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
-            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.ColumnWithholdingTax, payroll.Tax.ToString("N2"))
+            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.Value.ColumnWithholdingTax, payroll.Tax.ToString("N2"))
                 .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
-            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.ColumnPhilHealth, payroll.PhilHealth.ToString("N2"))
+            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.Value.ColumnPhilHealth, payroll.PhilHealth.ToString("N2"))
                 .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
-            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.ColumnNetAmount, payroll.NetPay.ToString("N2"))
+            WriteToCell(Row, PrintPayrollSheetAHelper.Instance.Value.ColumnNetAmount, payroll.NetPay.ToString("N2"))
                 .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
             Row++;
 
@@ -160,11 +160,11 @@ namespace ReportLayer.Reports
                 decimal dailyrate = (payroll.DailyRate * ((location.FirstOrDefault()?.Location?.HazardRate ?? 0) + 1)).ToDecimalPlaces(3);
                 basicpay = (dailyrate * noofdays).ToDecimalPlaces(2);
 
-                WriteToCell(Row, PrintPayrollSheetAHelper.Instance.ColumnNoOfDays, noofdays.ToString("N3"))
+                WriteToCell(Row, PrintPayrollSheetAHelper.Instance.Value.ColumnNoOfDays, noofdays.ToString("N3"))
                 .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
-                WriteToCell(Row, PrintPayrollSheetAHelper.Instance.ColumnRate, dailyrate.ToString("N3"))
+                WriteToCell(Row, PrintPayrollSheetAHelper.Instance.Value.ColumnRate, dailyrate.ToString("N3"))
                 .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
-                WriteToCell(Row, PrintPayrollSheetAHelper.Instance.ColumnSalary, basicpay.ToString("N2"))
+                WriteToCell(Row, PrintPayrollSheetAHelper.Instance.Value.ColumnSalary, basicpay.ToString("N2"))
                 .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
 
                 Row++;

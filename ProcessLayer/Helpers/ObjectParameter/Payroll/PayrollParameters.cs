@@ -8,15 +8,13 @@ using System.Threading.Tasks;
 
 namespace ProcessLayer.Helpers.ObjectParameter.Payroll
 {
-    public class PayrollParameters
+    public sealed class PayrollParameters
     {
-        private static PayrollParameters _instance;
-        public static PayrollParameters CNBInstance { get { if (_instance == null) _instance = new PayrollParameters(ParametersTag.Payroll); return _instance; } }
-
+        public static readonly Lazy<PayrollParameters> CNBInstance = new Lazy<PayrollParameters>(() => new PayrollParameters(ParametersTag.Payroll));
         private IEnumerable<Parameters> Parameters { get; set; }
-        public PayrollParameters(string key)
+        private PayrollParameters(string key)
         {
-            Parameters = ParametersProcess.Instance.GetParameters(key);
+            Parameters = ParametersProcess.Instance.Value.GetParameters(key);
 
             TotalMinutesPerDay = GetParameters(nameof(TotalMinutesPerDay)).ToShort();
             TotalMinutesPerDayWithBreak = GetParameters(nameof(TotalMinutesPerDayWithBreak)).ToShort();

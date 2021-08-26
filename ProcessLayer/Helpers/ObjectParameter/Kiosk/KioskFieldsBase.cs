@@ -2,15 +2,15 @@
 {
     public class KioskFieldsBase : LogDetailsFieldsBase
     {
-        public string ID = "ID";
-        public string PersonnelID = "Personnel ID";
-        public string Reasons = "Reasons";
-        public string Cancelled = "Cancelled";
-        public string CancelledBy = "Cancelled By";
-        public string CancelledOn = "Cancelled On";
-        public string CancellationRemarks = "Cancellation Remarks";
-        public string Approved = "Approved";
-        public string ApprovedBy = "Approved By";
-        public string ApprovedOn = "Approved On";
+        public const string ID = "ID";
+        public const string PersonnelID = "Personnel ID";
+        public const string Reasons = "Reasons";
+        public const string Cancelled = "Cancelled";
+        public const string CancelledBy = "Cancelled By";
+        public const string CancelledOn = "Cancelled On";
+        public const string CancellationRemarks = "Cancellation Remarks";
+        public const string Approved = "Approved";
+        public const string ApprovedBy = "Approved By";
+        public const string ApprovedOn = "Approved On";
     }
 }

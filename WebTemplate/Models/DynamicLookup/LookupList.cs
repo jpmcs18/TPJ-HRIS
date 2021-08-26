@@ -125,7 +125,7 @@ namespace WebTemplate.Models.DynamicLookup
             { Lookups.Position
                 , new LookupSetting()
                 , new LookupSetting("Abbreviation")
-                , new LookupSetting("PersonnelType", "Personnel Type", LookupDataType.model, new LookupSetting(),  PersonnelTypeProcess.Instance, "PersonnelTypeID")
+                , new LookupSetting("PersonnelType", "Personnel Type", LookupDataType.model, new LookupSetting(),  PersonnelTypeProcess.Instance.Value, "PersonnelTypeID")
                 , new LookupSetting("AllowApprove", "Allow Approve", LookupDataType.boolean) },
             { Lookups.Location
                 , new LookupSetting("Prefix")
@@ -140,7 +140,7 @@ namespace WebTemplate.Models.DynamicLookup
             { Lookups.Deduction
                 , new LookupSetting(readOnly: true)
                 , new LookupSetting("GovernmentDeduction", "Government Deduction", LookupDataType.boolean, readOnly: true)
-                , new LookupSetting("Deduct", "Cutoff", LookupDataType.model, new LookupSetting(),  WhenToDeductProcess.Instance, "WhenToDeduct") },
+                , new LookupSetting("Deduct", "Cutoff", LookupDataType.model, new LookupSetting(),  WhenToDeductProcess.Instance.Value, "WhenToDeduct") },
             { Lookups.Leave_Type
                 , new LookupSetting()
                 , new LookupSetting("BulkUse", "Bulk Use", LookupDataType.boolean)
@@ -153,10 +153,10 @@ namespace WebTemplate.Models.DynamicLookup
                 , new LookupSetting("Day", "Date", type: LookupDataType.date)
                 , new LookupSetting("StartTime", "Start Time", LookupDataType.time)
                 , new LookupSetting("EndTime", "End Time", LookupDataType.time)
-                , new LookupSetting("Type", null, LookupDataType.model, new LookupSetting(), NonWorkingTypeProcess.Instance, "NonWorkingType")
+                , new LookupSetting("Type", null, LookupDataType.model, new LookupSetting(), NonWorkingTypeProcess.Instance.Value, "NonWorkingType")
                 , new LookupSetting("Yearly", type: LookupDataType.boolean)
                 , new LookupSetting("IsGlobal", "Global", LookupDataType.boolean)
-                , new LookupSetting("Location", null, LookupDataType.model, new LookupSetting(), LocationProcess.Instance, "LocationID", hasDefault: true) },
+                , new LookupSetting("Location", null, LookupDataType.model, new LookupSetting(), LocationProcess.Instance.Value, "LocationID", hasDefault: true) },
              { Lookups.Schedule
                 , new LookupSetting()
                 , new LookupSetting("TimeIn", "Time In", LookupDataType.time)
@@ -167,7 +167,7 @@ namespace WebTemplate.Models.DynamicLookup
                 , new LookupSetting("AtHome", "At Home", LookupDataType.boolean)
                 , new LookupSetting("MustBePresentOnly", "Present Only", LookupDataType.boolean) },
              { Lookups.Tax_Table
-                , new LookupSetting("TaxSchedule", "Tax Schedule", LookupDataType.model, new LookupSetting(), TaxScheduleProcess.Instance, "TaxScheduleID")
+                , new LookupSetting("TaxSchedule", "Tax Schedule", LookupDataType.model, new LookupSetting(), TaxScheduleProcess.Instance.Value, "TaxScheduleID")
                 , new LookupSetting("MinimumIncome", "Minimum Income", LookupDataType.amount)
                 , new LookupSetting("MaximumIncome", "Maximum Income", LookupDataType.amount)
                 , new LookupSetting("FixedTax", "Fixed Tax", LookupDataType.amount)
@@ -202,8 +202,8 @@ namespace WebTemplate.Models.DynamicLookup
                 , new LookupSetting("DateStart", "Date Start", LookupDataType.date)
                 , new LookupSetting("DateEnd", "Date End", LookupDataType.date) },
             { Lookups.Department_Position
-                , new LookupSetting("Department", "Department", LookupDataType.model, new LookupSetting(), DepartmentProcess.Instance, "DepartmentID")
-                , new LookupSetting("Position", "Position", LookupDataType.model, new LookupSetting(), PositionProcess.Instance, "PositionID") },
+                , new LookupSetting("Department", "Department", LookupDataType.model, new LookupSetting(), DepartmentProcess.Instance.Value, "DepartmentID")
+                , new LookupSetting("Position", "Position", LookupDataType.model, new LookupSetting(), PositionProcess.Instance.Value, "PositionID") },
             { Lookups.Vessel
                 , new LookupSetting("Code")
                 , new LookupSetting()
@@ -215,7 +215,7 @@ namespace WebTemplate.Models.DynamicLookup
                 , new LookupSetting("StartDate", "Start Date", LookupDataType.date)
                 , new LookupSetting("EndDate", "End Date", LookupDataType.date)
                 , new LookupSetting("IsGlobal", "Global", LookupDataType.boolean)
-                , new LookupSetting("Location", null, LookupDataType.model, new LookupSetting(), LocationProcess.Instance, "LocationID", hasDefault: true) }
+                , new LookupSetting("Location", null, LookupDataType.model, new LookupSetting(), LocationProcess.Instance.Value, "LocationID", hasDefault: true) }
         };
 
         //Include if has any custom action

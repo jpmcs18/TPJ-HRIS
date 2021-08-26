@@ -2,18 +2,15 @@
 {
     public class LeaveRequestProcedures
     {
-        private static LeaveRequestProcedures _instance;
-        public static LeaveRequestProcedures Instance { get { if (_instance == null) _instance = new LeaveRequestProcedures(); return _instance; } }
-
-        public string Get = "kiosk.GetLeaveRequest";
-        public string Filter = "kiosk.FilterLeaveRequest";
-        public string FilterApproving = "kiosk.FilterApprovingLeaveRequest";
-        public string FilterRequestThatNeedDocument = "kiosk.FilterLeaveRequestThatNeedDocument";
-        public string CreateOrUpdate = "kiosk.CreateOrUpdateLeaveRequest";
-        public string Approve = "kiosk.ApprovedLeaveRequest";
-        public string Cancel = "kiosk.CancelLeaveRequest";
-        public string Delete = "kiosk.DeleteLeaveRequest";
-        public string GetApprovedLeave = "kiosk.GetApprovedLeaveRequest";
-        public string UploadDocument = "kiosk.UploadDocumentForLeave";
+        public const string Get = "kiosk.GetLeaveRequest";
+        public const string Filter = "kiosk.FilterLeaveRequest";
+        public const string FilterApproving = "kiosk.FilterApprovingLeaveRequest";
+        public const string FilterRequestThatNeedDocument = "kiosk.FilterLeaveRequestThatNeedDocument";
+        public const string CreateOrUpdate = "kiosk.CreateOrUpdateLeaveRequest";
+        public const string Approve = "kiosk.ApprovedLeaveRequest";
+        public const string Cancel = "kiosk.CancelLeaveRequest";
+        public const string Delete = "kiosk.DeleteLeaveRequest";
+        public const string GetApprovedLeave = "kiosk.GetApprovedLeaveRequest";
+        public const string UploadDocument = "kiosk.UploadDocumentForLeave";
     }
 }

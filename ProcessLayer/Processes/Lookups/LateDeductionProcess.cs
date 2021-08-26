@@ -11,13 +11,10 @@ using System.Threading.Tasks;
 
 namespace ProcessLayer.Processes.Lookups
 {
-    public class LateDeductionProcess : ILookupProcess<LateDeduction>
+    public sealed class LateDeductionProcess : ILookupProcess<LateDeduction>
     {
-        private static LateDeductionProcess _instance;
-        public static LateDeductionProcess Instance
-        {
-            get { if (_instance == null) _instance = new LateDeductionProcess(); return _instance; }
-        }
+        public static readonly Lazy<LateDeductionProcess> Instance = new Lazy<LateDeductionProcess>(() => new LateDeductionProcess());
+        private LateDeductionProcess() { }
         internal LateDeduction Converter(DataRow dr)
         {
             return new LateDeduction

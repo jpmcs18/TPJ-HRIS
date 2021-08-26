@@ -1,16 +1,13 @@
 ﻿using ProcessLayer.Helpers;
+using System;
 
 namespace ReportLayer.Helpers
 {
-    public class PrintPayslipHelper : ReportHelperBase
+    public sealed class PrintPayslipHelper : ReportHelperBase
     {
-        private static PrintPayslipHelper instance;
-        public static PrintPayslipHelper Instance
-        {
-            get { if (instance == null) instance = new PrintPayslipHelper(); return instance; }
-        }
+        public static readonly Lazy<PrintPayslipHelper> Instance = new Lazy<PrintPayslipHelper>(() => new PrintPayslipHelper());
 
-        public PrintPayslipHelper() : base("Payslip")
+        private PrintPayslipHelper() : base("Payslip")
         {
             SignatoryCell = Get(nameof(SignatoryCell)).ToString();
             EmployeeNameCell = Get(nameof(EmployeeNameCell)).ToString();

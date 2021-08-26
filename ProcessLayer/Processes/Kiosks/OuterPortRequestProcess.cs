@@ -11,14 +11,10 @@ using System.Threading.Tasks;
 
 namespace ProcessLayer.Processes.Kiosks
 {
-    public class OuterPortRequestProcess
-    {
-		private static OuterPortRequestProcess _instance;
-
-		public static OuterPortRequestProcess Instance
-		{
-			get { if (_instance == null) _instance = new OuterPortRequestProcess(); return _instance; }
-		}
+    public sealed class OuterPortRequestProcess
+	{
+		public static readonly Lazy<OuterPortRequestProcess> Instance = new Lazy<OuterPortRequestProcess>(() => new OuterPortRequestProcess());
+		private OuterPortRequestProcess() { }
 		internal bool IsOuterPortRequestOnly { get; set; } = true;
 		internal OuterPortRequest Converter(DataRow dr)
 		{
@@ -41,7 +37,7 @@ namespace ProcessLayer.Processes.Kiosks
 			};
 
 			o._Personnel = PersonnelProcess.Get(o.PersonnelID??0, true);
-			o._Location = LocationProcess.Instance.Get(o.LocationID);
+			o._Location = LocationProcess.Instance.Value.Get(o.LocationID);
 			if(!IsOuterPortRequestOnly)
 			{
 				o._Cancel = LookupProcess.GetUser(o.CancelledBy);

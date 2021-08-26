@@ -23,7 +23,7 @@ namespace ProcessLayer.Processes
                 EndDate = dr[PersonnelAssignedLocationFields.EndDate].ToNullableDateTime()
             };
 
-            obj._Location = LocationProcess.Instance.Get(obj.LocationID);
+            obj._Location = LocationProcess.Instance.Value.Get(obj.LocationID);
 
             return obj;
         }
@@ -93,7 +93,7 @@ namespace ProcessLayer.Processes
             {
                 db.ExecuteNonQuery(PersonnelAssignedLocationProcedures.CreateOrUpdate, ref outParameters, parameters);
                 obj.ID = outParameters.Get(PersonnelAssignedLocationParameters.ID).ToLong();
-                obj._Location = LocationProcess.Instance.Get(obj.LocationID);
+                obj._Location = LocationProcess.Instance.Value.Get(obj.LocationID);
             }
             return obj;
         }
