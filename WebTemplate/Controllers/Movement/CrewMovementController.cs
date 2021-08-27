@@ -239,9 +239,9 @@ namespace WebTemplate.Controllers.Movement
         [HttpPost]
         public ActionResult PrintCrewMovementForm(long id)
         {
-            try
-            {
-                using (var report = new PrintCrewMovementForm(Server.MapPath(PrintCrewMovementFormHelper.Instance.Template)))
+            //try
+            //{
+                using (var report = new PrintCrewMovementForm(Server.MapPath(PrintCrewMovementFormHelper.Instance.Value.Template)))
                 {
                     report.CrewMovement = CrewMovementProcess.Get(id);
                     report.GenerateReport();
@@ -249,12 +249,12 @@ namespace WebTemplate.Controllers.Movement
                     //ViewBag.Title = $"Crew Movement | {report.CrewMovement.:MMMM dd yyyy} - {report.PayrollPeriod.EndDate:MMMM dd yyyy}";
                 }
                 return View("~/Views/PrintingView.cshtml");
-            }
-            catch (Exception ex)
-            {
-                //return Json(new { msg = false, res = ex.GetActualMessage() });
-                return View("~/Views/Security/ServerError.cshtml", ex.GetActualMessage());
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    //return Json(new { msg = false, res = ex.GetActualMessage() });
+            //    return View("~/Views/Security/ServerError.cshtml", ex.GetActualMessage());
+            //}
         }
 
     }

@@ -20,8 +20,8 @@ namespace WebTemplate.Controllers.Kiosk
         {
             model.Page = model.Page > 1 ? model.Page : 1;
             model.Personnel = PersonnelProcess.GetByUserId(User.UserID);
-            model.LeaveRequests = LeaveRequestProcess.Instance.GetList(model.Personnel?.ID ?? 0, model.LeaveTypeID, model.IsExpired, model.IsPending, model.IsApproved, model.IsCancelled, model.StartDateTime, model.EndingDateTime, model.Page, model.GridCount, out int PageCount);
-            model.LeaveTypes = LeaveTypeProcess.Instance.GetList();
+            model.LeaveRequests = LeaveRequestProcess.Instance.Value.GetList(model.Personnel?.ID ?? 0, model.LeaveTypeID, model.IsExpired, model.IsPending, model.IsApproved, model.IsCancelled, model.StartDateTime, model.EndingDateTime, model.Page, model.GridCount, out int PageCount);
+            model.LeaveTypes = LeaveTypeProcess.Instance.Value.GetList();
             model.PageCount = PageCount;
 
             if (Request.IsAjaxRequest())
@@ -47,7 +47,7 @@ namespace WebTemplate.Controllers.Kiosk
                     LeaveRequest = new LeaveRequest(),
                 };
 
-                model.LeaveTypes = PersonnelLeaveCreditProcess.GetLeaveWithCredits(model.Personnel?.ID ?? 0, DateTime.Now.Year);
+                model.LeaveTypes = PersonnelLeaveCreditProcess.Instance.Value.GetLeaveWithCredits(model.Personnel?.ID ?? 0, DateTime.Now.Year);
 
                 return PartialViewCustom("_LeaveRequestNew", model);
             }
@@ -69,7 +69,7 @@ namespace WebTemplate.Controllers.Kiosk
                 };
 
                 if ((id ?? 0) > 0)
-                    model = LeaveRequestProcess.Instance.Get(id ?? 0);
+                    model = LeaveRequestProcess.Instance.Value.Get(id ?? 0);
 
                 if (model.Approved == true || model.Cancelled == true)
                     return PartialViewCustom("_LeaveRequestView", model);
@@ -95,7 +95,7 @@ namespace WebTemplate.Controllers.Kiosk
                 if (errors.Length > 0)
                     return Json(new { msg = false, res = errors.ToString() });
                 model._Personnel = PersonnelProcess.Get(model.PersonnelID ?? 0, true);
-                model = LeaveRequestProcess.Instance.CreateOrUpdate(model, User.UserID);
+                model = LeaveRequestProcess.Instance.Value.CreateOrUpdate(model, User.UserID);
                 ModelState.Clear();
                 return PartialViewCustom("_LeaveRequestEdit", model);
             }
@@ -111,7 +111,7 @@ namespace WebTemplate.Controllers.Kiosk
         {
             try
             {
-                LeaveRequest model = LeaveRequestProcess.Instance.Get(id ?? 0);
+                LeaveRequest model = LeaveRequestProcess.Instance.Value.Get(id ?? 0);
                 ModelState.Clear();
                 return PartialViewCustom("_LeaveRequest", model);
             }
@@ -170,7 +170,7 @@ namespace WebTemplate.Controllers.Kiosk
 
         public void DeleteRequestSingle(long? id)
         {
-            LeaveRequestProcess.Instance.Delete(id ?? 0, User.UserID);
+            LeaveRequestProcess.Instance.Value.Delete(id ?? 0, User.UserID);
         }
     }
 }

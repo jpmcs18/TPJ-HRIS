@@ -3,9 +3,9 @@
 @{
     var CrewPageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("Movement/CrewMovement");
 
-    var deparments = ProcessLayer.Processes.Lookups.DepartmentProcess.Instance.GetList();
-    var positions = ProcessLayer.Processes.PositionProcess.Instance.GetList();
-    var vessels = ProcessLayer.Processes.VesselProcess.Instance.GetList();
+    var deparments = ProcessLayer.Processes.Lookups.DepartmentProcess.Instance.Value.GetList();
+    var positions = ProcessLayer.Processes.PositionProcess.Instance.Value.GetList();
+    var vessels = ProcessLayer.Processes.VesselProcess.Instance.Value.GetList();
 
     var showbtn = true;
     DateTime? MovementDate = null;

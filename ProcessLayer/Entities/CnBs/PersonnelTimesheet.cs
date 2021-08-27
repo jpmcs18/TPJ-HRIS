@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProcessLayer.Entities.CnBs
 {
-    public sealed class PersonnelTimesheet
+    public class PersonnelTimesheet
     {
         public Personnel Personnel { get; set; }
         public List<ComputedTimelog> ComputedTimelogs { get; set; } = new List<ComputedTimelog>();

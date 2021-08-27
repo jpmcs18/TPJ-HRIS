@@ -3,18 +3,16 @@ using Newtonsoft.Json;
 using ProcessLayer.Entities;
 using ProcessLayer.Helpers;
 using ProcessLayer.Processes.Lookups;
+using System;
 using System.Collections.Generic;
 using System.Data;
 
 namespace ProcessLayer.Processes
 {
-    public class LeaveTypeProcess : ILookupProcess<LeaveType>
+    public sealed class LeaveTypeProcess : ILookupProcess<LeaveType>
     {
-        private static LeaveTypeProcess _instance;
-        public static LeaveTypeProcess Instance
-        {
-            get { if (_instance == null) _instance = new LeaveTypeProcess(); return _instance; }
-        }
+        public static readonly Lazy<LeaveTypeProcess> Instance = new Lazy<LeaveTypeProcess>(() => new LeaveTypeProcess());
+        private LeaveTypeProcess() { }
         internal LeaveType Converter(DataRow dr)
         {
             return new LeaveType

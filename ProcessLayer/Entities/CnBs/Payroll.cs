@@ -43,6 +43,10 @@ namespace ProcessLayer.Entities.CnB
         public decimal TotalOTAllowance { get; set; }
         public decimal AdditionalPayRate { get; set; }
         public decimal AdditionalAllowanceRate { get; set; }
+        public decimal HighRiskPayRate { get; set; }
+        public decimal TotalHighRiskPay { get; set; }
+        public decimal HighRiskAllowanceRate { get; set; }
+        public decimal TotalHighRiskAllowancePay { get; set; }
         public decimal TotalAdditionalPay { get; set; }
         public decimal TotalAdditionalAllowancePay { get; set; }
         public decimal TotalAdditionalOvertimePay { get; set; }
@@ -55,21 +59,17 @@ namespace ProcessLayer.Entities.CnB
         public List<LoanDeductions> LoanDeductions { get; set; } = new List<LoanDeductions>();
 
         public decimal PagibigFund { get { return PayrollDeductions.Where(x => x.Deduction.Description.Replace("-", "").Replace(" ", "").ToLower().Contains("pagibig")).Sum(x => x.Amount) ?? 0; } }
-        public decimal SalaryLoan { get { return LoanDeductions.Where(x => x.PersonnelLoan._Loan.Description.Replace("-", "").Replace(" ", "").ToLower().Contains("salary")).Sum(x => x.Amount); } }
-        public decimal PagibigLoan { get { return LoanDeductions.Where(x => x.PersonnelLoan._Loan.Description.Replace("-", "").Replace(" ", "").ToLower().Contains("pagibig")).Sum(x => x.Amount); } }
+        public decimal SalaryLoan { get { return LoanDeductions.Where(x => x.PersonnelLoan._Loan.Description.Replace("-", "").Replace(" ", "").ToLower().Contains("sssloan")).Sum(x => x.Amount); } }
+        public decimal SSSCalamityLoan { get { return LoanDeductions.Where(x => x.PersonnelLoan._Loan.Description.Replace("-", "").Replace(" ", "").ToLower().Contains("ssscalamity")).Sum(x => x.Amount); } }
+        public decimal PagibigCalamityLoan { get { return LoanDeductions.Where(x => x.PersonnelLoan._Loan.Description.Replace("-", "").Replace(" ", "").ToLower().Contains("pagibigcalamity")).Sum(x => x.Amount); } }
+        public decimal PagibigLoan { get { return LoanDeductions.Where(x => x.PersonnelLoan._Loan.Description.Replace("-", "").Replace(" ", "").ToLower().Contains("pagibigloan")).Sum(x => x.Amount); } }
         public decimal SSS { get { return PayrollDeductions.Where(x => x.Deduction.Description.Replace("-", "").Replace(" ", "").ToLower().Contains("sss")).Sum(x => x.Amount) ?? 0; } }
-        public decimal SSSLoan { get { return LoanDeductions.Where(x => x.PersonnelLoan._Loan.Description.Replace("-", "").Replace(" ", "").ToLower().Contains("sss")).Sum(x => x.Amount); } }
+        //public decimal SSSLoan { get { return LoanDeductions.Where(x => x.PersonnelLoan._Loan.Description.Replace("-", "").Replace(" ", "").ToLower().Contains("sss")).Sum(x => x.Amount); } }
         public decimal ProvidentFund { get { return PayrollDeductions.Where(x => x.Deduction.Description.Replace("-", "").Replace(" ", "").ToLower().Contains("provident")).Sum(x => x.Amount) ?? 0; } }
         public decimal PhilHealth { get { return PayrollDeductions.Where(x => x.Deduction.Description.Replace("-", "").Replace(" ", "").ToLower().Contains("philhealth")).Sum(x => x.Amount) ?? 0; } }
         public decimal Vale { get { return LoanDeductions.Where(x => x.PersonnelLoan._Loan.isPersonal ?? false).Sum(x => x.Amount); } }
         public decimal NoOfDaysPresent { get { return PayrollDetails.Where(x => x.IsPresent).Sum(x => x.RegularDay); } }
         public decimal HighRiskPresent { get { return PayrollDetails.Where(x => x.IsHighRisk).Count(); } }
-        public decimal HighRiskPay { get { return PayrollDetails.Where(x => x.IsHighRisk).Sum(x => x.HighRiskPayRate * x.RegularDay); } }
-        public decimal HighRiskPayAllowance { get { return PayrollDetails.Where(x => x.IsHighRisk).Sum(x => x.HighRiskAllowanceRate * x.RegularDay); } }
-        public decimal HighRiskPayRate { get { return PayrollDetails.Where(x => x.IsHighRisk).Select(x => x.HighRiskPayRate).FirstOrDefault(); } }
-        public decimal HighRiskPayAllowanceRate { get { return PayrollDetails.Where(x => x.IsHighRisk).Select(x => x.HighRiskAllowanceRate).FirstOrDefault(); } }
-        public decimal HighRiskRate { get { return PayrollDetails.Where(x => x.IsHighRisk).Select(x => x.HighRiskRate).FirstOrDefault(); } }
-        
         //Additional Columns
         public decimal SumOfAllAllowance { get { return TotalAllowance + TotalOTAllowance; } }
         public decimal SumOfAllAdditionalPay { get { return TotalAdditionalPay + TotalAdditionalAllowancePay + TotalAdditionalOvertimePay + TotalAdditionalOvertimeAllowancePay; } }

@@ -17,7 +17,7 @@ namespace WebTemplate.Controllers.Maintenance.Lookup
         public ActionResult Index(Index model)
         {
             //model.Page = model.Page > 1 ? model.Page : 1;
-            //model.KioskApprovers = KioskApproverProcess.Instance.Get(model.Name, model.DepartmentID, model.Page, model.GridCount, out int PageCount);
+            //model.KioskApprovers = KioskApproverProcess.Instance.Value.Get(model.Name, model.DepartmentID, model.Page, model.GridCount, out int PageCount);
             model.KioskApprovers = new List<KioskApprovers>();
             model.Personnels = new List<Personnel>();
             //model.PageCount = PageCount;
@@ -71,7 +71,7 @@ namespace WebTemplate.Controllers.Maintenance.Lookup
 
                 if ((model.DepartmentID ?? 0) > 0)
                 {
-                    model.KioskApprovers = KioskApproverProcess.Instance.Get(model.Approver, model.DepartmentID);
+                    model.KioskApprovers = KioskApproverProcess.Instance.Value.Get(model.Approver, model.DepartmentID);
                     model.Personnels = PersonnelProcess.GetPersonnelEligibleToApprove(model.DepartmentID, model.Personnel);
                 }
 
@@ -112,7 +112,7 @@ namespace WebTemplate.Controllers.Maintenance.Lookup
                 KioskApprovers model = new KioskApprovers();
 
                 if ((id ?? 0) > 0)
-                    model = KioskApproverProcess.Instance.Get(id ?? 0);
+                    model = KioskApproverProcess.Instance.Value.Get(id ?? 0);
 
                 if (model == null)
                 {
@@ -135,7 +135,7 @@ namespace WebTemplate.Controllers.Maintenance.Lookup
         {
             try
             {   
-                model = KioskApproverProcess.Instance.CreateOrUpdate(model, User.UserID);
+                model = KioskApproverProcess.Instance.Value.CreateOrUpdate(model, User.UserID);
                 ModelState.Clear();
                 return PartialViewCustom("_KioskApproversNew", model);
             }
@@ -153,7 +153,7 @@ namespace WebTemplate.Controllers.Maintenance.Lookup
             {
                 Index models = new Index
                 {
-                    KioskApprovers = KioskApproverProcess.Instance.CreateOrUpdate(model, User.UserID).Where(r => r.Deleted == false).ToList(),
+                    KioskApprovers = KioskApproverProcess.Instance.Value.CreateOrUpdate(model, User.UserID).Where(r => r.Deleted == false).ToList(),
                 };
                 models.DepartmentID = deptid ?? model[0].DepartmentID ?? 0;
                 models.Personnels = PersonnelProcess.GetPersonnelEligibleToApprove(models.DepartmentID, filter);
@@ -173,7 +173,7 @@ namespace WebTemplate.Controllers.Maintenance.Lookup
         {
             try
             {
-                KioskApprovers model = KioskApproverProcess.Instance.Get(id ?? 0);
+                KioskApprovers model = KioskApproverProcess.Instance.Value.Get(id ?? 0);
                 ModelState.Clear();
                 return PartialViewCustom("_KioskApprovers", model);
             }
@@ -191,7 +191,7 @@ namespace WebTemplate.Controllers.Maintenance.Lookup
             {
                 try
                 {
-                    KioskApproverProcess.Instance.Delete(id.Value, User.UserID);
+                    KioskApproverProcess.Instance.Value.Delete(id.Value, User.UserID);
                 }
                 catch
                 {

@@ -1,14 +1,14 @@
-﻿namespace ProcessLayer.Helpers.ObjectParameter.Kiosk.Leave_Request
+﻿using System;
+
+namespace ProcessLayer.Helpers.ObjectParameter.Kiosk.Leave_Request
 {
     public class LeaveRequestParameters : KioskParametersBase
     {
-        public LeaveRequestParameters() { }
-        private static LeaveRequestParameters _instance;
-        public static LeaveRequestParameters Instance { get { if (_instance == null) _instance = new LeaveRequestParameters(); return _instance; } }
-
-        public string LeaveTypeID = "@LeaveTypeID";
-        public string StartDateTime = "@StartDateTime";
-        public string EndDateTime = "@EndDateTime";
-        public string BulkUse = "@BulkUse";
+        public const string LeaveTypeID = "@LeaveTypeID";
+        public const string StartDate = "@StartDate";
+        public const string EndDate = "@EndDate";
+        public const string BulkUse = "@BulkUse";
+        public const string RequestedDate = "@RequestedDate";
+        public const string NoofDays = "@NoofDays";
     }
 }

@@ -1,18 +1,16 @@
 ﻿using DBUtilities;
 using ProcessLayer.Entities;
 using ProcessLayer.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Data;
 
 namespace ProcessLayer.Processes.Lookups
 {
-    public class TaxScheduleProcess : ILookupSourceProcess<TaxSchedule>
+    public sealed class TaxScheduleProcess : ILookupSourceProcess<TaxSchedule>
     {
-        private static TaxScheduleProcess _instance;
-        public static TaxScheduleProcess Instance
-        {
-            get { if (_instance == null) _instance = new TaxScheduleProcess(); return _instance; }
-        }
+        public static readonly Lazy<TaxScheduleProcess> Instance = new Lazy<TaxScheduleProcess>(() => new TaxScheduleProcess());
+        private TaxScheduleProcess() { }
 
         internal TaxSchedule Converter(DataRow dr)
         {

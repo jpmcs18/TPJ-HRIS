@@ -4,7 +4,7 @@ using System;
 
 namespace ProcessLayer.Entities.CnBs
 {
-    public sealed class ComputedTimelog
+    public class ComputedTimelog
     {
         public DateTime Date { get; set; }
         public DateTime? Login { get; set; }

@@ -4,30 +4,33 @@ using ProcessLayer.Entities.HR;
 using ProcessLayer.Helpers;
 using ProcessLayer.Helpers.ObjectParameter;
 using ProcessLayer.Helpers.ObjectParameter.Personnel;
+using System;
 using System.Collections.Generic;
 using System.Data;
 
 namespace ProcessLayer.Processes.HR
 {
-    public class PersonnelLeaveCreditProcess
+    public sealed class PersonnelLeaveCreditProcess
     {
-        internal static PersonnelLeaveCredit Converter(DataRow dr)
+        public static readonly Lazy<PersonnelLeaveCreditProcess> Instance = new Lazy<PersonnelLeaveCreditProcess>(() => new PersonnelLeaveCreditProcess());
+        private PersonnelLeaveCreditProcess() { }
+        internal PersonnelLeaveCredit Converter(DataRow dr)
         {
             var l = new PersonnelLeaveCredit
             {
-                ID = dr[PersonnelLeaveCreditsFields.Instance.ID].ToLong(),
-                PersonnelID = dr[PersonnelLeaveCreditsFields.Instance.PersonnelID].ToNullableLong(),
-                LeaveCredits = dr[PersonnelLeaveCreditsFields.Instance.LeaveCredits].ToNullableFloat(),
-                LeaveTypeID = dr[PersonnelLeaveCreditsFields.Instance.LeaveTypeID].ToNullableByte(),
-                YearValid = dr[PersonnelLeaveCreditsFields.Instance.YearValid].ToNullableShort()
+                ID = dr[PersonnelLeaveCreditsFields.ID].ToLong(),
+                PersonnelID = dr[PersonnelLeaveCreditsFields.PersonnelID].ToNullableLong(),
+                LeaveCredits = dr[PersonnelLeaveCreditsFields.LeaveCredits].ToNullableFloat(),
+                LeaveTypeID = dr[PersonnelLeaveCreditsFields.LeaveTypeID].ToNullableByte(),
+                YearValid = dr[PersonnelLeaveCreditsFields.YearValid].ToNullableShort()
             };
 
-            l._LeaveType = LeaveTypeProcess.Instance.Get(l.LeaveTypeID);
+            l._LeaveType = LeaveTypeProcess.Instance.Value.Get(l.LeaveTypeID);
 
             return l;
         }
 
-        public static List<PersonnelLeaveCredit> GetByPersonnelID(long? PersonnelID = null)
+        public List<PersonnelLeaveCredit> GetByPersonnelID(long? PersonnelID = null)
         {
             var eb = new List<PersonnelLeaveCredit>();
 
@@ -35,12 +38,12 @@ namespace ProcessLayer.Processes.HR
             {
                 var Parameters = new Dictionary<string, object>
                 {
-                    { PersonnelLeaveCreditsParameters.Instance.PersonnelID, PersonnelID.Value }
+                    { PersonnelLeaveCreditsParameters.PersonnelID, PersonnelID.Value }
                 };
 
                 using (var db = new DBTools())
                 {
-                    using (var ds = db.ExecuteReader(PersonnelLeaveCreditsProcedures.Instance.Get, Parameters))
+                    using (var ds = db.ExecuteReader(PersonnelLeaveCreditsProcedures.Get, Parameters))
                     {
                         eb = ds.GetList(Converter);
                     }
@@ -49,7 +52,7 @@ namespace ProcessLayer.Processes.HR
 
             return eb;
         }
-        public static PersonnelLeaveCredit GetRemainingCredits(long personnelID, byte leaveTypeID, short year)
+        public PersonnelLeaveCredit GetRemainingCredits(long personnelID, byte leaveTypeID, short year)
         {
 
             using (var db = new DBTools())
@@ -58,17 +61,17 @@ namespace ProcessLayer.Processes.HR
             }
         }
 
-        public static PersonnelLeaveCredit GetRemainingCredits(DBTools db, long personnelID, byte leaveTypeID, short year)
+        public PersonnelLeaveCredit GetRemainingCredits(DBTools db, long personnelID, byte leaveTypeID, short year)
         {
             var eb = new PersonnelLeaveCredit();
             var Parameters = new Dictionary<string, object>
             {
-                { PersonnelLeaveCreditsParameters.Instance.PersonnelID, personnelID },
-                { PersonnelLeaveCreditsParameters.Instance.LeaveTypeID, leaveTypeID},
-                { PersonnelLeaveCreditsParameters.Instance.YearValid, year}
+                { PersonnelLeaveCreditsParameters.PersonnelID, personnelID },
+                { PersonnelLeaveCreditsParameters.LeaveTypeID, leaveTypeID},
+                { PersonnelLeaveCreditsParameters.YearValid, year}
             };
 
-            using (var ds = db.ExecuteReader(PersonnelLeaveCreditsProcedures.Instance.GetRemainingCredits, Parameters))
+            using (var ds = db.ExecuteReader(PersonnelLeaveCreditsProcedures.GetRemainingCredits, Parameters))
             {
                 eb = ds.Get(Converter);
             }
@@ -76,18 +79,18 @@ namespace ProcessLayer.Processes.HR
             return eb;
         }
 
-        public static PersonnelLeaveCredit Get(long Id)
+        public PersonnelLeaveCredit Get(long Id)
         {
             var eb = new PersonnelLeaveCredit();
 
             var Parameters = new Dictionary<string, object>
             {
-                { PersonnelLeaveCreditsParameters.Instance.ID, Id }
+                { PersonnelLeaveCreditsParameters.ID, Id }
             };
 
             using (var db = new DBTools())
             {
-                using (var ds = db.ExecuteReader(PersonnelLeaveCreditsProcedures.Instance.Get, Parameters))
+                using (var ds = db.ExecuteReader(PersonnelLeaveCreditsProcedures.Get, Parameters))
                 {
                     eb = ds.Get(Converter);
                 }
@@ -96,54 +99,55 @@ namespace ProcessLayer.Processes.HR
             return eb;
         }
 
-        public static List<LeaveType> GetLeaveWithCredits(long personnelID, int year)
+        public List<LeaveType> GetLeaveWithCredits(long personnelID, int year)
         {
             using (var db = new DBTools())
             {
                 using (var ds = db.ExecuteReader("hr.GetLeavesWithCredits", new Dictionary<string, object> { { "@PersonnelID", personnelID }, { "@Year", year } }))
                 {
-                    return ds.GetList(LeaveTypeProcess.Instance.Converter);
+                    return ds.GetList(LeaveTypeProcess.Instance.Value.Converter);
                 }
             }
         }
 
-        public static PersonnelLeaveCredit CreateOrUpdate(PersonnelLeaveCredit obj, int userid)
+        public PersonnelLeaveCredit CreateOrUpdate(PersonnelLeaveCredit obj, int userid)
         {
             var parameters = new Dictionary<string, object> {
-                {PersonnelLeaveCreditsParameters.Instance.PersonnelID, obj.PersonnelID}
-                , {PersonnelLeaveCreditsParameters.Instance.LeaveCredits, obj.LeaveCredits}
-                , {PersonnelLeaveCreditsParameters.Instance.LeaveTypeID,obj.LeaveTypeID}
-                , {PersonnelLeaveCreditsParameters.Instance.YearValid,obj.YearValid}
+                {PersonnelLeaveCreditsParameters.PersonnelID, obj.PersonnelID}
+                , {PersonnelLeaveCreditsParameters.LeaveCredits, obj.LeaveCredits}
+                , {PersonnelLeaveCreditsParameters.LeaveTypeID,obj.LeaveTypeID}
+                , {PersonnelLeaveCreditsParameters.YearValid,obj.YearValid}
                 , {CredentialParameters.LogBy, userid}
             };
             var outParameters = new List<OutParameters>
             {
-                { PersonnelLeaveCreditsParameters.Instance.ID, SqlDbType.BigInt, obj.ID }
+                { PersonnelLeaveCreditsParameters.ID, SqlDbType.BigInt, obj.ID }
             };
             using (var db = new DBTools())
             {
-                db.ExecuteNonQuery(PersonnelLeaveCreditsProcedures.Instance.CreateOrUpdate, ref outParameters, parameters);
-                obj = Get(outParameters.Get(PersonnelLeaveCreditsParameters.Instance.ID).ToLong());
+                db.ExecuteNonQuery(PersonnelLeaveCreditsProcedures.CreateOrUpdate, ref outParameters, parameters);
+                obj = Get(outParameters.Get(PersonnelLeaveCreditsParameters.ID).ToLong());
             }
             return obj;
         }
 
-        public static void Delete(long Id, int userid)
+        public void Delete(long Id, int userid)
         {
             var Parameters = new Dictionary<string, object>
             {
-                { PersonnelLeaveCreditsFields.Instance.ID, Id },
+                { PersonnelLeaveCreditsFields.ID, Id },
                 { CredentialParameters.LogBy, userid }
             };
 
             using (var db = new DBTools())
             {
-                db.ExecuteNonQuery(PersonnelLeaveCreditsProcedures.Instance.Delete, Parameters);
+                db.ExecuteNonQuery(PersonnelLeaveCreditsProcedures.Delete, Parameters);
             }
         }
-        public static void UpdateCredits(DBTools db, byte leaveTypeId, int year, double credits, int userid)
+        public void UpdateCredits(DBTools db, long personnelId, byte leaveTypeId, int year, double credits, int userid)
         {
             var parameters = new Dictionary<string, object> {
+                { "@PersonnelID", personnelId },
                 { "@LeaveTypeId", leaveTypeId },
                 { "@UsedCredits", credits },
                 { "@YearValid", year },

@@ -1,19 +1,16 @@
 ﻿using DBUtilities;
 using ProcessLayer.Entities.Kiosk;
 using ProcessLayer.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Data;
 
 namespace ProcessLayer.Processes.Kiosk
 {
-    public class KioskNotificationProcess
+    public sealed class KioskNotificationProcess
     {
-        private static KioskNotificationProcess _instance;
-
-        public static KioskNotificationProcess Instance
-        {
-            get { if (_instance == null) _instance = new KioskNotificationProcess();  return _instance; }
-        }
+        public static readonly Lazy<KioskNotificationProcess> Instance = new Lazy<KioskNotificationProcess>(() => new KioskNotificationProcess());
+        private KioskNotificationProcess() { }
 
         public KioskNotification Converter(DataRow dr)
         {

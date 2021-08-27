@@ -16,7 +16,7 @@ namespace WebTemplate.Controllers.Kiosk
         {
             model.Page = model.Page > 1 ? model.Page : 1;
             model.Personnel = PersonnelProcess.GetByUserId(User.UserID);
-            model.OTRequests = OTRequestProcess.Instance.GetList(model.Personnel?.ID ?? 0, model.IsExpired, model.IsPending, model.IsApproved, model.IsCancelled, model.StartDateTime, model.EndingDateTime, model.Page, model.GridCount, out int PageCount);
+            model.OTRequests = OTRequestProcess.Instance.Value.GetList(model.Personnel?.ID ?? 0, model.IsExpired, model.IsPending, model.IsApproved, model.IsCancelled, model.StartDateTime, model.EndingDateTime, model.Page, model.GridCount, out int PageCount);
             model.PageCount = PageCount;
 
             if (Request.IsAjaxRequest())
@@ -63,7 +63,7 @@ namespace WebTemplate.Controllers.Kiosk
                 };
 
                 if ((id ?? 0) > 0)
-                    model = OTRequestProcess.Instance.Get(id ?? 0);
+                    model = OTRequestProcess.Instance.Value.Get(id ?? 0);
 
                 if (model.Approved == true || model.Cancelled == true)
                     return PartialViewCustom("_OTRequestView", model);
@@ -87,7 +87,7 @@ namespace WebTemplate.Controllers.Kiosk
                 if (errors.Length > 0)
                     return Json(new { msg = false, res = errors.ToString() });
 
-                model = OTRequestProcess.Instance.CreateOrUpdate(model, User.UserID);
+                model = OTRequestProcess.Instance.Value.CreateOrUpdate(model, User.UserID);
 
                 ModelState.Clear();
                 return PartialViewCustom("_OTRequestEdit", model);
@@ -104,7 +104,7 @@ namespace WebTemplate.Controllers.Kiosk
         {
             try
             {
-                OTRequest model = OTRequestProcess.Instance.Get(id ?? 0);
+                OTRequest model = OTRequestProcess.Instance.Value.Get(id ?? 0);
                 ModelState.Clear();
                 return PartialViewCustom("_MyOTRequest", model);
             }
@@ -122,7 +122,7 @@ namespace WebTemplate.Controllers.Kiosk
             {
                 try
                 {
-                    OTRequestProcess.Instance.Delete(ot);
+                    OTRequestProcess.Instance.Value.Delete(ot);
                     return Json(new { msg = true, res = "Delete Success" });
                 }
                 catch (Exception ex)

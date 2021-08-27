@@ -2,10 +2,10 @@
 @{
     var CrewPageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("HumanResource/Crew");
 
-    var vessels = ProcessLayer.Processes.VesselProcess.Instance.GetList();
+    var vessels = ProcessLayer.Processes.VesselProcess.Instance.Value.GetList();
     var crews = ProcessLayer.Processes.PersonnelProcess.GetList();
-    var positions = ProcessLayer.Processes.PositionProcess.Instance.GetList();
-    var departments = ProcessLayer.Processes.Lookups.DepartmentProcess.Instance.GetListOffice(isOffice: true);
+    var positions = ProcessLayer.Processes.PositionProcess.Instance.Value.GetList();
+    var departments = ProcessLayer.Processes.Lookups.DepartmentProcess.Instance.Value.GetListOffice(isOffice: true);
 }
 
 <tr id="Row-Display-Crew-@Model.ID" class="Row-Display Row-Display-Crew read" style="" title="">

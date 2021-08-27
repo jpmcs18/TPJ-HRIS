@@ -1,16 +1,13 @@
 ﻿using ProcessLayer.Helpers;
+using System;
 
 namespace ReportLayer.Helpers
 {
-    public class PrintPayslipHelper : ReportHelperBase
+    public sealed class PrintPayslipHelper : ReportHelperBase
     {
-        private static PrintPayslipHelper instance;
-        public static PrintPayslipHelper Instance
-        {
-            get { if (instance == null) instance = new PrintPayslipHelper(); return instance; }
-        }
+        public static readonly Lazy<PrintPayslipHelper> Instance = new Lazy<PrintPayslipHelper>(() => new PrintPayslipHelper());
 
-        public PrintPayslipHelper() : base("Payslip")
+        private PrintPayslipHelper() : base("Payslip")
         {
             SignatoryCell = Get(nameof(SignatoryCell)).ToString();
             EmployeeNameCell = Get(nameof(EmployeeNameCell)).ToString();
@@ -81,6 +78,7 @@ namespace ReportLayer.Helpers
             SalaryLoanCell = Get(nameof(SalaryLoanCell)).ToString();
             PagibigLoanCell = Get(nameof(PagibigLoanCell)).ToString();
             PagibigCell = Get(nameof(PagibigCell)).ToString();
+            LoanStartRow = Get(nameof(LoanStartRow)).ToInt();
             TaxCell = Get(nameof(TaxCell)).ToString();
             OtherChargesCell = Get(nameof(OtherChargesCell)).ToString();
             ValeCell = Get(nameof(ValeCell)).ToString();
@@ -149,6 +147,7 @@ namespace ReportLayer.Helpers
         public string PhilHealthCell { get; set; }
         public string SalaryLoanCell { get; set; }
         public string PagibigLoanCell { get; set; }
+        public int LoanStartRow { get; set; }
         public string PagibigCell { get; set; }
         public string TaxCell { get; set; }
         public string OtherChargesCell { get; set; }

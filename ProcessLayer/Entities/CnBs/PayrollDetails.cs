@@ -18,9 +18,6 @@ namespace ProcessLayer.Entities.CnB
         public bool IsHazard { get { return (Location?.ID ?? 0) > 0; } }
         public string HazardLocation { get { return Location?.Description ?? ""; } }
         public bool IsHighRisk { get; set; }
-        public decimal HighRiskRate { get; set; }
-        public decimal HighRiskPayRate { get; set; }
-        public decimal HighRiskAllowanceRate { get; set; }
         public int RegularOTMinutes { get; set; }
         public int SundayOTMinutes { get; set; }
         public int HolidayRegularOTMinutes { get; set; }
@@ -30,15 +27,15 @@ namespace ProcessLayer.Entities.CnB
         public bool IsPresent { get; set; }
 
         //Display
-        public decimal RegularHours { get { return (TotalRegularMinutes / PayrollParameters.CNBInstance.Minutes).ToDecimalPlaces(2); } }
-        public decimal RegularDay { get { return (TotalRegularMinutes / (decimal)PayrollParameters.CNBInstance.TotalMinutesPerDay).ToDecimalPlaces(3); } }
-        public decimal LeaveHours { get { return (TotalLeaveMinutes / PayrollParameters.CNBInstance.Minutes).ToDecimalPlaces(2); } }
-        public decimal RegularOTHours { get { return (RegularOTMinutes / PayrollParameters.CNBInstance.Minutes).ToDecimalPlaces(2); } }
-        public decimal SundayOTHours { get { return (SundayOTMinutes / PayrollParameters.CNBInstance.Minutes).ToDecimalPlaces(2); } }
-        public decimal HolidayOTDays { get { return (HolidayRegularOTMinutes / (decimal)PayrollParameters.CNBInstance.HolidayTotalMinutes).ToDecimalPlaces(3); } }
-        public decimal HolidayExcessOTHours { get { return (HolidayExcessOTMinutes / PayrollParameters.CNBInstance.Minutes).ToDecimalPlaces(2); } }
-        public decimal NightDifferentialOTHours1 { get { return (NightDifferentialOTMinutes1 / PayrollParameters.CNBInstance.Minutes).ToDecimalPlaces(2); } }
-        public decimal NightDifferentialOTHours2 { get { return (NightDifferentialOTMinutes2 / PayrollParameters.CNBInstance.Minutes).ToDecimalPlaces(2); } }
+        public decimal RegularHours { get { return (TotalRegularMinutes / PayrollParameters.CNBInstance.Value.Minutes).ToDecimalPlaces(2); } }
+        public decimal RegularDay { get { return (TotalRegularMinutes / (decimal)PayrollParameters.CNBInstance.Value.TotalMinutesPerDay).ToDecimalPlaces(3); } }
+        public decimal LeaveHours { get { return (TotalLeaveMinutes / PayrollParameters.CNBInstance.Value.Minutes).ToDecimalPlaces(2); } }
+        public decimal RegularOTHours { get { return (RegularOTMinutes / PayrollParameters.CNBInstance.Value.Minutes).ToDecimalPlaces(2); } }
+        public decimal SundayOTHours { get { return (SundayOTMinutes / PayrollParameters.CNBInstance.Value.Minutes).ToDecimalPlaces(2); } }
+        public decimal HolidayOTDays { get { return (HolidayRegularOTMinutes / (decimal)PayrollParameters.CNBInstance.Value.HolidayTotalMinutes).ToDecimalPlaces(3); } }
+        public decimal HolidayExcessOTHours { get { return (HolidayExcessOTMinutes / PayrollParameters.CNBInstance.Value.Minutes).ToDecimalPlaces(2); } }
+        public decimal NightDifferentialOTHours1 { get { return (NightDifferentialOTMinutes1 / PayrollParameters.CNBInstance.Value.Minutes).ToDecimalPlaces(2); } }
+        public decimal NightDifferentialOTHours2 { get { return (NightDifferentialOTMinutes2 / PayrollParameters.CNBInstance.Value.Minutes).ToDecimalPlaces(2); } }
 
         public bool Modified { get; set; } = false;
     }

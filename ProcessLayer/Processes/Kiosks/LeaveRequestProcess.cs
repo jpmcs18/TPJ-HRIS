@@ -5,6 +5,7 @@ using ProcessLayer.Entities.Kiosk;
 using ProcessLayer.Helpers;
 using ProcessLayer.Helpers.ObjectParameter;
 using ProcessLayer.Helpers.ObjectParameter.Kiosk.Leave_Request;
+using ProcessLayer.Helpers.ObjectParameter.Payroll;
 using ProcessLayer.Processes.HR;
 using ProcessLayer.Processes.HRs;
 using ProcessLayer.Processes.Lookups;
@@ -18,38 +19,41 @@ using System.Text;
 
 namespace ProcessLayer.Processes.Kiosk
 {
-    public class LeaveRequestProcess
+    public sealed class LeaveRequestProcess
     {
-        private static LeaveRequestProcess _instance;
-        public static LeaveRequestProcess Instance { get { if (_instance == null) { _instance = new LeaveRequestProcess(); } return _instance; } }
+        public static readonly Lazy<LeaveRequestProcess> Instance = new Lazy<LeaveRequestProcess>(() => new LeaveRequestProcess());
+        private LeaveRequestProcess() { }
         
         internal bool IsLeaveRequestOnly = false;
+        internal bool WithComputedLeaveCredits = false;
         internal LeaveRequest Converter(DataRow dr)
         {
             var o = new LeaveRequest
             {
-                ID = dr[LeaveRequestFields.Instance.ID].ToLong(),
-                PersonnelID = dr[LeaveRequestFields.Instance.PersonnelID].ToNullableLong(),
-                LeaveTypeID = dr[LeaveRequestFields.Instance.LeaveTypeID].ToNullableByte(),
-                _LeaveType = LeaveTypeProcess.Instance.Get(dr[LeaveRequestFields.Instance.LeaveTypeID].ToNullableByte()),
-                StartDateTime = dr[LeaveRequestFields.Instance.StartDateTime].ToNullableDateTime(),
-                EndDateTime = dr[LeaveRequestFields.Instance.EndDateTime].ToNullableDateTime(),
-                Reasons = dr[LeaveRequestFields.Instance.Reasons].ToString(),
-                File = dr[LeaveRequestFields.Instance.File].ToString(),
-                Approved = dr[LeaveRequestFields.Instance.Approved].ToNullableBoolean(),
-                ApprovedBy = dr[LeaveRequestFields.Instance.ApprovedBy].ToNullableInt(),
-                ApprovedOn = dr[LeaveRequestFields.Instance.ApprovedOn].ToNullableDateTime(),
-                Cancelled = dr[LeaveRequestFields.Instance.Cancelled].ToNullableBoolean(),
-                CancelledBy = dr[LeaveRequestFields.Instance.CancelledBy].ToNullableInt(),
-                CancelledOn = dr[LeaveRequestFields.Instance.CancelledOn].ToNullableDateTime(),
-                CancellationRemarks = dr[LeaveRequestFields.Instance.CancellationRemarks].ToString(),
-                ApprovedLeaveCredits = dr[LeaveRequestFields.Instance.ApprovedLeaveCredits].ToNullableFloat(),
-                CreatedBy = dr[LeaveRequestFields.Instance.CreatedBy].ToNullableInt(),
-                CreatedOn = dr[LeaveRequestFields.Instance.CreatedOn].ToNullableDateTime(),
-                ModifiedBy = dr[LeaveRequestFields.Instance.ModifiedBy].ToNullableInt(),
-                ModifiedOn = dr[LeaveRequestFields.Instance.ModifiedOn].ToNullableDateTime()
+                ID = dr[LeaveRequestFields.ID].ToLong(),
+                PersonnelID = dr[LeaveRequestFields.PersonnelID].ToNullableLong(),
+                LeaveTypeID = dr[LeaveRequestFields.LeaveTypeID].ToNullableByte(),
+                _LeaveType = LeaveTypeProcess.Instance.Value.Get(dr[LeaveRequestFields.LeaveTypeID].ToNullableByte()),
+                RequestedDate = dr[LeaveRequestFields.RequestedDate].ToDateTime(),
+                NoofDays = dr[LeaveRequestFields.NoofDays].ToFloat(),
+                Reasons = dr[LeaveRequestFields.Reasons].ToString(),
+                File = dr[LeaveRequestFields.File].ToString(),
+                Approved = dr[LeaveRequestFields.Approved].ToNullableBoolean(),
+                ApprovedBy = dr[LeaveRequestFields.ApprovedBy].ToNullableInt(),
+                ApprovedOn = dr[LeaveRequestFields.ApprovedOn].ToNullableDateTime(),
+                Cancelled = dr[LeaveRequestFields.Cancelled].ToNullableBoolean(),
+                CancelledBy = dr[LeaveRequestFields.CancelledBy].ToNullableInt(),
+                CancelledOn = dr[LeaveRequestFields.CancelledOn].ToNullableDateTime(),
+                CancellationRemarks = dr[LeaveRequestFields.CancellationRemarks].ToString(),
+                ApprovedLeaveCredits = dr[LeaveRequestFields.ApprovedLeaveCredits].ToNullableFloat(),
+                CreatedBy = dr[LeaveRequestFields.CreatedBy].ToNullableInt(),
+                CreatedOn = dr[LeaveRequestFields.CreatedOn].ToNullableDateTime(),
+                ModifiedBy = dr[LeaveRequestFields.ModifiedBy].ToNullableInt(),
+                ModifiedOn = dr[LeaveRequestFields.ModifiedOn].ToNullableDateTime()
             };
 
+            o._LeaveType = LeaveTypeProcess.Instance.Value.Get(o.LeaveTypeID);
+            
             if (!IsLeaveRequestOnly)
             {
                 o._Personnel = PersonnelProcess.Get(o.PersonnelID??0, true);
@@ -64,6 +68,10 @@ namespace ProcessLayer.Processes.Kiosk
                 o.FilePath = Path.Combine(ConfigurationManager.AppSettings["LeaveSaveLocation"], o.File);
             }
 
+            if(WithComputedLeaveCredits)
+            {
+                //o.ComputedLeaveCredits = ComputedLeaveCreditsProcess.Instance.Value.GetList(o.ID);
+            }
             return o;
         }
 
@@ -72,13 +80,13 @@ namespace ProcessLayer.Processes.Kiosk
             var Leaves = new List<LeaveRequest>();
             var parameters = new Dictionary<string, object> {
                 { "@PersonnelID", personnelId },
-                { LeaveRequestParameters.Instance.LeaveTypeID, leavetypeid },
-                { LeaveRequestParameters.Instance.IsExpired, isExpired },
-                { LeaveRequestParameters.Instance.IsPending, isPending },
-                { LeaveRequestParameters.Instance.IsApproved, isApproved },
-                { LeaveRequestParameters.Instance.IsCancelled, isCancelled },
-                { LeaveRequestParameters.Instance.StartDateTime, startdatetime },
-                { LeaveRequestParameters.Instance.EndDateTime, enddatetime },
+                { LeaveRequestParameters.LeaveTypeID, leavetypeid },
+                { LeaveRequestParameters.IsExpired, isExpired },
+                { LeaveRequestParameters.IsPending, isPending },
+                { LeaveRequestParameters.IsApproved, isApproved },
+                { LeaveRequestParameters.IsCancelled, isCancelled },
+                { LeaveRequestParameters.StartDate, startdatetime },
+                { LeaveRequestParameters.EndDate, enddatetime },
                 { FilterParameters.PageNumber, page },
                 { FilterParameters.GridCount, gridCount }
             };
@@ -90,7 +98,7 @@ namespace ProcessLayer.Processes.Kiosk
 
             using (var db = new DBTools())
             {
-                using (var ds = db.ExecuteReader(LeaveRequestProcedures.Instance.Filter, ref outParameters, parameters))
+                using (var ds = db.ExecuteReader(LeaveRequestProcedures.Filter, ref outParameters, parameters))
                 {
                     Leaves = ds.GetList(Converter);
                     PageCount = outParameters.Get(FilterParameters.PageCount).ToInt();
@@ -104,17 +112,17 @@ namespace ProcessLayer.Processes.Kiosk
         {
             var Leaves = new List<LeaveRequest>();
             var parameters = new Dictionary<string, object> {
-                { LeaveRequestParameters.Instance.Personnel, personnel },
-                { LeaveRequestParameters.Instance.LeaveTypeID, leavetypeid },
-                { LeaveRequestParameters.Instance.IsExpired, isExpired },
-                { LeaveRequestParameters.Instance.IsPending, isPending },
-                { LeaveRequestParameters.Instance.IsApproved, isApproved },
-                { LeaveRequestParameters.Instance.IsCancelled, isCancelled },
-                { LeaveRequestParameters.Instance.StartDateTime, startdatetime },
-                { LeaveRequestParameters.Instance.EndDateTime, enddatetime },
+                { LeaveRequestParameters.Personnel, personnel },
+                { LeaveRequestParameters.LeaveTypeID, leavetypeid },
+                { LeaveRequestParameters.IsExpired, isExpired },
+                { LeaveRequestParameters.IsPending, isPending },
+                { LeaveRequestParameters.IsApproved, isApproved },
+                { LeaveRequestParameters.IsCancelled, isCancelled },
+                { LeaveRequestParameters.StartDate, startdatetime },
+                { LeaveRequestParameters.EndDate, enddatetime },
                 { FilterParameters.PageNumber, page },
                 { FilterParameters.GridCount, gridCount },
-                { LeaveRequestParameters.Instance.Approver, approver }
+                { LeaveRequestParameters.Approver, approver }
             };
 
             var outParameters = new List<OutParameters>
@@ -124,7 +132,7 @@ namespace ProcessLayer.Processes.Kiosk
 
             using (var db = new DBTools())
             {
-                using (var ds = db.ExecuteReader(LeaveRequestProcedures.Instance.FilterApproving, ref outParameters, parameters))
+                using (var ds = db.ExecuteReader(LeaveRequestProcedures.FilterApproving, ref outParameters, parameters))
                 {
                     Leaves = ds.GetList(Converter);
                     PageCount = outParameters.Get(FilterParameters.PageCount).ToInt();
@@ -138,14 +146,14 @@ namespace ProcessLayer.Processes.Kiosk
         {
             var Leaves = new List<LeaveRequest>();
             var parameters = new Dictionary<string, object> {
-                { LeaveRequestParameters.Instance.Personnel, personnel },
-                { LeaveRequestParameters.Instance.LeaveTypeID, leavetypeid },
-                { LeaveRequestParameters.Instance.IsExpired, isExpired },
-                { LeaveRequestParameters.Instance.IsPending, isPending },
-                { LeaveRequestParameters.Instance.IsApproved, isApproved },
-                { LeaveRequestParameters.Instance.IsCancelled, isCancelled },
-                { LeaveRequestParameters.Instance.StartDateTime, startdatetime },
-                { LeaveRequestParameters.Instance.EndDateTime, enddatetime },
+                { LeaveRequestParameters.Personnel, personnel },
+                { LeaveRequestParameters.LeaveTypeID, leavetypeid },
+                { LeaveRequestParameters.IsExpired, isExpired },
+                { LeaveRequestParameters.IsPending, isPending },
+                { LeaveRequestParameters.IsApproved, isApproved },
+                { LeaveRequestParameters.IsCancelled, isCancelled },
+                { LeaveRequestParameters.StartDate, startdatetime },
+                { LeaveRequestParameters.EndDate, enddatetime },
                 { FilterParameters.PageNumber, page },
                 { FilterParameters.GridCount, gridCount },
             };
@@ -157,7 +165,7 @@ namespace ProcessLayer.Processes.Kiosk
 
             using (var db = new DBTools())
             {
-                using (var ds = db.ExecuteReader(LeaveRequestProcedures.Instance.FilterRequestThatNeedDocument, ref outParameters, parameters))
+                using (var ds = db.ExecuteReader(LeaveRequestProcedures.FilterRequestThatNeedDocument, ref outParameters, parameters))
                 {
                     Leaves = ds.GetList(Converter);
                     PageCount = outParameters.Get(FilterParameters.PageCount).ToInt();
@@ -170,12 +178,12 @@ namespace ProcessLayer.Processes.Kiosk
         {
             var Leaves = new List<LeaveRequest>();
             var parameters = new Dictionary<string, object> {
-                { LeaveRequestParameters.Instance.PersonnelID, personnelid }
+                { LeaveRequestParameters.PersonnelID, personnelid }
             };
 
             using (var db = new DBTools())
             {
-                using (var ds = db.ExecuteReader(LeaveRequestProcedures.Instance.Get, parameters))
+                using (var ds = db.ExecuteReader(LeaveRequestProcedures.Get, parameters))
                 {
                     Leaves = ds.GetList(Converter);
                 }
@@ -184,18 +192,18 @@ namespace ProcessLayer.Processes.Kiosk
             return Leaves;
         }
 
-        public List<LeaveRequest> GetApprovedLeave(long personnelid, byte? leavetypeid, DateTime startdatetime, DateTime enddatetime)
+        public List<LeaveRequest> GetApprovedLeave(long personnelid, byte? leavetypeid, DateTime startdatetime, DateTime enddatetime, bool withComputedLeaveCredit = false)
         {
             var Leaves = new List<LeaveRequest>();
             var parameters = new Dictionary<string, object>{
-                { LeaveRequestParameters.Instance.PersonnelID, personnelid },
-                { LeaveRequestParameters.Instance.LeaveTypeID, leavetypeid },
-                { LeaveRequestParameters.Instance.StartDateTime, startdatetime },
-                { LeaveRequestParameters.Instance.EndDateTime, enddatetime }
+                { LeaveRequestParameters.PersonnelID, personnelid },
+                { LeaveRequestParameters.LeaveTypeID, leavetypeid },
+                { LeaveRequestParameters.StartDate, startdatetime },
+                { LeaveRequestParameters.EndDate, enddatetime }
             };
             using (var db = new DBTools())
             {
-                using (var ds = db.ExecuteReader(LeaveRequestProcedures.Instance.GetApprovedLeave, parameters))
+                using (var ds = db.ExecuteReader(LeaveRequestProcedures.GetApprovedLeave, parameters))
                 {
                     Leaves = ds.GetList(Converter);
                 }
@@ -207,12 +215,12 @@ namespace ProcessLayer.Processes.Kiosk
 
             var Leave = new LeaveRequest();
             var parameters = new Dictionary<string, object> {
-                { LeaveRequestParameters.Instance.ID, id }
+                { LeaveRequestParameters.ID, id }
             };
 
             using (var db = new DBTools())
             {
-                using (var ds = db.ExecuteReader(LeaveRequestProcedures.Instance.Get, parameters))
+                using (var ds = db.ExecuteReader(LeaveRequestProcedures.Get, parameters))
                 {
                     Leave = ds.Get(Converter);
                 }
@@ -226,128 +234,35 @@ namespace ProcessLayer.Processes.Kiosk
 
             var Leave = new LeaveRequest();
             var parameters = new Dictionary<string, object> {
-                { LeaveRequestParameters.Instance.ID, id }
+                { LeaveRequestParameters.ID, id }
             };
 
-            using (var ds = db.ExecuteReader(LeaveRequestProcedures.Instance.Get, parameters))
+            using (var ds = db.ExecuteReader(LeaveRequestProcedures.Get, parameters))
             {
                 Leave = ds.Get(Converter);
             }
 
             return Leave;
         }
-        public bool ValidateLeaveRequest(LeaveRequest leave)
-        {
-            StringBuilder sb = new StringBuilder();
-            leave._LeaveType = LeaveTypeProcess.Instance.Get(leave.LeaveTypeID);
-            if ((leave.LeaveTypeID ?? 0) == 0)
-            {
-                sb.AppendLine("<br/>");
-                sb.AppendLine("- Leave type cannot be null.");
-            }
-            if ((leave.PersonnelID ?? 0) == 0)
-            {
-
-                sb.AppendLine("<br/>");
-                sb.AppendLine("- Requestor cannot be null.");
-            }
-            if (leave._LeaveType?.BulkUse ?? false)
-            {
-                if (leave.StartDateTime == null)
-                {
-                    sb.AppendLine("<br/>");
-                    sb.AppendLine("- Start date cannot be null.");
-                }
-            }
-            else
-            {
-
-                if (leave.StartDateTime == null)
-                {
-                    sb.AppendLine("<br/>");
-                    sb.AppendLine("- Start date and time cannot be null.");
-                }
-
-                if (leave.EndDateTime == null)
-                {
-                    sb.AppendLine("<br/>");
-                    sb.AppendLine("- End date and time cannot be null.");
-                }
-
-                if (leave.StartDateTime != null && leave.EndDateTime != null)
-                {
-                    var sched = GlobalHelper.GetSchedule(leave._Personnel._Schedules, leave.StartDateTime.Value);
-                    
-                    var start = sched.TimeIn == null ? leave.StartDateTime : leave.StartDateTime.Value.Date + sched.TimeIn;
-                    var end = sched.TimeOut == null ? leave.EndDateTime : leave.EndDateTime.Value.Date + sched.TimeOut;
-
-                    leave.StartDateTime = start < leave.StartDateTime ? leave.StartDateTime : start;
-                    leave.EndDateTime = end > leave.EndDateTime ? leave.EndDateTime : end;
-
-                    var leaveCreditToUse = (leave.EndDateTime - leave.StartDateTime)?.TotalHours ?? 0;
-                    if (leaveCreditToUse > (sched.TotalWorkingHours + 1))
-                    {
-                        sb.AppendLine("<br/>");
-                        sb.AppendLine("- Leave must be 1 day or within schedule per request.");
-                    }
-
-                    if (sched.BreakTimeHour != null)
-                    {
-                        if (sched.BreakTime == null)
-                        {
-                            if (leaveCreditToUse > (sched.TotalWorkingHours / 2))
-                                leaveCreditToUse -= sched.BreakTimeHour .Value;
-                        }
-                        else
-                        {
-                            var breakStart = leave.StartDateTime.Value.Date + sched.BreakTime;
-                            var breakEnd = breakStart.Value.AddHours(sched.BreakTimeHour.Value);
-                            if (leave.StartDateTime <= breakStart && leave.EndDateTime >= breakEnd)
-                                leaveCreditToUse -= sched.BreakTimeHour.Value;
-                            else if (leave.StartDateTime <= breakStart && leave.EndDateTime < breakEnd)
-                                leaveCreditToUse -= (leave.EndDateTime - breakStart)?.TotalHours ?? 0;
-                            else if (leave.StartDateTime > breakStart && leave.EndDateTime >= breakEnd)
-                                leaveCreditToUse -= (breakEnd - leave.StartDateTime)?.TotalHours ?? 0;
-                            else
-                                leaveCreditToUse = 0;
-                        }
-                    }
-                    var leaveCredits = PersonnelLeaveCreditProcess.GetRemainingCredits(leave.PersonnelID ?? 0, leave.LeaveTypeID ?? 0, (short)(leave.StartDateTime?.Year ?? 0));
-                    if (leaveCreditToUse > leaveCredits?.LeaveCredits)
-                    {
-                        sb.AppendLine("<br/>");
-                        sb.AppendLine($"- Not enough credits. You only have {leaveCredits.LeaveCredits} credits and your request is {leaveCreditToUse}");
-                    }
-                }
-            }
-            if (sb.Length > 0)
-                throw new Exception(sb.ToString());
-            return true;
-        }
-
         public LeaveRequest CreateOrUpdate(LeaveRequest Leave, int userid)
         {
             if (ValidateLeaveRequest(Leave))
             {
-                if(Leave._LeaveType?.BulkUse ?? false)
-                    Leave = GetBulkUseLeaveDate(Leave);
-
                 var parameters = new Dictionary<string, object> {
-                    { LeaveRequestParameters.Instance.PersonnelID, Leave.PersonnelID }
-                    , { LeaveRequestParameters.Instance.LeaveTypeID, Leave.LeaveTypeID }
-                    , { LeaveRequestParameters.Instance.StartDateTime, Leave.StartDateTime }
-                    , { LeaveRequestParameters.Instance.EndDateTime, Leave.EndDateTime }
-                    , { LeaveRequestParameters.Instance.Reasons, Leave.Reasons }
-                    , { LeaveRequestParameters.Instance.BulkUse, Leave._LeaveType.BulkUse ?? false }
+                    { LeaveRequestParameters.PersonnelID, Leave.PersonnelID }
+                    , { LeaveRequestParameters.LeaveTypeID, Leave.LeaveTypeID }
+                    , { LeaveRequestParameters.RequestedDate, Leave.RequestedDate }
+                    , { LeaveRequestParameters.NoofDays, Leave.NoofDays}
+                    , { LeaveRequestParameters.Reasons, Leave.Reasons }
                     , { CredentialParameters.LogBy, userid }
                 };
 
-                var outparameter = new List<OutParameters> {{ LeaveRequestParameters.Instance.ID, SqlDbType.BigInt, Leave.ID }};
+                List<OutParameters> outparameter = new List<OutParameters> {{ LeaveRequestParameters.ID, SqlDbType.BigInt, Leave.ID }};
 
                 using (var db = new DBTools())
                 {
-                    db.ExecuteNonQuery(LeaveRequestProcedures.Instance.CreateOrUpdate, ref outparameter, parameters);
-                    Leave = Get(outparameter.Get(LeaveRequestParameters.Instance.ID).ToLong());
+                    db.ExecuteNonQuery(LeaveRequestProcedures.CreateOrUpdate, ref outparameter, parameters);
+                    Leave = Get(outparameter.Get(LeaveRequestParameters.ID).ToLong());
                 }
 
                 return Leave;
@@ -399,85 +314,53 @@ namespace ProcessLayer.Processes.Kiosk
 
         private void Approve(long id, int userid, DBTools db)
         {
-                var leave = Get(db, id);
-                var leaveCredits = PersonnelLeaveCreditProcess.GetRemainingCredits(db, leave.PersonnelID ?? 0, leave.LeaveTypeID ?? 0, (short)(leave.StartDateTime?.Year ?? 0));
-                var sched = GlobalHelper.GetSchedule(leave._Personnel._Schedules, leave.StartDateTime.Value);
+            LeaveRequest leave = Get(db, id);
+            PersonnelLeaveCredit leaveCredits = PersonnelLeaveCreditProcess.Instance.Value.GetRemainingCredits(db, leave.PersonnelID ?? 0, leave.LeaveTypeID ?? 0, (short)(leave.RequestedDate.Year));
 
-                var start = sched.TimeIn == null ? leave.StartDateTime : leave.StartDateTime.Value.Date + sched.TimeIn;
-                var end = sched.TimeOut == null ? leave.EndDateTime : leave.EndDateTime.Value.Date + sched.TimeOut;
+            float leaveCreditsToUse = leave.NoofDays;
 
-                leave.StartDateTime = start < leave.StartDateTime ? leave.StartDateTime : start;
-                leave.EndDateTime = end > leave.EndDateTime ? leave.EndDateTime : end;
+            if (leaveCreditsToUse > (leaveCredits?.LeaveCredits ?? 0))
+            {
+                throw new Exception($"- Not enough credits. You only have {leaveCredits.LeaveCredits} credits and your request is {leaveCreditsToUse}");
+            }
 
-                var leaveCreditToUse = (leave.EndDateTime - leave.StartDateTime)?.TotalHours ?? 0;
-
-                if (sched.BreakTimeHour != null)
-                {
-                    if (sched.BreakTime == null)
-                    {
-                        if (leaveCreditToUse > (sched.TotalWorkingHours / 2))
-                            leaveCreditToUse -= sched.BreakTimeHour.Value;
-                    }
-                    else
-                    {
-                        var breakStart = leave.StartDateTime.Value.Date + sched.BreakTime;
-                        var breakEnd = breakStart.Value.AddHours(sched.BreakTimeHour.Value);
-                        if (leave.StartDateTime <= breakStart && leave.EndDateTime >= breakEnd)
-                            leaveCreditToUse -= sched.BreakTimeHour.Value;
-                        else if (leave.StartDateTime <= breakStart && leave.EndDateTime < breakEnd)
-                            leaveCreditToUse -= (leave.EndDateTime - breakStart)?.TotalHours ?? 0;
-                        else if (leave.StartDateTime > breakStart && leave.EndDateTime >= breakEnd)
-                            leaveCreditToUse -= (breakEnd - leave.StartDateTime)?.TotalHours ?? 0;
-                        else
-                            leaveCreditToUse = 0;
-                    }
-                }
-
-                if (leave._LeaveType.BulkUse ?? false)
-                    leaveCreditToUse = leaveCredits.LeaveCredits ?? 0;
-
-                if (leaveCreditToUse > leaveCredits?.LeaveCredits)
-                {
-                    throw new Exception($"- Not enough credits. You only have {leaveCredits.LeaveCredits} credits and your request is {leaveCreditToUse}");
-                }
-
-                if (!(leave.Approved ?? false))
-                {
-                    ApprovedRequest(db, id, userid);
-                    leave.Approved = true;
-                }
-                if (leave.Approved ?? false && (((leave._LeaveType.HasDocumentNeeded ?? false) && !string.IsNullOrEmpty(leave.FilePath)) || !(leave._LeaveType.HasDocumentNeeded ?? false)))
-                {
-                    UpdateApproveCredits(db, id, leaveCreditToUse, userid);
-                    PersonnelLeaveCreditProcess.UpdateCredits(db, leave.LeaveTypeID ?? 0, leave.StartDateTime.Value.Year, leaveCreditToUse, userid);
-                }
+            if (!(leave.Approved ?? false))
+            {
+                ApprovedRequest(db, id, userid);
+                leave.Approved = true;
+            }
+            if ((leave.Approved ?? false) && (((leave._LeaveType.HasDocumentNeeded ?? false) && !string.IsNullOrEmpty(leave.FilePath)) || !(leave._LeaveType.HasDocumentNeeded ?? false)))
+            {
+                UpdateApproveCredits(db, id, leaveCreditsToUse, userid);
+                PersonnelLeaveCreditProcess.Instance.Value.UpdateCredits(db, leave.PersonnelID ?? 0, leave.LeaveTypeID ?? 0, leave.RequestedDate.Year, leaveCreditsToUse, userid);
+            }
 
         }
 
         public void Cancel(LeaveRequest Leave, int userid)
         {
             var parameters = new Dictionary<string, object> {
-                { LeaveRequestParameters.Instance.ID, Leave.ID },
-                { LeaveRequestParameters.Instance.CancellationRemarks, Leave.CancellationRemarks }
+                { LeaveRequestParameters.ID, Leave.ID },
+                { LeaveRequestParameters.CancellationRemarks, Leave.CancellationRemarks }
                 , { CredentialParameters.LogBy, userid }
             };
 
             using (var db = new DBTools())
             {
-                db.ExecuteNonQuery(LeaveRequestProcedures.Instance.Cancel, parameters);
+                db.ExecuteNonQuery(LeaveRequestProcedures.Cancel, parameters);
             }
         }
 
         public void Delete(long id, int userid)
         {
             var parameters = new Dictionary<string, object> {
-                { LeaveRequestParameters.Instance.ID, id },
+                { LeaveRequestParameters.ID, id },
                 { CredentialParameters.LogBy, userid }
             };
 
             using (var db = new DBTools())
             {
-                db.ExecuteNonQuery(LeaveRequestProcedures.Instance.Delete, parameters);
+                db.ExecuteNonQuery(LeaveRequestProcedures.Delete, parameters);
             }
         }
 
@@ -485,19 +368,17 @@ namespace ProcessLayer.Processes.Kiosk
         {
             var parameters = new Dictionary<string, object>
             {
-                { LeaveRequestParameters.Instance.ID, id },
-                { LeaveRequestParameters.Instance.File, file },
+                { LeaveRequestParameters.ID, id },
+                { LeaveRequestParameters.File, file },
                 { CredentialParameters.LogBy, userid }
             };
 
             using (var db = new DBTools())
             {
                 db.StartTransaction();
-
-                db.StartTransaction();
                 try
                 {
-                    db.ExecuteNonQuery(LeaveRequestProcedures.Instance.UploadDocument, parameters);
+                    db.ExecuteNonQuery(LeaveRequestProcedures.UploadDocument, parameters);
                     Approve(id, userid, db);
 
                     db.CommitTransaction();
@@ -511,37 +392,44 @@ namespace ProcessLayer.Processes.Kiosk
 
         }
 
-        public LeaveRequest GetBulkUseLeaveDate(LeaveRequest leaveRequest)
+        public bool ValidateLeaveRequest(LeaveRequest leave)
         {
-            List<NonWorkingDays> nonWorkingDays = NonWorkingDaysProcess.Instance.GetNonWorkingDays(leaveRequest.StartDateTime.Value.AddMonths(-5), leaveRequest.StartDateTime.Value.AddMonths(5));
-            PersonnelLeaveCredit leaveCredits = PersonnelLeaveCreditProcess.GetRemainingCredits(leaveRequest.PersonnelID ?? 0, leaveRequest.LeaveTypeID ?? 0, (short)(leaveRequest.StartDateTime?.Year ?? 0));
-            DateTime assumedEndDate = leaveRequest.StartDateTime.Value;
-            int totalLeaveToUse = 0;
-            if (leaveCredits?.LeaveCredits > 0)
+            StringBuilder sb = new StringBuilder();
+            leave._LeaveType = LeaveTypeProcess.Instance.Value.Get(leave.LeaveTypeID);
+            if ((leave?.LeaveTypeID ?? 0) == 0)
             {
-                while(leaveCredits.LeaveCredits != totalLeaveToUse)
-                {
-                    var sched = GlobalHelper.GetSchedule(leaveRequest._Personnel._Schedules, assumedEndDate);
-                    if (sched != null)
-                    {
-                        var nonWorking = GlobalHelper.GetNonWorking(nonWorkingDays, assumedEndDate);
-                        if (nonWorking == null)
-                        {
-                            if (totalLeaveToUse == 0)
-                            {
-                                leaveRequest.StartDateTime = assumedEndDate.Date + sched.TimeIn;
-                            }
-                            leaveRequest.EndDateTime = assumedEndDate.Date + sched.TimeOut;
-                            totalLeaveToUse += 1;
-                        }
-                    }
-                    assumedEndDate = assumedEndDate.AddDays(1);
-                }
-
-                return leaveRequest;
+                sb.AppendLine("<br/>");
+                sb.AppendLine("- Leave type cannot be null.");
             }
-            else
-                throw new Exception("Zero leave credit");
+
+            if ((leave?.PersonnelID ?? 0) == 0)
+            {
+                sb.AppendLine("<br/>");
+                sb.AppendLine("- Requestor cannot be null.");
+            }
+
+            if (leave?.RequestedDate == null)
+            {
+                sb.AppendLine("<br/>");
+                sb.AppendLine("- Requested date cannot be null.");
+            }
+            if ((leave?.NoofDays ?? 0) == 0)
+            {
+                sb.AppendLine("<br/>");
+                sb.AppendLine("- No of days cannot be null.");
+            }
+
+            PersonnelLeaveCredit leaveCredits = PersonnelLeaveCreditProcess.Instance.Value.GetRemainingCredits(leave.PersonnelID ?? 0, leave.LeaveTypeID ?? 0, (short)leave.RequestedDate.Year);
+            
+            float leaveCreditsToUse = leave.NoofDays;
+
+            if (leaveCreditsToUse > leaveCredits?.LeaveCredits)
+            {
+                sb.AppendLine("<br/>");
+                sb.AppendLine($"- Not enough credits. You only have {leaveCredits.LeaveCredits} credits and your request is {leaveCreditsToUse}");
+            }
+
+            return sb.Length > 0 ? throw new Exception(sb.ToString()) : true;
         }
     }
 }

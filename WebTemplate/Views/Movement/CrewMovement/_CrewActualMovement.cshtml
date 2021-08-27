@@ -3,9 +3,9 @@
 @{
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
     var CrewPageAccess = credential.GetPage("Movement/CrewMovement") ?? new DataAccessLayer.System.Page();
-    var deparments = ProcessLayer.Processes.Lookups.DepartmentProcess.Instance.GetList();
-    var positions = ProcessLayer.Processes.PositionProcess.Instance.GetList();
-    var vessels = ProcessLayer.Processes.VesselProcess.Instance.GetList();
+    var deparments = ProcessLayer.Processes.Lookups.DepartmentProcess.Instance.Value.GetList();
+    var positions = ProcessLayer.Processes.PositionProcess.Instance.Value.GetList();
+    var vessels = ProcessLayer.Processes.VesselProcess.Instance.Value.GetList();
 }
 
 <div class="row">

@@ -1,18 +1,16 @@
 ﻿using DBUtilities;
 using ProcessLayer.Entities;
 using ProcessLayer.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Data;
 
 namespace ProcessLayer.Processes.Lookups
 {
-    public class DepartmentProcess : ILookupSourceProcess<Department>
+    public sealed class DepartmentProcess : ILookupSourceProcess<Department>
     {
-        private static DepartmentProcess _instance;
-        public static DepartmentProcess Instance
-        {
-            get { if (_instance == null) _instance = new DepartmentProcess(); return _instance; }
-        }
+        public static readonly Lazy<DepartmentProcess> Instance = new Lazy<DepartmentProcess>(() => new DepartmentProcess());
+        private DepartmentProcess() { }
         internal Department Converter(DataRow dr)
         {
             var p = new Department

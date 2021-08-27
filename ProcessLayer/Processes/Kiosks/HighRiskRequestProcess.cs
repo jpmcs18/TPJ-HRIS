@@ -8,14 +8,10 @@ using System.Data;
 
 namespace ProcessLayer.Processes.Kiosk
 {
-    public class HighRiskRequestProcess
+    public sealed class HighRiskRequestProcess
     {
-        private static HighRiskRequestProcess _instance;
-        public static HighRiskRequestProcess Instance
-        {
-            get { if (_instance == null) _instance = new HighRiskRequestProcess(); return _instance; }
-        }
-
+        public static readonly Lazy<HighRiskRequestProcess> Instance = new Lazy<HighRiskRequestProcess>(() => new HighRiskRequestProcess());
+        private HighRiskRequestProcess() { }
         internal bool IsHighRiskRequestOnly = false;
 
         internal HighRiskRequest Converter(DataRow dr) {

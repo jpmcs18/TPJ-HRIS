@@ -9,25 +9,15 @@ using System.Threading.Tasks;
 
 namespace ProcessLayer.Computation.Kiosk
 {
-    public class LeaveComputation
+    public sealed class LeaveComputation
     {
-        private LeaveComputation _instance;
-
-        public LeaveComputation Instance
-        {
-            get
-            {
-                if (_instance == null)
-                    _instance = new LeaveComputation();
-
-                return _instance;
-            }
-        }
+        public static readonly Lazy<LeaveComputation> Instance = new Lazy<LeaveComputation>(() => new LeaveComputation());
+        private LeaveComputation() { }
 
         public int ComputeTotalLeaveToUse(DateTime startdate, DateTime enddate, Personnel personnel)
         {
             int total = 0;
-            var nonworking = NonWorkingDaysProcess.Instance.GetNonWorkingDays(startdate, enddate);
+            var nonworking = NonWorkingDaysProcess.Instance.Value.GetNonWorkingDays(startdate, enddate);
 
             if((enddate - startdate).TotalHours <= 9)
             {

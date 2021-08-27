@@ -6,21 +6,16 @@ using ProcessLayer.Helpers;
 using ProcessLayer.Helpers.Enumerable;
 using ProcessLayer.Helpers.ObjectParameter.Payroll;
 using ProcessLayer.Processes.HR;
-using ProcessLayer.Processes.Kiosk;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProcessLayer.Processes.CnB
 {
-    public class PayrollProcess
+    public sealed class PayrollProcess
     {
-        private static PayrollProcess _instance;
-        public static PayrollProcess Instance { get { if (_instance == null) _instance = new PayrollProcess(); return _instance; } }
-
+        public static readonly Lazy<PayrollProcess> Instance = new Lazy<PayrollProcess>(() => new PayrollProcess());
+        private PayrollProcess() { }
         public bool BaseOnly { get; set; } = false;
         internal PayrollPeriod BaseConverter(DataRow dr)
         {
@@ -90,7 +85,11 @@ namespace ProcessLayer.Processes.CnB
                 TotalAdditionalOvertimeAllowancePay = dr["Total Additional Overtime Allowance Pay"].ToNullableDecimal() ?? 0,
                 BasicPay = dr["Basic Pay"].ToDecimal(),
                 GrossPay = dr["Gross Pay"].ToDecimal(),
-                NetPay = dr["Net Pay"].ToDecimal()
+                NetPay = dr["Net Pay"].ToDecimal(),
+                HighRiskAllowanceRate = dr["High Risk Allowance Rate"].ToDecimal(),
+                HighRiskPayRate = dr["High Risk Pay Rate"].ToDecimal(),
+                TotalHighRiskAllowancePay = dr["Total High Risk Allowance Pay"].ToDecimal(),
+                TotalHighRiskPay = dr["Total High Risk Pay"].ToDecimal()
             };
             p.PayrollDetails = GetPayrollDetails(p.ID);
             p.PayrollDeductions = GetPayrollDeductions(p.ID);
@@ -103,7 +102,7 @@ namespace ProcessLayer.Processes.CnB
             {
                 ID = dr["ID"].ToLong(),
                 Amount = dr["Amount"].ToNullableDecimal() ?? 0,
-                PersonnelLoan = PersonnelLoanProcess.Instance.Get(dr["Personnel Loan ID"].ToLong())
+                PersonnelLoan = PersonnelLoanProcess.Instance.Value.Get(dr["Personnel Loan ID"].ToLong())
             };
 
             try
@@ -135,15 +134,12 @@ namespace ProcessLayer.Processes.CnB
                 LoggedDate = dr["Logged Date"].ToDateTime(),
                 TotalRegularMinutes = dr["Total Regular Minutes"].ToNullableShort() ?? 0,
                 TotalLeaveMinutes = dr["Total Leave Minutes"].ToNullableShort() ?? 0,
-                Location = LocationProcess.Instance.Get(dr["Location ID"].ToNullableByte()),
+                Location = LocationProcess.Instance.Value.Get(dr["Location ID"].ToNullableByte()),
                 IsHoliday = dr["Is Holiday"].ToBoolean(),
                 IsSunday = dr["Is Sunday"].ToBoolean(),
                 RegularOTMinutes = dr["Regular OT Minutes"].ToInt(),
                 SundayOTMinutes = dr["Sunday OT Minutes"].ToInt(),
                 IsHighRisk = dr["Is High Risk"].ToNullableBoolean() ?? false,
-                HighRiskAllowanceRate = dr["High Risk Allowance Rate"].ToNullableDecimal() ?? 0,
-                HighRiskPayRate = dr["High Risk Pay Rate"].ToNullableDecimal() ?? 0,
-                HighRiskRate = dr["High Risk Rate"].ToNullableDecimal() ?? 0,
                 HolidayRegularOTMinutes = dr["Holiday Regular OT Minutes"].ToInt(),
                 HolidayExcessOTMinutes = dr["Holiday Excess OT Minutes"].ToInt(),
                 IsPresent = dr["Is Present"].ToNullableBoolean() ?? false,
@@ -531,7 +527,7 @@ namespace ProcessLayer.Processes.CnB
                 else
                 {
                     SaveLoanDeductions(userid, db, payroll.ID, loan);
-                    if(type == PayrollSheet.B) PersonnelLoanProcess.Instance.UpdateAmount(db, loan.PersonnelLoan?.ID ?? 0, loan.Amount, userid);
+                    if(type == PayrollSheet.B) PersonnelLoanProcess.Instance.Value.UpdateAmount(db, loan.PersonnelLoan?.ID ?? 0, loan.Amount, userid);
                     SaveLoanPaymentMethod(userid, db, loan);
                 }
             }
@@ -623,6 +619,10 @@ namespace ProcessLayer.Processes.CnB
                     { "@TotalAdditionalAllowancePay", payroll.TotalAdditionalAllowancePay },
                     { "@TotalAdditionalOvertimePay", payroll.TotalAdditionalOvertimePay },
                     { "@TotalAdditionalOvertimeAllowancePay", payroll.TotalAdditionalOvertimeAllowancePay },
+                    { "@HighRiskPayRate", payroll.HighRiskPayRate },
+                    { "@HighRiskAllowanceRate", payroll.HighRiskAllowanceRate },
+                    { "@TotalHighRiskPay", payroll.TotalHighRiskPay },
+                    { "@TotalHighRiskAllowancePay", payroll.TotalHighRiskAllowancePay },
                     { "@BasicPay", payroll.BasicPay },
                     { "@TotalOTPay", payroll.TotalOTPay },
                     { "@TotalOTAllowance", payroll.TotalOTAllowance },
@@ -717,9 +717,6 @@ namespace ProcessLayer.Processes.CnB
                 { "@HolidayRegularOTMinutes", details.HolidayRegularOTMinutes },
                 { "@HolidayExcessOTMinutes", details.HolidayExcessOTMinutes },
                 { "@IsHighRisk", details.IsHighRisk },
-                { "@HighRiskRate", details.HighRiskRate },
-                { "@HighRiskPayRate", details.HighRiskPayRate },
-                { "@HighRiskAllowanceRate", details.HighRiskAllowanceRate },
                 { "@IsNonTaxable", details.IsNonTaxable },
                 { "@IsPresent", details.IsPresent },
                 { "@LogBy", userid }
@@ -740,7 +737,7 @@ namespace ProcessLayer.Processes.CnB
 
             if (ValidatePayrollGeneration(payrollBase.PayPeriod, payrollSheet))
             {
-                return CreateOrUpdate(PayrollComputation.Instance.GeneratePayroll(payrollBase), userid);
+                return CreateOrUpdate(PayrollComputation.Instance.Value.GeneratePayroll(payrollBase), userid);
             }
             else
             {
@@ -804,7 +801,7 @@ namespace ProcessLayer.Processes.CnB
 
             if (ValidatePayrollGeneration(payrollBase.PayPeriod, payrollBase.Type))
             {
-                return CreateOrUpdate(PayrollComputation.Instance.GeneratePayroll(payrollBase), userid);
+                return CreateOrUpdate(PayrollComputation.Instance.Value.GeneratePayroll(payrollBase), userid);
             }
             else
             {
@@ -820,20 +817,20 @@ namespace ProcessLayer.Processes.CnB
 
             if (payrollSheet == PayrollSheet.A)
             {
-                s = PayrollParameters.CNBInstance.FirstCutoffStart;
-                e = PayrollParameters.CNBInstance.SecondCutoffEnd;
+                s = PayrollParameters.CNBInstance.Value.FirstCutoffStart;
+                e = PayrollParameters.CNBInstance.Value.SecondCutoffEnd;
             }
             else
             {
                 switch (cutoff)
                 {
                     case 1:
-                        s = PayrollParameters.CNBInstance.FirstCutoffStart;
-                        e = PayrollParameters.CNBInstance.FirstCutoffEnd;
+                        s = PayrollParameters.CNBInstance.Value.FirstCutoffStart;
+                        e = PayrollParameters.CNBInstance.Value.FirstCutoffEnd;
                         break;
                     case 2:
-                        s = PayrollParameters.CNBInstance.SecondCutoffStart;
-                        e = PayrollParameters.CNBInstance.SecondCutoffEnd;
+                        s = PayrollParameters.CNBInstance.Value.SecondCutoffStart;
+                        e = PayrollParameters.CNBInstance.Value.SecondCutoffEnd;
                         break;
                 }
             }
@@ -854,7 +851,7 @@ namespace ProcessLayer.Processes.CnB
                     foreach (var loan in payroll.LoanDeductions)
                     {
                         if (payrollBase.Type == PayrollSheet.B)
-                            PersonnelLoanProcess.Instance.RevertAmount(db, loan.PersonnelLoan?.ID ?? 0, loan.ID, userid);
+                            PersonnelLoanProcess.Instance.Value.RevertAmount(db, loan.PersonnelLoan?.ID ?? 0, loan.ID, userid);
                     }
                     RevertAnyOutstandingVale(db, payroll.ID, userid);
                     db.CommitTransaction();
@@ -863,7 +860,7 @@ namespace ProcessLayer.Processes.CnB
 
             }
 
-            PayrollComputation.Instance.Recompute(payroll, payrollBase);
+            PayrollComputation.Instance.Value.Recompute(payroll, payrollBase);
 
             using (var db = new DBTools())
             {

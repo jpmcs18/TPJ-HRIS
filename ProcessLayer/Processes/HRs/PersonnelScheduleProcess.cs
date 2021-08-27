@@ -12,13 +12,10 @@ using System.Threading.Tasks;
 
 namespace ProcessLayer.Processes.HRs
 {
-    public class PersonnelScheduleProcess
+    public sealed class PersonnelScheduleProcess
     {
-        private static PersonnelScheduleProcess _instance;
-        public static PersonnelScheduleProcess Instance
-        {
-            get { if (_instance == null) _instance = new PersonnelScheduleProcess(); return _instance; }
-        }
+        public static readonly Lazy<PersonnelScheduleProcess> Instance = new Lazy<PersonnelScheduleProcess>(() => new PersonnelScheduleProcess());
+        private PersonnelScheduleProcess() { }
         internal PersonnelSchedule Converter(DataRow dr)
         {
             var sched = new PersonnelSchedule
@@ -35,13 +32,13 @@ namespace ProcessLayer.Processes.HRs
                 EffectivityDate = dr["Effectivity Date"].ToNullableDateTime()
             };
 
-            sched._SundaySchedule = ScheduleTypeProcess.Instance.Get(sched.SundayScheduleID);
-            sched._MondaySchedule = ScheduleTypeProcess.Instance.Get(sched.MondayScheduleID);
-            sched._TuesdaySchedule = ScheduleTypeProcess.Instance.Get(sched.TuesdayScheduleID);
-            sched._WednesdaySchedule = ScheduleTypeProcess.Instance.Get(sched.WednesdayScheduleID);
-            sched._ThursdaySchedule = ScheduleTypeProcess.Instance.Get(sched.ThursdayScheduleID);
-            sched._FridaySchedule = ScheduleTypeProcess.Instance.Get(sched.FridayScheduleID);
-            sched._SaturdaySchedule = ScheduleTypeProcess.Instance.Get(sched.SaturdayScheduleID);
+            sched._SundaySchedule = ScheduleTypeProcess.Instance.Value.Get(sched.SundayScheduleID);
+            sched._MondaySchedule = ScheduleTypeProcess.Instance.Value.Get(sched.MondayScheduleID);
+            sched._TuesdaySchedule = ScheduleTypeProcess.Instance.Value.Get(sched.TuesdayScheduleID);
+            sched._WednesdaySchedule = ScheduleTypeProcess.Instance.Value.Get(sched.WednesdayScheduleID);
+            sched._ThursdaySchedule = ScheduleTypeProcess.Instance.Value.Get(sched.ThursdayScheduleID);
+            sched._FridaySchedule = ScheduleTypeProcess.Instance.Value.Get(sched.FridayScheduleID);
+            sched._SaturdaySchedule = ScheduleTypeProcess.Instance.Value.Get(sched.SaturdayScheduleID);
 
             return sched;
         }

@@ -1,6 +1,6 @@
 ﻿@model ProcessLayer.Entities.Vessel
 @{
-    var vessels = ProcessLayer.Processes.VesselProcess.Instance.GetList();
+    var vessels = ProcessLayer.Processes.VesselProcess.Instance.Value.GetList();
 }
 
 <tr id="Row-Display-Vessel-@Model.ID" class="Row-Display">

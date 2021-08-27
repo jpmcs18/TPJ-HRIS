@@ -2,9 +2,9 @@
 { 
     public class LogDetailsFieldsBase
     {
-        public string CreatedBy = "Created By";
-        public string CreatedOn = "Created On";
-        public string ModifiedBy = "Modified By";
-        public string ModifiedOn = "Modified On";
+        public const string CreatedBy = "Created By";
+        public const string CreatedOn = "Created On";
+        public const string ModifiedBy = "Modified By";
+        public const string ModifiedOn = "Modified On";
     }
 }

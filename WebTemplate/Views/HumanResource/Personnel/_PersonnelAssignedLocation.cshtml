@@ -3,7 +3,7 @@
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
     var AssignedLocationsPageAccess = credential.GetPage("Assigned Locations") ?? new DataAccessLayer.System.Page();
 
-    var locations = ProcessLayer.Processes.LocationProcess.Instance.GetList();
+    var locations = ProcessLayer.Processes.LocationProcess.Instance.Value.GetList();
 }
 
 <tr id="Row-Display-AssignedLocation-@Model.ID" class="Row-Display">

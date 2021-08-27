@@ -2,17 +2,16 @@
 {
     public class KioskParametersBase
     {
-        public string ID = "@ID";
-        public string File = "@File";
-        public string PersonnelID = "@PersonnelID";
-        public string Personnel = "@Personnel";
-        public string Approver = "@Approver";
-        public string Reasons = "@Reasons";
-        public string CancellationRemarks = "@CancellationRemarks";
-
-        public string IsApproved = "@IsApproved";
-        public string IsCancelled = "@IsCancelled";
-        public string IsPending = "@IsPending";
-        public string IsExpired = "@IsExpired";
+        public const string ID = "@ID";
+        public const string File = "@File";
+        public const string PersonnelID = "@PersonnelID";
+        public const string Personnel = "@Personnel";
+        public const string Approver = "@Approver";
+        public const string Reasons = "@Reasons";
+        public const string CancellationRemarks = "@CancellationRemarks";
+        public const string IsApproved = "@IsApproved";
+        public const string IsCancelled = "@IsCancelled";
+        public const string IsPending = "@IsPending";
+        public const string IsExpired = "@IsExpired";
     }
 }

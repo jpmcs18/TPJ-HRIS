@@ -1,16 +1,12 @@
 ﻿using ProcessLayer.Helpers;
+using System;
 
 namespace ReportLayer.Helpers
 {
-    public class PrintPayrollSheetBHelper : ReportHelperBase
+    public sealed class PrintPayrollSheetBHelper : ReportHelperBase
     {
-        private static PrintPayrollSheetBHelper instance;
-        public static PrintPayrollSheetBHelper Instance
-        {
-            get { if (instance == null) instance = new PrintPayrollSheetBHelper(); return instance; }
-        }
-
-        public PrintPayrollSheetBHelper() : base("PayrollSheetB")
+        public static readonly Lazy<PrintPayrollSheetBHelper> Instance = new Lazy<PrintPayrollSheetBHelper>(() => new PrintPayrollSheetBHelper());
+        private  PrintPayrollSheetBHelper() : base("PayrollSheetB")
         {
             EndPageRow = Get(nameof(EndPageRow)).ToInt();
             MaxItem = Get(nameof(MaxItem)).ToInt();

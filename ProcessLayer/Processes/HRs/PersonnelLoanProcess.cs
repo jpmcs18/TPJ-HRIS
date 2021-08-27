@@ -7,18 +7,10 @@ using System.Data;
 
 namespace ProcessLayer.Processes.HR
 {
-    public class PersonnelLoanProcess
+    public sealed class PersonnelLoanProcess
     {
-        private static PersonnelLoanProcess _instance;
-        public static PersonnelLoanProcess Instance
-        {
-            get
-            {
-                if (_instance == null)
-                    _instance = new PersonnelLoanProcess();
-                return _instance;
-            }
-        }
+        public static readonly Lazy<PersonnelLoanProcess> Instance = new Lazy<PersonnelLoanProcess>(() => new PersonnelLoanProcess());
+        private PersonnelLoanProcess() { }
         internal bool IsPersonnelLoanOnly = false;
 
         public PersonnelLoan Converter(DataRow dr)
@@ -147,6 +139,10 @@ namespace ProcessLayer.Processes.HR
         {
             using (var db = new DBTools())
             {
+                if(personnelLoan.PaidAmount > 0) { throw new Exception("Unable to update"); }
+                //Auto amortization amount / months to be pay and when to deduct
+                personnelLoan.Amortization = (personnelLoan.Amount / (personnelLoan.PaymentTerms ?? 0)) / (personnelLoan.WhenToDeduct == 3 ? 2 : 1);
+
                 var parameters = new Dictionary<string, object> {
                     { "@PersonnelID", personnelLoan.PersonnelID },
                     { "@LoanID", personnelLoan.LoanID },
@@ -171,6 +167,7 @@ namespace ProcessLayer.Processes.HR
 
             return personnelLoan;
         }
+
 
         public void Delete(PersonnelLoan personnelLoan, int userid)
         {

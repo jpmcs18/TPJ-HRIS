@@ -11,15 +11,11 @@ using System.Threading.Tasks;
 
 namespace ProcessLayer.Processes.Lookups
 {
-    public class NonWorkingDaysProcess : ILookupProcess<NonWorkingDays>
+    public sealed class NonWorkingDaysProcess : ILookupProcess<NonWorkingDays>
     {
-        private static NonWorkingDaysProcess _instance;
-        public static NonWorkingDaysProcess Instance
-        {
-            get { if (_instance == null) _instance = new NonWorkingDaysProcess(); return _instance; }
-        }
-
-        protected NonWorkingDays Converter(DataRow dr)
+        public static readonly Lazy<NonWorkingDaysProcess> Instance = new Lazy<NonWorkingDaysProcess>(() => new NonWorkingDaysProcess());
+        private NonWorkingDaysProcess() { }
+        internal NonWorkingDays Converter(DataRow dr)
         {
             var r = new NonWorkingDays
             {
@@ -34,8 +30,8 @@ namespace ProcessLayer.Processes.Lookups
                 Yearly = dr["Yearly"].ToNullableBoolean(),
                 IsGlobal = dr["Is Global"].ToNullableBoolean(),
             };
-            r.Type = NonWorkingTypeProcess.Instance.Get(r.NonWorkingType ?? 0);
-            r.Location = LocationProcess.Instance.Get(r.LocationID);
+            r.Type = NonWorkingTypeProcess.Instance.Value.Get(r.NonWorkingType ?? 0);
+            r.Location = LocationProcess.Instance.Value.Get(r.LocationID);
             return r;
         }
 

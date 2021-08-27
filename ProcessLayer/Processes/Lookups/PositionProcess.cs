@@ -7,17 +7,14 @@ using ProcessLayer.Helpers.ObjectParameter.LookUp;
 using ProcessLayer.Helpers.ObjectParameter;
 using ProcessLayer.Processes.Lookups;
 using Newtonsoft.Json;
+using System;
 
 namespace ProcessLayer.Processes
 {
-    public class PositionProcess : ILookupProcess<Position>, ILookupSourceProcess<Position> {
-
-        private static PositionProcess _instance;
-        public static PositionProcess Instance
-        {
-            get { if (_instance == null) _instance = new PositionProcess(); return _instance; }
-        }
-
+    public sealed class PositionProcess : ILookupProcess<Position>, ILookupSourceProcess<Position> 
+    {
+        public static readonly Lazy<PositionProcess> Instance = new Lazy<PositionProcess>(() => new PositionProcess());
+        private PositionProcess() { }
         internal Position Converter(DataRow dr)
         {
             var p = new Position
@@ -29,7 +26,7 @@ namespace ProcessLayer.Processes
                 AllowApprove = dr["Allow Approve"].ToNullableBoolean()
             };
 
-            p.PersonnelType = PersonnelTypeProcess.Instance.Get(p.PersonnelTypeID);
+            p.PersonnelType = PersonnelTypeProcess.Instance.Value.Get(p.PersonnelTypeID);
             return p;
         }
 

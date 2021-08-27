@@ -2,23 +2,16 @@
 using ProcessLayer.Entities;
 using ProcessLayer.Helpers;
 using ProcessLayer.Helpers.ObjectParameter;
+using System;
 using System.Collections.Generic;
 using System.Data;
 
 namespace ProcessLayer.Processes
 {
-    public class KioskApproverProcess {
-
-        private static KioskApproverProcess _instance;
-        public static KioskApproverProcess Instance
-        {
-            get
-            {
-                if (_instance == null) _instance = new KioskApproverProcess();
-                return _instance;
-            }
-        }
-
+    public sealed class KioskApproverProcess 
+    {
+        public static readonly Lazy<KioskApproverProcess> Instance = new Lazy<KioskApproverProcess>(() => new KioskApproverProcess());
+        private KioskApproverProcess() { }
         internal bool IsKioskApproverOnly = false;
         internal KioskApprovers Converter(DataRow dr)
         {

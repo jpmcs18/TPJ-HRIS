@@ -7,17 +7,14 @@ using ProcessLayer.Helpers.ObjectParameter;
 using ProcessLayer.Helpers.ObjectParameter.LookUp;
 using ProcessLayer.Processes.Lookups;
 using Newtonsoft.Json;
+using System;
 
 namespace ProcessLayer.Processes
 {
-    public class DepartmentPositionProcess : ILookupProcess<DepartmentPosition>
+    public sealed class DepartmentPositionProcess : ILookupProcess<DepartmentPosition>
     {
-        private static DepartmentPositionProcess _instance;
-        public static DepartmentPositionProcess Instance
-        {
-            get { if (_instance == null) _instance = new DepartmentPositionProcess(); return _instance; }
-        }
-
+        public static readonly Lazy<DepartmentPositionProcess> Instance = new Lazy<DepartmentPositionProcess>(() => new DepartmentPositionProcess());
+        private DepartmentPositionProcess() { }
         internal DepartmentPosition Converter(DataRow dr)
         {
             var dept = new DepartmentPosition
@@ -27,8 +24,8 @@ namespace ProcessLayer.Processes
                 DepartmentID = dr["Department ID"].ToInt()
             };
 
-            dept.Department = DepartmentProcess.Instance.Get(dept.DepartmentID ?? 0);
-            dept.Position = PositionProcess.Instance.Get(dept.PositionID);
+            dept.Department = DepartmentProcess.Instance.Value.Get(dept.DepartmentID ?? 0);
+            dept.Position = PositionProcess.Instance.Value.Get(dept.PositionID);
             
             return dept;
         }

@@ -8,14 +8,8 @@ namespace ReportLayer.Helpers
 {
     public class PrintCrewMovementFormHelper : ReportHelperBase
     {
-        private static PrintCrewMovementFormHelper instance;
-        public static PrintCrewMovementFormHelper Instance
-        {
-            get { if (instance == null)
-                    instance = new PrintCrewMovementFormHelper();
-                return instance; }
-        }
-        public PrintCrewMovementFormHelper() : base("CrewMovementForm")
+        public static readonly Lazy<PrintCrewMovementFormHelper> Instance = new Lazy<PrintCrewMovementFormHelper>(() => new PrintCrewMovementFormHelper());
+        private PrintCrewMovementFormHelper() : base("CrewMovementForm")
         {
             TransactionNoCell = Get(nameof(TransactionNoCell)).ToString();
             CrewNameCell = Get(nameof(CrewNameCell)).ToString();

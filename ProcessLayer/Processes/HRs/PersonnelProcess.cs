@@ -85,11 +85,11 @@ namespace ProcessLayer.Processes
             p._PayrollType = LookupProcess.GetPayrollType(p.PayrollTypeID);
             p._Gender = LookupProcess.GetGender(p.Gender);
             p._CivilStatus = LookupProcess.GetCivilStatus(p.CivilStatusID);
-            p._PersonnelType = PersonnelTypeProcess.Instance.Get(p.PersonnelTypeID);
+            p._PersonnelType = PersonnelTypeProcess.Instance.Value.Get(p.PersonnelTypeID);
             p._Religion = LookupProcess.GetReligion(p.ReligionID);
             p._EmploymentStatus = LookupProcess.GetEmployementStatus(p.EmploymentStatusId);
-            p._HiringLocation = LocationProcess.Instance.Get(p.HiringLocationID);
-            p._Schedules = PersonnelScheduleProcess.Instance.GetList(p.ID);
+            p._HiringLocation = LocationProcess.Instance.Value.Get(p.HiringLocationID);
+            p._Schedules = PersonnelScheduleProcess.Instance.Value.GetList(p.ID);
             p._ContactNumbers = ContactNumberProcess.GetList(p.ID);
             p._AssignedLocation = PersonnelAssignedLocationProcess.GetList(p.ID);
 
@@ -102,14 +102,14 @@ namespace ProcessLayer.Processes
                 p._Departments = PersonnelDepartmentProcess.GetList(p.ID);
                 p._Positions = PersonnelPositionProcess.GetList(p.ID);
                 p._EmploymentType = PersonnelEmploymentTypeProcess.GetList(p.ID);
-                p._LeaveCredits = PersonnelLeaveCreditProcess.GetByPersonnelID(p.ID);
+                p._LeaveCredits = PersonnelLeaveCreditProcess.Instance.Value.GetByPersonnelID(p.ID);
                 p._AssumedDeductions = PersonnelDeductionProcess.GetAssumed(p.ID);
             }
             
             try
             {
                 p.HasFailedEmail = dr[PersonnelFields.HasFailedEmail].ToBoolean();
-                p.HasAdditionalLoan = AdditionalLoanProcess.Instance.HasAdditionalLoan(p.ID);
+                p.HasAdditionalLoan = AdditionalLoanProcess.Instance.Value.HasAdditionalLoan(p.ID);
             }
             catch { }
 
@@ -473,9 +473,6 @@ namespace ProcessLayer.Processes
                 { PersonnelParameters.ReferenceContactNo, personnel.ReferenceContactNo },
                 { PersonnelParameters.WalkIn, personnel.WalkIn },
                 { PersonnelParameters.PayrollTypeID, personnel.PayrollTypeID },
-                { PersonnelParameters.AutoOT, personnel.AutoOT },
-                { PersonnelParameters.AdditionalHazardRate, personnel.AdditionalHazardRate },
-                { PersonnelParameters.BiometricsID, personnel.BiometricsID },
                 { CredentialParameters.LogBy, userid }
             };
 

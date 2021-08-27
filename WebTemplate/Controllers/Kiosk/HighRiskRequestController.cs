@@ -16,7 +16,7 @@ namespace WebTemplate.Controllers.Kiosk
         {
             model.Page = model.Page > 1 ? model.Page : 1;
             model.Personnel = PersonnelProcess.GetByUserId(User.UserID);
-            model.HighRiskRequests = HighRiskRequestProcess.Instance.GetList(model.Personnel?.ID ?? 0, model.IsExpired, model.IsPending, model.IsApproved, model.IsCancelled, model.StartDate, model.EndingDate, model.Page, model.GridCount, out int PageCount);
+            model.HighRiskRequests = HighRiskRequestProcess.Instance.Value.GetList(model.Personnel?.ID ?? 0, model.IsExpired, model.IsPending, model.IsApproved, model.IsCancelled, model.StartDate, model.EndingDate, model.Page, model.GridCount, out int PageCount);
             model.HighRiskRequest = new HighRiskRequest();
             model.HighRiskRequest.RequestDate = DateTime.Now;
             model.PageCount = PageCount;
@@ -64,7 +64,7 @@ namespace WebTemplate.Controllers.Kiosk
                 };
 
                 if ((id ?? 0) > 0)
-                    model = HighRiskRequestProcess.Instance.Get(id ?? 0);
+                    model = HighRiskRequestProcess.Instance.Value.Get(id ?? 0);
 
                 if (model.Approved == true || model.Cancelled == true)
                     return PartialViewCustom("_HighRiskRequestView", model);
@@ -92,7 +92,7 @@ namespace WebTemplate.Controllers.Kiosk
                 if (errors.Length > 0)
                     return Json(new { msg = false, res = errors.ToString() });
 
-                model = HighRiskRequestProcess.Instance.CreateOrUpdate(model, User.UserID);
+                model = HighRiskRequestProcess.Instance.Value.CreateOrUpdate(model, User.UserID);
                 ModelState.Clear();
                 return PartialViewCustom("_HighRiskRequestEdit", model);
             }
@@ -108,7 +108,7 @@ namespace WebTemplate.Controllers.Kiosk
         {
             try
             {
-                HighRiskRequest model = HighRiskRequestProcess.Instance.Get(id ?? 0);
+                HighRiskRequest model = HighRiskRequestProcess.Instance.Value.Get(id ?? 0);
                 ModelState.Clear();
                 return PartialViewCustom("_MyHighRiskRequest", model);
             }
@@ -127,7 +127,7 @@ namespace WebTemplate.Controllers.Kiosk
             {
                 try
                 {
-                    HighRiskRequestProcess.Instance.Delete(id ?? 0, User.UserID);
+                    HighRiskRequestProcess.Instance.Value.Delete(id ?? 0, User.UserID);
                     return Json(new { msg = true, res = "Delete Success" });
                 }
                 catch (Exception ex)

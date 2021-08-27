@@ -3,13 +3,10 @@
 
     public class OTRequestFields : KioskFieldsBase
     {
-        private static OTRequestFields _instance;
-        public static OTRequestFields Instance { get { if (_instance == null) _instance = new OTRequestFields(); return _instance; } }
-
-        public string RequestDate = "Request Date";
-        public string StartDateTime = "Start Date Time";
-        public string EndDateTime = "End Date Time";
-        public string IsOffice = "Is Office";
-        public string OTType = "OT Type";
+        public const string RequestDate = "Request Date";
+        public const string StartDateTime = "Start Date Time";
+        public const string EndDateTime = "End Date Time";
+        public const string IsOffice = "Is Office";
+        public const string OTType = "OT Type";
     }
 }

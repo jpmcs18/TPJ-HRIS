@@ -2,7 +2,7 @@
 @{
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
     var LeaveCreditsTabAccess = credential.GetPage("Leave Credits") ?? new DataAccessLayer.System.Page();
-    var leaveList = ProcessLayer.Processes.LeaveTypeProcess.Instance.GetList();
+    var leaveList = ProcessLayer.Processes.LeaveTypeProcess.Instance.Value.GetList();
 }
 
 <div class="table-responsive table-scroll" style=" margin: auto;">

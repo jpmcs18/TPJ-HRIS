@@ -5,16 +5,14 @@ using ProcessLayer.Helpers;
 using DBUtilities;
 using ProcessLayer.Helpers.ObjectParameter;
 using ProcessLayer.Helpers.ObjectParameter.Personnel;
+using System;
 
 namespace ProcessLayer.Processes
 {
-    public class PersonnelCompensationProcess
+    public sealed class PersonnelCompensationProcess
     {
-        private static PersonnelCompensationProcess _instance;
-        public static PersonnelCompensationProcess Instance
-        {
-            get { if (_instance == null) _instance = new PersonnelCompensationProcess(); return _instance; }
-        }
+        public static readonly Lazy<PersonnelCompensationProcess> Instance = new Lazy<PersonnelCompensationProcess>(() => new PersonnelCompensationProcess());
+        private PersonnelCompensationProcess() { }
         internal PersonnelCompensation Converter(DataRow dr)
         {
             var pc = new PersonnelCompensation

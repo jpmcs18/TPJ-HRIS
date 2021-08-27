@@ -3,7 +3,7 @@
 @{
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
 
-    var locationTypes = ProcessLayer.Processes.LocationProcess.Instance.GetList();
+    var locationTypes = ProcessLayer.Processes.LocationProcess.Instance.Value.GetList();
     var PageAccess = credential.GetPage("Kiosk/OuterPortRequest") ?? new DataAccessLayer.System.Page();
     var CreatorAccess = credential.GetPage("Creator OuterPort Request") ?? new DataAccessLayer.System.Page();
 }

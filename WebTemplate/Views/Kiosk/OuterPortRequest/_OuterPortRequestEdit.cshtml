@@ -3,7 +3,7 @@
 @{
     var c = User as WebTemplate.Models.CustomPrincipal;
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
-    var locations = ProcessLayer.Processes.LocationProcess.Instance.GetList();
+    var locations = ProcessLayer.Processes.LocationProcess.Instance.Value.GetList();
     var PageAccess = credential.GetPage("Kiosk/OuterPortRequest") ?? new DataAccessLayer.System.Page();
     var ApproverAccess = credential.GetPage("Approver OuterPort Request ") ?? new DataAccessLayer.System.Page();
     var CreatorAccess = credential.GetPage("Creator OuterPort Request") ?? new DataAccessLayer.System.Page();

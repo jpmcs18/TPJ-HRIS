@@ -108,7 +108,7 @@ namespace WebTemplate
                     {
                         HResult = ex.HResult,
                         Message = ex.Message,
-                        InnerExceptionMessage = ex.InnerException.Message,
+                        InnerExceptionMessage = ex.InnerException?.Message,
                         StackTrace = ex.StackTrace,
                         Source = ex.Source,
                         CreatedDate = DateTime.Now

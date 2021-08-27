@@ -12,13 +12,10 @@ using System.Threading.Tasks;
 
 namespace ProcessLayer.Processes.Lookups
 {
-    public class TaxTableProcess : ILookupProcess<TaxTable>
+    public sealed class TaxTableProcess : ILookupProcess<TaxTable>
     {
-        private static TaxTableProcess _instance;
-        public static TaxTableProcess Instance
-        {
-            get { if (_instance == null) _instance = new TaxTableProcess(); return _instance; }
-        }
+        public static readonly Lazy<TaxTableProcess> Instance = new Lazy<TaxTableProcess>(() => new TaxTableProcess());
+        private TaxTableProcess() { }
 
         internal TaxTable Converter(DataRow dr)
         {
@@ -29,13 +26,13 @@ namespace ProcessLayer.Processes.Lookups
                 MaximumIncome = dr["Maximum Income"].ToNullableDecimal(),
                 FixedTax = dr["Fixed Tax"].ToNullableDecimal(),
                 AdditionalTax = dr["Additional Tax"].ToNullableDecimal(),
-                AdditionalTaxBaseline = dr["Additional Tax Baseline"].ToNullableDecimal(),
+                ExcessOver = dr["Excess Over"].ToNullableDecimal(),
                 TaxScheduleID = dr["Tax Schedule ID"].ToNullableByte(),
                 EffectiveStartDate = dr["Effective Start Date"].ToNullableDateTime(),
                 EffectiveEndDate = dr["Effective End Date"].ToNullableDateTime()
             };
 
-            tax.TaxSchedule = TaxScheduleProcess.Instance.Get(tax.TaxScheduleID ?? 0);
+            tax.TaxSchedule = TaxScheduleProcess.Instance.Value.Get(tax.TaxScheduleID ?? 0);
             return tax;
         }
 
@@ -100,7 +97,7 @@ namespace ProcessLayer.Processes.Lookups
                     { "@MaximumIncome", taxtable.MaximumIncome}, 
                     { "@FixedTax", taxtable.FixedTax }, 
                     { "@AdditionalTax", taxtable.AdditionalTax }, 
-                    { "@AdditionalTaxBaseline", taxtable.AdditionalTaxBaseline }, 
+                    { "@ExcessOver", taxtable.ExcessOver }, 
                     { "@TaxScheduleID", taxtable.TaxScheduleID }, 
                     { "@EffectiveStartDate", taxtable.EffectiveStartDate }, 
                     { "@EffectiveEndDate", taxtable.EffectiveEndDate }, 
@@ -119,6 +116,7 @@ namespace ProcessLayer.Processes.Lookups
             {
                 db.ExecuteNonQuery("lookup.CreateOrUpdateTaxTable", new Dictionary<string, object> {
                     { "@ID", id },
+                    { "@Delete", true },
                     { "@LogBy", user },
                 });
             }
