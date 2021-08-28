@@ -9,20 +9,21 @@
 @if (PageAccess.View)
 {
     <form id="form_search_params" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
-        @Html.Hidden("Page", Model.Page, new { @class = "search-values" })
+        @Html.Hidden("Page", Model.Page, new { @class = "form-control" })
 
         <fieldset>
             <legend>Search</legend>
             <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-2">
                 <label class="control-label">Leave Type</label>
-                <select id="LeaveTypeID" name="LeaveTypeID" class="form-control search-values">
-                    <option value="" isbulk="false">N/A</option>
-                    @foreach (var l in Model.LeaveTypes)
-                    {
-                        var selected = Model.LeaveTypeID == l.ID ? "selected" : "";
-                        <option value="@l.ID" isbulk="@((l.BulkUse ?? false) ? "true" : "false")" @selected>@l.Description</option>
-                    }
-                </select>
+                @*<select id="LeaveTypeID" name="LeaveTypeID" class="form-control form-control">
+                <option value="" isbulk="false">N/A</option>
+                @foreach (var l in leaveTypes)
+                {
+                    var selected = Model.LeaveTypeID == l.ID ? "selected" : "";
+                    <option value="@l.ID" isbulk="@((l.BulkUse ?? false) ? " true" : "false" )" @selected>@l.Description</option>
+                }
+            </select>*@
+                @Html.DropDownListFor(m => m.LeaveTypeID, new SelectList(Model.LeaveTypes, "ID", "Description"), "N/A", new { @class = "form-control" })
             </div>
 
             <div id="NonBulkUseDatePicker" class="@(IsBulkUse ? "hidden" : "")">
@@ -36,17 +37,17 @@
                     @Html.TextBox("EndingDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.EndingDateTime), new { @type = "datetime-local", @class = "form-control" })
                 </div>
             </div>
-            <div id="BulkUseDatePicker" class="@(IsBulkUse ? "" : "hidden")">
-                <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-2">
-                    <label class="control-label">Start Date</label>
-                    @Html.TextBox("StartDateTime", String.Format("{0:yyyy'-'MM'-'dd}", Model.StartDateTime), new { @type = "date", @class = "form-control" })
-                </div>
+            @*<div id="BulkUseDatePicker" class="@(IsBulkUse ? "" : "hidden")">
+            <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-2">
+                <label class="control-label">Start Date</label>
+                @Html.TextBox("StartDateTime", String.Format("{0:yyyy'-'MM'-'dd}", Model.StartDateTime), new { @type = "date", @class = "form-control" })
             </div>
+        </div>*@
 
             @*<div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-2">
-                <label class="control-label">Key</label>
-                @Html.TextBox("Key", Model.Key, new { @class = "form-control search-values", @placeholder = "Key..." })
-            </div>*@
+            <label class="control-label">Key</label>
+            @Html.TextBox("Key", Model.Key, new { @class = "form-control form-control", @placeholder = "Key..." })
+        </div>*@
 
             <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
                 <label class="control-label" style="width: 100%; color: #fff;">Search</label>
@@ -146,7 +147,9 @@
                                 }
                             </th>
                             <th class="text-left">Leave Type</th>
-                            <th class="text-center">Start/End DateTime</th>
+                            @*<th class="text-center">Start/End DateTime</th>*@
+                            <th class="text-center">Requested Date</th>
+                            <th class="text-left">No. of Days</th>
                             <th class="text-left">Reasons</th>
                             <th class="text-center">Status</th>
                             <th class="text-left">Last Modified</th>
@@ -175,14 +178,20 @@
                                         @Model.LeaveRequests[i]._LeaveType.Description
                                     </td>
                                     <td class="text-center">
-                                        @if (Model.LeaveRequests[i]._LeaveType.BulkUse ?? false)
+                                        @*@if (Model.LeaveRequests[i].LeaveType.BulkUse ?? false)
                                         {
                                             @Html.Raw(String.Format("{0:MMM dd, yyyy}", Model.LeaveRequests[i].StartDateTime))
                                         }
                                         else
                                         {
                                             @Html.Raw(String.Format("{0:MMM dd, yyyy @ hh:mm tt} -<br/>{1:MMM dd, yyyy @ hh:mm tt}", Model.LeaveRequests[i].StartDateTime, Model.LeaveRequests[i].EndDateTime))
-                                        }
+                                        {
+                                        {
+                                        }*@
+                                            @Html.Raw(String.Format("{0:MMM dd, yyyy}", Model.LeaveRequests[i].RequestedDate))
+                                    </td>
+                                    <td class="text-left">
+                                        @Model.LeaveRequests[i].NoofDays
                                     </td>
                                     <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;">
                                         <text class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;" title="@Model.LeaveRequests[i].Reasons">

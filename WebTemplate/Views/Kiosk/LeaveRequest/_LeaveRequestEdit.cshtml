@@ -6,47 +6,58 @@
 
     var c = User as WebTemplate.Models.CustomPrincipal;
     var leaveTypes = ProcessLayer.Processes.HR.PersonnelLeaveCreditProcess.Instance.Value.GetLeaveWithCredits(Model.PersonnelID ?? 0, DateTime.Now.Year);
-    var IsBulkUse = Model._LeaveType.BulkUse ?? false;
+    //var IsBulkUse = Model._LeaveType.BulkUse ?? false;
 
     var IsPending = (Model.Approved == null || Model.Approved == false) && (Model.Cancelled == null || Model.Cancelled == false);
 }
 
-@Html.Hidden("PersonnelID", Model.PersonnelID, new { @class = "save-values" })
-@Html.Hidden("ID", Model.ID, new { @class = "save-values" })
+@Html.Hidden("PersonnelID", Model.PersonnelID, new { @class = "form-control" })
+@Html.Hidden("ID", Model.ID, new { @class = "form-control" })
 
 <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
-    <label class="control-label">Leave Type</label>
-    <select id="LeaveTypeID" name="LeaveTypeID" class="form-control save-values">
-        <option value="" isbulk="false">N/A</option>
-        @foreach (var l in leaveTypes)
-        {
-            var selected = Model.LeaveTypeID == l.ID ? "selected" : "";
-            <option value="@l.ID" isbulk="@((l.BulkUse ?? false) ? " true" : "false" )" @selected>@l.Description</option>
-        }
-    </select>
+    <label class="control-label">Type</label>
+    @*<select id="LeaveTypeID" name="LeaveTypeID" class="form-control form-control">
+            <option value="" isbulk="false">N/A</option>
+            @foreach (var l in leaveTypes)
+            {
+                var selected = Model.LeaveTypeID == l.ID ? "selected" : "";
+                <option value="@l.ID" isbulk="@((l.BulkUse ?? false) ? " true" : "false" )" @selected>@l.Description</option>
+            }
+        </select>*@
+    @Html.DropDownListFor(m => m.LeaveTypeID, new SelectList(leaveTypes, "ID", "Description"), "N/A", new { @class = "form-control" })
 </div>
 
-<div id="BulkUseDatePicker" class="@(IsBulkUse ? " " : " hidden")">
-    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
-        <label class="control-label">Start Date</label>
-        @Html.TextBox("StartDateTime", String.Format("{0:yyyy'-'MM'-'dd}", Model.StartDateTime), new { @type = "date", @class = "form-control" })
+@*<div id="BulkUseDatePicker" class="@(IsBulkUse ? " " : " hidden")">
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <label class="control-label">Start Date</label>
+            @Html.TextBox("StartDateTime", String.Format("{0:yyyy'-'MM'-'dd}", Model.StartDateTime), new { @type = "date", @class = "form-control" })
+        </div>
     </div>
-</div>
-<div id="NonBulkUseDatePicker" class="@(IsBulkUse ? " hidden" : "" )">
-    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
-        <label class="control-label">Start DateTime</label>
-        @Html.TextBox("StartDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.StartDateTime), new { @type = "datetime-local", @class = "form-control" })
-    </div>
+    <div id="NonBulkUseDatePicker" class="@(IsBulkUse ? " hidden" : "" )">
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+            <label class="control-label">Start DateTime</label>
+            @Html.TextBox("StartDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.StartDateTime), new { @type = "datetime-local", @class = "form-control" })
+        </div>
 
-    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
-        <label class="control-label">End DateTime</label>
-        @Html.TextBox("EndDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.EndDateTime), new { @type = "datetime-local", @class = "form-control" })
-    </div>
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+            <label class="control-label">End DateTime</label>
+            @Html.TextBox("EndDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.EndDateTime), new { @type = "datetime-local", @class = "form-control" })
+        </div>
+    </div>*@
+
+<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <label class="control-label">Request Date</label>
+    @Html.TextBoxFor(m => m.RequestedDate, String.Format("{0:yyyy'-'MM'-'dd}", Model.RequestedDate), new { @type = "date", @class = "form-control" })
+</div>
+
+<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <label class="control-label">No. of Days</label>
+    @Html.TextBoxFor(m => m.NoofDays, new { @type = "number", @class = "form-control" })
 </div>
 
 <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <label class="control-label">Reasons</label>
-    @Html.TextArea("Reasons", new { @class = "form-control save-values", @rows = "4", @placeholder = "Reasons..." })
+    @Html.TextAreaFor(m => m.Reasons, new { @class = "form-control form-control", @rows = "4", @placeholder = "Reasons..." })
 </div>
 
 @if (!(Model.IsExpired && IsPending))
@@ -77,11 +88,11 @@
         }
     }
 
-    @*if (!String.IsNullOrEmpty(Model._Creator))
+    @*if (!String.IsNullOrEmpty(Model.Creator))
         {
             <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3 m-t-lg">
                 <div class='md-step-optional'>Created By:</div>
-                <div class='md-step-optional'><b>@Html.Raw(Model._Creator ?? "&nbsp;")</b></div>
+                <div class='md-step-optional'><b>@Html.Raw(Model.Creator ?? "&nbsp;")</b></div>
                 <div class='md-step-optional'>@Html.Raw(String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.CreatedOn) ?? "&nbsp;")</div>
             </div>
         }
@@ -93,19 +104,19 @@
                 <div class='md-step-optional'>@Html.Raw(String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.ModifiedOn) ?? "&nbsp;")</div>
             </div>
         }
-        if (!String.IsNullOrEmpty(Model._Approver))
+        if (!String.IsNullOrEmpty(Model.Approver))
         {
             <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3 m-t-lg">
                 <div class='md-step-optional'>Approved By:</div>
-                <div class='md-step-optional'><b>@Html.Raw(Model._Approver ?? "&nbsp;")</b></div>
+                <div class='md-step-optional'><b>@Html.Raw(Model.Approver ?? "&nbsp;")</b></div>
                 <div class='md-step-optional'>@Html.Raw(String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.ApprovedOn) ?? "&nbsp;")</div>
             </div>
         }
-        if (!String.IsNullOrEmpty(Model._Cancel))
+        if (!String.IsNullOrEmpty(Model.Cancel))
         {
             <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3 m-t-lg">
                 <div class='md-step-optional'>Cancelled By:</div>
-                <div class='md-step-optional'><b>@Html.Raw(Model._Cancel ?? "&nbsp;")</b></div>
+                <div class='md-step-optional'><b>@Html.Raw(Model.Cancel ?? "&nbsp;")</b></div>
                 <div class='md-step-optional'>@Html.Raw(String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.CancelledOn) ?? "&nbsp;")</div>
             </div>
         }*@

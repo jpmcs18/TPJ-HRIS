@@ -16,26 +16,35 @@
     <label class="form-control">@(Model._LeaveType?.Description ?? "")</label>
 </div>
 
-<div id="StartDateTimeDiv" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
-    <label class="control-label">Start Date & Time</label>
-    <label class="form-control">@(String.Format("{0:yyyy'-'MM'-'dd" + (IsBulkUse ? "" : "'T'HH':'mm") + "}", Model.StartDateTime))</label>
-</div>
+@*<div id="StartDateTimeDiv" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <label class="control-label">Start Date & Time</label>
+        <label class="form-control">@(String.Format("{0:yyyy'-'MM'-'dd" + (IsBulkUse ? "" : "'T'HH':'mm") + "}", Model.StartDateTime))</label>
+    </div>
 
-<div id="EndDateTimeDiv" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12@(IsBulkUse ? " hidden" : "")">
-    <label class="control-label">End Date & Time</label>
-    <label class="form-control">@(String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.EndDateTime))</label>
+    <div id="EndDateTimeDiv" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12@(IsBulkUse ? " hidden" : "")">
+        <label class="control-label">End Date & Time</label>
+        <label class="form-control">@(String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.EndDateTime))</label>
+    </div>*@
+
+<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <label class="control-label">Requested Date</label>
+    <label class="form-control">@(String.Format("{0:yyyy'-'MM'-'dd}", Model.RequestedDate))</label>
 </div>
 
 <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <label class="control-label">No. of Days</label>
+    <label class="form-control" rows="4">@Model.NoofDays</label></div>
+
+<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <label class="control-label">Reasons</label>
-    <textarea class="form-control" rows="4">@Model.Reasons</textarea>
+    <textarea class="form-control" rows="4" readonly>@Model.Reasons</textarea>
 </div>
 
 @if (!String.IsNullOrEmpty(Model.Remarks))
 {
     <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <label class="control-label">Remarks</label>
-        <textarea class="form-control" rows="4">@Model.Remarks</textarea>
+        <textarea class="form-control" rows="4" readonly>@Model.Remarks</textarea>
     </div>
 }
 

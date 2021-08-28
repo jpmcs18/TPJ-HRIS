@@ -11,7 +11,7 @@ namespace ProcessLayer.Entities.Kiosk
         public DateTime RequestedDate { get; set; }
         public string File { get; set; }
         public string FilePath { get; set; }
-        public bool IsExpired { get { return ((DateTime.Now - CreatedOn).Value.TotalHours >= 48) && Approved != true && Cancelled != true && false /*For Bypassing Expiration*/; } }
+        public bool IsExpired { get { return CreatedOn == null ? (Approved == true || Cancelled == true) : ((DateTime.Now - CreatedOn).Value.TotalHours >= 48); } }
         public string Remarks
         {
             get
