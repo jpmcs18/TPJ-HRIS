@@ -7,6 +7,7 @@ namespace ProcessLayer.Entities.Kiosk
     {
         public byte? LeaveTypeID { get; set; }
         public float? ApprovedLeaveCredits { get; set; }
+        public float? ComputedLeaveCredits { get; set; }
         public float NoofDays { get; set; }
         public DateTime RequestedDate { get; set; }
         public string File { get; set; }
@@ -29,6 +30,6 @@ namespace ProcessLayer.Entities.Kiosk
         }
 
         public LeaveType _LeaveType { get; set; }
-        public List<ComputedLeaveCredits> ComputedLeaveCredits { get; set; }
+        public List<ComputedLeaveCredits> _ComputedLeaveCredits { get; set; }
     }
 }

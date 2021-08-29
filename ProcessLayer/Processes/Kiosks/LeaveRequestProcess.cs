@@ -70,7 +70,7 @@ namespace ProcessLayer.Processes.Kiosk
 
             if(WithComputedLeaveCredits)
             {
-                //o.ComputedLeaveCredits = ComputedLeaveCreditsProcess.Instance.Value.GetList(o.ID);
+                o._ComputedLeaveCredits = ComputedLeaveCreditsProcess.Instance.Value.GetList(o.ID);
             }
             return o;
         }
@@ -79,7 +79,7 @@ namespace ProcessLayer.Processes.Kiosk
         {
             var Leaves = new List<LeaveRequest>();
             var parameters = new Dictionary<string, object> {
-                { "@PersonnelID", personnelId },
+                { LeaveRequestParameters.PersonnelID, personnelId },
                 { LeaveRequestParameters.LeaveTypeID, leavetypeid },
                 { LeaveRequestParameters.IsExpired, isExpired },
                 { LeaveRequestParameters.IsPending, isPending },
@@ -142,6 +142,25 @@ namespace ProcessLayer.Processes.Kiosk
             return Leaves;
         }
 
+        internal List<LeaveRequest> GetLeaveForPayroll(long personnelId, DateTime periodStart, DateTime periodEnd)
+        {
+            var Leaves = new List<LeaveRequest>();
+            var parameters = new Dictionary<string, object>{
+                { LeaveRequestParameters.PersonnelID, personnelId },
+                { LeaveRequestParameters.StartDate, periodStart },
+                { LeaveRequestParameters.EndDate, periodEnd }
+            };
+                using (var db = new DBTools())
+                {
+                    using (var ds = db.ExecuteReader(LeaveRequestProcedures.GetLeaveForPayroll, parameters))
+                    {
+                        Leaves = ds.GetList(Converter);
+                    }
+                }
+                return Leaves;
+            
+        }
+
         public List<LeaveRequest> GetRequestThatNeedDocument(string personnel, byte? leavetypeid, bool isExpired, bool isPending, bool isApproved, bool isCancelled, DateTime? startdatetime, DateTime? enddatetime, int page, int gridCount, out int PageCount)
         {
             var Leaves = new List<LeaveRequest>();
@@ -192,7 +211,7 @@ namespace ProcessLayer.Processes.Kiosk
             return Leaves;
         }
 
-        public List<LeaveRequest> GetApprovedLeave(long personnelid, byte? leavetypeid, DateTime startdatetime, DateTime enddatetime, bool withComputedLeaveCredit = false)
+        public List<LeaveRequest> GetApprovedLeave(long personnelid, byte? leavetypeid, DateTime startdatetime, DateTime enddatetime)
         {
             var Leaves = new List<LeaveRequest>();
             var parameters = new Dictionary<string, object>{
@@ -274,7 +293,7 @@ namespace ProcessLayer.Processes.Kiosk
         {
 
             var parameters = new Dictionary<string, object> {
-                    { "@ID", id }
+                    { LeaveRequestParameters.ID, id }
                     , { CredentialParameters.LogBy, userid }
                 };
 
@@ -285,8 +304,8 @@ namespace ProcessLayer.Processes.Kiosk
         {
 
             var parameters = new Dictionary<string, object> {
-                    { "@ID", id }
-                    , { "@LeaveUsed", leaveUsed }
+                    { LeaveRequestParameters.ID, id }
+                    , { LeaveRequestParameters.LeaveUsed, leaveUsed }
                     , { CredentialParameters.LogBy, userid }
                 };
 
@@ -335,6 +354,18 @@ namespace ProcessLayer.Processes.Kiosk
                 PersonnelLeaveCreditProcess.Instance.Value.UpdateCredits(db, leave.PersonnelID ?? 0, leave.LeaveTypeID ?? 0, leave.RequestedDate.Year, leaveCreditsToUse, userid);
             }
 
+        }
+
+        public void UpdateComputedLeaveCredits(DBTools db, LeaveRequest leaveRequest, int userId)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                { LeaveRequestParameters.ID, leaveRequest.ID },
+                { LeaveRequestParameters.ComputedLeaveCredits, leaveRequest.ComputedLeaveCredits },
+                { CredentialParameters.LogBy, userId }
+            };
+            
+            db.ExecuteNonQuery(LeaveRequestProcedures.UpdateComputedLeaveCredits, parameters);
         }
 
         public void Cancel(LeaveRequest Leave, int userid)

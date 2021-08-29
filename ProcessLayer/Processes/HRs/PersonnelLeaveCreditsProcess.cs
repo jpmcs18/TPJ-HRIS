@@ -26,7 +26,6 @@ namespace ProcessLayer.Processes.HR
             };
 
             l._LeaveType = LeaveTypeProcess.Instance.Value.Get(l.LeaveTypeID);
-
             return l;
         }
 

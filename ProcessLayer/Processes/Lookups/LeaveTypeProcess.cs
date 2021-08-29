@@ -9,7 +9,7 @@ using System.Data;
 
 namespace ProcessLayer.Processes
 {
-    public sealed class LeaveTypeProcess : ILookupProcess<LeaveType>
+    public sealed class LeaveTypeProcess : ILookupProcess<LeaveType>, ILookupSourceProcess<LeaveType>
     {
         public static readonly Lazy<LeaveTypeProcess> Instance = new Lazy<LeaveTypeProcess>(() => new LeaveTypeProcess());
         private LeaveTypeProcess() { }
@@ -26,7 +26,7 @@ namespace ProcessLayer.Processes
             };
         }
 
-        public List<LeaveType> GetList()
+        public List<LeaveType> GetList(bool HasDefault = false)
         {
             using (var db = new DBTools())
             {
@@ -34,10 +34,17 @@ namespace ProcessLayer.Processes
                 {
                     var l = ds.GetList(Converter);
 
+
+                    if (HasDefault)
+                    {
+                        l?.Insert(0, new LeaveType { ID = 0, Description = "N/A" });
+                    }
+
                     return l;
                 }
             }           
         }
+
 
         public List<LeaveType> GetLeaveTypesThatHasDocumentNeeded()
         {

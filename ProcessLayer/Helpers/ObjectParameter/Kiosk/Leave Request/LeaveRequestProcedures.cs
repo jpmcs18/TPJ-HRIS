@@ -12,5 +12,9 @@
         public const string Delete = "kiosk.DeleteLeaveRequest";
         public const string GetApprovedLeave = "kiosk.GetApprovedLeaveRequest";
         public const string UploadDocument = "kiosk.UploadDocumentForLeave";
+        public const string GetLeaveForPayroll = "kiosk.GetLeaveForPayroll";
+        public const string UpdateComputedLeaveCredits = "kiosk.UpdateComputedLeaveCredits";
+        
+
     }
 }

@@ -2,10 +2,12 @@
 using ProcessLayer.Computation.CnB;
 using ProcessLayer.Entities;
 using ProcessLayer.Entities.CnB;
+using ProcessLayer.Entities.Kiosk;
 using ProcessLayer.Helpers;
 using ProcessLayer.Helpers.Enumerable;
 using ProcessLayer.Helpers.ObjectParameter.Payroll;
 using ProcessLayer.Processes.HR;
+using ProcessLayer.Processes.Kiosk;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -431,6 +433,7 @@ namespace ProcessLayer.Processes.CnB
 
                     SavePayrollList(payrollBase.Payrolls, payrollBase.ID, payrollBase.Type, payrollBase.StartDate, payrollBase.EndDate, userid, db);
 
+
                     db.CommitTransaction();
                 }
                 catch (Exception ex)
@@ -476,6 +479,19 @@ namespace ProcessLayer.Processes.CnB
                     SaveIndividualPayroll(db, baseId, type, cutoffStart, cutoffEnd, userid, payroll);
             }
         }
+
+        private void SaveComputedLeaveCredits(DBTools db, List<LeaveRequest> leaveRequests, List<ComputedLeaveCredits> computedLeaveCredits, int userId)
+        {
+            foreach(LeaveRequest leaveRequest in leaveRequests)
+            {
+                LeaveRequestProcess.Instance.Value.UpdateComputedLeaveCredits(db, leaveRequest, userId);
+            }
+            foreach (ComputedLeaveCredits computedLeaveCredit in computedLeaveCredits)
+            {
+                ComputedLeaveCreditsProcess.Instance.Value.CreateOrUpdate(db, computedLeaveCredit, userId);
+            }
+        }
+
         private void DeletePayrollDetails(DBTools db, int userid, long? payrollId = null, long? detailsId = null)
         {
             var parameters = new Dictionary<string, object>
@@ -534,6 +550,8 @@ namespace ProcessLayer.Processes.CnB
 
             if (payroll.OutstandingVale > 0)
                 SaveOutstandingVale(cutoffStart, cutoffEnd, userid, db, payroll.Personnel.ID, payroll.OutstandingVale, payroll.ID);
+
+            SaveComputedLeaveCredits(db, payroll.LeaveRequests, payroll.ComputedLeaveCredits, userid);
         }
 
         private void DeleteLoanPaymentMethod(DBTools db, long loanDeductionId, int userid)
