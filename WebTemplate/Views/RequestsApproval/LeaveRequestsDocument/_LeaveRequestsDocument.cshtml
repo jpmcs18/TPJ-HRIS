@@ -9,12 +9,12 @@
 @if (PageAccess.View)
 {
     <form id="form_search_params" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
-        @Html.Hidden("Page", Model.Page, new { @class = "search-values" })
+        @Html.Hidden("Page", Model.Page, new { @class = "form-control" })
         <fieldset>
             <legend>Search</legend>
             <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-2">
                 <label class="control-label">Leave Type</label>
-                <select id="LeaveTypeID" name="LeaveTypeID" class="form-control search-values">
+                <select id="LeaveTypeID" name="LeaveTypeID" class="form-control form-control">
                     <option value="" isbulk="false">N/A</option>
                     @foreach (var l in Model.LeaveTypes)
                     {
@@ -27,24 +27,24 @@
             <div id="NonBulkUseDatePicker" class="@(IsBulkUse ? "hidden" : "")">
                 <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-2">
                     <label class="control-label">Start Date & Time</label>
-                    @Html.TextBox("StartDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.StartDateTime), new { @type = "datetime-local", @class = "form-control search-values" })
+                    @Html.TextBox("StartDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.StartDateTime), new { @type = "datetime-local", @class = "form-control form-control" })
                 </div>
 
                 <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-2">
                     <label class="control-label">End Date & Time</label>
-                    @Html.TextBox("EndingDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.EndingDateTime), new { @type = "datetime-local", @class = "form-control search-values" })
+                    @Html.TextBox("EndingDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.EndingDateTime), new { @type = "datetime-local", @class = "form-control form-control" })
                 </div>
             </div>
             <div id="BulkUseDatePicker" class="@(IsBulkUse ? "" : "hidden")">
                 <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-2">
                     <label class="control-label">Start Date</label>
-                    @Html.TextBox("StartDateTime", String.Format("{0:yyyy'-'MM'-'dd}", Model.StartDateTime), new { @type = "date", @class = "form-control search-values" })
+                    @Html.TextBox("StartDateTime", String.Format("{0:yyyy'-'MM'-'dd}", Model.StartDateTime), new { @type = "date", @class = "form-control form-control" })
                 </div>
             </div>
 
             <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-3">
                 <label class="control-label">Personnel</label>
-                @Html.TextBox("Personnel", Model.Personnel, new { @class = "form-control search-values", @placeholder = "Personnel..." })
+                @Html.TextBox("Personnel", Model.Personnel, new { @class = "form-control form-control", @placeholder = "Personnel..." })
             </div>
 
             <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
@@ -135,7 +135,9 @@
                     <tr>
                         <th class="text-left">Personnel</th>
                         <th class="text-left">Leave Type</th>
-                        <th class="text-center">Start/End DateTime</th>
+                        @*<th class="text-center">Start/End DateTime</th>*@
+                        <th class="text-left">Requested Date</th>
+                        <th class="text-left">No. of. Days</th>
                         <th class="text-left">Reasons</th>
                         <th class="text-left">Status</th>
                         <th class="text-left">Last Modified</th>
@@ -159,51 +161,53 @@
                                 var LastDate = Cancelled ? Model.LeaveRequests[i].CancelledOn : Approved ? Model.LeaveRequests[i].ApprovedOn : Model.LeaveRequests[i].ModifiedBy != null ? Model.LeaveRequests[i].ModifiedOn : Model.LeaveRequests[i].CreatedOn;
                                 var filename = Path.GetFileName(Model.LeaveRequests[i].File);
 
-                                <tr id="Row-Display-LeaveRequests-@Model.LeaveRequests[i].ID" class="Row-Display Row-Display-LeaveRequests @RowColorLabel" style="">
-                                    <td class="text-left">
-                                        @Html.Hidden("id", Model.LeaveRequests[i].ID)
-                                        @(String.Format("{0}. {1}", (i + 1) + ((Model.Page > 1 ? Model.GridCount : 0) * Model.Page), Model.LeaveRequests[i]._Personnel != null ? Model.LeaveRequests[i]._Personnel.FullName : "N/A"))
-                                    </td>
-                                    <td class="text-left">@Model.LeaveRequests[i]._LeaveType.Description</td>
-                                    <td class="text-center">
-                                        @if (Model.LeaveRequests[i]._LeaveType.BulkUse ?? false)
-                                        {
-                                            @Html.Raw(String.Format("{0:MMM dd, yyyy}", Model.LeaveRequests[i].StartDateTime)) }
-                                        else
-                                        {
-                                            @Html.Raw(String.Format("{0:MMM dd, yyyy @ hh:mm tt} -<br/>{1:MMM dd, yyyy @ hh:mm tt}", Model.LeaveRequests[i].StartDateTime, Model.LeaveRequests[i].EndDateTime))}
-                                    </td>
-                                    <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
-                                        <text class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@Model.LeaveRequests[i].Reasons">
-                                            @Model.LeaveRequests[i].Reasons
-                                        </text>
-                                    </td>
-                                    <td class="text-center">@Html.Raw(LastStatus)</td>
-                                    <td class="text-left">
-                                        @Html.Raw(String.Format("{0}<br/>{1:MM/dd/yyyy hh:mm tt}", LastUser ?? "", LastDate))
-                                    </td>
-                                    <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
-                                        <text class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@Model.LeaveRequests[i].Remarks">
-                                            @Model.LeaveRequests[i].Remarks
-                                        </text>
-                                    </td>
-                                    @if (UploadDocumentAccess.View)
+                        <tr id="Row-Display-LeaveRequests-@Model.LeaveRequests[i].ID" class="Row-Display Row-Display-LeaveRequests @RowColorLabel" style="">
+                            <td class="text-left">
+                                @Html.Hidden("id", Model.LeaveRequests[i].ID)
+                                @(String.Format("{0}. {1}", (i + 1) + ((Model.Page > 1 ? Model.GridCount : 0) * Model.Page), Model.LeaveRequests[i]._Personnel != null ? Model.LeaveRequests[i]._Personnel.FullName : "N/A"))
+                            </td>
+                            <td class="text-left">@Model.LeaveRequests[i]._LeaveType.Description</td>
+                            <td class="text-center">
+                                @*        @if (Model.LeaveRequests[i].LeaveType.BulkUse ?? false)
+        {
+            @Html.Raw(String.Format("{0:MMM dd, yyyy}", Model.LeaveRequests[i].StartDateTime)) }
+        else
+        {
+            @Html.Raw(String.Format("{0:MMM dd, yyyy @ hh:mm tt} -<br/>{1:MMM dd, yyyy @ hh:mm tt}", Model.LeaveRequests[i].StartDateTime, Model.LeaveRequests[i].EndDateTime))}*@
+                                @Html.Raw(String.Format("{0:MMM dd, yyyy}", Model.LeaveRequests[i].RequestedDate))
+                            </td>
+                            <td class="text-left">@Model.LeaveRequests[i].NoofDays</td>
+                            <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
+                                <text class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@Model.LeaveRequests[i].Reasons">
+                                    @Model.LeaveRequests[i].Reasons
+                                </text>
+                            </td>
+                            <td class="text-center">@Html.Raw(LastStatus)</td>
+                            <td class="text-left">
+                                @Html.Raw(String.Format("{0}<br/>{1:MM/dd/yyyy hh:mm tt}", LastUser ?? "", LastDate))
+                            </td>
+                            <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
+                                <text class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@Model.LeaveRequests[i].Remarks">
+                                    @Model.LeaveRequests[i].Remarks
+                                </text>
+                            </td>
+                            @if (UploadDocumentAccess.View)
+                            {
+                                <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
+                                    @*@if (!Cancelled && (Model.LeaveRequests[i].LeaveType.HasDocumentNeeded ?? false) == true && (UploadDocumentAccess.Insert || UploadDocumentAccess.Update || UploadDocumentAccess.Delete))
+                {
+                }*@
+                                    @if (Model.LeaveRequests[i].ApprovedLeaveCredits > 0)
                                     {
-                                        <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
-                                            @*@if (!Cancelled && (Model.LeaveRequests[i]._LeaveType.HasDocumentNeeded ?? false) == true && (UploadDocumentAccess.Insert || UploadDocumentAccess.Update || UploadDocumentAccess.Delete))
-                                                {
-                                                }*@
-                                            @if (Model.LeaveRequests[i].ApprovedLeaveCredits > 0)
-                                            {
-                                                <span class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@(filename)">@Html.Raw(filename)</span>
-                                            }
-                                            else
-                                            {
-                                                <button type="button" name="" class="btn btn-default btn-md" onclick="UploadDocument(@Model.LeaveRequests[i].ID, '')" title="@(!string.IsNullOrEmpty(filename) ? filename : "Upload Document")"><i class="fa fa-paperclip"></i>@Html.Raw(!string.IsNullOrEmpty(filename) ? " <span class='label label-info'>1</span>" : "")</button>
-                                            }
-                                        </td>
+                                        <span class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@(filename)">@Html.Raw(filename)</span>
                                     }
-                                </tr>
+                                    else
+                                    {
+                                        <button type="button" name="" class="btn btn-default btn-md" onclick="UploadDocument(@Model.LeaveRequests[i].ID, '')" title="@(!string.IsNullOrEmpty(filename) ? filename : "Upload Document")"><i class="fa fa-paperclip"></i>@Html.Raw(!string.IsNullOrEmpty(filename) ? " <span class='label label-info'>1</span>" : "")</button>
+                                    }
+                                </td>
+                            }
+                        </tr>
                             }
                         }
                         else

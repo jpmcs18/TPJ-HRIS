@@ -1,4 +1,5 @@
-﻿using ProcessLayer.Entities;
+﻿using DataAccessLayer.Security;
+using ProcessLayer.Entities;
 using ProcessLayer.Entities.Kiosk;
 using ProcessLayer.Helpers;
 using ProcessLayer.Processes;
@@ -18,20 +19,28 @@ namespace WebTemplate.Controllers.Kiosk
         // GET: LeaveRequest
         public ActionResult Index(Index model)
         {
-            model.Page = model.Page > 1 ? model.Page : 1;
-            model.Personnel = PersonnelProcess.GetByUserId(User.UserID);
-            model.LeaveRequests = LeaveRequestProcess.Instance.Value.GetList(model.Personnel?.ID ?? 0, model.LeaveTypeID, model.IsExpired, model.IsPending, model.IsApproved, model.IsCancelled, model.StartDateTime, model.EndingDateTime, model.Page, model.GridCount, out int PageCount);
-            model.LeaveTypes = LeaveTypeProcess.Instance.Value.GetList();
-            model.PageCount = PageCount;
+            try
+            {
+                model.Page = model.Page > 1 ? model.Page : 1;
+                model.Personnel = PersonnelProcess.GetByUserId(User.UserID);
+                model.LeaveRequests = LeaveRequestProcess.Instance.Value.GetList(model.Personnel?.ID ?? 0, model.LeaveTypeID, model.IsExpired, model.IsPending, model.IsApproved, model.IsCancelled, model.StartDateTime, model.EndingDateTime, model.Page, model.GridCount, out int PageCount);
+                model.LeaveTypes = LeaveTypeProcess.Instance.Value.GetList();
+                model.PageCount = PageCount;
 
-            if (Request.IsAjaxRequest())
-            {
-                ModelState.Clear();
-                return PartialViewCustom("_MyLeaveRequests", model);
+                if (Request.IsAjaxRequest())
+                {
+                    ModelState.Clear();
+                    return PartialViewCustom("_MyLeaveRequests", model);
+                }
+                else
+                {
+                    return ViewCustom("_LeaveRequestIndex", model);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return ViewCustom("_LeaveRequestIndex", model);
+                ViewBag.Message = ex.GetActualMessage();
+                return View("~/Views/Security/Error.cshtml");
             }
         }
 
@@ -41,7 +50,7 @@ namespace WebTemplate.Controllers.Kiosk
         {
             try
             {
-                Index model = new Index
+                Index model = new()
                 {
                     Personnel = PersonnelProcess.GetByUserId(User.UserID),
                     LeaveRequest = new LeaveRequest(),
@@ -63,7 +72,7 @@ namespace WebTemplate.Controllers.Kiosk
         {
             try
             {
-                LeaveRequest model = new LeaveRequest
+                LeaveRequest model = new()
                 {
                     PersonnelID = User.UserID
                 };
@@ -88,7 +97,7 @@ namespace WebTemplate.Controllers.Kiosk
         {
             try
             {
-                StringBuilder errors = new StringBuilder();
+                StringBuilder errors = new();
                 if (string.IsNullOrEmpty(model.Reasons))
                     errors.Append("- <b>Reasons</b> is required<br>");
 

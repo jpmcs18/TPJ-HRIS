@@ -1,11 +1,11 @@
 ﻿using DataAccessLayer.Security;
 using DataAccessLayer.System;
-using WebTemplate.Models;
-using System.Web.Mvc;
-using System.Text.RegularExpressions;
 using System;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Web.Mvc;
+using WebTemplate.Models;
 
 namespace WebTemplate.Controllers
 {
@@ -23,6 +23,7 @@ namespace WebTemplate.Controllers
             ViewBag.Page = p;
             base.OnActionExecuting(filterContext);
         }
+
         [NonAction]
         public Page GetPage()
         {

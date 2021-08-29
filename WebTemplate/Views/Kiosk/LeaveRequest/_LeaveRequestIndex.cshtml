@@ -71,7 +71,7 @@
 
 <script type="text/javascript">
     var $_leaveTypeArr = @Html.Raw(Json.Encode(Model.LeaveTypes));
-    var $_IsBulkUse = false;
+    //var $_IsBulkUse = false;
 
     $(document).ready(function () {
         Events();
@@ -104,7 +104,7 @@
     }
 
     function SearchTabEvents() {
-        $('#form_search_params #LeaveTypeID').off('change').on('change', SetLeaveTypeID);
+        //$('#form_search_params #LeaveTypeID').off('change').on('change', SetLeaveTypeID);
         $('select').select2();
 
         $('input.chkRow').off('ifClicked').on('ifClicked', EnableDelete);
@@ -196,40 +196,40 @@
         setTimeout(SearchRequest, 500);
     }
 
-    function SetLeaveTypeID() {
-        var div = $('#LeaveRequestModal').is(':visible') ? '#LeaveRequestModal' : '#form_search_params';
-        var id = $(div + ' #LeaveTypeID option:selected').val();
-        var newBulkUse = $(div + ' #LeaveTypeID option:selected').attr('isbulk') === 'true';
+    //function SetLeaveTypeID() {
+    //    var div = $('#LeaveRequestModal').is(':visible') ? '#LeaveRequestModal' : '#form_search_params';
+    //    var id = $(div + ' #LeaveTypeID option:selected').val();
+    //    var newBulkUse = $(div + ' #LeaveTypeID option:selected').attr('isbulk') === 'true';
 
-        if (id) {
-            if (newBulkUse != $_IsBulkUse || newBulkUse == true) {
-                $(div + ' #' + (newBulkUse ? 'Non' : '') + 'BulkUseDatePicker').addClass('hidden');
-                $(div + ' #' + (newBulkUse ? '' : 'Non') + 'BulkUseDatePicker').removeClass('hidden');
-                $(div + ' #' + (newBulkUse ? '' : 'Non') + 'BulkUseDatePicker input').val('');
-            }
+    //    if (id) {
+    //        if (newBulkUse != $_IsBulkUse || newBulkUse == true) {
+    //            $(div + ' #' + (newBulkUse ? 'Non' : '') + 'BulkUseDatePicker').addClass('hidden');
+    //            $(div + ' #' + (newBulkUse ? '' : 'Non') + 'BulkUseDatePicker').removeClass('hidden');
+    //            $(div + ' #' + (newBulkUse ? '' : 'Non') + 'BulkUseDatePicker input').val('');
+    //        }
 
-            $_IsBulkUse = newBulkUse;
-        }
-    }
+    //        $_IsBulkUse = newBulkUse;
+    //    }
+    //}
 
     function ModalEvents(modal, title, response) {
         $(modal + ' .modal-body').html(response);
         $(modal + ' .modal-title').html(title + ' Leave Request');
-        $(modal + ' #LeaveTypeID').off('change').on('change', SetLeaveTypeID);
+        //$(modal + ' #LeaveTypeID').off('change').on('change'  LeaveTypeID);
         $(modal).appendTo('body').modal('show');
     }
 
     function SearchRequest() {
         var formdata = new FormData();
         var url = '@Url.Action("Index", "LeaveRequest")';
-        var isBulkUse = $('#form_search_params #LeaveTypeID option:selected').attr('isbulk') === 'true';
+        //var isBulkUse = $('#form_search_params #LeaveTypeID option:selected').attr('isbulk') === 'true';
 
-        $('#form_search_params .search-values').each(function () {
+        $('#form_search_params .form-control').each(function () {
             formdata.append($(this).attr('name'), $(this).val());
         });
-        $('#form_search_params #' + (isBulkUse ? '' : 'Non') + 'BulkUseDatePicker input[type="date' + (isBulkUse ? '' : 'time-local') + '"]').each(function () {
-            formdata.append($(this).attr('name'), $(this).val());
-        });
+        //$('#form_search_params #' + (isBulkUse ? '' : 'Non') + 'BulkUseDatePicker input[type="date' + (isBulkUse ? '' : 'time-local') + '"]').each(function () {
+        //    formdata.append($(this).attr('name'), $(this).val());
+        //});
         $('#status_search_params input.i-checks').each(function () {
             formdata.append($(this).attr('name'), $(this).is(':checked'));
         });
@@ -302,14 +302,14 @@
     function SaveRequest() {
         var formdata = new FormData();
         var url = '@Url.Action("SaveRequest", "LeaveRequest")';
-        var isBulkUse = $('#LeaveRequestModal #LeaveTypeID option:selected').attr('isbulk') === 'true';
+        //var isBulkUse = $('#LeaveRequestModal #LeaveTypeID option:selected').attr('isbulk') === 'true';
 
-        $('#LeaveRequestModal .save-values').each(function () {
+        $('#LeaveRequestModal .form-control').each(function () {
             formdata.append($(this).attr('name'), $(this).val());
         });
-        $('#LeaveRequestModal #' + (isBulkUse ? '' : 'Non') + 'BulkUseDatePicker input').each(function () {
-            formdata.append($(this).attr('name'), $(this).val());
-        });
+        //$('#LeaveRequestModal #' + (isBulkUse ? '' : 'Non') + 'BulkUseDatePicker input').each(function () {
+        //    formdata.append($(this).attr('name'), $(this).val());
+        //});
         formdata.append('__RequestVerificationToken', $('@Html.AntiForgeryToken()').val());
 
         $.ajax({
@@ -339,7 +339,7 @@
                 }
             },
             error: function (response) {
-                toastr.error('AJAX backend error', 'An error has occured.');
+                toastr.warning(response.res, "Error");
             }
         });
     }

@@ -85,7 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ProcessLayer\ProcessLayer.csproj">
-      <Project>{6AC531AA-B67A-4A19-A548-054D91C2547F}</Project>
+      <Project>{6ac531aa-b67a-4a19-a548-054d91c2547f}</Project>
       <Name>ProcessLayer</Name>
     </ProjectReference>
   </ItemGroup>

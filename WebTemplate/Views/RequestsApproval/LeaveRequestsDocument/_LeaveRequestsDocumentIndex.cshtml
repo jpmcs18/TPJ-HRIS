@@ -313,7 +313,7 @@
         var formdata = new FormData();
         var isBulkUse = $('#form_search_params #LeaveTypeID option:selected').attr('isbulk') === 'true';
 
-        $('#form_search_params .search-values*').each(function () {
+        $('#form_search_params .form-control*').each(function () {
             formdata.append($(this).attr('name'), $(this).val());
         });
         $('#status_search_params input.i-checks*').each(function () {

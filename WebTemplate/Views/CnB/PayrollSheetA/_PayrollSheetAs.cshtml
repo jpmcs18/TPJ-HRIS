@@ -22,7 +22,7 @@ totalNetPay = 0;
                     {
                         using (Html.BeginForm("PrintPayroll", "PayrollSheetA", FormMethod.Post, new { @target = "_blank", @class = "pull-right" }))
                         {
-                            <button class="btn btn-primary compose-mail pull-right" type="submit" id="PrintPayroll" title="Print Payroll"><i class="fa fa-print"></i> Payroll</button>
+                            <bu tton class="btn btn-primary compose-mail pull-right" type="submit" id="PrintPayroll" title="Print Payroll"><i class="fa fa-print"></i> Payroll</button>
                             <input type="hidden" value="@Model.PayrollBase.ID" name="id" />
                         }
                     }
