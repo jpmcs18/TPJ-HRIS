@@ -3,9 +3,6 @@ using ProcessLayer.Helpers;
 using ProcessLayer.Processes;
 using ProcessLayer.Processes.Kiosk;
 using System;
-using System.Configuration;
-using System.IO;
-using System.Web;
 using System.Web.Mvc;
 using WebTemplate.Models.RequestsApproval.Leave_Request;
 
@@ -13,7 +10,7 @@ namespace WebTemplate.Controllers.RequestsApproval
 {
     public class LeaveRequestsForNoteController : BaseController
     {
-        // GET: LeaveRequestsDocument
+        // GET: LeaveRequestsForNote
         public ActionResult Index(Index model)
         {
             model.Page = model.Page > 1 ? model.Page : 1;
@@ -25,11 +22,11 @@ namespace WebTemplate.Controllers.RequestsApproval
             if (Request.IsAjaxRequest())
             {
                 ModelState.Clear();
-                return PartialViewCustom("_LeaveRequestsDocument", model);
+                return PartialViewCustom("_Search", model);
             }
             else
             {
-                return ViewCustom("_LeaveRequestsDocumentIndex", model);
+                return ViewCustom("Index", model);
             }
         }
 
