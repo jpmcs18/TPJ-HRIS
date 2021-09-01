@@ -65,6 +65,7 @@
     <Compile Include="Entities\Kiosks\KioskNotification.cs" />
     <Compile Include="Entities\Lookups\Department.cs" />
     <Compile Include="Entities\Lookups\HDMF.cs" />
+    <Compile Include="Entities\Lookups\LeaveDefaultCredits.cs" />
     <Compile Include="Entities\Lookups\LeaveType.cs" />
     <Compile Include="Entities\Lookups\NonTaxableDay.cs" />
     <Compile Include="Entities\Lookups\PersonnelType.cs" />
@@ -254,6 +255,7 @@
     <Compile Include="Processes\CnBs\PayrollProcess.cs" />
     <Compile Include="Processes\HRs\PersonnelLeaveCreditsProcess.cs" />
     <Compile Include="Processes\HRs\PersonnelScheduleProcess.cs" />
+    <Compile Include="Processes\Kiosks\ComputedLeaveCreditsProcess.cs" />
     <Compile Include="Processes\Kiosks\HighRiskRequestProcess.cs" />
     <Compile Include="Processes\Kiosks\KioskNotificationProcess.cs" />
     <Compile Include="Processes\Kiosks\LeaveRequestProcess.cs" />
@@ -269,6 +271,7 @@
     <Compile Include="Processes\Lookups\ILookupProcess.cs" />
     <Compile Include="Processes\Lookups\KioskApproverProcess.cs" />
     <Compile Include="Processes\Lookups\LateDeductionProcess.cs" />
+    <Compile Include="Processes\Lookups\LeaveDefaultCreditsProcess.cs" />
     <Compile Include="Processes\Lookups\LeaveTypeProcess.cs" />
     <Compile Include="Processes\Lookups\LocationProcess.cs" />
     <Compile Include="Processes\Lookups\NonTaxableDayProcess.cs" />

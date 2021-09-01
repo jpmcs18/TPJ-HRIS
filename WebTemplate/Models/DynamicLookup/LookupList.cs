@@ -19,7 +19,8 @@ namespace WebTemplate.Models.DynamicLookup
         Schedule,
         Tax_Table,
         Late_Deduction,
-        Leave_Type,
+        Leave_Type, 
+        Leave_Default_Credits,
         PhilHealth,
         SSS,
         HDMF,
@@ -144,7 +145,13 @@ namespace WebTemplate.Models.DynamicLookup
             { Lookups.Leave_Type
                 , new LookupSetting()
                 , new LookupSetting("BulkUse", "Bulk Use", LookupDataType.boolean)
-                , new LookupSetting("HasDocumentNeeded", "Has Document Needed", LookupDataType.boolean)},
+                , new LookupSetting("HasDocumentNeeded", "Has Document Needed", LookupDataType.boolean)
+                , new LookupSetting("CNBNoteFirst", "CNB Note First", LookupDataType.boolean)},
+            { Lookups.Leave_Default_Credits
+                , new LookupSetting("LeaveType", "Leave Type", LookupDataType.model, new LookupSetting(), LeaveTypeProcess.Instance.Value, "LeaveTypeID")
+                , new LookupSetting("MinYearsInService", "Min Years In Service", LookupDataType.number)
+                , new LookupSetting("MaxYearsInService", "Max Years In Service", LookupDataType.number)
+                , new LookupSetting("Credits", "Credits (No of Days)", LookupDataType.number)},
             { Lookups.Payroll_Parameters
                 , new LookupSetting("DisplayName", "Name", readOnly: true)
                 , new LookupSetting("Value") },

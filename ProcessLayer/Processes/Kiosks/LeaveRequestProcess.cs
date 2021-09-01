@@ -70,16 +70,15 @@ namespace ProcessLayer.Processes.Kiosk
 
             if(WithComputedLeaveCredits)
             {
-                //o.ComputedLeaveCredits = ComputedLeaveCreditsProcess.Instance.Value.GetList(o.ID);
+                o._ComputedLeaveCredits = ComputedLeaveCreditsProcess.Instance.Value.GetList(o.ID);
             }
             return o;
         }
-
         public List<LeaveRequest> GetList(long personnelId, byte? leavetypeid, bool isExpired, bool isPending, bool isApproved, bool isCancelled, DateTime? startdatetime, DateTime? enddatetime, int page, int gridCount, out int PageCount)
         {
             var Leaves = new List<LeaveRequest>();
             var parameters = new Dictionary<string, object> {
-                { "@PersonnelID", personnelId },
+                { LeaveRequestParameters.PersonnelID, personnelId },
                 { LeaveRequestParameters.LeaveTypeID, leavetypeid },
                 { LeaveRequestParameters.IsExpired, isExpired },
                 { LeaveRequestParameters.IsPending, isPending },
@@ -107,7 +106,6 @@ namespace ProcessLayer.Processes.Kiosk
 
             return Leaves;
         }
-
         public List<LeaveRequest> GetApprovingList(string personnel, byte? leavetypeid, bool isExpired, bool isPending, bool isApproved, bool isCancelled, DateTime? startdatetime, DateTime? enddatetime, int page, int gridCount, out int PageCount, int approver)
         {
             var Leaves = new List<LeaveRequest>();
@@ -141,7 +139,25 @@ namespace ProcessLayer.Processes.Kiosk
 
             return Leaves;
         }
-
+        internal List<LeaveRequest> GetLeaveForPayroll(long personnelId, DateTime periodStart, DateTime periodEnd)
+        {
+            var Leaves = new List<LeaveRequest>();
+            var parameters = new Dictionary<string, object>{
+                { LeaveRequestParameters.PersonnelID, personnelId },
+                { LeaveRequestParameters.StartDate, periodStart },
+                { LeaveRequestParameters.EndDate, periodEnd }
+            };
+            using (var db = new DBTools())
+            {
+                using (var ds = db.ExecuteReader(LeaveRequestProcedures.GetLeaveForPayroll, parameters))
+                {
+                    WithComputedLeaveCredits = true;
+                    Leaves = ds.GetList(Converter);
+                    WithComputedLeaveCredits = false;
+                }
+            }
+            return Leaves;
+        }
         public List<LeaveRequest> GetRequestThatNeedDocument(string personnel, byte? leavetypeid, bool isExpired, bool isPending, bool isApproved, bool isCancelled, DateTime? startdatetime, DateTime? enddatetime, int page, int gridCount, out int PageCount)
         {
             var Leaves = new List<LeaveRequest>();
@@ -191,8 +207,7 @@ namespace ProcessLayer.Processes.Kiosk
 
             return Leaves;
         }
-
-        public List<LeaveRequest> GetApprovedLeave(long personnelid, byte? leavetypeid, DateTime startdatetime, DateTime enddatetime, bool withComputedLeaveCredit = false)
+        public List<LeaveRequest> GetApprovedLeave(long personnelid, byte? leavetypeid, DateTime startdatetime, DateTime enddatetime)
         {
             var Leaves = new List<LeaveRequest>();
             var parameters = new Dictionary<string, object>{
@@ -228,7 +243,6 @@ namespace ProcessLayer.Processes.Kiosk
 
             return Leave;
         }
-
         public LeaveRequest Get(DBTools db, long id)
         {
 
@@ -269,30 +283,73 @@ namespace ProcessLayer.Processes.Kiosk
             }
             return null;
         }
+        public List<LeaveRequest> GetRequestToNote(string personnel, byte? leavetypeid, bool isExpired, bool isPending, bool isApproved, bool isCancelled, DateTime? startdatetime, DateTime? enddatetime, int page, int gridCount, out int PageCount)
+        {
+            var Leaves = new List<LeaveRequest>();
+            var parameters = new Dictionary<string, object> {
+                { LeaveRequestParameters.Personnel, personnel },
+                { LeaveRequestParameters.LeaveTypeID, leavetypeid },
+                { LeaveRequestParameters.IsExpired, isExpired },
+                { LeaveRequestParameters.IsPending, isPending },
+                { LeaveRequestParameters.IsApproved, isApproved },
+                { LeaveRequestParameters.IsCancelled, isCancelled },
+                { LeaveRequestParameters.StartDate, startdatetime },
+                { LeaveRequestParameters.EndDate, enddatetime },
+                { FilterParameters.PageNumber, page },
+                { FilterParameters.GridCount, gridCount },
+            };
+
+            var outParameters = new List<OutParameters>
+            {
+                { FilterParameters.PageCount, SqlDbType.Int }
+            };
+
+            using (var db = new DBTools())
+            {
+                using (var ds = db.ExecuteReader(LeaveRequestProcedures.GetRequestToNote, ref outParameters, parameters))
+                {
+                    Leaves = ds.GetList(Converter);
+                    PageCount = outParameters.Get(FilterParameters.PageCount).ToInt();
+                }
+            }
+
+            return Leaves;
+        }
+        public void Note(long id, int userid)
+        {
+            using (var db = new DBTools())
+            {
+                var parameters = new Dictionary<string, object>
+                {
+                    { LeaveRequestParameters.ID, id },
+                    { CredentialParameters.LogBy, userid }
+                };
+
+                db.ExecuteNonQuery(LeaveRequestProcedures.Note, parameters);
+            }
+        }
 
         private void ApprovedRequest(DBTools db, long id, int userid)
         {
 
             var parameters = new Dictionary<string, object> {
-                    { "@ID", id }
+                    { LeaveRequestParameters.ID, id }
                     , { CredentialParameters.LogBy, userid }
                 };
 
             db.ExecuteNonQuery("kiosk.ApprovedLeaveRequest", parameters);
         }
-
         private void UpdateApproveCredits(DBTools db, long id, double leaveUsed, int userid)
         {
 
             var parameters = new Dictionary<string, object> {
-                    { "@ID", id }
-                    , { "@LeaveUsed", leaveUsed }
+                    { LeaveRequestParameters.ID, id }
+                    , { LeaveRequestParameters.LeaveUsed, leaveUsed }
                     , { CredentialParameters.LogBy, userid }
                 };
 
             db.ExecuteNonQuery("kiosk.UpdateApprovedLeaveCredits", parameters);
         }
-
         public void Approve(long id, int userid)
         {
             using (var db = new DBTools())
@@ -311,7 +368,6 @@ namespace ProcessLayer.Processes.Kiosk
                 }
             }
         }
-
         private void Approve(long id, int userid, DBTools db)
         {
             LeaveRequest leave = Get(db, id);
@@ -336,7 +392,17 @@ namespace ProcessLayer.Processes.Kiosk
             }
 
         }
-
+        public void UpdateComputedLeaveCredits(DBTools db, LeaveRequest leaveRequest, int userId)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                { LeaveRequestParameters.ID, leaveRequest.ID },
+                { LeaveRequestParameters.ComputedLeaveCredits, leaveRequest.ComputedLeaveCredits },
+                { CredentialParameters.LogBy, userId }
+            };
+            
+            db.ExecuteNonQuery(LeaveRequestProcedures.UpdateComputedLeaveCredits, parameters);
+        }
         public void Cancel(LeaveRequest Leave, int userid)
         {
             var parameters = new Dictionary<string, object> {
@@ -350,7 +416,6 @@ namespace ProcessLayer.Processes.Kiosk
                 db.ExecuteNonQuery(LeaveRequestProcedures.Cancel, parameters);
             }
         }
-
         public void Delete(long id, int userid)
         {
             var parameters = new Dictionary<string, object> {
@@ -363,7 +428,6 @@ namespace ProcessLayer.Processes.Kiosk
                 db.ExecuteNonQuery(LeaveRequestProcedures.Delete, parameters);
             }
         }
-
         public void UploadDocument(long id, string file, int userid)
         {
             var parameters = new Dictionary<string, object>
@@ -391,7 +455,6 @@ namespace ProcessLayer.Processes.Kiosk
             }
 
         }
-
         public bool ValidateLeaveRequest(LeaveRequest leave)
         {
             StringBuilder sb = new StringBuilder();

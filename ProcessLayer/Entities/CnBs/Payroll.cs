@@ -1,4 +1,5 @@
-﻿using ProcessLayer.Helpers.Enumerable;
+﻿using ProcessLayer.Entities.Kiosk;
+using ProcessLayer.Helpers.Enumerable;
 using ProcessLayer.Helpers.ObjectParameter.Payroll;
 using System;
 using System.Collections.Generic;
@@ -75,6 +76,8 @@ namespace ProcessLayer.Entities.CnB
         public decimal SumOfAllAdditionalPay { get { return TotalAdditionalPay + TotalAdditionalAllowancePay + TotalAdditionalOvertimePay + TotalAdditionalOvertimeAllowancePay; } }
 
         public bool Modified { get; set; } = false;
+        public List<LeaveRequest> LeaveRequests { get; set; }
+        public List<ComputedLeaveCredits> ComputedLeaveCredits { get; set; }
     }
 }
 

@@ -183,6 +183,8 @@ namespace WebTemplate.Controllers.DynamicLookup
                     return VesselProcess.Instance.Value;
                 case Lookups.Non_Taxable_Days:
                     return NonTaxableDayProcess.Instance.Value;
+                case Lookups.Leave_Default_Credits:
+                    return LeaveDefaultCreditsProcess.Instance.Value;
                 default:
                     return DynamicLookupProcess.Instance.Value;
             }

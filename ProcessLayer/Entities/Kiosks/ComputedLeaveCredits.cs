@@ -8,5 +8,7 @@ namespace ProcessLayer.Entities.Kiosk
         public long LeaveRequestID { get; set; }
         public DateTime ComputedDate { get; set; }
         public float LeaveCreditUsed { get; set; }
+
+        public bool Modified { get; set; } = false;
     }
 }
