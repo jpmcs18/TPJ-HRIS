@@ -93,5 +93,16 @@ namespace ProcessLayer.Processes
                 }
             }
         }
+
+        public List<LeaveDefaultCredits> GetList(int yearsInService)
+        {
+            using (DBTools db = new DBTools())
+            {
+                using (DataSet ds = db.ExecuteReader("lookup.GetLeaveDefaultCredits", new Dictionary<string, object> { { "@YearsInService", yearsInService } }))
+                {
+                    return ds.GetList(Converter);
+                }
+            }
+        }
     }
 }

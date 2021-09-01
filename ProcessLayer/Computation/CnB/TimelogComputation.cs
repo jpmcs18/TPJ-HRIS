@@ -57,10 +57,16 @@ namespace ProcessLayer.Computation.CnB
         {
             List<TimeLog> timelogs = TimeLogProcess.Get(timesheet.Personnel.ID, periodStart.AddDays(-5), periodEnd);
             List<OTRequest> approvedotrequests = OTRequestProcess.Instance.Value.GetApprovedOT(timesheet.Personnel.ID, periodStart, periodEnd);
-            List<LeaveRequest> approvedleaverequests = LeaveRequestProcess.Instance.Value.GetApprovedLeave(timesheet.Personnel.ID, null, periodStart, periodEnd);
             List<OuterPortRequest> approvedouterportrequests = OuterPortRequestProcess.Instance.Value.GetApprovedOuterPort(timesheet.Personnel.ID, null, periodStart, periodEnd);
             List<HighRiskRequest> approvedhighriskrequests = HighRiskRequestProcess.Instance.Value.GetApproved(timesheet.Personnel.ID, periodStart, periodEnd);
-
+            List<LeaveRequest> approvedleaverequests = LeaveRequestProcess.Instance.Value.GetLeaveForPayroll(timesheet.Personnel.ID, periodStart, periodEnd);
+            foreach (LeaveRequest l in approvedleaverequests)
+            {
+                if (l._ComputedLeaveCredits?.Any() ?? false)
+                {
+                    l.ComputedLeaveCredits -= l._ComputedLeaveCredits.Sum(x => x.LeaveCreditUsed);
+                }
+            }
             DateTime start = periodStart.Date;
             DateTime end = periodEnd.Date;
             while (start <= end)
@@ -127,8 +133,10 @@ namespace ProcessLayer.Computation.CnB
                 details.Logout = details.Logout?.AddSeconds(-(details.Logout?.Second ?? 0));
                 #endregion
                 LeaveRequest leave = approvedleaverequests.Where(x => starttime.Date >= x.RequestedDate && x.ApprovedLeaveCredits.HasValue && x.ApprovedLeaveCredits > 0).FirstOrDefault();
+                float leaveCredits = (leave?.ApprovedLeaveCredits ?? 0) - (leave?.ComputedLeaveCredits ?? 0);
+                float leaveCreditsUsed = 0;
 
-                
+
                 OTRequest earlyOT = approvedotrequests.Where(x => x.RequestDate.Date == starttime.Date && x.OTType == OTType.Early).FirstOrDefault();
                 OTRequest afterWorkOT = approvedotrequests.Where(x => x.RequestDate.Date == starttime.Date && x.OTType == OTType.After).FirstOrDefault();
                 OTRequest wholeDayOT = approvedotrequests.Where(x => x.RequestDate.Date == starttime.Date && x.OTType == OTType.Whole).FirstOrDefault();
@@ -172,7 +180,19 @@ namespace ProcessLayer.Computation.CnB
                 {
                     details.isHighRisk = true;
                 }
-                if (!needTimeLog && details.isHazard)
+                if ((holiday?.ID ?? 0) == 0 && (sched?.ID ?? 0) > 0 && leaveCredits > 0)
+                {
+                    if ((leave?.ID ?? 0) > 0)
+                    {
+                        leaveCreditsUsed = leaveCredits > 1 ? 1 : leaveCredits;
+                        leave.ComputedLeaveCredits = (leave.ComputedLeaveCredits ?? 0) + leaveCreditsUsed;
+                    }
+                }
+                if (leaveCreditsUsed == 1)
+                {
+                    details.NoofDays = (decimal)leaveCreditsUsed;
+                }
+                else if (!needTimeLog && details.isHazard)
                 {
                     details.NoofDays = 1;
                 }
@@ -197,18 +217,18 @@ namespace ProcessLayer.Computation.CnB
                     {
                         if (!sched.TimeIn.HasValue && !sched.TimeOut.HasValue) //Flexi
                         {
-                            FlexiComputation(timesheet, approvedotrequests, end, sched, starttime, breaktime, breaktimeend, endtime, startnight1, endnight1, startnight2, endnight2, details, leave);
+                            FlexiComputation(timesheet, approvedotrequests, end, sched, starttime, breaktime, breaktimeend, endtime, startnight1, endnight1, startnight2, endnight2, details);
                         }
                         else //Regular Hours
                         {
-                            RegularComputation(timesheet, start, sched, starttime, breaktime, breaktimeend, endtime, startnight1, endnight1, startnight2, endnight2, details, leave, earlyOT, afterWorkOT);
+                            RegularComputation(timesheet, start, sched, starttime, breaktime, breaktimeend, endtime, startnight1, endnight1, startnight2, endnight2, details, earlyOT, afterWorkOT);
                         }
                     }
                 }
-                if((leave?.ID ?? 0) > 0)
+                if(leaveCreditsUsed > 0)
                 {
                     details.LeaveDesc = leave._LeaveType?.Description ?? "";
-                    details.NoofDays += (decimal)(leave.ApprovedLeaveCredits / sched.TotalWorkingHours);
+                    details.NoofDays += (decimal)leaveCreditsUsed;
                     if (details.NoofDays > 1)
                     {
                         details.NoofDays = 1;
@@ -219,7 +239,7 @@ namespace ProcessLayer.Computation.CnB
             }
         }
 
-        private void RegularComputation(PersonnelTimesheet timesheet, DateTime start, ScheduleType sched, DateTime starttime, DateTime breaktime, DateTime breaktimeend, DateTime endtime, DateTime startnight1, DateTime endnight1, DateTime startnight2, DateTime endnight2, ComputedTimelog details, LeaveRequest leave, OTRequest earlyOT, OTRequest afterWorkOT)
+        private void RegularComputation(PersonnelTimesheet timesheet, DateTime start, ScheduleType sched, DateTime starttime, DateTime breaktime, DateTime breaktimeend, DateTime endtime, DateTime startnight1, DateTime endnight1, DateTime startnight2, DateTime endnight2, ComputedTimelog details, OTRequest earlyOT, OTRequest afterWorkOT)
         {
             if (!details.Login.HasValue && !details.Logout.HasValue)
             {
@@ -272,38 +292,36 @@ namespace ProcessLayer.Computation.CnB
                     totalRegularMinutes -= undertime;
                 }
 
-                if ((leave?.ID ?? 0) == 0)
+                //compute ot after office
+                if ((afterWorkOT?.ID ?? 0) > 0 || timesheet.Personnel.AutoOT)
                 {
-                    //compute ot after office
-                    if ((afterWorkOT?.ID ?? 0) > 0 || timesheet.Personnel.AutoOT)
+                    DateTime? startot = endtime;
+                    DateTime? endot = details.Logout;
+
+                    if (endot > startot)
                     {
-                        DateTime? startot = endtime;
-                        DateTime? endot = details.Logout;
+                        int totolotminutes = GlobalHelper.SubtractDate(endot, startot);
 
-                        if (endot > startot)
+                        int totalotminutesremain = totolotminutes - late;
+                        if (totalotminutesremain <= 0)
+                            late = Math.Abs(totalotminutesremain);
+                        else
                         {
-                            int totolotminutes = GlobalHelper.SubtractDate(endot, startot);
-
-                            int totalotminutesremain = totolotminutes - late;
-                            if (totalotminutesremain <= 0)
-                                late = Math.Abs(totalotminutesremain);
-                            else
-                            {
-                                late = 0;
-                                details.RegOTHours = totalotminutesremain / PayrollParameters.CNBInstance.Value.Minutes;
-                            }
+                            late = 0;
+                            details.RegOTHours = totalotminutesremain / PayrollParameters.CNBInstance.Value.Minutes;
                         }
                     }
-
-                    if ((earlyOT?.ID ?? 0) > 0)
-                    {
-                        DateTime? startot = details.Login;
-                        DateTime? endot = starttime;
-
-                        if (endot > startot)
-                            details.RegOTHours += GlobalHelper.SubtractDate(endot, startot) / PayrollParameters.CNBInstance.Value.Minutes;
-                    }
                 }
+
+                if ((earlyOT?.ID ?? 0) > 0)
+                {
+                    DateTime? startot = details.Login;
+                    DateTime? endot = starttime;
+
+                    if (endot > startot)
+                        details.RegOTHours += GlobalHelper.SubtractDate(endot, startot) / PayrollParameters.CNBInstance.Value.Minutes;
+                }
+
 
                 totalRegularMinutes -= late;
 
@@ -313,7 +331,7 @@ namespace ProcessLayer.Computation.CnB
             }
         }
 
-        private static void FlexiComputation(PersonnelTimesheet timesheet, List<OTRequest> approvedotrequests, DateTime end, ScheduleType sched, DateTime starttime, DateTime breaktime, DateTime breaktimeend, DateTime endtime, DateTime startnight1, DateTime endnight1, DateTime startnight2, DateTime endnight2, ComputedTimelog details, LeaveRequest leave)
+        private static void FlexiComputation(PersonnelTimesheet timesheet, List<OTRequest> approvedotrequests, DateTime end, ScheduleType sched, DateTime starttime, DateTime breaktime, DateTime breaktimeend, DateTime endtime, DateTime startnight1, DateTime endnight1, DateTime startnight2, DateTime endnight2, ComputedTimelog details)
         {
             if (!details.Login.HasValue && !details.Logout.HasValue)
             {
@@ -350,7 +368,7 @@ namespace ProcessLayer.Computation.CnB
                             : totalminutes;
                 }
                 DateTime? timeotmuststart = details.Login?.AddMinutes((sched.BreakTimeHour.HasValue ? PayrollParameters.CNBInstance.Value.TotalMinutesPerDayWithBreak : PayrollParameters.CNBInstance.Value.TotalMinutesPerDay));
-                if (details.Logout > timeotmuststart && (leave?.ID ?? 0) == 0)
+                if (details.Logout > timeotmuststart)
                 {
                     totalminutes = PayrollParameters.CNBInstance.Value.TotalMinutesPerDay;
                     //compute ot

@@ -145,7 +145,8 @@ namespace WebTemplate.Models.DynamicLookup
             { Lookups.Leave_Type
                 , new LookupSetting()
                 , new LookupSetting("BulkUse", "Bulk Use", LookupDataType.boolean)
-                , new LookupSetting("HasDocumentNeeded", "Has Document Needed", LookupDataType.boolean)},
+                , new LookupSetting("HasDocumentNeeded", "Has Document Needed", LookupDataType.boolean)
+                , new LookupSetting("CNBNoteFirst", "CNB Note First", LookupDataType.boolean)},
             { Lookups.Leave_Default_Credits
                 , new LookupSetting("LeaveType", "Leave Type", LookupDataType.model, new LookupSetting(), LeaveTypeProcess.Instance.Value, "LeaveTypeID")
                 , new LookupSetting("MinYearsInService", "Min Years In Service", LookupDataType.number)

@@ -236,18 +236,9 @@ namespace ProcessLayer.Computation.CnB
                     LogoutDate = LogoutDate?.AddSeconds(-(LogoutDate?.Second ?? 0));
                     #endregion
                     LeaveRequest leave = approvedleaverequests.Where(x => starttime.Date >= x.RequestedDate && x.ApprovedLeaveCredits.HasValue && x.ApprovedLeaveCredits > 0).FirstOrDefault();
-                    float leaveCredits = (leave.ApprovedLeaveCredits ?? 0) - (leave.ComputedLeaveCredits ?? 0);
+                    float leaveCredits = (leave?.ApprovedLeaveCredits ?? 0) - (leave?.ComputedLeaveCredits ?? 0);
                     float leaveCreditsUsed = leaveCredits > 1 ? 1 : leaveCredits;
-                    //details.TotalLeaveMinutes = (leave?.ID ?? 0) == 0 ? 0 : GlobalHelper.SubtractDate(leave.EndDateTime, leave.StartDateTime);
-                    //details.TotalLeaveMinutes = (details.TotalLeaveMinutes > PayrollParameters.CNBInstance.Value.DefaultHalfdayMinutes ?
-                    //        (details.TotalLeaveMinutes < PayrollParameters.CNBInstance.Value.DefaultHalfdayMinutesWithBreaktime ?
-                    //            (int)PayrollParameters.CNBInstance.Value.DefaultHalfdayMinutes :
-                    //            (details.TotalLeaveMinutes - (int)PayrollParameters.CNBInstance.Value.DefaultBreaktimeMinutes)) :
-                    //            details.TotalLeaveMinutes);
-
-                    //LoginDate = (leave?.ID ?? 0) == 0 ? LoginDate : (!LoginDate.HasValue ? leave.StartDateTime : (leave.StartDateTime < LoginDate ? leave.StartDateTime : LoginDate));
-                    //LogoutDate = (leave?.ID ?? 0) == 0 ? LogoutDate : (!LogoutDate.HasValue ? leave.EndDateTime : (leave.EndDateTime > LogoutDate ? leave.EndDateTime : LogoutDate));
-
+                    
                     OTRequest earlyOT = approvedotrequests.Where(x => x.RequestDate.Date == starttime.Date && x.OTType == OTType.Early).FirstOrDefault();
                     OTRequest afterWorkOT = approvedotrequests.Where(x => x.RequestDate.Date == starttime.Date && x.OTType == OTType.After).FirstOrDefault();
                     OTRequest wholeDayOT = approvedotrequests.Where(x => x.RequestDate.Date == starttime.Date && x.OTType == OTType.Whole).FirstOrDefault();
@@ -300,7 +291,7 @@ namespace ProcessLayer.Computation.CnB
                         if ((leave?.ID ?? 0) > 0)
                         {
                             details.TotalLeaveMinutes = (int)(leaveCreditsUsed * sched.TotalWorkingHours * 60);
-                            leave.ComputedLeaveCredits += leaveCreditsUsed;
+                            leave.ComputedLeaveCredits = (leave.ComputedLeaveCredits ?? 0) + leaveCreditsUsed;
                             ComputedLeaveCredits c = computedLeaveCredits.Where(x => x.ComputedDate.Date == start.Date && x.LeaveRequestID == leave.ID).FirstOrDefault();
                             if ((c?.ID ?? 0) > 0)
                             {
@@ -424,7 +415,7 @@ namespace ProcessLayer.Computation.CnB
         {
             if (!LoginDate.HasValue && !LogoutDate.HasValue)
             {
-                details.TotalRegularMinutes = 0;
+                details.TotalRegularMinutes = details.TotalLeaveMinutes;
             }
             else
             {
@@ -514,6 +505,7 @@ namespace ProcessLayer.Computation.CnB
 
                 details.TotalRegularMinutes = details.TotalRegularMinutes < 0 ? 0 : details.TotalRegularMinutes;
                 details.TotalRegularMinutes += details.TotalLeaveMinutes;
+                details.TotalRegularMinutes = details.TotalRegularMinutes > (int)(sched.TotalWorkingHours * 60) ? (int)(sched.TotalWorkingHours * 60) : details.TotalRegularMinutes;
             }
             if (details.ID == 0)
                 payroll.PayrollDetails.Add(details);
@@ -738,7 +730,7 @@ namespace ProcessLayer.Computation.CnB
         {
             if (!LoginDate.HasValue && !LogoutDate.HasValue)
             {
-                details.TotalRegularMinutes = 0;
+                details.TotalRegularMinutes = details.TotalLeaveMinutes;
             }
             else
             {
@@ -790,6 +782,7 @@ namespace ProcessLayer.Computation.CnB
 
                 details.TotalRegularMinutes = totalminutes < 0 ? 0 : totalminutes;
                 details.TotalRegularMinutes += details.TotalLeaveMinutes;
+                details.TotalRegularMinutes = details.TotalRegularMinutes > (int)(sched.TotalWorkingHours * 60) ? (int)(sched.TotalWorkingHours * 60) : details.TotalRegularMinutes;
             }
 
             if (details.ID == 0)

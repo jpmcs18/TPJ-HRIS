@@ -12,12 +12,18 @@ namespace ProcessLayer.Entities.Kiosk
         public DateTime RequestedDate { get; set; }
         public string File { get; set; }
         public string FilePath { get; set; }
-        public bool IsExpired { get { return CreatedOn == null ? (Approved == true || Cancelled == true) : ((DateTime.Now - CreatedOn).Value.TotalHours >= 48); } }
+        public bool IsExpired { get { return Approved != true && Cancelled != true && CreatedOn != null && ((DateTime.Now - CreatedOn).Value.TotalHours >= 48) && false; } }
+        public int? NotedBy { get; set; }
+        public DateTime? NotedOn { get; set; }
+        public bool Noted { get { return (_LeaveType?.CNBNoteFirst ?? false) ? (NotedBy != null) : true; } }
         public string Remarks
         {
             get
             {
-                if ((Approved ?? false) && (((_LeaveType?.HasDocumentNeeded ?? false) && string.IsNullOrEmpty(File)) || !(_LeaveType?.HasDocumentNeeded ?? false)))
+                if (!Noted)
+                    return "Must be note first";
+
+                if ((Approved ?? false) && (_LeaveType?.HasDocumentNeeded ?? false) && string.IsNullOrEmpty(File))
                     return "Partialy approved, Waiting for document to upload";
 
                 if (IsExpired)

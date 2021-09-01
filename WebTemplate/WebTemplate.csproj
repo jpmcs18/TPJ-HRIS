@@ -221,6 +221,7 @@
     <Compile Include="Controllers\RequestsApproval\HighRisksRequestsController.cs" />
     <Compile Include="Controllers\RequestsApproval\LeaveRequestsController.cs" />
     <Compile Include="Controllers\RequestsApproval\LeaveRequestsDocumentController.cs" />
+    <Compile Include="Controllers\RequestsApproval\LeaveRequestsForNoteController.cs" />
     <Compile Include="Controllers\RequestsApproval\OTRequestsController.cs" />
     <Compile Include="Controllers\RequestsApproval\TimeEditRequestsController.cs" />
     <Compile Include="Controllers\SecurityController.cs" />
