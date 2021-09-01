@@ -129,7 +129,7 @@ namespace ProcessLayer.Processes.HR
                 { PersonnelLeaveCreditsParameters.ID, SqlDbType.BigInt, leaveCredit.ID }
             };
             db.ExecuteNonQuery(PersonnelLeaveCreditsProcedures.CreateOrUpdate, ref outParameters, parameters);
-            leaveCredit = Get(outParameters.Get(PersonnelLeaveCreditsParameters.ID).ToLong());
+            leaveCredit.ID = outParameters.Get(PersonnelLeaveCreditsParameters.ID).ToLong();
             return leaveCredit;
         }
 
@@ -176,7 +176,7 @@ namespace ProcessLayer.Processes.HR
         }
         public void GenerateDefaultCredits(long personnelID, DateTime date, int userId)
         {
-            Personnel personnel = PersonnelProcess.Get(personnelID);
+            Personnel personnel = PersonnelProcess.Get(personnelID, true);
             if (personnel.DateHired == null)
             {
                 throw new Exception("Date hired is null");

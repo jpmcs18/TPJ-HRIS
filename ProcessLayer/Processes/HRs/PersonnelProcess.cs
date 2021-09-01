@@ -169,6 +169,7 @@ namespace ProcessLayer.Processes
 
             return emp;
         }
+
         public static List<Personnel> SearchResignedList(string key, bool personnelOnly = false)
         {
             var emp = new List<Personnel>();
@@ -513,7 +514,9 @@ namespace ProcessLayer.Processes
             {
                 using (var ds = db.ExecuteReader(PersonnelGetBirthdayCelebrantsProcedures.GetBirthdayCelebrantsThisDay))
                 {
+                    PersonnelOnly = true;
                     emp = ds.GetList(Converter);
+                    PersonnelOnly = false;
                 }
             }
 
@@ -528,7 +531,9 @@ namespace ProcessLayer.Processes
             {
                 using (var ds = db.ExecuteReader(PersonnelGetBirthdayCelebrantsProcedures.GetBirthdayCelebrantsThisWeek))
                 {
+                    PersonnelOnly = true;
                     emp = ds.GetList(Converter);
+                    PersonnelOnly = false;
                 }
             }
 
@@ -543,7 +548,9 @@ namespace ProcessLayer.Processes
             {
                 using (var ds = db.ExecuteReader(PersonnelGetBirthdayCelebrantsProcedures.GetBirthdayCelebrantsThisMonth))
                 {
+                    PersonnelOnly = true;
                     emp = ds.GetList(Converter);
+                    PersonnelOnly = false;
                 }
             }
 
@@ -558,7 +565,9 @@ namespace ProcessLayer.Processes
             {
                 using (var ds = db.ExecuteReader(PersonnelGetBirthdayCelebrantsProcedures.GetBirthdayCelebrantsThisMonthRecent))
                 {
+                    PersonnelOnly = true;
                     emp = ds.GetList(Converter);
+                    PersonnelOnly = false;
                 }
             }
 
@@ -573,7 +582,9 @@ namespace ProcessLayer.Processes
             {
                 using (var ds = db.ExecuteReader(PersonnelGetBirthdayCelebrantsProcedures.GetBirthdayCelebrantsThisMonthUpcoming))
                 {
+                    PersonnelOnly = true;
                     emp = ds.GetList(Converter);
+                    PersonnelOnly = false;
                 }
             }
 
