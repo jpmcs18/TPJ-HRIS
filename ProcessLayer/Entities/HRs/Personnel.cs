@@ -128,13 +128,14 @@ namespace ProcessLayer.Entities
         public bool HasAdditionalLoan { get; set; } = false;
         
         public Personnel _LinkedPersonnel { get; set; }
-        public int Year 
+        public int Years 
         { 
             get 
             {
                 DateTime dateHired = (DateHired ?? DateTime.Now);
-                int year = DateTime.Now.Year - dateHired.Year;
-                year += dateHired.Month >= DateTime.Now.Month ? (dateHired.Month == DateTime.Now.Month ? (dateHired.Day > DateTime.Now.Day ? -1 : 0) : -1) : 0;
+                DateTime dateEnd = ResignationDate ?? DateTime.Now;
+                int year = dateEnd.Year - dateHired.Year;
+                year += dateHired.Month >= dateEnd.Month ? (dateHired.Month == dateEnd.Month ? (dateHired.Day > dateEnd.Day ? -1 : 0) : -1) : 0;
                 return year;
             } 
         }
@@ -144,8 +145,9 @@ namespace ProcessLayer.Entities
             get
             {
                 DateTime dateHired = (DateHired ?? DateTime.Now);
-                int months = dateHired.Month - DateTime.Now.Month;
-                months += dateHired.Day > DateTime.Now.Day ? -1 : 0;
+                DateTime dateEnd = ResignationDate ?? DateTime.Now;
+                int months = dateHired.Month - dateEnd.Month;
+                months += dateHired.Day > dateEnd.Day ? -1 : 0;
                 return months < 0 ? 0 : months;
             }
         }
