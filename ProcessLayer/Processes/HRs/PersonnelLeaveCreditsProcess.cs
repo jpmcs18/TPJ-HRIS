@@ -182,8 +182,9 @@ namespace ProcessLayer.Processes.HR
                 throw new Exception("Date hired is null");
             }
 
-            int year = date.Year - personnel.DateHired.Value.Year;
-            year += personnel.DateHired.Value.Month > date.Date.Month ? (personnel.DateHired.Value.Day > date.Date.Day ? -1 : 0) : 0;
+            DateTime dateHired = (personnel.DateHired ?? DateTime.Now);
+            int year = DateTime.Now.Year - dateHired.Year;
+            year += dateHired.Month >= DateTime.Now.Month ? (dateHired.Month == DateTime.Now.Month ? (dateHired.Day > DateTime.Now.Day ? -1 : 0) : -1) : 0;
 
             List<LeaveDefaultCredits> defaultCredits = LeaveDefaultCreditsProcess.Instance.Value.GetList(year);
             List<PersonnelLeaveCredit> leaveCredits = new List<PersonnelLeaveCredit>();

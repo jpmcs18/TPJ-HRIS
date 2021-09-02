@@ -128,5 +128,26 @@ namespace ProcessLayer.Entities
         public bool HasAdditionalLoan { get; set; } = false;
         
         public Personnel _LinkedPersonnel { get; set; }
+        public int Year 
+        { 
+            get 
+            {
+                DateTime dateHired = (DateHired ?? DateTime.Now);
+                int year = DateTime.Now.Year - dateHired.Year;
+                year += dateHired.Month >= DateTime.Now.Month ? (dateHired.Month == DateTime.Now.Month ? (dateHired.Day > DateTime.Now.Day ? -1 : 0) : -1) : 0;
+                return year;
+            } 
+        }
+
+        public int Months
+        {
+            get
+            {
+                DateTime dateHired = (DateHired ?? DateTime.Now);
+                int months = dateHired.Month - DateTime.Now.Month;
+                months += dateHired.Day > DateTime.Now.Day ? -1 : 0;
+                return months < 0 ? 0 : months;
+            }
+        }
     }
 }
