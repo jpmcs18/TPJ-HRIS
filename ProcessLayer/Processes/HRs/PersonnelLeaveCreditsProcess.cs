@@ -32,7 +32,7 @@ namespace ProcessLayer.Processes.HR
 
         public List<PersonnelLeaveCredit> GetByPersonnelID(long PersonnelID)
         {
-            GenerateDefaultCredits(PersonnelID, DateTime.Now, default);
+            GenerateDefaultCredits(PersonnelID, default);
 
             var Parameters = new Dictionary<string, object>
                 {
@@ -96,7 +96,7 @@ namespace ProcessLayer.Processes.HR
 
         public List<LeaveType> GetLeaveWithCredits(long personnelID, int year)
         {
-            GenerateDefaultCredits(personnelID, DateTime.Now, default);
+            GenerateDefaultCredits(personnelID, default);
 
             using (var db = new DBTools())
             {
@@ -174,7 +174,7 @@ namespace ProcessLayer.Processes.HR
                 }
             }
         }
-        public void GenerateDefaultCredits(long personnelID, DateTime date, int userId)
+        public void GenerateDefaultCredits(long personnelID, int userId)
         {
             Personnel personnel = PersonnelProcess.Get(personnelID, true);
             if (personnel.DateHired == null)
@@ -182,20 +182,17 @@ namespace ProcessLayer.Processes.HR
                 throw new Exception("Date hired is null");
             }
 
-            int year = date.Year - personnel.DateHired.Value.Year;
-            year += personnel.DateHired.Value.Month > date.Date.Month ? (personnel.DateHired.Value.Day > date.Date.Day ? -1 : 0) : 0;
-
-            List<LeaveDefaultCredits> defaultCredits = LeaveDefaultCreditsProcess.Instance.Value.GetList(year);
+            List<LeaveDefaultCredits> defaultCredits = LeaveDefaultCreditsProcess.Instance.Value.GetList(personnel.Years);
             List<PersonnelLeaveCredit> leaveCredits = new List<PersonnelLeaveCredit>();
 
             if (defaultCredits?.Any() ?? false)
             {
                 foreach (LeaveDefaultCredits defaultCredit in defaultCredits)
                 {
-                    PersonnelLeaveCredit leave = Get(personnel.ID, defaultCredit.LeaveTypeID, date.Year);
+                    PersonnelLeaveCredit leave = Get(personnel.ID, defaultCredit.LeaveTypeID, DateTime.Now.Year);
                     if ((leave?.ID ?? 0) == 0)
                     {
-                        leaveCredits.Add(new PersonnelLeaveCredit { LeaveCredits = defaultCredit.Credits, LeaveTypeID = defaultCredit.LeaveTypeID, PersonnelID = personnel.ID, YearValid = (short)date.Year });
+                        leaveCredits.Add(new PersonnelLeaveCredit { LeaveCredits = defaultCredit.Credits, LeaveTypeID = defaultCredit.LeaveTypeID, PersonnelID = personnel.ID, YearValid = (short)DateTime.Now.Year});
                     }
                 }
             }

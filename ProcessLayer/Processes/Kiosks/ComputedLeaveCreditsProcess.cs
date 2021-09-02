@@ -23,11 +23,16 @@ namespace ProcessLayer.Processes.Kiosk
             };
         }
 
-        public List<ComputedLeaveCredits> GetList(long requestId)
+        public List<ComputedLeaveCredits> GetList(long requestId, DateTime? start, DateTime? end)
         {
             using (var db = new DBTools())
             {
-                using (var ds = db.ExecuteReader("kiosk.GetComputedLeaveCredits", new Dictionary<string, object> { { "@LeaveRequestID", requestId } }))
+                Dictionary<string, object> parameters = new Dictionary<string, object> { 
+                    { "@LeaveRequestID", requestId }, 
+                    { "@StartDate", start },
+                    { "@EndDate", end }
+                };
+                using (var ds = db.ExecuteReader("kiosk.GetComputedLeaveCredits", parameters))
                 {
                     return ds.GetList(Converter);
                 }

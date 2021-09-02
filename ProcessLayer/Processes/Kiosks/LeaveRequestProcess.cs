@@ -26,6 +26,8 @@ namespace ProcessLayer.Processes.Kiosk
         
         internal bool IsLeaveRequestOnly = false;
         internal bool WithComputedLeaveCredits = false;
+        internal DateTime? Start = null;
+        internal DateTime? End = null;
         internal LeaveRequest Converter(DataRow dr)
         {
             var o = new LeaveRequest
@@ -35,6 +37,10 @@ namespace ProcessLayer.Processes.Kiosk
                 LeaveTypeID = dr[LeaveRequestFields.LeaveTypeID].ToNullableByte(),
                 _LeaveType = LeaveTypeProcess.Instance.Value.Get(dr[LeaveRequestFields.LeaveTypeID].ToNullableByte()),
                 RequestedDate = dr[LeaveRequestFields.RequestedDate].ToDateTime(),
+                Hospital = dr[LeaveRequestFields.Hospital].ToString(),
+                Location = dr[LeaveRequestFields.Location].ToString(),
+                PeriodStart = dr[LeaveRequestFields.PeriodStart].ToNullableDateTime(),
+                PeriodEnd = dr[LeaveRequestFields.PeriodEnd].ToNullableDateTime(),
                 NoofDays = dr[LeaveRequestFields.NoofDays].ToFloat(),
                 Reasons = dr[LeaveRequestFields.Reasons].ToString(),
                 File = dr[LeaveRequestFields.File].ToString(),
@@ -73,7 +79,7 @@ namespace ProcessLayer.Processes.Kiosk
 
             if(WithComputedLeaveCredits)
             {
-                o._ComputedLeaveCredits = ComputedLeaveCreditsProcess.Instance.Value.GetList(o.ID);
+                o._ComputedLeaveCredits = ComputedLeaveCreditsProcess.Instance.Value.GetList(o.ID, Start, End);
             }
             return o;
         }
@@ -155,6 +161,8 @@ namespace ProcessLayer.Processes.Kiosk
                 using (var ds = db.ExecuteReader(LeaveRequestProcedures.GetLeaveForPayroll, parameters))
                 {
                     WithComputedLeaveCredits = true;
+                    Start = periodStart;
+                    End = periodEnd;
                     Leaves = ds.GetList(Converter);
                     WithComputedLeaveCredits = false;
                 }
@@ -271,6 +279,10 @@ namespace ProcessLayer.Processes.Kiosk
                     , { LeaveRequestParameters.LeaveTypeID, Leave.LeaveTypeID }
                     , { LeaveRequestParameters.RequestedDate, Leave.RequestedDate }
                     , { LeaveRequestParameters.NoofDays, Leave.NoofDays}
+                    , { LeaveRequestParameters.Hospital, Leave.Hospital}
+                    , { LeaveRequestParameters.Location, Leave.Location}
+                    , { LeaveRequestParameters.PeriodStart, Leave.PeriodStart}
+                    , { LeaveRequestParameters.PeriodEnd, Leave.PeriodEnd}
                     , { LeaveRequestParameters.Reasons, Leave.Reasons }
                     , { CredentialParameters.LogBy, userid }
                 };
@@ -332,7 +344,6 @@ namespace ProcessLayer.Processes.Kiosk
                 db.ExecuteNonQuery(LeaveRequestProcedures.Note, parameters);
             }
         }
-
         private void ApprovedRequest(DBTools db, long id, int userid)
         {
 
