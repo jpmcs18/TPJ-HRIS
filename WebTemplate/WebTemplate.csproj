@@ -561,6 +561,9 @@
     <Content Include="Content\style.min.css">
       <DependentUpon>style.css</DependentUpon>
     </Content>
+    <Content Include="Database Scripts\09022021\ALTER PROC [hr].[GetLeavesWithCredits].sql" />
+    <Content Include="Database Scripts\09022021\ALTER PROC [kiosk].[FilterApprovingLeaveRequest].sql" />
+    <Content Include="Database Scripts\09022021\ALTER PROC [kiosk].[FilterLeaveRequestThatNeedDocument].sql" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\font-awesome\css\font-awesome-v4.css" />
     <Content Include="fonts\font-awesome\css\font-awesome.css" />

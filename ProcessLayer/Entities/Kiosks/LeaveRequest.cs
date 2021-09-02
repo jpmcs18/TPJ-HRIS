@@ -20,19 +20,20 @@ namespace ProcessLayer.Entities.Kiosk
         {
             get
             {
-                if (!Noted)
+                if ((_LeaveType?.HasDocumentNeeded ?? false) && !Noted)
                     return "Must be noted first.";
 
-                if (Noted && !(Approved ?? false) && (_LeaveType?.HasDocumentNeeded ?? false) && string.IsNullOrEmpty(File))
+                if ((_LeaveType?.HasDocumentNeeded ?? false) && Noted && !(Approved ?? false))
                     return "Noted, Waiting for approval.";
 
-                if ((Approved ?? false) && (_LeaveType?.HasDocumentNeeded ?? false) && string.IsNullOrEmpty(File))
+                if ((_LeaveType?.HasDocumentNeeded ?? false) && Noted && (Approved ?? false) && string.IsNullOrEmpty(File))
                     return "Partialy approved, Waiting for document upload";
+
+                if (Cancelled != null && Cancelled.Value)
+                    return CancellationRemarks;
 
                 if (IsExpired)
                     return "Exceeded 48 hours upon creation date.";
-                if (Cancelled != null && Cancelled.Value)
-                    return CancellationRemarks;
 
                 return "";
             }

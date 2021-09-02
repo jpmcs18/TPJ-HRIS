@@ -258,7 +258,7 @@
         if (leaveReqID) {
             $('#UploadDocumentModal #leaveRequestId').val(leaveReqID);
             $('#UploadDocumentModal').attr('action', action + (filename ? leaveReqID : ''));
-            //$('#UploadDocumentModal #filename').text('filename: ' + filename);
+            $('#UploadDocumentModal #filename').text('filename: ' + filename);
             //$('#UploadDocumentModal #DeleteDocument').attr(filename ? 'submit' : 'hidden');
             $('#UploadDocumentModal .modal-header .close').off('click').on('click', CancelDocumentUpload);
             $("#UploadDocumentModal #browseFile").val('');

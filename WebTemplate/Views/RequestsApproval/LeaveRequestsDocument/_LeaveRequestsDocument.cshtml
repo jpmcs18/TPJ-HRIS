@@ -158,6 +158,7 @@
                                 var RowColorLabel = ""; // Model.LeaveRequests[i].Cancelled == true ? " label-danger" : Model.LeaveRequests[i].Approved == true ? " label-primary" : Model.LeaveRequests[i].ModifiedBy != null ? " label-success" : " label-info";
                                 var Expired = Model.LeaveRequests[i].IsExpired == true;
                                 var Approved = Model.LeaveRequests[i].Approved == true;
+                                var Noted = Model.LeaveRequests[i].Noted == true;
                                 var Cancelled = Model.LeaveRequests[i].Cancelled == true;
                                 var IsPending = !Approved && !Cancelled;
 
@@ -190,22 +191,19 @@
                                     @Model.LeaveRequests[i].Remarks
                                 </text>
                             </td>
-                            @if (UploadDocumentAccess.View)
-                            {
-                                <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
-                                    @*@if (!Cancelled && (Model.LeaveRequests[i].LeaveType.HasDocumentNeeded ?? false) == true && (UploadDocumentAccess.Insert || UploadDocumentAccess.Update || UploadDocumentAccess.Delete))
-                {
-                }*@
-                                    @if (Model.LeaveRequests[i].ApprovedLeaveCredits > 0)
+                            <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
+                                @if (UploadDocumentAccess.View)
+                                {
+                                    if (Approved && (Model.LeaveRequests[i]._LeaveType.HasDocumentNeeded ?? false))
+                                    {
+                                        <button type="button" name="" class="btn btn-default btn-md" onclick="UploadDocument(@Model.LeaveRequests[i].ID, '')" title="@(!string.IsNullOrEmpty(filename) ? filename : "Upload Document")" value="@filename"><i class="fa fa-paperclip"></i>@Html.Raw(!string.IsNullOrEmpty(filename) ? " <span class='label label-info'>1</span>" : "")</button>
+                                    }
+                                    else if (Model.LeaveRequests[i].ApprovedLeaveCredits > 0)
                                     {
                                         <span class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@(filename)">@Html.Raw(filename)</span>
                                     }
-                                    else
-                                    {
-                                        <button type="button" name="" class="btn btn-default btn-md" onclick="UploadDocument(@Model.LeaveRequests[i].ID, '')" title="@(!string.IsNullOrEmpty(filename) ? filename : "Upload Document")"><i class="fa fa-paperclip"></i>@Html.Raw(!string.IsNullOrEmpty(filename) ? " <span class='label label-info'>1</span>" : "")</button>
-                                    }
-                                </td>
-                            }
+                                }
+                            </td>
                         </tr>
                             }
                         }

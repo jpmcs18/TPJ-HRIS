@@ -3,7 +3,7 @@
 @{ var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
                 var PageAccess = credential.GetPage("RequestsApproval/LeaveRequests") ?? new DataAccessLayer.System.Page();
                 var ApproverAccess = credential.GetPage("Approver Leave Request") ?? new DataAccessLayer.System.Page();
-                //var UploadDocumentAccess = credential.GetPage("Kiosk Upload Document") ?? new DataAccessLayer.System.Page();
+                var UploadDocumentAccess = credential.GetPage("Kiosk Upload Document") ?? new DataAccessLayer.System.Page();
                 var IsBulkUse = Model.LeaveTypes.Where(m => m.ID == Model.LeaveTypeID).Select(m => m.BulkUse).FirstOrDefault() ?? false; }
 
 @if (PageAccess.View)
@@ -140,12 +140,13 @@
                                                     <th class="text-left">Status</th>
                                                     <th class="text-left">Last Modified</th>
                                                     <th class="text-left">Remarks</th>
+                                                    <th class="text-left">Document</th>
                                                     @if (ApproverAccess.Approve)
                                                     {
                                                         @*if (UploadDocumentAccess.View)
-                                                        {
-                                                            <th class="text-left">Document</th>
-                                                        }*@
+            {
+                <th class="text-left">Document</th>
+            }*@
                                                         <th style="text-align: center; min-width: 10%;" scope="col">Action</th>
                                                     }
                                                 </tr>
@@ -158,6 +159,7 @@
                                                             var RowColorLabel = ""; // Model.LeaveRequests[i].Cancelled == true ? " label-danger" : Model.LeaveRequests[i].Approved == true ? " label-primary" : Model.LeaveRequests[i].ModifiedBy != null ? " label-success" : " label-info";
                                                             var Expired = Model.LeaveRequests[i].IsExpired == true;
                                                             var Approved = Model.LeaveRequests[i].Approved == true;
+                                                            var Noted = Model.LeaveRequests[i].Noted == true;
                                                             var Cancelled = Model.LeaveRequests[i].Cancelled == true;
                                                             var IsPending = !Approved && !Cancelled;
 
@@ -166,82 +168,63 @@
                                                             var LastDate = Cancelled ? Model.LeaveRequests[i].CancelledOn : Approved ? Model.LeaveRequests[i].ApprovedOn : Model.LeaveRequests[i].ModifiedBy != null ? Model.LeaveRequests[i].ModifiedOn : Model.LeaveRequests[i].CreatedOn;
                                                             var filename = Path.GetFileName(Model.LeaveRequests[i].File);
 
-                                                                <tr id="Row-Display-LeaveRequests-@Model.LeaveRequests[i].ID" class="Row-Display Row-Display-LeaveRequests @RowColorLabel" style="">
-                                                                    <td class="text-left">
-                                                                        @Html.Hidden("id", Model.LeaveRequests[i].ID)
+                                                    <tr id="Row-Display-LeaveRequests-@Model.LeaveRequests[i].ID" class="Row-Display Row-Display-LeaveRequests @RowColorLabel" style="">
+                                                        <td class="text-left">
+                                                            @Html.Hidden("id", Model.LeaveRequests[i].ID)
 
-                                                                        @Model.LeaveRequests[i]._Personnel.FullName
-                                                                    </td>
-                                                                    <td class="text-left">@Model.LeaveRequests[i]._LeaveType.Description</td>
-                                                                    <td class="text-center">
-                                                                        @*@if (Model.LeaveRequests[i].LeaveType.BulkUse ?? false)
-                {
-        @Html.Raw(String.Format("{0:MMM dd, yyyy}", Model.LeaveRequests[i].StartDateTime)) }
-                                else
-                                {
-        @Html.Raw(String.Format("{0:MMM dd, yyyy @ hh:mm tt} -<br/>{1:MMM dd, yyyy @ hh:mm tt}", Model.LeaveRequests[i].StartDateTime, Model.LeaveRequests[i].EndDateTime))}*@
-                                                                        @Html.Raw(String.Format("{0:MMM dd, yyyy}", Model.LeaveRequests[i].RequestedDate))
-                                                                    </td>
-                                                                    <td class="text-left">@Model.LeaveRequests[i].NoofDays</td>
-                                                                    <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
-                                                                        <text class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@Model.LeaveRequests[i].Reasons">
-                                                                            @Model.LeaveRequests[i].Reasons
-                                                                        </text>
-                                                                    </td>
-                                                                    <td class="text-center">@Html.Raw(LastStatus)</td>
-                                                                    <td class="text-left">
-                                                                        @Html.Raw(String.Format("{0}<br/>{1:MM/dd/yyyy hh:mm tt}", LastUser ?? "", LastDate))
-                                                                    </td>
-                                                                    <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
-                                                                        <text class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@Model.LeaveRequests[i].Remarks">
-                                                                            @Model.LeaveRequests[i].Remarks
-                                                                        </text>
-                                                                    </td>
-                                                                    @if (ApproverAccess.Approve) // || UploadDocumentAccess.View
-                                                                    {
-                                                                        @*<td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
-                                                                            @if (!Cancelled && (Model.LeaveRequests[i]._LeaveType.HasDocumentNeeded ?? false) == true && (UploadDocumentAccess.Insert || UploadDocumentAccess.Update || UploadDocumentAccess.Delete))
-                                                                            {
-                                                                                <button type="button" name="id" class="btn btn-default btn-md" onclick="UploadDocument(@Model.LeaveRequests[i].ID, '@filename')" title="@(!string.IsNullOrEmpty(filename)? filename : "Upload Document")"><i class="fa fa-paperclip"></i>@Html.Raw(!string.IsNullOrEmpty(filename) ? " <span class='label label-info'>1</span>" : "")</button>
-                                                                            }
-                                                                        </td>*@
-                                                                        <td style="width: 160px;" class="row-actions">
-                                                                            <div class="btn-group">
-                                                                                @if (IsPending)
-                                                                                {
-                                                                                    <button type="button" name="id" class="btn btn-danger btn-lg btn-rounded CancelLeaveRequest" value="@Model.LeaveRequests[i].ID" title="Disapprove"><i class="fa fa-thumbs-o-down"></i></button> 
-
-                                                                                    @*if ((Model.LeaveRequests[i].LeaveType.HasDocumentNeeded ?? false) == true)
-                                                                                    {
-                                                                                        if (UploadDocumentAccess.Insert || UploadDocumentAccess.Update || UploadDocumentAccess.Delete)
-                                                                                        {
-                                                                                            if (!string.IsNullOrEmpty(filename))
-                                                                                            {
-                                                                                                <button type="button" name="id" class="btn btn-primary btn-lg btn-rounded ApproveLeaveRequest" value="@Model.LeaveRequests[i].ID" title="Approve"><i class="fa fa-check"></i></button>
-                                                                                            }
-
-                                                                                            <button type = "button" name="id" class="btn btn-default btn-lg btn-rounded" onclick="UploadDocument(@Model.LeaveRequests[i].ID, '@filename')" value="" title="Document"><i class="fa fa-folder-open"></i></button>
-                                                                                        }
-                                                                                    }*@
-                                                                                    //else
-                                                                                    //{
-                                                                                        <button type="button" name="id" class="btn btn-primary btn-lg btn-rounded ApproveLeaveRequest" value="@Model.LeaveRequests[i].ID" title="Approve"><i class="fa fa-thumbs-o-up"></i></button> //}
-                                                                                    //}
-                                                                                    //else
-                                                                                    //            {
-                                                                                    //                if ((Model.LeaveRequests[i].LeaveType.HasDocumentNeeded ?? false) == true && (UploadDocumentAccess.View || UploadDocumentAccess.Insert || UploadDocumentAccess.Update || UploadDocumentAccess.Delete))
-                                                                                    //                {
-                                                                                    //        < button type = "button" name = "id" class="btn btn-default btn-lg btn-rounded" onclick="UploadDocument(@Model.LeaveRequests[i].ID, '@filename')" value="" title="Document"><i class="fa fa-folder-open"></i></button>
-                                                                                    //    }
-
-                                                                                    //    <button type = "button" name="id" class="btn btn-info btn-lg btn-rounded ViewLeaveRequest" value="@Model.LeaveRequests[i].ID" title="View"><i class="fa fa-eye"></i></button>
-                                                                                    //}
-
-                                                                                }
-                                                                            </div>
-                                                                        </td>
-                                                                    }
-                                                                </tr>
+                                                            @Model.LeaveRequests[i]._Personnel.FullName
+                                                        </td>
+                                                        <td class="text-left">@Model.LeaveRequests[i]._LeaveType.Description</td>
+                                                        <td class="text-center">
+                                                            @*@if (Model.LeaveRequests[i].LeaveType.BulkUse ?? false)
+                    {
+            @Html.Raw(String.Format("{0:MMM dd, yyyy}", Model.LeaveRequests[i].StartDateTime)) }
+                                    else
+                                    {
+            @Html.Raw(String.Format("{0:MMM dd, yyyy @ hh:mm tt} -<br/>{1:MMM dd, yyyy @ hh:mm tt}", Model.LeaveRequests[i].StartDateTime, Model.LeaveRequests[i].EndDateTime))}*@
+                                                            @Html.Raw(String.Format("{0:MMM dd, yyyy}", Model.LeaveRequests[i].RequestedDate))
+                                                        </td>
+                                                        <td class="text-left">@Model.LeaveRequests[i].NoofDays</td>
+                                                        <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
+                                                            <text class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@Model.LeaveRequests[i].Reasons">
+                                                                @Model.LeaveRequests[i].Reasons
+                                                            </text>
+                                                        </td>
+                                                        <td class="text-center">@Html.Raw(LastStatus)</td>
+                                                        <td class="text-left">
+                                                            @Html.Raw(String.Format("{0}<br/>{1:MM/dd/yyyy hh:mm tt}", LastUser ?? "", LastDate))
+                                                        </td>
+                                                        <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
+                                                            <text class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@Model.LeaveRequests[i].Remarks">
+                                                                @Model.LeaveRequests[i].Remarks
+                                                            </text>
+                                                        </td>
+                                                        <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
+                                                            @if (UploadDocumentAccess.View)
+                                                            {
+                                                                if (Approved && (Model.LeaveRequests[i]._LeaveType.HasDocumentNeeded ?? false))
+                                                                {
+                                                                    <button type="button" name="" class="btn btn-default btn-md" onclick="UploadDocument(@Model.LeaveRequests[i].ID, '')" title="@(!string.IsNullOrEmpty(filename) ? filename : "Upload Document")" value="@filename"><i class="fa fa-paperclip"></i>@Html.Raw(!string.IsNullOrEmpty(filename) ? " <span class='label label-info'>1</span>" : "")</button>
+                                                                }
+                                                                else if (Model.LeaveRequests[i].ApprovedLeaveCredits > 0)
+                                                                {
+                                                                    <span class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@(filename)">@Html.Raw(filename)</span>
+                                                                }
+                                                            }
+                                                        </td>
+                                                        <td style="width: 160px;" class="row-actions">
+                                                            @if (ApproverAccess.Approve)
+                                                            {
+                                                                if (!Approved && ((Noted && (Model.LeaveRequests[i]._LeaveType?.CNBNoteFirst ?? false) == true) || (Model.LeaveRequests[i]._LeaveType?.CNBNoteFirst ?? false) == false))
+                                                                {
+                                                                    <div class="btn-group">
+                                                                        <button type="button" name="id" class="btn btn-danger btn-lg btn-rounded CancelLeaveRequest" value="@Model.LeaveRequests[i].ID" title="Disapprove"><i class="fa fa-thumbs-o-down"></i></button>
+                                                                        <button type="button" name="id" class="btn btn-primary btn-lg btn-rounded ApproveLeaveRequest" value="@Model.LeaveRequests[i].ID" title="Approve"><i class="fa fa-thumbs-o-up"></i></button>
+                                                                    </div>
+                                                                }
+                                                            }
+                                                        </td>
+                                                    </tr>
                                                         }
                                                     }
                                                     else
