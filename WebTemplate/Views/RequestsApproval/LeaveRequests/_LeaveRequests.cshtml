@@ -3,7 +3,7 @@
 @{ var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
                 var PageAccess = credential.GetPage("RequestsApproval/LeaveRequests") ?? new DataAccessLayer.System.Page();
                 var ApproverAccess = credential.GetPage("Approver Leave Request") ?? new DataAccessLayer.System.Page();
-                var UploadDocumentAccess = credential.GetPage("Kiosk Upload Document") ?? new DataAccessLayer.System.Page();
+                //var UploadDocumentAccess = credential.GetPage("Kiosk Upload Document") ?? new DataAccessLayer.System.Page();
                 var IsBulkUse = Model.LeaveTypes.Where(m => m.ID == Model.LeaveTypeID).Select(m => m.BulkUse).FirstOrDefault() ?? false; }
 
 @if (PageAccess.View)
@@ -140,12 +140,12 @@
                                                     <th class="text-left">Status</th>
                                                     <th class="text-left">Last Modified</th>
                                                     <th class="text-left">Remarks</th>
-                                                    @if (UploadDocumentAccess.View)
-                                                    {
-                                                        <th class="text-left">Document</th>
-                                                    }
                                                     @if (ApproverAccess.Approve)
                                                     {
+                                                        @*if (UploadDocumentAccess.View)
+                                                        {
+                                                            <th class="text-left">Document</th>
+                                                        }*@
                                                         <th style="text-align: center; min-width: 10%;" scope="col">Action</th>
                                                     }
                                                 </tr>
@@ -197,17 +197,14 @@
                                                                             @Model.LeaveRequests[i].Remarks
                                                                         </text>
                                                                     </td>
-                                                                    @if (UploadDocumentAccess.View)
+                                                                    @if (ApproverAccess.Approve) // || UploadDocumentAccess.View
                                                                     {
-                                                                        <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
+                                                                        @*<td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
                                                                             @if (!Cancelled && (Model.LeaveRequests[i]._LeaveType.HasDocumentNeeded ?? false) == true && (UploadDocumentAccess.Insert || UploadDocumentAccess.Update || UploadDocumentAccess.Delete))
                                                                             {
                                                                                 <button type="button" name="id" class="btn btn-default btn-md" onclick="UploadDocument(@Model.LeaveRequests[i].ID, '@filename')" title="@(!string.IsNullOrEmpty(filename)? filename : "Upload Document")"><i class="fa fa-paperclip"></i>@Html.Raw(!string.IsNullOrEmpty(filename) ? " <span class='label label-info'>1</span>" : "")</button>
                                                                             }
-                                                                        </td>
-                                                                    }
-                                                                    @if (ApproverAccess.Approve || UploadDocumentAccess.View)
-                                                                    {
+                                                                        </td>*@
                                                                         <td style="width: 160px;" class="row-actions">
                                                                             <div class="btn-group">
                                                                                 @if (IsPending)

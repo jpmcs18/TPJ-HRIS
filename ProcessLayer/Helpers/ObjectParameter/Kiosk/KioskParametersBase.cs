@@ -9,6 +9,7 @@
         public const string Approver = "@Approver";
         public const string Reasons = "@Reasons";
         public const string CancellationRemarks = "@CancellationRemarks";
+        public const string IsNoted = "@IsNoted";
         public const string IsApproved = "@IsApproved";
         public const string IsCancelled = "@IsCancelled";
         public const string IsPending = "@IsPending";

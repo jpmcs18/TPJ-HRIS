@@ -22,7 +22,8 @@ namespace ProcessLayer.Processes
                 MaxAllowedDays = dr["Max Allowed Days"].ToNullableInt(),
                 BulkUse = dr["Bulk Use"].ToNullableBoolean(),
                 DaysBeforeRequest = dr["Days Before Request"].ToNullableInt(),
-                HasDocumentNeeded = dr["Has Document Needed"].ToNullableBoolean()
+                HasDocumentNeeded = dr["Has Document Needed"].ToNullableBoolean(),
+                CNBNoteFirst = dr["CNB Note First"].ToNullableBoolean()
             };
         }
 

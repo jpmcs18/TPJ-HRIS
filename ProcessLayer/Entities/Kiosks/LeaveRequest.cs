@@ -15,16 +15,19 @@ namespace ProcessLayer.Entities.Kiosk
         public bool IsExpired { get { return Approved != true && Cancelled != true && CreatedOn != null && ((DateTime.Now - CreatedOn).Value.TotalHours >= 48) && false; } }
         public int? NotedBy { get; set; }
         public DateTime? NotedOn { get; set; }
-        public bool Noted { get { return (_LeaveType?.CNBNoteFirst ?? false) ? (NotedBy != null) : true; } }
+        public bool Noted { get { return (_LeaveType?.CNBNoteFirst ?? false) && (NotedBy != null); } }
         public string Remarks
         {
             get
             {
                 if (!Noted)
-                    return "Must be note first";
+                    return "Must be noted first.";
+
+                if (Noted && !(Approved ?? false) && (_LeaveType?.HasDocumentNeeded ?? false) && string.IsNullOrEmpty(File))
+                    return "Noted, Waiting for approval.";
 
                 if ((Approved ?? false) && (_LeaveType?.HasDocumentNeeded ?? false) && string.IsNullOrEmpty(File))
-                    return "Partialy approved, Waiting for document to upload";
+                    return "Partialy approved, Waiting for document upload";
 
                 if (IsExpired)
                     return "Exceeded 48 hours upon creation date.";
@@ -34,7 +37,7 @@ namespace ProcessLayer.Entities.Kiosk
                 return "";
             }
         }
-
+            
         public LeaveType _LeaveType { get; set; }
         public List<ComputedLeaveCredits> _ComputedLeaveCredits { get; set; }
     }

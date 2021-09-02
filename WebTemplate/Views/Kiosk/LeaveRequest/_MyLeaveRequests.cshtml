@@ -1,4 +1,5 @@
 ﻿@model WebTemplate.Models.Kiosk.Leave_Request.Index
+
 @{
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
     var PageAccess = credential.GetPage("Kiosk/LeaveRequest") ?? new DataAccessLayer.System.Page();
@@ -163,8 +164,8 @@
                             {
                                 var RowColorLabel = ""; // Model.LeaveRequests[i].Cancelled == true ? " label-danger" : Model.LeaveRequests[i].Approved == true ? " label-primary" : Model.LeaveRequests[i].ModifiedBy != null ? " label-success" : " label-info";
                                 var LastStatus = Model.LeaveRequests[i].IsExpired == true ? "<span class='label label-warning'>Expired</span>" : (Model.LeaveRequests[i].Cancelled == true ? "<span class='label label-danger'>Cancelled</span>" : (Model.LeaveRequests[i].Approved == true ? "<span class='label label-primary'>Approved</span>" : "<span class='label label-info'>Pending</span>"));
-                                var LastUser = Model.LeaveRequests[i].Cancelled == true ? Model.LeaveRequests[i]._Cancel : Model.LeaveRequests[i].Approved == true ? Model.LeaveRequests[i]._Approver : Model.LeaveRequests[i].ModifiedBy != null ? Model.LeaveRequests[i]._Modifier : Model.LeaveRequests[i]._Creator;
-                                var LastDate = Model.LeaveRequests[i].Cancelled == true ? Model.LeaveRequests[i].CancelledOn : Model.LeaveRequests[i].Approved == true ? Model.LeaveRequests[i].ApprovedOn : Model.LeaveRequests[i].ModifiedBy != null ? Model.LeaveRequests[i].ModifiedOn : Model.LeaveRequests[i].CreatedOn;
+                                var LastUser = Model.LeaveRequests[i].Cancelled == true ? Model.LeaveRequests[i]._Cancel : (Model.LeaveRequests[i].Approved == true ? Model.LeaveRequests[i]._Approver : (Model.LeaveRequests[i].Noted == true ? Model.LeaveRequests[i]._Noted : (Model.LeaveRequests[i].ModifiedBy != null ? Model.LeaveRequests[i]._Modifier : Model.LeaveRequests[i]._Creator)));
+                                var LastDate = Model.LeaveRequests[i].Cancelled == true ? Model.LeaveRequests[i].CancelledOn : (Model.LeaveRequests[i].Approved == true ? Model.LeaveRequests[i].ApprovedOn : (Model.LeaveRequests[i].Noted == true ? Model.LeaveRequests[i].NotedOn : (Model.LeaveRequests[i].ModifiedBy != null ? Model.LeaveRequests[i].ModifiedOn : Model.LeaveRequests[i].CreatedOn)));
 
                                 <tr id="Row-Display-LeaveRequest-@Model.LeaveRequests[i].ID" class="Row-Display Row-Display-LeaveRequests @RowColorLabel" onclick="EditRequest(@Model.LeaveRequests[i].ID);" title="Left click here to open record">
                                     <td class="check-mail">
