@@ -1576,6 +1576,21 @@ namespace WebTemplate.Controllers.HumanResource
                 return Json(new { msg = false, res = ex.GetActualMessage() });
             }
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        //Delete Loan
+        public JsonResult DeletePersonnelLeaveCredits(PersonnelLeaveCredit model)
+        {
+            try
+            {
+                PersonnelLeaveCreditProcess.Instance.Value.Delete(model.ID, User.UserID);
+                return Json(new { msg = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { msg = false, res = ex.GetActualMessage() });
+            }
+        }
         #endregion
 
         #region Loans...

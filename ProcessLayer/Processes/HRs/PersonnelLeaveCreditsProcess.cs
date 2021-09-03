@@ -130,6 +130,7 @@ namespace ProcessLayer.Processes.HR
             };
             db.ExecuteNonQuery(PersonnelLeaveCreditsProcedures.CreateOrUpdate, ref outParameters, parameters);
             leaveCredit.ID = outParameters.Get(PersonnelLeaveCreditsParameters.ID).ToLong();
+            leaveCredit._LeaveType = LeaveTypeProcess.Instance.Value.Get(leaveCredit.LeaveTypeID);
             return leaveCredit;
         }
 
