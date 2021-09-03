@@ -139,10 +139,11 @@ namespace ProcessLayer.Processes.HR
         {
             using (var db = new DBTools())
             {
-                if(personnelLoan.PaidAmount > 0) { throw new Exception("Unable to update"); }
-                //Auto amortization amount / months to be pay and when to deduct
-                personnelLoan.Amortization = (personnelLoan.Amount / (personnelLoan.PaymentTerms ?? 0)) / (personnelLoan.WhenToDeduct == 3 ? 2 : 1);
-
+                if (personnelLoan.PaidAmount == 0)
+                {
+                    //Auto amortization amount / months to be pay and when to deduct
+                    personnelLoan.Amortization = (personnelLoan.Amount / (personnelLoan.PaymentTerms ?? 0)) / (personnelLoan.WhenToDeduct == 3 ? 2 : 1);
+                }
                 var parameters = new Dictionary<string, object> {
                     { "@PersonnelID", personnelLoan.PersonnelID },
                     { "@LoanID", personnelLoan.LoanID },
