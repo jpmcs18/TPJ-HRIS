@@ -18,6 +18,7 @@ namespace ProcessLayer.Entities.Kiosk
 
         public string _Cancel { get; set; }
         public string _Approver { get; set; }
+        public string _Noted { get; set; }
         public Personnel _Personnel { get; set; }
     }
 }

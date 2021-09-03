@@ -55,7 +55,9 @@ namespace ProcessLayer.Processes.Kiosk
                 CreatedBy = dr[LeaveRequestFields.CreatedBy].ToNullableInt(),
                 CreatedOn = dr[LeaveRequestFields.CreatedOn].ToNullableDateTime(),
                 ModifiedBy = dr[LeaveRequestFields.ModifiedBy].ToNullableInt(),
-                ModifiedOn = dr[LeaveRequestFields.ModifiedOn].ToNullableDateTime()
+                ModifiedOn = dr[LeaveRequestFields.ModifiedOn].ToNullableDateTime(),
+                NotedBy = dr[LeaveRequestFields.NotedBy].ToNullableInt(),
+                NotedOn = dr[LeaveRequestFields.NotedOn].ToNullableDateTime()
             };
 
             o._LeaveType = LeaveTypeProcess.Instance.Value.Get(o.LeaveTypeID);
@@ -65,6 +67,7 @@ namespace ProcessLayer.Processes.Kiosk
                 o._Personnel = PersonnelProcess.Get(o.PersonnelID??0, true);
                 o._Approver = LookupProcess.GetUser(o.ApprovedBy);
                 o._Cancel = LookupProcess.GetUser(o.CancelledBy);
+                o._Noted = LookupProcess.GetUser(o.NotedBy);
                 o._Creator = LookupProcess.GetUser(o.CreatedBy);
                 o._Modifier = LookupProcess.GetUser(o.ModifiedBy);
             }
@@ -166,7 +169,7 @@ namespace ProcessLayer.Processes.Kiosk
             }
             return Leaves;
         }
-        public List<LeaveRequest> GetRequestThatNeedDocument(string personnel, byte? leavetypeid, bool isExpired, bool isPending, bool isApproved, bool isCancelled, DateTime? startdatetime, DateTime? enddatetime, int page, int gridCount, out int PageCount)
+        public List<LeaveRequest> GetRequestThatNeedDocument(string personnel, byte? leavetypeid, bool isExpired, bool isPending, bool isNoted, bool isApproved, bool isCancelled, DateTime? startdatetime, DateTime? enddatetime, int page, int gridCount, out int PageCount)
         {
             var Leaves = new List<LeaveRequest>();
             var parameters = new Dictionary<string, object> {
@@ -174,6 +177,7 @@ namespace ProcessLayer.Processes.Kiosk
                 { LeaveRequestParameters.LeaveTypeID, leavetypeid },
                 { LeaveRequestParameters.IsExpired, isExpired },
                 { LeaveRequestParameters.IsPending, isPending },
+                { LeaveRequestParameters.IsNoted, isNoted},
                 { LeaveRequestParameters.IsApproved, isApproved },
                 { LeaveRequestParameters.IsCancelled, isCancelled },
                 { LeaveRequestParameters.StartDate, startdatetime },

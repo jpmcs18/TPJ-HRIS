@@ -15,7 +15,7 @@ namespace WebTemplate.Controllers.Kiosk
         public ActionResult Index(Index model)
         {
             model.Page = model.Page > 1 ? model.Page : 1;
-            model.Personnel = PersonnelProcess.GetByUserId(User.UserID);
+            model.Personnel = PersonnelProcess.GetByUserId(User.UserID, true);
             model.OTRequests = OTRequestProcess.Instance.Value.GetList(model.Personnel?.ID ?? 0, model.IsExpired, model.IsPending, model.IsApproved, model.IsCancelled, model.StartDateTime, model.EndingDateTime, model.Page, model.GridCount, out int PageCount);
             model.PageCount = PageCount;
 
@@ -38,7 +38,7 @@ namespace WebTemplate.Controllers.Kiosk
             {
                 Index model = new Index
                 {
-                    Personnel = PersonnelProcess.GetByUserId(User.UserID),
+                    Personnel = PersonnelProcess.GetByUserId(User.UserID, true),
                     OTRequest = new OTRequest()
                 };
                 model.OTRequest.RequestDate = DateTime.Now;

@@ -12,5 +12,8 @@
         public const string Approved = "Approved";
         public const string ApprovedBy = "Approved By";
         public const string ApprovedOn = "Approved On";
+        public const string Noted = "Noted";
+        public const string NotedBy = "Noted By";
+        public const string NotedOn = "Noted On";
     }
 }

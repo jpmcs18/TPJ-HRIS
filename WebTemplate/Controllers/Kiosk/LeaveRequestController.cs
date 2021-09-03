@@ -22,7 +22,7 @@ namespace WebTemplate.Controllers.Kiosk
             try
             {
                 model.Page = model.Page > 1 ? model.Page : 1;
-                model.Personnel = PersonnelProcess.GetByUserId(User.UserID);
+                model.Personnel = PersonnelProcess.GetByUserId(User.UserID, true);
                 model.LeaveRequests = LeaveRequestProcess.Instance.Value.GetList(model.Personnel?.ID ?? 0, model.LeaveTypeID, model.IsExpired, model.IsPending, model.IsApproved, model.IsCancelled, model.StartDateTime, model.EndingDateTime, model.Page, model.GridCount, out int PageCount);
                 model.LeaveTypes = LeaveTypeProcess.Instance.Value.GetList();
                 model.PageCount = PageCount;
@@ -52,7 +52,7 @@ namespace WebTemplate.Controllers.Kiosk
             {
                 Index model = new()
                 {
-                    Personnel = PersonnelProcess.GetByUserId(User.UserID),
+                    Personnel = PersonnelProcess.GetByUserId(User.UserID, true),
                     LeaveRequest = new LeaveRequest(),
                 };
 

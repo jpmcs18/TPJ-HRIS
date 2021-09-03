@@ -561,9 +561,9 @@
     <Content Include="Content\style.min.css">
       <DependentUpon>style.css</DependentUpon>
     </Content>
-    <Content Include="Database Scripts\08282021\ALTER PROC [kiosk].[CreateOrUpdateLeaveRequest].sql" />
-    <Content Include="Database Scripts\08282021\ALTER PROC [kiosk].[FilterApprovingLeaveRequest].sql" />
-    <Content Include="Database Scripts\08282021\ALTER PROC [kiosk].[FilterLeaveRequest].sql" />
+    <Content Include="Database Scripts\09022021\ALTER PROC [hr].[GetLeavesWithCredits].sql" />
+    <Content Include="Database Scripts\09022021\ALTER PROC [kiosk].[FilterApprovingLeaveRequest].sql" />
+    <Content Include="Database Scripts\09022021\ALTER PROC [kiosk].[FilterLeaveRequestThatNeedDocument].sql" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\font-awesome\css\font-awesome-v4.css" />
     <Content Include="fonts\font-awesome\css\font-awesome.css" />
@@ -2410,6 +2410,8 @@
     <Content Include="Views\HumanResource\Personnel\_PersonnelSchedules.cshtml" />
     <Content Include="Views\HumanResource\Personnel\_PersonnelSchedule.cshtml" />
     <Content Include="Views\CnB\PayrollSheetB\_Payroll.cshtml" />
+    <Content Include="Views\RequestsApproval\LeaveRequestsForNote\Index.cshtml" />
+    <Content Include="Views\RequestsApproval\LeaveRequestsForNote\_Search.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">

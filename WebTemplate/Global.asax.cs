@@ -107,7 +107,7 @@ namespace WebTemplate
                     var error = new Error
                     {
                         HResult = ex.HResult,
-                        Message = ex.Message,
+                        Message = (((System.Data.SqlClient.SqlException)ex).Procedure + ": " ?? "") + ex.Message,
                         InnerExceptionMessage = ex.InnerException?.Message,
                         StackTrace = ex.StackTrace,
                         Source = ex.Source,

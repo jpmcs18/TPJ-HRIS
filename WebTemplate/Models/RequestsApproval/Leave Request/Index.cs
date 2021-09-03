@@ -11,16 +11,17 @@ namespace WebTemplate.Models.RequestsApproval.Leave_Request
         public byte? LeaveTypeID { get; set; }
         public DateTime? StartDateTime { get; set; }
         public DateTime? EndingDateTime { get; set; }
-        public List<LeaveType> LeaveTypes { get; set; } = new List<LeaveType>();
+        public List<LeaveType> LeaveTypes { get; set; } = new();
 
-        public LeaveType _LeaveType = new LeaveType();
+        public LeaveType _LeaveType = new();
 
         public bool IsExpired { get; set; } = true;
         public bool IsPending { get; set; } = true;
-        public bool IsApproved { get; set; }
+        public bool IsNoted { get; set; }
+        public bool IsApproved { get; set; } = true;
         public bool IsCancelled { get; set; }
         public bool All { get; set; }
 
-        public List<LeaveRequest> LeaveRequests { get; set; } = new List<LeaveRequest>();
+        public List<LeaveRequest> LeaveRequests { get; set; } = new();
     }
 }

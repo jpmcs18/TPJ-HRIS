@@ -5,7 +5,7 @@
     var CreatorAccess = credential.GetPage("Creator Leave Request") ?? new DataAccessLayer.System.Page();
 }
 
-@Html.Hidden("PersonnelID", Model.Personnel.ID, new { @class = "form-control" })
+@Html.Hidden("PersonnelID", Model.Personnel.ID, new { @class = "form-control leave-main" })
 
 @*@Html.TextBox("LeaveType", "", new { @class = "form-control form-control", @type = "text", @list = "LeaveTypes" })
     <datalist id="LeaveTypes">
@@ -16,16 +16,16 @@
     </datalist>
     <button type="reset" class="btn btn-default font-bold pull-right m-r-sm">Clear</button>*@
 
-<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
     <label class="control-label">Leave Type</label>
     @*<select id="LeaveTypeID" name="LeaveTypeID" class="form-control form-control">
-        <option isbulk="false">N/A</option>
-        @foreach (var l in Model.LeaveTypes)
-        {
-            <option value="@l.ID" isbulk="@((l.BulkUse ?? false) ? "true" : "false")">@l.Description</option>
-        }
-    </select>*@
-    @Html.DropDownListFor(m => m.LeaveTypeID, new SelectList(Model.LeaveTypes, "ID", "Description"), "N/A", new { @class = "form-control" })
+            <option isbulk="false">N/A</option>
+            @foreach (var l in Model.LeaveTypes)
+            {
+                <option value="@l.ID" isbulk="@((l.BulkUse ?? false) ? "true" : "false")">@l.Description</option>
+            }
+        </select>*@
+    @Html.DropDownListFor(m => m.LeaveTypeID, new SelectList(Model.LeaveTypes, "ID", "Description"), "N/A", new { @class = "form-control leave-main" })
 </div>
 
 @*<div id="NonBulkUseDatePicker">
@@ -47,19 +47,41 @@
     </div>
         </div>*@
 
-<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
     <label class="control-label">Request Date</label>
-    @Html.TextBox("RequestedDate", String.Format("{0:yyyy'-'MM'-'dd}", ""), new { @type = "date", @class = "form-control" })
+    @Html.TextBox("RequestedDate", String.Format("{0:yyyy'-'MM'-'dd}", ""), new { @type = "date", @class = "form-control leave-main" })
 </div>
 
-<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+<div id="MedicardFields" class="hidden">
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+        <label class="control-label">Hospital</label>
+        @Html.TextBox("Hospital", "", new { @class = "form-control" })
+    </div>
+
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+        <label class="control-label">Location</label>
+        @Html.TextBox("Location", "", new { @class = "form-control" })
+    </div>
+
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+        <label class="control-label">Period Start</label>
+        @Html.TextBox("PeriodStart", String.Format("{0:yyyy'-'MM'-'dd}", ""), new { @type = "date", @class = "form-control" })
+    </div>
+
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+        <label class="control-label">Period End</label>
+        @Html.TextBox("PeriodEnd", String.Format("{0:yyyy'-'MM'-'dd}", ""), new { @type = "date", @class = "form-control" })
+    </div>
+</div>
+
+<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
     <label class="control-label">No. of Days</label>
-    @Html.TextBox("NoofDays", "1", new { @type = "number", @class = "form-control" })
+    @Html.TextBox("NoofDays", "1", new { @type = "number", @class = "form-control leave-main" })
 </div>
 
 <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <label class="control-label">Reasons</label>
-    @Html.TextArea("Reasons", new { @class = "form-control form-control", @rows = "4", @placeholder = "Reasons..." })
+    @Html.TextArea("Reasons", new { @class = "form-control leave-main", @rows = "4", @placeholder = "Reasons..." })
 </div>
 
 @if (CreatorAccess.Update || CreatorAccess.Insert)

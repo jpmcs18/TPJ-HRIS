@@ -15,7 +15,7 @@ namespace WebTemplate.Controllers.Kiosk
         public ActionResult Index(Index model)
         {
             model.Page = model.Page > 1 ? model.Page : 1;
-            model.Personnel = PersonnelProcess.GetByUserId(User.UserID);
+            model.Personnel = PersonnelProcess.GetByUserId(User.UserID, true);
             model.HighRiskRequests = HighRiskRequestProcess.Instance.Value.GetList(model.Personnel?.ID ?? 0, model.IsExpired, model.IsPending, model.IsApproved, model.IsCancelled, model.StartDate, model.EndingDate, model.Page, model.GridCount, out int PageCount);
             model.HighRiskRequest = new HighRiskRequest();
             model.HighRiskRequest.RequestDate = DateTime.Now;
@@ -40,7 +40,7 @@ namespace WebTemplate.Controllers.Kiosk
             {
                 Index model = new Index
                 {
-                    Personnel = PersonnelProcess.GetByUserId(User.UserID),
+                    Personnel = PersonnelProcess.GetByUserId(User.UserID, true),
                     HighRiskRequest = new HighRiskRequest()
                 };
 

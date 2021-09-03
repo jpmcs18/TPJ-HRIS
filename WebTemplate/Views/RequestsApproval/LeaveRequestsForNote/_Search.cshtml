@@ -70,6 +70,13 @@
 
         <div class="form-group col-xs-12 col-sm-3 col-md-2 col-lg-1">
             <label class="control-label">
+                @Html.CheckBoxFor(m => m.IsNoted, new { @class = "i-checks status-checkbox" })
+                Noted
+            </label>
+        </div>
+
+        <div class="form-group col-xs-12 col-sm-3 col-md-2 col-lg-1">
+            <label class="control-label">
                 @Html.CheckBoxFor(m => m.IsCancelled, new { @class = "i-checks status-checkbox" })
                 Cancelled
             </label>
@@ -126,7 +133,7 @@
                         <th class="text-left">Personnel</th>
                         <th class="text-left">Leave Type</th>
                         @*<th class="text-center">Start/End DateTime</th>*@
-                        <th class="text-left">Requested Date</th>
+                        <th class="text-left">Requested Date <i class="fa fa-caret-down"></i></th>
                         <th class="text-left">No. of. Days</th>
                         <th class="text-left">Reasons</th>
                         <th class="text-left">Status</th>
@@ -142,12 +149,13 @@
                             var RowColorLabel = ""; // Model.LeaveRequests[i].Cancelled == true ? " label-danger" : Model.LeaveRequests[i].Approved == true ? " label-primary" : Model.LeaveRequests[i].ModifiedBy != null ? " label-success" : " label-info";
                             var Expired = Model.LeaveRequests[i].IsExpired == true;
                             var Approved = Model.LeaveRequests[i].Approved == true;
+                            var Noted = Model.LeaveRequests[i].Noted == true;
                             var Cancelled = Model.LeaveRequests[i].Cancelled == true;
                             var IsPending = !Approved && !Cancelled;
 
-                            var LastStatus = Approved ? "<span class='label label-primary'>Approved</span>" : (Cancelled ? "<span class='label label-danger'>Cancelled</span>" : (Expired ? "<span class='label label-warning'>Expired</span>" : "<span class='label label-info'>Pending</span>"));
-                            var LastUser = Cancelled ? Model.LeaveRequests[i]._Cancel : Approved ? Model.LeaveRequests[i]._Approver : Model.LeaveRequests[i].ModifiedBy != null ? Model.LeaveRequests[i]._Modifier : Model.LeaveRequests[i]._Creator;
-                            var LastDate = Cancelled ? Model.LeaveRequests[i].CancelledOn : Approved ? Model.LeaveRequests[i].ApprovedOn : Model.LeaveRequests[i].ModifiedBy != null ? Model.LeaveRequests[i].ModifiedOn : Model.LeaveRequests[i].CreatedOn;
+                            var LastStatus = Approved ? "<span class='label label-primary'>Approved</span>" : ((Noted ? "<span class='label label-info'>Noted</span>" : (Cancelled ? "<span class='label label-danger'>Cancelled</span>" : (Expired ? "<span class='label label-warning'>Expired</span>" : "<span class='label label-info'>Pending</span>"))));
+                            var LastUser = Approved ? Model.LeaveRequests[i]._Approver : (Noted ? Model.LeaveRequests[i]._Noted : (Cancelled ? Model.LeaveRequests[i]._Cancel : (Model.LeaveRequests[i].ModifiedBy != null ? Model.LeaveRequests[i]._Modifier : Model.LeaveRequests[i]._Creator)));
+                            var LastDate = Approved ? Model.LeaveRequests[i].ApprovedOn : (Noted ? Model.LeaveRequests[i].NotedOn : (Cancelled ? Model.LeaveRequests[i].CancelledOn : (Model.LeaveRequests[i].ModifiedBy != null ? Model.LeaveRequests[i].ModifiedOn : Model.LeaveRequests[i].CreatedOn)));
                             var filename = Path.GetFileName(Model.LeaveRequests[i].File);
 
                     <tr id="Row-Display-LeaveRequests-@Model.LeaveRequests[i].ID" class="Row-Display Row-Display-LeaveRequests @RowColorLabel" style="">
@@ -171,7 +179,7 @@
                                 @Model.LeaveRequests[i].Reasons
                             </text>
                         </td>
-                        <td class="text-center">@Html.Raw(LastStatus)</td>
+                        <td class="text-left">@Html.Raw(LastStatus)</td>
                         <td class="text-left">
                             @Html.Raw(String.Format("{0}<br/>{1:MM/dd/yyyy hh:mm tt}", LastUser ?? "", LastDate))
                         </td>
@@ -180,16 +188,12 @@
                                 @Model.LeaveRequests[i].Remarks
                             </text>
                         </td>
-                        @if (PageAccess.Approve || PageAccess.View)
+                        @if ((PageAccess.Approve || PageAccess.View) && !Noted)
                         {
                             <td style="width: 160px;" class="row-actions">
                                 <div class="btn-group">
-                                    @if (IsPending)
-                                    {
-                                        <button type="button" name="id" class="btn btn-danger btn-lg btn-rounded CancelLeaveRequest" value="@Model.LeaveRequests[i].ID" title="Disapprove"><i class="fa fa-thumbs-o-down"></i></button>
-                                        <button type="button" name="id" class="btn btn-primary btn-lg btn-rounded LeaveRequestsForNote" value="@Model.LeaveRequests[i].ID" title="Note"><i class="fa fa-thumbs-o-up"></i></button>
-
-                                    }
+                                    <button type="button" name="id" class="btn btn-danger btn-lg btn-rounded CancelLeaveRequest" value="@Model.LeaveRequests[i].ID" title="Disapprove"><i class="fa fa-thumbs-o-down"></i></button>
+                                    <button type="button" name="id" class="btn btn-primary btn-lg btn-rounded LeaveRequestsForNote" value="@Model.LeaveRequests[i].ID" title="Note"><i class="fa fa-thumbs-o-up"></i></button>
                                 </div>
                             </td>
                         }

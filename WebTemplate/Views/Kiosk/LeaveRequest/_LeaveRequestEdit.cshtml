@@ -11,10 +11,10 @@
     var IsPending = (Model.Approved == null || Model.Approved == false) && (Model.Cancelled == null || Model.Cancelled == false);
 }
 
-@Html.Hidden("PersonnelID", Model.PersonnelID, new { @class = "form-control" })
-@Html.Hidden("ID", Model.ID, new { @class = "form-control" })
+@Html.Hidden("PersonnelID", Model.PersonnelID, new { @class = "form-control leave-main" })
+@Html.Hidden("ID", Model.ID, new { @class = "form-control leave-main" })
 
-<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
     <label class="control-label">Type</label>
     @*<select id="LeaveTypeID" name="LeaveTypeID" class="form-control form-control">
             <option value="" isbulk="false">N/A</option>
@@ -24,11 +24,11 @@
                 <option value="@l.ID" isbulk="@((l.BulkUse ?? false) ? " true" : "false" )" @selected>@l.Description</option>
             }
         </select>*@
-    @Html.DropDownListFor(m => m.LeaveTypeID, new SelectList(leaveTypes, "ID", "Description"), "N/A", new { @class = "form-control" })
+    @Html.DropDownListFor(m => m.LeaveTypeID, new SelectList(leaveTypes, "ID", "Description"), "N/A", new { @class = "form-control leave-main" })
 </div>
 
 @*<div id="BulkUseDatePicker" class="@(IsBulkUse ? " " : " hidden")">
-        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
             <label class="control-label">Start Date</label>
             @Html.TextBox("StartDateTime", String.Format("{0:yyyy'-'MM'-'dd}", Model.StartDateTime), new { @type = "date", @class = "form-control" })
         </div>
@@ -45,19 +45,41 @@
         </div>
     </div>*@
 
-<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
     <label class="control-label">Request Date</label>
-    @Html.TextBoxFor(m => m.RequestedDate, String.Format("{0:yyyy'-'MM'-'dd}", Model.RequestedDate), new { @type = "date", @class = "form-control" })
+    @Html.TextBoxFor(m => m.RequestedDate, String.Format("{0:yyyy'-'MM'-'dd}", Model.RequestedDate), new { @type = "date", @class = "form-control leave-main" })
 </div>
 
-<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+<div id="MedicardFields" class="@(Model.LeaveTypeID == 3 ? "" : "hidden")">
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+        <label class="control-label">Hospital</label>
+        @Html.TextBoxFor(m => m.Hospital, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+        <label class="control-label">Location</label>
+        @Html.TextBoxFor(m => m.Location, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+        <label class="control-label">Period Start</label>
+        @Html.TextBoxFor(m => m.PeriodStart, String.Format("{0:yyyy'-'MM'-'dd}", Model.PeriodStart), new { @type = "date", @class = "form-control" })
+    </div>
+
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+        <label class="control-label">Period End</label>
+        @Html.TextBoxFor(m => m.PeriodEnd, String.Format("{0:yyyy'-'MM'-'dd}", Model.PeriodEnd), new { @type = "date", @class = "form-control" })
+    </div>
+</div>
+
+<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
     <label class="control-label">No. of Days</label>
-    @Html.TextBoxFor(m => m.NoofDays, new { @type = "number", @class = "form-control" })
+    @Html.TextBoxFor(m => m.NoofDays, new { @type = "number", @class = "form-control leave-main" })
 </div>
 
 <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <label class="control-label">Reasons</label>
-    @Html.TextAreaFor(m => m.Reasons, new { @class = "form-control form-control", @rows = "4", @placeholder = "Reasons..." })
+    @Html.TextAreaFor(m => m.Reasons, new { @class = "form-control leave-main", @rows = "4", @placeholder = "Reasons..." })
 </div>
 
 @if (!(Model.IsExpired && IsPending))

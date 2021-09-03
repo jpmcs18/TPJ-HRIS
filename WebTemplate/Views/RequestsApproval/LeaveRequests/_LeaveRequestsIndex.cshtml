@@ -259,6 +259,7 @@
             //$('#UploadDocumentModal #browseFile').val(filename);
             //$('#UploadDocumentModal #DeleteDocument').attr(filename ? 'submit' : 'hidden');
             $('#UploadDocumentModal .modal-header .close').off('click').on('click', CancelDocumentUpload);
+            $("#UploadDocumentModal #browseFile").val('');
             $('#UploadDocumentModal').appendTo('body').modal('show');
         }
         else {
