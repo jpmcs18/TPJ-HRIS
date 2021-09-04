@@ -8,8 +8,8 @@ namespace ProcessLayer.Entities.Kiosk
         public byte? LeaveTypeID { get; set; }
         public float? ApprovedLeaveCredits { get; set; }
         public float? ComputedLeaveCredits { get; set; }
-        public float NoofDays { get; set; }
-        public DateTime RequestedDate { get; set; }
+        public float? NoofDays { get; set; }
+        public DateTime? RequestedDate { get; set; }
         public string File { get; set; }
         public string FilePath { get; set; }
         public bool IsExpired { get { return Approved != true && Cancelled != true && CreatedOn != null && ((DateTime.Now - CreatedOn).Value.TotalHours >= 48) && false; } }

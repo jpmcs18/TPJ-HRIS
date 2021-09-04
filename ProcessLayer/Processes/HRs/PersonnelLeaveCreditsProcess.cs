@@ -180,7 +180,7 @@ namespace ProcessLayer.Processes.HR
             Personnel personnel = PersonnelProcess.Get(personnelID, true);
             if (personnel.DateHired == null)
             {
-                throw new Exception("Date hired is null");
+                return;
             }
 
             List<LeaveDefaultCredits> defaultCredits = LeaveDefaultCreditsProcess.Instance.Value.GetList(personnel.Years);

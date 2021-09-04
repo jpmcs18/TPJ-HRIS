@@ -454,7 +454,7 @@ namespace ProcessLayer.Computation.CnB
                         if (breaktime.AddHours(sched.BreakTimeHour ?? 0) > LogoutDate && breaktime < LogoutDate)
                             undertime = GlobalHelper.SubtractDate(endtime, breaktime.AddHours(sched.BreakTimeHour ?? 0));
                         else if (breaktime > LogoutDate)
-                            undertime = GlobalHelper.SubtractDate(endtime, LogoutDate) - (sched.BreakTimeHour ?? 0);
+                            undertime = GlobalHelper.SubtractDateWithBreakTime(endtime, LogoutDate, sched.BreakTimeHour ?? 0);
                         else if (breaktime.AddHours(sched.BreakTimeHour ?? 0) < LogoutDate)
                             undertime = GlobalHelper.SubtractDate(endtime, LogoutDate);
                         else

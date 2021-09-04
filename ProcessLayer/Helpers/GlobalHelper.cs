@@ -14,6 +14,11 @@ namespace ProcessLayer.Helpers
         {
             return (int)((end - start)?.TotalMinutes ?? 0);
         }
+        public static int SubtractDateWithBreakTime(DateTime? end, DateTime? start, int breakTime)
+        {
+            return (int)((end - start)?.TotalMinutes ?? 0) - (breakTime * 60);
+        }
+
 
         public static DateTime? GetPrevSchedDate(List<PersonnelSchedule> scheds, DateTime date, List<NonWorkingDays> NonWorkingDays, int? locationId)
         {

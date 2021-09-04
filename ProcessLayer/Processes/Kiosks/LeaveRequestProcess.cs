@@ -36,12 +36,12 @@ namespace ProcessLayer.Processes.Kiosk
                 PersonnelID = dr[LeaveRequestFields.PersonnelID].ToNullableLong(),
                 LeaveTypeID = dr[LeaveRequestFields.LeaveTypeID].ToNullableByte(),
                 _LeaveType = LeaveTypeProcess.Instance.Value.Get(dr[LeaveRequestFields.LeaveTypeID].ToNullableByte()),
-                RequestedDate = dr[LeaveRequestFields.RequestedDate].ToDateTime(),
+                RequestedDate = dr[LeaveRequestFields.RequestedDate].ToNullableDateTime(),
                 Hospital = dr[LeaveRequestFields.Hospital].ToString(),
                 Location = dr[LeaveRequestFields.Location].ToString(),
                 PeriodStart = dr[LeaveRequestFields.PeriodStart].ToNullableDateTime(),
                 PeriodEnd = dr[LeaveRequestFields.PeriodEnd].ToNullableDateTime(),
-                NoofDays = dr[LeaveRequestFields.NoofDays].ToFloat(),
+                NoofDays = dr[LeaveRequestFields.NoofDays].ToNullableFloat(),
                 Reasons = dr[LeaveRequestFields.Reasons].ToString(),
                 File = dr[LeaveRequestFields.File].ToString(),
                 Approved = dr[LeaveRequestFields.Approved].ToNullableBoolean(),
@@ -386,9 +386,9 @@ namespace ProcessLayer.Processes.Kiosk
         private void Approve(long id, int userid, DBTools db)
         {
             LeaveRequest leave = Get(db, id);
-            PersonnelLeaveCredit leaveCredits = PersonnelLeaveCreditProcess.Instance.Value.GetRemainingCredits(db, leave.PersonnelID ?? 0, leave.LeaveTypeID ?? 0, (short)(leave.RequestedDate.Year));
+            PersonnelLeaveCredit leaveCredits = PersonnelLeaveCreditProcess.Instance.Value.GetRemainingCredits(db, leave.PersonnelID ?? 0, leave.LeaveTypeID ?? 0, (short)(leave.RequestedDate?.Year));
 
-            float leaveCreditsToUse = leave.NoofDays;
+            float leaveCreditsToUse = leave.NoofDays ?? 0;
 
             if (leaveCreditsToUse > (leaveCredits?.LeaveCredits ?? 0))
             {
@@ -403,7 +403,7 @@ namespace ProcessLayer.Processes.Kiosk
             if ((leave.Approved ?? false) && (((leave._LeaveType.HasDocumentNeeded ?? false) && !string.IsNullOrEmpty(leave.FilePath)) || !(leave._LeaveType.HasDocumentNeeded ?? false)))
             {
                 UpdateApproveCredits(db, id, leaveCreditsToUse, userid);
-                PersonnelLeaveCreditProcess.Instance.Value.UpdateCredits(db, leave.PersonnelID ?? 0, leave.LeaveTypeID ?? 0, leave.RequestedDate.Year, leaveCreditsToUse, userid);
+                PersonnelLeaveCreditProcess.Instance.Value.UpdateCredits(db, leave.PersonnelID ?? 0, leave.LeaveTypeID ?? 0, leave.RequestedDate?.Year ?? 0, leaveCreditsToUse, userid);
             }
 
         }
@@ -497,9 +497,9 @@ namespace ProcessLayer.Processes.Kiosk
                 sb.AppendLine("- No of days cannot be null.");
             }
 
-            PersonnelLeaveCredit leaveCredits = PersonnelLeaveCreditProcess.Instance.Value.GetRemainingCredits(leave.PersonnelID ?? 0, leave.LeaveTypeID ?? 0, (short)leave.RequestedDate.Year);
+            PersonnelLeaveCredit leaveCredits = PersonnelLeaveCreditProcess.Instance.Value.GetRemainingCredits(leave.PersonnelID ?? 0, leave.LeaveTypeID ?? 0, (short)leave.RequestedDate?.Year);
             
-            float leaveCreditsToUse = leave.NoofDays;
+            float leaveCreditsToUse = leave.NoofDays ?? 0;
 
             if (leaveCreditsToUse > leaveCredits?.LeaveCredits)
             {
