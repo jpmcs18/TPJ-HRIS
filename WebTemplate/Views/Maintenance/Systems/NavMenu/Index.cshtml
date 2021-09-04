@@ -98,7 +98,7 @@
                 $("#formpost").html(response);
                 $('#modal_management').appendTo("body").modal('show');
                 event_save();
-                select2Override();
+                Select2Override();
             },
             error: function () {
                 toastr.error('AJAX backend error', 'An error has occured.');

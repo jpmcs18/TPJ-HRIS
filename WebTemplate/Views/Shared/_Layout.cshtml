@@ -268,7 +268,8 @@
                 $('input').focusout();
             });
         }
-        function select2Override() {
+
+        function Select2Override() {
             //add 'select2' class to all dropdowns
             $("select.form-control").addClass("select2");
             //changing element style
@@ -305,6 +306,7 @@
             });
             //$('div.date').children('input.form-control')
         }
+
         function ShowLoadingScreen() {
             $('body').addClass('sk-loading').css('overflow', 'hidden');
             $('input').focusout();
@@ -370,7 +372,7 @@
             //$('div.navParent').addClass('slideOutLeft');
             //$('.mail-box table tbody tr.Row-Display').attr('title', 'Click to Edit');
 
-            select2Override();
+            Select2Override();
             floatingButtonFunctions();
             pageHeadingClassOverride();
             addToggleSpinners();
