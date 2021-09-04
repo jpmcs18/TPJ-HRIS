@@ -14,7 +14,15 @@
 @Html.Hidden("PersonnelID", Model.PersonnelID, new { @class = "form-control leave-main" })
 @Html.Hidden("ID", Model.ID, new { @class = "form-control leave-main" })
 
-<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    @using (Html.BeginForm("PrintRequest", "LeaveRequest", FormMethod.Post, new { @target = "_blank", @class = "pull-right" }))
+    {
+        <button class="btn btn-primary compose-mail pull-right" type="submit" id="PrintRequest" title="Print Request"><i class="fa fa-print"></i> Print</button>
+        <input type="hidden" value="@Model.ID" name="id" />
+    }
+</div>
+
+<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
     <label class="control-label">Type</label>
     @*<select id="LeaveTypeID" name="LeaveTypeID" class="form-control form-control">
             <option value="" isbulk="false">N/A</option>
@@ -28,53 +36,53 @@
 </div>
 
 @*<div id="BulkUseDatePicker" class="@(IsBulkUse ? " " : " hidden")">
-        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
             <label class="control-label">Start Date</label>
             @Html.TextBox("StartDateTime", String.Format("{0:yyyy'-'MM'-'dd}", Model.StartDateTime), new { @type = "date", @class = "form-control" })
         </div>
     </div>
     <div id="NonBulkUseDatePicker" class="@(IsBulkUse ? " hidden" : "" )">
-        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
             <label class="control-label">Start DateTime</label>
             @Html.TextBox("StartDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.StartDateTime), new { @type = "datetime-local", @class = "form-control" })
         </div>
 
-        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
             <label class="control-label">End DateTime</label>
             @Html.TextBox("EndDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.EndDateTime), new { @type = "datetime-local", @class = "form-control" })
         </div>
     </div>*@
 
-<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
     <label class="control-label">Request Date</label>
     @Html.TextBoxFor(m => m.RequestedDate, String.Format("{0:yyyy'-'MM'-'dd}", Model.RequestedDate), new { @type = "date", @class = "form-control leave-main" })
 </div>
 
+<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
+    <label class="control-label">No. of Days</label>
+    @Html.TextBoxFor(m => m.NoofDays, new { @type = "number", @class = "form-control leave-main" })
+</div>
+
 <div id="MedicardFields" class="@(Model.LeaveTypeID == 3 ? "" : "hidden")">
-    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
         <label class="control-label">Hospital</label>
         @Html.TextBoxFor(m => m.Hospital, new { @class = "form-control" })
     </div>
 
-    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
         <label class="control-label">Location</label>
         @Html.TextBoxFor(m => m.Location, new { @class = "form-control" })
     </div>
 
-    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
         <label class="control-label">Period Start</label>
         @Html.TextBoxFor(m => m.PeriodStart, String.Format("{0:yyyy'-'MM'-'dd}", Model.PeriodStart), new { @type = "date", @class = "form-control" })
     </div>
 
-    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
         <label class="control-label">Period End</label>
         @Html.TextBoxFor(m => m.PeriodEnd, String.Format("{0:yyyy'-'MM'-'dd}", Model.PeriodEnd), new { @type = "date", @class = "form-control" })
     </div>
-</div>
-
-<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
-    <label class="control-label">No. of Days</label>
-    @Html.TextBoxFor(m => m.NoofDays, new { @type = "number", @class = "form-control leave-main" })
 </div>
 
 <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -109,37 +117,4 @@
             </div>
         }
     }
-
-    @*if (!String.IsNullOrEmpty(Model.Creator))
-        {
-            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3 m-t-lg">
-                <div class='md-step-optional'>Created By:</div>
-                <div class='md-step-optional'><b>@Html.Raw(Model.Creator ?? "&nbsp;")</b></div>
-                <div class='md-step-optional'>@Html.Raw(String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.CreatedOn) ?? "&nbsp;")</div>
-            </div>
-        }
-        if (!String.IsNullOrEmpty(Model._Modifier))
-        {
-            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3 m-t-lg">
-                <div class='md-step-optional'>Modified By:</div>
-                <div class='md-step-optional'><b>@Html.Raw(Model._Modifier ?? "&nbsp;")</b></div>
-                <div class='md-step-optional'>@Html.Raw(String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.ModifiedOn) ?? "&nbsp;")</div>
-            </div>
-        }
-        if (!String.IsNullOrEmpty(Model.Approver))
-        {
-            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3 m-t-lg">
-                <div class='md-step-optional'>Approved By:</div>
-                <div class='md-step-optional'><b>@Html.Raw(Model.Approver ?? "&nbsp;")</b></div>
-                <div class='md-step-optional'>@Html.Raw(String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.ApprovedOn) ?? "&nbsp;")</div>
-            </div>
-        }
-        if (!String.IsNullOrEmpty(Model.Cancel))
-        {
-            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3 m-t-lg">
-                <div class='md-step-optional'>Cancelled By:</div>
-                <div class='md-step-optional'><b>@Html.Raw(Model.Cancel ?? "&nbsp;")</b></div>
-                <div class='md-step-optional'>@Html.Raw(String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.CancelledOn) ?? "&nbsp;")</div>
-            </div>
-        }*@
 }

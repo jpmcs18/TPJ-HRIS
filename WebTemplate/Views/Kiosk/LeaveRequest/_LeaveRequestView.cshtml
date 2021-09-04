@@ -4,6 +4,8 @@
     var c = User as WebTemplate.Models.CustomPrincipal;
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
     var CreatorAccess = credential.GetPage("Creator Leave Request") ?? new DataAccessLayer.System.Page();
+    var UploadDocumentAccess = credential.GetPage("Kiosk Upload Document") ?? new DataAccessLayer.System.Page();
+
     var leaveTypes = ProcessLayer.Processes.LeaveTypeProcess.Instance.Value.GetList();
     var IsBulkUse = Model._LeaveType.BulkUse ?? false;
 }
@@ -11,52 +13,85 @@
 @Html.Hidden("PersonnelID", Model.PersonnelID, new { @class = "fix-values" })
 @Html.Hidden("ID", Model.ID, new { @class = "fix-values" })
 
-<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    @using (Html.BeginForm("PrintRequest", "LeaveRequest", FormMethod.Post, new { @target = "_blank", @class = "pull-right" }))
+    {
+        <button class="btn btn-primary compose-mail pull-right" type="submit" id="PrintRequest" title="Print Request"><i class="fa fa-print"></i> Print</button>
+        <input type="hidden" value="@Model.ID" name="id" />
+    }
+</div>
+
+<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
     <label class="control-label">Leave Type</label>
     <label class="form-control">@(Model._LeaveType?.Description ?? "")</label>
 </div>
 
-@*<div id="StartDateTimeDiv" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+@*<div id="StartDateTimeDiv" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
         <label class="control-label">Start Date & Time</label>
         <label class="form-control">@(String.Format("{0:yyyy'-'MM'-'dd" + (IsBulkUse ? "" : "'T'HH':'mm") + "}", Model.StartDateTime))</label>
     </div>
 
-    <div id="EndDateTimeDiv" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6@(IsBulkUse ? " hidden" : "")">
+    <div id="EndDateTimeDiv" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4@(IsBulkUse ? " hidden" : "")">
         <label class="control-label">End Date & Time</label>
         <label class="form-control">@(String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.EndDateTime))</label>
     </div>*@
 
-<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
+    <label class="control-label">No. of Days</label>
+    <label class="form-control" rows="4">@Model.NoofDays</label>
+</div>
+
+<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
     <label class="control-label">Requested Date</label>
     <label class="form-control">@(String.Format("{0:yyyy'-'MM'-'dd}", Model.RequestedDate))</label>
 </div>
 
 <div id="MedicardFields" class="@(Model.LeaveTypeID == 3 ? "" : "hidden")">
-    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
         <label class="control-label">Hospital</label>
         <label class="form-control">@Model.Hospital</label>
     </div>
 
-    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
         <label class="control-label">Location</label>
         <label class="form-control">@Model.Location</label>
     </div>
 
-    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
         <label class="control-label">Period Start</label>
         <label class="form-control">@(String.Format("{0:yyyy'-'MM'-'dd}", Model.PeriodStart))</label>
     </div>
 
-    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
         <label class="control-label">Period End</label>
         <label class="form-control">@(String.Format("{0:yyyy'-'MM'-'dd}", Model.PeriodEnd))</label>
     </div>
 </div>
 
-<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
-    <label class="control-label">No. of Days</label>
-    <label class="form-control" rows="4">@Model.NoofDays</label>
-</div>
+@if (UploadDocumentAccess.View && Model.Approved == true && (Model._LeaveType.HasDocumentNeeded ?? false))
+{
+    var filename = Path.GetFileName(Model.File);
+
+    if (Model.Noted && Model.ApprovedLeaveCredits > 0)
+    {
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-8">
+            <label class="control-label">Document</label>
+            <label class="form-control" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="@(filename)">@Html.Raw(filename)</label>
+        </div>
+    }
+    else
+    {
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
+            <label class="control-label">Choose Document</label>
+            <input id="browseFile" type="file" style=" padding-top: 2px;" class="form-control" title="@(!string.IsNullOrEmpty(filename) ? filename : "Upload Document")" value="@filename" />
+        </div>
+
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
+            <label class="control-label">Upload Document</label>
+            <button id="ValidateFile" type="button" onclick="ValidateFile()" class="form-control" disabled style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">@(!string.IsNullOrEmpty(filename) ? filename : "Upload")</button>
+        </div>
+    }
+}
 
 <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <label class="control-label">Reasons</label>

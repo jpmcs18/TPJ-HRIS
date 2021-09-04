@@ -4,6 +4,7 @@
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
     var PageAccess = credential.GetPage("Kiosk/LeaveRequest") ?? new DataAccessLayer.System.Page();
     var CreatorAccess = credential.GetPage("Creator Leave Request") ?? new DataAccessLayer.System.Page();
+    //var UploadDocumentAccess = credential.GetPage("Kiosk Upload Document") ?? new DataAccessLayer.System.Page();
     var IsBulkUse = Model.LeaveTypes.Where(m => m.ID == Model.LeaveTypeID).Select(m => m.BulkUse).FirstOrDefault() ?? false;
 }
 
@@ -155,6 +156,7 @@
                             <th class="text-center">Status</th>
                             <th class="text-left">Last Modified</th>
                             <th class="text-left">Remarks</th>
+                            <th class="text-left">Document</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -166,8 +168,10 @@
                                 var LastStatus = Model.LeaveRequests[i].IsExpired == true ? "<span class='label label-warning'>Expired</span>" : (Model.LeaveRequests[i].Cancelled == true ? "<span class='label label-danger'>Cancelled</span>" : (Model.LeaveRequests[i].Approved == true ? "<span class='label label-primary'>Approved</span>" : "<span class='label label-info'>Pending</span>"));
                                 var LastUser = Model.LeaveRequests[i].Cancelled == true ? Model.LeaveRequests[i]._Cancel : (Model.LeaveRequests[i].Approved == true ? Model.LeaveRequests[i]._Approver : (Model.LeaveRequests[i].Noted == true ? Model.LeaveRequests[i]._Noted : (Model.LeaveRequests[i].ModifiedBy != null ? Model.LeaveRequests[i]._Modifier : Model.LeaveRequests[i]._Creator)));
                                 var LastDate = Model.LeaveRequests[i].Cancelled == true ? Model.LeaveRequests[i].CancelledOn : (Model.LeaveRequests[i].Approved == true ? Model.LeaveRequests[i].ApprovedOn : (Model.LeaveRequests[i].Noted == true ? Model.LeaveRequests[i].NotedOn : (Model.LeaveRequests[i].ModifiedBy != null ? Model.LeaveRequests[i].ModifiedOn : Model.LeaveRequests[i].CreatedOn)));
+                                var Approved = Model.LeaveRequests[i].Approved == true;
+                                var filename = Path.GetFileName(Model.LeaveRequests[i].File);
 
-                                <tr id="Row-Display-LeaveRequest-@Model.LeaveRequests[i].ID" class="Row-Display Row-Display-LeaveRequests @RowColorLabel" onclick="EditRequest(@Model.LeaveRequests[i].ID);" title="Left click here to open record">
+                                <tr id="Row-Display-LeaveRequest-@Model.LeaveRequests[i].ID" class="Row-Display Row-Display-LeaveRequests @RowColorLabel" onclick="EditRequest(@Model.LeaveRequests[i].ID, '@(!Approved ? "Edit" : "View")');" title="Left click here to open record">
                                     <td class="check-mail">
                                         @if (CreatorAccess.Delete)
                                         {
@@ -208,6 +212,23 @@
                                             @Model.LeaveRequests[i].Remarks
                                         </text>
                                     </td>
+                                    <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
+                                        @*@if (UploadDocumentAccess.View)
+                                        {
+                                            if (Approved && (Model.LeaveRequests[i]._LeaveType.HasDocumentNeeded ?? false))
+                                            {
+                                                <button type="button" name="" class="btn btn-default btn-md" onclick="UploadDocument(@Model.LeaveRequests[i].ID, '')" title="@(!string.IsNullOrEmpty(filename) ? filename : "Upload Document")" value="@filename"><i class="fa fa-paperclip"></i>@Html.Raw(!string.IsNullOrEmpty(filename) ? " <span class='label label-info'>1</span>" : "")</button>
+                                            }
+                                            else if (Model.LeaveRequests[i].ApprovedLeaveCredits > 0)
+                                            {
+                                                <span class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@(filename)">@Html.Raw(filename)</span>
+                                            }
+                                        }*@
+                                        @if (Model.LeaveRequests[i].ApprovedLeaveCredits > 0)
+                                        {
+                                            <span class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@(filename)">@Html.Raw(filename)</span>
+                                        }
+                                    </td>
                                 </tr>
                             }
                         }
@@ -216,7 +237,7 @@
                             <tr id="No-Row-Display"><td style="text-align: center;" colspan="10">No @PageAccess.PageName found...</td></tr>
                         }
                         <tr id="Row-Loading-Display" class="hidden">
-                            <td style="text-align: center;" colspan="6">
+                            <td style="text-align: center;" colspan="10">
                                 <i id="" class="fa fa-rotate-left rotate" style="padding: 8px; font-size: 20px; text-align: right;"></i>
                             </td>
                         </tr>
