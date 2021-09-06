@@ -329,7 +329,7 @@ namespace ProcessLayer.Computation.CnB
                     }
                     else if (((holiday?.ID ?? 0) > 0) || (sched?.ID ?? 0) == 0 || start.DayOfWeek == DayOfWeek.Sunday)
                     {
-                        SundayOrHolidayComputation(payroll, timelogs, start, sched, starttime, endtime, startnight1, endnight1, startnight2, endnight2, defbt, defbtend, details, LoginDate, LogoutDate, (wholeDayOT ?? earlyOT) ?? afterWorkOT, isholiday, prevDate);
+                        SundayOrHolidayComputation(payroll, timelogs, start, sched, starttime, endtime, startnight1, endnight1, startnight2, endnight2, defbt, defbtend, details, LoginDate, LogoutDate, (wholeDayOT ?? earlyOT) ?? afterWorkOT, ((holiday?.ID ?? 0) > 0), prevDate);
                     }
                     else
                     {
