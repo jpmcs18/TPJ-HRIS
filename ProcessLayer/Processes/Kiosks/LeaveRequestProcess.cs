@@ -61,7 +61,8 @@ namespace ProcessLayer.Processes.Kiosk
                 ModifiedBy = dr[LeaveRequestFields.ModifiedBy].ToNullableInt(),
                 ModifiedOn = dr[LeaveRequestFields.ModifiedOn].ToNullableDateTime(),
                 NotedBy = dr[LeaveRequestFields.NotedBy].ToNullableInt(),
-                NotedOn = dr[LeaveRequestFields.NotedOn].ToNullableDateTime()
+                NotedOn = dr[LeaveRequestFields.NotedOn].ToNullableDateTime(),
+                Noted = dr[LeaveRequestFields.Noted].ToNullableBoolean()
             };
 
             o._LeaveType = LeaveTypeProcess.Instance.Value.Get(o.LeaveTypeID);
@@ -185,7 +186,7 @@ namespace ProcessLayer.Processes.Kiosk
             }
             return Leaves;
         }
-        public List<LeaveRequest> GetRequestThatNeedDocument(string personnel, byte? leavetypeid, bool isExpired, bool isPending, bool isCancelled, DateTime? startdatetime, DateTime? enddatetime, int page, int gridCount, out int PageCount)
+        public List<LeaveRequest> GetRequestThatNeedDocument(string personnel, byte? leavetypeid, bool isExpired, bool isPending, bool isApproved, bool isCancelled, DateTime? startdatetime, DateTime? enddatetime, int page, int gridCount, out int PageCount)
         {
             var Leaves = new List<LeaveRequest>();
             var parameters = new Dictionary<string, object> {
@@ -193,7 +194,7 @@ namespace ProcessLayer.Processes.Kiosk
                 { LeaveRequestParameters.LeaveTypeID, leavetypeid },
                 { LeaveRequestParameters.IsExpired, isExpired },
                 { LeaveRequestParameters.IsPending, isPending },
-                { LeaveRequestParameters.IsApproved, IsApproved},
+                { LeaveRequestParameters.IsApproved, isApproved},
                 { LeaveRequestParameters.IsCancelled, isCancelled },
                 { LeaveRequestParameters.StartDate, startdatetime },
                 { LeaveRequestParameters.EndDate, enddatetime },
