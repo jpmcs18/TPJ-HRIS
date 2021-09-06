@@ -180,7 +180,7 @@ namespace ProcessLayer.Computation.CnB
                 {
                     details.isHighRisk = true;
                 }
-                if ((holiday?.ID ?? 0) == 0 && (sched?.ID ?? 0) > 0 && leaveCredits > 0)
+                if (((holiday?.ID ?? 0) == 0 || ((holiday?.ID ?? 0) > 0 && (holiday?.NonWorkingType ?? 0) < 3)) && (sched?.ID ?? 0) > 0 && leaveCredits > 0)
                 {
                     if ((leave?.ID ?? 0) > 0)
                     {

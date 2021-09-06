@@ -263,16 +263,16 @@ namespace ProcessLayer.Computation.CnB
                     HighRiskRequest highRisk = approvedhighriskrequests.Where(x => starttime.Date == x.RequestDate.Date).FirstOrDefault();
 
                     NonTaxableDay nonTaxableDay = NonTaxableDays.Where(x => x.StartDate <= start && (x.EndDate >= start && x.EndDate == null) && (x.LocationID == loc.ID || (x.IsGlobal ?? false))).FirstOrDefault();
-                    bool isholiday = NonWorkingDays.Where(x => (((x.Yearly ?? false) && x.Day?.Month == start.Month && x.Day?.Day == start.Day) || x.Day == start) && (x.LocationID == loc.ID || (x.IsGlobal ?? false))).Any();
+                    NonWorkingDays holiday = NonWorkingDays.Where(x => (((x.Yearly ?? false) && x.Day?.Month == start.Month && x.Day?.Day == start.Day) || x.Day == start) && (x.LocationID == loc.ID || (x.IsGlobal ?? false))).FirstOrDefault();
                     DateTime? prevDate = null;
 
                     if ((outerPort?.ID ?? 0) > 0)
                     {
                         details.Location = outerPort._Location;
                         needTimeLog = outerPort._Location?.RequiredTimeLog ?? false;
-                        isholiday = NonWorkingDays.Where(x => (((x.Yearly ?? false) && x.Day?.Month == start.Month && x.Day?.Day == start.Day) || x.Day == start) && (x.LocationID == outerPort._Location?.ID || (x.IsGlobal ?? false))).Any();
+                        holiday = NonWorkingDays.Where(x => (((x.Yearly ?? false) && x.Day?.Month == start.Month && x.Day?.Day == start.Day) || x.Day == start) && (x.LocationID == outerPort._Location?.ID || (x.IsGlobal ?? false))).FirstOrDefault();
                     }
-                    if (isholiday)
+                    if ((holiday?.ID ?? 0) > 0)
                     {
                         prevDate = GlobalHelper.GetPrevSchedDate(payroll.Personnel._Schedules, starttime, NonWorkingDays.ToList(), outerPort?._Location?.ID ?? loc?.ID);
                         details.IsHoliday = true;
@@ -286,7 +286,7 @@ namespace ProcessLayer.Computation.CnB
                         details.IsNonTaxable = true;
                     }
 
-                    if(!isholiday && (sched?.ID ?? 0) > 0 && leaveCreditsUsed > 0)
+                    if(((holiday?.ID ?? 0) == 0 || ((holiday?.ID ?? 0) > 0 && (holiday?.NonWorkingType ?? 0) < 3)) && (sched?.ID ?? 0) > 0 && leaveCredits > 0)
                     {
                         if ((leave?.ID ?? 0) > 0)
                         {
@@ -327,7 +327,7 @@ namespace ProcessLayer.Computation.CnB
                         if (details.ID == 0)
                             payroll.PayrollDetails.Add(details);
                     }
-                    else if (isholiday || (sched?.ID ?? 0) == 0 || start.DayOfWeek == DayOfWeek.Sunday)
+                    else if (((holiday?.ID ?? 0) > 0) || (sched?.ID ?? 0) == 0 || start.DayOfWeek == DayOfWeek.Sunday)
                     {
                         SundayOrHolidayComputation(payroll, timelogs, start, sched, starttime, endtime, startnight1, endnight1, startnight2, endnight2, defbt, defbtend, details, LoginDate, LogoutDate, (wholeDayOT ?? earlyOT) ?? afterWorkOT, isholiday, prevDate);
                     }
