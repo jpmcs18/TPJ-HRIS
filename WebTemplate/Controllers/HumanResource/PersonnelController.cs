@@ -6,6 +6,7 @@ using ProcessLayer.Processes.CnB;
 using ProcessLayer.Processes.HR;
 using ProcessLayer.Processes.HRs;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
@@ -1514,11 +1515,13 @@ namespace WebTemplate.Controllers.HumanResource
         {
             try
             {
+                List<PersonnelLeaveCredit> leaveCredits = PersonnelLeaveCreditProcess.Instance.Value.GetByPersonnelID(PersonnelID);
                 PersonnelLeaveCredits model = new PersonnelLeaveCredits
                 {
                     PersonnelID = PersonnelID,
-                    PersonnelLeaveCredit = PersonnelLeaveCreditProcess.Instance.Value.GetByPersonnelID(PersonnelID)
-            };
+                    PersonnelLeaveCreditDate = leaveCredits.Where(x => x._LeaveType.IsMidYear ?? false).ToList(),
+                    PersonnelLeaveCreditYear = leaveCredits.Where(x => !(x._LeaveType.IsMidYear ?? false)).ToList()
+                };
 
                 return PartialViewCustom("_PersonnelLeaveCredits", model);
             }

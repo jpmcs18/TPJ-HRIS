@@ -210,14 +210,14 @@ namespace ProcessLayer.Processes.HR
                 {
                     continue;
                 }
-                leaveCredits.Add(GeneratePersonnelLeaveCredit(personnel, leave, defaultCredit));
+                leaveCredits.Add(GeneratePersonnelLeaveCredit(personnel, defaultCredit));
 
             }
             
             SaveDefaultCredits(leaveCredits, userId);
         }
 
-        private PersonnelLeaveCredit GeneratePersonnelLeaveCredit(Personnel personnel, PersonnelLeaveCredit leave, LeaveDefaultCredits defaultCredit)
+        private PersonnelLeaveCredit GeneratePersonnelLeaveCredit(Personnel personnel, LeaveDefaultCredits defaultCredit)
         {
             PersonnelLeaveCredit personnelLeaveCredit = new PersonnelLeaveCredit
             {
@@ -226,9 +226,9 @@ namespace ProcessLayer.Processes.HR
                 PersonnelID = personnel.ID
             };
 
-            if (leave._LeaveType.IsMidYear ?? false)
+            if (defaultCredit.LeaveType.IsMidYear ?? false)
             {
-                personnelLeaveCredit.ValidFrom = new DateTime(DateTime.Now.Year, leave._LeaveType.DateStart?.Month ?? 0, leave._LeaveType.DateStart?.Day ?? 0);
+                personnelLeaveCredit.ValidFrom = new DateTime(DateTime.Now.Year, defaultCredit.LeaveType.DateStart?.Month ?? 0, defaultCredit.LeaveType.DateStart?.Day ?? 0);
                 personnelLeaveCredit.ValidTo = personnelLeaveCredit.ValidFrom?.AddYears(1).AddDays(-1);
                 return personnelLeaveCredit;
             }

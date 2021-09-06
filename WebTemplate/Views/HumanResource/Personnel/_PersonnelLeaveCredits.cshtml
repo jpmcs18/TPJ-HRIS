@@ -3,6 +3,8 @@
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
     var LeaveCreditsTabAccess = credential.GetPage("Leave Credits") ?? new DataAccessLayer.System.Page();
     var leaveList = ProcessLayer.Processes.LeaveTypeProcess.Instance.Value.GetList();
+    var leaveListYear = leaveList.Where(x => !(x.IsMidYear ?? false)).ToList();
+    var leaveListDate = leaveList.Where(x => x.IsMidYear ?? false).ToList();
 }
 
 <div class="table-responsive table-scroll" style=" margin: auto;">
@@ -20,11 +22,11 @@
             </tr>
         </thead>
         <tbody>
-            @if (Model.PersonnelLeaveCredit.Count() > 0)
+            @if (Model.PersonnelLeaveCreditYear.Count() > 0)
             {
-                for (int i = 0; i < Model.PersonnelLeaveCredit.Count(); i++)
+                for (int i = 0; i < Model.PersonnelLeaveCreditYear.Count(); i++)
                 {
-                    @Html.Partial("~/Views/HumanResource/Personnel/_PersonnelLeaveCredit.cshtml", Model.PersonnelLeaveCredit[i])
+                    @Html.Partial("~/Views/HumanResource/Personnel/_PersonnelLeaveCreditYear.cshtml", Model.PersonnelLeaveCreditYear[i])
                 }
             }
             else
@@ -37,15 +39,15 @@
             {
             <tr id="Row-Input-LeaveCredits-0" class="Row-Input">
                 <td style="text-align: center;">
-                    @Html.DropDownList("LeaveTypeID", new SelectList(leaveList, "ID", "Display"), "N/A", new { @class = "form-control text-transform-none", @style = "" })
+                    @Html.DropDownList("LeaveTypeID", new SelectList(leaveListYear, "ID", "Display"), "N/A", new { @class = "form-control text-transform-none", @style = "" })
                 </td>
                 <td style="text-align: center;">
                     <input type="hidden" name="PersonnelID" class="PersonnelID" value="@Model.PersonnelID" />
                     <input type="text" name="LeaveCredits" class="form-control text-transform-none" placeholder="Credits..." />
                 </td>
                 <td style="text-align: center;">
-                    @*<input type="text" name="YearValid" class="form-control text-transform-none" placeholder="Year Valid..." maxlength="4" />*@
-                    @Html.TextBox("DateValid", String.Format("{0:yyyy'-'MM'-'dd}", DateTime.Now), new { @type = "date", @class = "form-control" })
+                    <input type="text" name="YearValid" class="form-control text-transform-none" placeholder="Year Valid..." maxlength="4" />
+                    @*@Html.TextBox("DateValid", String.Format("{0:yyyy'-'MM'-'dd}", DateTime.Now), new { @type = "date", @class = "form-control" })*@
                 </td>
                 <td style="text-align: center;">
                     <div class="btn-group" style="">
