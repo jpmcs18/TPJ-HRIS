@@ -150,26 +150,38 @@ namespace ProcessLayer.Processes.Kiosk
         }
         internal List<LeaveRequest> GetLeaveForPayroll(long personnelId, DateTime periodStart, DateTime periodEnd)
         {
-            var Leaves = new List<LeaveRequest>();
-            var parameters = new Dictionary<string, object>{
+            List<LeaveRequest> Leaves = new List<LeaveRequest>();
+            Dictionary<string, object> parameters = new Dictionary<string, object>{
                 { LeaveRequestParameters.PersonnelID, personnelId },
                 { LeaveRequestParameters.StartDate, periodStart },
                 { LeaveRequestParameters.EndDate, periodEnd }
             };
-            using (var db = new DBTools())
+            using (DBTools db = new DBTools())
             {
-                using (var ds = db.ExecuteReader(LeaveRequestProcedures.GetLeaveForPayroll, parameters))
+                using (DataSet ds = db.ExecuteReader(LeaveRequestProcedures.GetLeaveForPayroll, parameters))
                 {
-                    WithComputedLeaveCredits = true;
-                    Start = periodStart;
-                    End = periodEnd;
-                    Leaves = ds.GetList(Converter);
-                    WithComputedLeaveCredits = false;
+                    try
+                    {
+                        WithComputedLeaveCredits = true;
+                        Start = periodStart;
+                        End = periodEnd;
+                        Leaves = ds.GetList(Converter);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                    finally
+                    {
+                        WithComputedLeaveCredits = false;
+                        Start = null;
+                        End = null;
+                    }
                 }
             }
             return Leaves;
         }
-        public List<LeaveRequest> GetRequestThatNeedDocument(string personnel, byte? leavetypeid, bool isExpired, bool isPending, bool isNoted, bool isApproved, bool isCancelled, DateTime? startdatetime, DateTime? enddatetime, int page, int gridCount, out int PageCount)
+        public List<LeaveRequest> GetRequestThatNeedDocument(string personnel, byte? leavetypeid, bool isExpired, bool isPending, bool isCancelled, DateTime? startdatetime, DateTime? enddatetime, int page, int gridCount, out int PageCount)
         {
             var Leaves = new List<LeaveRequest>();
             var parameters = new Dictionary<string, object> {
@@ -177,8 +189,7 @@ namespace ProcessLayer.Processes.Kiosk
                 { LeaveRequestParameters.LeaveTypeID, leavetypeid },
                 { LeaveRequestParameters.IsExpired, isExpired },
                 { LeaveRequestParameters.IsPending, isPending },
-                { LeaveRequestParameters.IsNoted, isNoted},
-                { LeaveRequestParameters.IsApproved, isApproved },
+                { LeaveRequestParameters.IsApproved, IsApproved},
                 { LeaveRequestParameters.IsCancelled, isCancelled },
                 { LeaveRequestParameters.StartDate, startdatetime },
                 { LeaveRequestParameters.EndDate, enddatetime },
@@ -299,7 +310,7 @@ namespace ProcessLayer.Processes.Kiosk
             }
             return null;
         }
-        public List<LeaveRequest> GetRequestToNote(string personnel, byte? leavetypeid, bool isExpired, bool isPending, bool isApproved, bool isCancelled, DateTime? startdatetime, DateTime? enddatetime, int page, int gridCount, out int PageCount)
+        public List<LeaveRequest> GetRequestToNote(string personnel, byte? leavetypeid, bool isExpired, bool isPending, bool isNoted, bool isCancelled, DateTime? startdatetime, DateTime? enddatetime, int page, int gridCount, out int PageCount)
         {
             var Leaves = new List<LeaveRequest>();
             var parameters = new Dictionary<string, object> {
@@ -307,7 +318,7 @@ namespace ProcessLayer.Processes.Kiosk
                 { LeaveRequestParameters.LeaveTypeID, leavetypeid },
                 { LeaveRequestParameters.IsExpired, isExpired },
                 { LeaveRequestParameters.IsPending, isPending },
-                { LeaveRequestParameters.IsApproved, isApproved },
+                { LeaveRequestParameters.IsNoted, isNoted },
                 { LeaveRequestParameters.IsCancelled, isCancelled },
                 { LeaveRequestParameters.StartDate, startdatetime },
                 { LeaveRequestParameters.EndDate, enddatetime },
@@ -335,13 +346,26 @@ namespace ProcessLayer.Processes.Kiosk
         {
             using (var db = new DBTools())
             {
-                var parameters = new Dictionary<string, object>
+                db.StartTransaction();
+                try
                 {
-                    { LeaveRequestParameters.ID, id },
-                    { CredentialParameters.LogBy, userid }
-                };
+                    Dictionary<string, object> parameters = new Dictionary<string, object>
+                    {
+                        { LeaveRequestParameters.ID, id },
+                        { CredentialParameters.LogBy, userid }
+                    };
 
-                db.ExecuteNonQuery(LeaveRequestProcedures.Note, parameters);
+                    db.ExecuteNonQuery(LeaveRequestProcedures.Note, parameters);
+                    
+                    Approve(id, userid, db);
+
+                    db.CommitTransaction();
+                }
+                catch (Exception)
+                {
+                    db.RollBackTransaction();
+                    throw;
+                }
             }
         }
         private void ApprovedRequest(DBTools db, long id, int userid)
@@ -401,7 +425,7 @@ namespace ProcessLayer.Processes.Kiosk
                 leave.Approved = true;
             }
 
-            if ((leave.Approved ?? false) && (((leave._LeaveType.HasDocumentNeeded ?? false) && !string.IsNullOrEmpty(leave.FilePath)) || !(leave._LeaveType.HasDocumentNeeded ?? false)))
+            if ((leave.Approved ?? false) && (((leave._LeaveType.CNBNoteFirst ?? false) && (leave.Noted ?? false)) || !(leave._LeaveType.CNBNoteFirst ?? false)))
             {
                 UpdateApproveCredits(db, id, leaveCreditsToUse, userid);
                 PersonnelLeaveCreditProcess.Instance.Value.UpdateCredits(db, leaveCredits.ID, leaveCreditsToUse, userid);
@@ -455,19 +479,7 @@ namespace ProcessLayer.Processes.Kiosk
 
             using (var db = new DBTools())
             {
-                db.StartTransaction();
-                try
-                {
-                    db.ExecuteNonQuery(LeaveRequestProcedures.UploadDocument, parameters);
-                    Approve(id, userid, db);
-
-                    db.CommitTransaction();
-                }
-                catch (Exception)
-                {
-                    db.RollBackTransaction();
-                    throw;
-                }
+                db.ExecuteNonQuery(LeaveRequestProcedures.UploadDocument, parameters);
             }
 
         }

@@ -15,7 +15,7 @@ namespace ProcessLayer.Entities.Kiosk
         public bool IsExpired { get { return Approved != true && Cancelled != true && CreatedOn != null && ((DateTime.Now - CreatedOn).Value.TotalHours >= 48) && false; } }
         public int? NotedBy { get; set; }
         public DateTime? NotedOn { get; set; }
-        public bool Noted { get { return (_LeaveType?.CNBNoteFirst ?? false) && (NotedBy != null); } }
+        public bool? Noted { get; set; }
         public string Remarks
         {
             get
