@@ -1,9 +1,10 @@
 ﻿@model WebTemplate.Models.Kiosk.Leave_Request.Index
 
-@{ 
+@{
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
     var PageAccess = credential.GetPage("Kiosk/LeaveRequest") ?? new DataAccessLayer.System.Page();
     var CreatorAccess = credential.GetPage("Creator Leave Request") ?? new DataAccessLayer.System.Page();
+    var UploadDocumentAccess = credential.GetPage("Kiosk Upload Document") ?? new DataAccessLayer.System.Page();
 
     ViewBag.title = PageAccess.PageName;
 }
@@ -62,17 +63,47 @@
                     <h5 class="modal-title" style="text-align: center;">New Leave Request</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
                 </div>
-                <form id="LeaveRequestForm" class="modal-body" style="max-height: 750px; background-color: #fff; overflow: hidden;">
-                </form>
+                <div id="LeaveRequestForm" class="modal-body" style="max-height: 750px; background-color: #fff; overflow: hidden;">
+                </div>
             </div>
         </div>
     </div>
 </div>
 
+@if (UploadDocumentAccess.View || UploadDocumentAccess.Insert || UploadDocumentAccess.Update || UploadDocumentAccess.Delete)
+{
+    <!--<div class="modal inmodal custom-modal" id="UploadDocumentModal" data-backdrop="static" data-keyboard="false" tabindex="" role="dialog" aria-hidden="true">
+        <div class="vertical-alignment-helper">
+            <div class="modal-center vertical-align-center">
+                <div class="modal-content animated fadeInDown modal-width-30">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Upload Document</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
+                    </div>
+                    <div class="modal-body" style="max-height: 750px; background-color: #fff; overflow: hidden;">-->
+                        @*<label id="filename" class="control-label"></label>*@
+                        <!--<input id="browseFile" type="file" class="btn btn-default" />
+                        Html.Hidden("leaveRequestId", 0)
+                        <form id="DeleteDocumentForm" action="/LeaveRequests/DeleteDocument?leaveRequestId=">
+                            <input id="DeleteDocument" type="hidden" value="Delete" class="btn btn-danger btn-outline btn-w-m font-bold-700 pull-right" title="Delete" />
+                        </form>
+                    </div>
+                    <div class="modal-footer" style=" margin: 0;">
+                        <button type="button" class="btn btn-default btn-outline btn-w-m font-bold-700 pull-left" data-dismiss="modal">Close</button>
+                        <button type="button" onclick="ValidateFile()" class="btn btn-primary btn-w-m font-bold-700 pull-right">Upload</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>-->
+}
+
 <script type="text/javascript">
     var $_leaveTypeArr = @Html.Raw(Json.Encode(Model.LeaveTypes));
+    var $_uploadDocAcc = @Html.Raw(Json.Encode(UploadDocumentAccess));
     //var $_IsBulkUse = false;
     var $_IsMedicard = false;
+    var xhr;
 
     $(document).ready(function () {
         Events();
@@ -106,7 +137,7 @@
 
     function SearchTabEvents() {
         //$('#form_search_params #LeaveTypeID').off('change').on('change', SetLeaveTypeID);
-        $('select').select2();
+        Select2Override();
 
         $('input.chkRow').off('ifClicked').on('ifClicked', EnableDelete);
         $('button#MultipleDelete').off('click').on('click', MultipleDelete);
@@ -198,6 +229,7 @@
     }
 
     function SetLeaveTypeID() {
+        $('#MedicardFields').addClass('hidden');
         var div = $('#LeaveRequestModal').is(':visible') ? '#LeaveRequestModal ' : '#form_search_params ';
         var id = $(div + ' #LeaveTypeID option:selected').val();
         //var newBulkUse = $(div + ' #LeaveTypeID option:selected').attr('isbulk') === 'true';
@@ -209,9 +241,10 @@
             //    $(div + ' #' + (newBulkUse ? '' : 'Non') + 'BulkUseDatePicker').removeClass('hidden');
             //    $(div + ' #' + (newBulkUse ? '' : 'Non') + 'BulkUseDatePicker input').val('');
             //}
-            $('#MedicardFields').toggleClass('hidden');
 
             //$_IsBulkUse = newBulkUse;
+
+            $('#MedicardFields').removeClass('hidden');
             $_IsMedicard = isMedicard;
         }
     }
@@ -220,7 +253,69 @@
         $(modal + ' .modal-body').html(response);
         $(modal + ' .modal-title').html(title + ' Leave Request');
         $(modal + ' #LeaveTypeID').off('change').on('change', SetLeaveTypeID);
+        $("#browseFile").off("change").on('change', function (e) {
+            $("#ValidateFile").attr("disabled", $("#browseFile")[0].files.length == 0);
+        });
         $(modal).appendTo('body').modal('show');
+    }
+
+    function UploadDocument(leaveReqID, filename) {
+        e.preventDefault();
+        $tr = $('#LeaveRequestForm tr#Row-Display-LeaveRequests-' + leaveReqID);
+        //var action = $('#DeleteDocumentForm').attr('action');
+        filename = $tr.find('td button').attr('title');
+
+        if (leaveReqID) {
+            $('#LeaveRequestForm #leaveRequestId').val(leaveReqID);
+            //$('#UploadDocumentModal').attr('action', action + (filename ? leaveReqID : ''));
+            $('#LeaveRequestForm #filename').text('filename: ' + filename);
+            //$('#LeaveRequestForm #DeleteDocument').attr(filename ? 'submit' : 'hidden');
+            $('#LeaveRequestForm .modal-header .close').off('click').on('click', CancelDocumentUpload);
+            $("#LeaveRequestForm #browseFile").val('');
+            //$('#UploadDocumentModal').appendTo('body').modal('show');
+        }
+        else {
+            toastr.warning('Warning', 'Leave Request not found.');
+        }
+    }
+
+    function CancelDocumentUpload() {
+        $('#SelectedFilesPreview').empty();
+        $('#LeaveRequestForm .fileinput .close').trigger('click');
+        $("#LeaveRequestForm #browseFile").val('');
+        //$('#UploadDocumentModal').modal('hide');
+    }
+
+    function ValidateFile() {
+        var formdata = new FormData();
+        formdata.append("fileBase", $("#LeaveRequestForm #browseFile")[0].files[0])
+        formdata.append("leaveRequestId", $("#LeaveRequestForm #ID").val());
+        formdata.append("__RequestVerificationToken", $('@Html.AntiForgeryToken()').val());
+
+        if (xhr) { xhr.abort(); }
+        xhr = $.ajax({
+            data: formdata,
+            url: '@Url.Action("UploadDocument", "LeaveRequestsDocument")',
+            type: 'POST',
+            datatype: 'JSON',
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function () { ShowLoadingScreen() },
+            complete: function () { RemoveLoadingScreen() },
+            success: function (response) {
+                if (response.msg == null) {
+                    toastr.warning('Warning', response.res);
+                }
+                else {
+                    toastr.success('Success', response.res);
+                    SearchRequest();
+                }
+            },
+            error: function (x, y, z) {
+                //toastr.error('Error', x + y + z);
+            }
+        })
     }
 
     function SearchRequest() {
@@ -292,7 +387,7 @@
             success: function (response) {
                 if (response.msg == null) {
                     ModalEvents('#LeaveRequestModal', 'New', response);
-                    $('#LeaveRequestModal #LeaveTypeID').select2();
+                    Select2Override();
                 } else {
                     toastr.warning(response.res, "Warning");
                 }
@@ -345,13 +440,17 @@
                     };
                     toastr.warning(label + " is required if Leave Type is Medicard.", "Warning");
                     save = false;
-                    return false;   
+                    return false;
                 }
             });
         }
         formdata.append('__RequestVerificationToken', $('@Html.AntiForgeryToken()').val());
 
         if (save) {
+            toastr.options = {
+                timeOut: 6000,
+                extendedTimeOut: 6000
+            };
             $.ajax({
                 url: url,
                 data: formdata,
@@ -386,7 +485,7 @@
         }
     }
 
-    function EditRequest(id) {
+    function EditRequest(id, action) {
         var formdata = new FormData();
         var url = '@Url.Action("EditRequest", "LeaveRequest")';
         formdata.append('id', id);
@@ -408,7 +507,7 @@
             },
             success: function (response) {
                 if (response.msg == null) {
-                    ModalEvents('#LeaveRequestModal', 'View', response);
+                    ModalEvents('#LeaveRequestModal', action, response);
                 } else {
                     toastr.warning(response.res, "Warning");
                 }
@@ -417,6 +516,10 @@
                 toastr.error('AJAX backend error', 'An error has occured.');
             }
         });
+    }
+
+    function ViewRequest(id) {
+
     }
 
     function EnableDelete() {

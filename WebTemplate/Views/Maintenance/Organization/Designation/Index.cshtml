@@ -117,7 +117,7 @@
                 $("#formpost").html(response);
                 $('#modal_management').appendTo("body").modal('show');
                 event_save();
-                select2Override();
+                Select2Override();
             },
             error: function () {
                 toastr.error('AJAX backend error', 'An error has occured.');
@@ -140,7 +140,7 @@
                 $("#formpost_pos").html(response);
                 $('#modal_management_pos').appendTo("body").modal('show');
                 event_save_pos();
-                select2Override();
+                Select2Override();
             },
             error: function () {
                 toastr.error('AJAX backend error', 'An error has occured.');
@@ -163,7 +163,7 @@
                 $("#formpost_dept").html(response);
                 $('#modal_management_dept').appendTo("body").modal('show');
                 event_save_dept();
-                select2Override();
+                Select2Override();
             },
             error: function () {
                 toastr.error('AJAX backend error', 'An error has occured.');

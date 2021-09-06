@@ -227,7 +227,7 @@
                         EmptySearch('GroupTableDiv', 'g');
 
                         $('#NewMemo .modal-body').html(response);
-                        select2Override();
+                        Select2Override();
                         InitDatePicker();
                         BindSaveFunction();
                         InitInputFileBrowse();
@@ -1462,7 +1462,7 @@
             InitDatePicker();
 
             $('.clearInput').off('click').on('click', ClearField);
-            select2Override();
+            Select2Override();
 
             $('#NewMemo .close').off('click').on('click', CloseNewMemoModal);
             $('select#MemoTypeID').off('change').on('change', SelectChange);

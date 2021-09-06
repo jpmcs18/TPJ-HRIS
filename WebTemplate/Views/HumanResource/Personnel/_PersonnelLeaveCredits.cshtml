@@ -11,7 +11,8 @@
             <tr>
                 <th style="text-align: center;">Description</th>
                 <th style="text-align: center;">Credits</th>
-                <th style="text-align: center;">Year Valid</th>
+                @*<th style="text-align: center;">Year Valid</th>*@
+                <th style="text-align: center;">Date Valid</th>
                 @if (LeaveCreditsTabAccess.Update || LeaveCreditsTabAccess.Delete)
                 {
                     <th style="text-align: center; min-width: 100px;">Action</th>
@@ -43,7 +44,8 @@
                     <input type="text" name="LeaveCredits" class="form-control text-transform-none" placeholder="Credits..." />
                 </td>
                 <td style="text-align: center;">
-                    <input type="text" name="YearValid" class="form-control text-transform-none" placeholder="Year Valid..." maxlength="4" />
+                    @*<input type="text" name="YearValid" class="form-control text-transform-none" placeholder="Year Valid..." maxlength="4" />*@
+                    @Html.TextBox("DateValid", String.Format("{0:yyyy'-'MM'-'dd}", DateTime.Now), new { @type = "date", @class = "form-control" })
                 </td>
                 <td style="text-align: center;">
                     <div class="btn-group" style="">

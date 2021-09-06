@@ -13,7 +13,8 @@
         </td>
         <td style="text-align: center;">@Model._LeaveType.Display</td>
         <td style="text-align: center;">@Model.LeaveCredits</td>
-        <td style="text-align: center;">@Model.YearValid</td>
+        @*<td style="text-align: center;">@Model.YearValid</td>*@
+        <th style="text-align: center;">@Model.DateValid</th>
         @if (LeaveCreditsTabAccess.Update || LeaveCreditsTabAccess.Delete)
         {
             <td style="text-align: center;">
@@ -37,8 +38,11 @@
         <td style="text-align: center;">
             @Html.TextBoxFor(m => m.LeaveCredits, new { @class = "form-control text-transform-none", @Placeholder = "Leave Credits..." })
         </td>
-        <td style="text-align: center;">
+        @*<td style="text-align: center;">
             @Html.TextBoxFor(m => m.YearValid, new { @class = "form-control text-transform-none", @Placeholder = "Year Valid...", @maxlength = "4" })
+        </td>*@
+        <td style="text-align: center;">
+            @Html.TextBox("DateValid", String.Format("{0:yyyy'-'MM'-'dd}", Model.DateValid), new { @type = "date", @class = "form-control" })
         </td>
         @if (LeaveCreditsTabAccess.Update)
         {

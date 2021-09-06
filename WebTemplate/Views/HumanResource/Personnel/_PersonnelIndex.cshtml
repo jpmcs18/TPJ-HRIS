@@ -909,7 +909,7 @@
 
                                 $('#PersonnelPositionDiv-' + rowID + ' select').html(options);
                                 $('#PersonnelPositionDiv-' + rowID + ' select').select2();
-                                //select2Override();
+                                //Select2Override();
                             }
                             else {
                                 $('#PersonnelPositionDiv select').empty();
@@ -1658,7 +1658,7 @@
             $('button#MultipleDelete').off('click').on('click', MultipleDelete);
             $('input#SelectAll').off('ifClicked').on('ifClicked', SelectAllRows);
 
-            select2Override();
+            Select2Override();
             $('select#EmploymentStatusID').off('change').on('change', SelectChange);
         }
 
@@ -1676,7 +1676,7 @@
             $('#form_personelprofile select#LicenseTypeID').off('change').on('change', SelectChange);
             $('select#EmploymentStatusID').off('change').on('change', SelectChange);
 
-            select2Override();
+            Select2Override();
             InitDatePicker();
             InitInputFileBrowse();
             //$('#form_personelprofile select#Personnel_PositionID').off('select2:open').on("select2:open", selectClick);
@@ -1991,7 +1991,7 @@
             changeSwitchState('.js-switch', false);
 
             $('.js-switch').off('change').on('change', JsSwitchChange);
-            select2Override();
+            Select2Override();
 
             //FixedHeaderFooterTable();
             var departmentId = $('#DepartmentsTable tbody tr.Row-Input:last-child').find('input[name="HiddenDepartmentID"]').val() || 0;

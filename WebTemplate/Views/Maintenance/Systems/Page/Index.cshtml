@@ -94,7 +94,7 @@
             success: function (response) {
                 $("#formpost").html(response);
                 $('#modal_management').appendTo("body").modal('show');
-                select2Override();
+                Select2Override();
                 event_save();
             },
             error: function () {

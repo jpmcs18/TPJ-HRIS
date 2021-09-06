@@ -16,7 +16,7 @@
     </datalist>
     <button type="reset" class="btn btn-default font-bold pull-right m-r-sm">Clear</button>*@
 
-<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
     <label class="control-label">Leave Type</label>
     @*<select id="LeaveTypeID" name="LeaveTypeID" class="form-control form-control">
             <option isbulk="false">N/A</option>
@@ -29,12 +29,12 @@
 </div>
 
 @*<div id="NonBulkUseDatePicker">
-            <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+            <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
                 <label class="control-label">Start DateTime</label>
                 @Html.TextBox("StartDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", ""), new { @type = "datetime-local", @class = "form-control" })
             </div>
 
-            <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+            <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
                 <label class="control-label">End DateTime</label>
                 @Html.TextBox("EndDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", ""), new { @type = "datetime-local", @class = "form-control" })
             </div>
@@ -47,36 +47,36 @@
     </div>
         </div>*@
 
-<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
     <label class="control-label">Request Date</label>
     @Html.TextBox("RequestedDate", String.Format("{0:yyyy'-'MM'-'dd}", ""), new { @type = "date", @class = "form-control leave-main" })
 </div>
 
+<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
+    <label class="control-label">No. of Days</label>
+    @Html.TextBox("NoofDays", "1", new { @type = "number", @class = "form-control leave-main" })
+</div>
+
 <div id="MedicardFields" class="hidden">
-    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
         <label class="control-label">Hospital</label>
         @Html.TextBox("Hospital", "", new { @class = "form-control" })
     </div>
 
-    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
         <label class="control-label">Location</label>
         @Html.TextBox("Location", "", new { @class = "form-control" })
     </div>
 
-    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
         <label class="control-label">Period Start</label>
         @Html.TextBox("PeriodStart", String.Format("{0:yyyy'-'MM'-'dd}", ""), new { @type = "date", @class = "form-control" })
     </div>
 
-    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
         <label class="control-label">Period End</label>
         @Html.TextBox("PeriodEnd", String.Format("{0:yyyy'-'MM'-'dd}", ""), new { @type = "date", @class = "form-control" })
     </div>
-</div>
-
-<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
-    <label class="control-label">No. of Days</label>
-    @Html.TextBox("NoofDays", "1", new { @type = "number", @class = "form-control leave-main" })
 </div>
 
 <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
