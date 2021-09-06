@@ -52,6 +52,10 @@ namespace ProcessLayer.Processes.Kiosk
                 CancelledOn = dr[LeaveRequestFields.CancelledOn].ToNullableDateTime(),
                 CancellationRemarks = dr[LeaveRequestFields.CancellationRemarks].ToString(),
                 ApprovedLeaveCredits = dr[LeaveRequestFields.ApprovedLeaveCredits].ToNullableFloat(),
+                IsAbsent = dr[LeaveRequestFields.IsAbsent].ToNullableBoolean(),
+                IsHalfDay = dr[LeaveRequestFields.IsHalfday].ToNullableBoolean(),
+                IsMorning = dr[LeaveRequestFields.IsMorning].ToNullableBoolean(),
+                IsAfternoon = dr[LeaveRequestFields.IsAfternoon].ToNullableBoolean(),
                 CreatedBy = dr[LeaveRequestFields.CreatedBy].ToNullableInt(),
                 CreatedOn = dr[LeaveRequestFields.CreatedOn].ToNullableDateTime(),
                 ModifiedBy = dr[LeaveRequestFields.ModifiedBy].ToNullableInt(),
@@ -283,8 +287,14 @@ namespace ProcessLayer.Processes.Kiosk
         }
         public LeaveRequest CreateOrUpdate(LeaveRequest Leave, int userid)
         {
+            if (Leave.IsHalfDay ?? false && ((Leave.IsMorning ?? false) || (Leave.IsAfternoon ?? false)))
+            {
+                Leave.NoofDays = (float)0.5;
+            }
+            
             if (ValidateLeaveRequest(Leave))
             {
+
                 Dictionary<string, object> parameters = new Dictionary<string, object> {
                     { LeaveRequestParameters.PersonnelID, Leave.PersonnelID }
                     , { LeaveRequestParameters.LeaveTypeID, Leave.LeaveTypeID }
@@ -295,10 +305,16 @@ namespace ProcessLayer.Processes.Kiosk
                     , { LeaveRequestParameters.PeriodStart, Leave.PeriodStart}
                     , { LeaveRequestParameters.PeriodEnd, Leave.PeriodEnd}
                     , { LeaveRequestParameters.Reasons, Leave.Reasons }
+                    , { LeaveRequestParameters.IsAbsent, Leave.IsAbsent }
+                    , { LeaveRequestParameters.IsHalfday, Leave.IsHalfDay }
+                    , { LeaveRequestParameters.IsMorning, Leave.IsMorning }
+                    , { LeaveRequestParameters.IsAfternoon, Leave.IsAfternoon }
                     , { CredentialParameters.LogBy, userid }
                 };
 
-                List<OutParameters> outparameter = new List<OutParameters> {{ LeaveRequestParameters.ID, SqlDbType.BigInt, Leave.ID }};
+                List<OutParameters> outparameter = new List<OutParameters> {
+                    { LeaveRequestParameters.ID, SqlDbType.BigInt, Leave.ID }
+                };
 
                 using (var db = new DBTools())
                 {

@@ -14,5 +14,9 @@
         public const string IsCancelled = "@IsCancelled";
         public const string IsPending = "@IsPending";
         public const string IsExpired = "@IsExpired";
+        public const string IsAbsent = "@IsAbsent";
+        public const string IsHalfday = "@IsHalfday";
+        public const string IsMorning = "@IsMorning";
+        public const string IsAfternoon = "@IsAfternoon";
     }
 }

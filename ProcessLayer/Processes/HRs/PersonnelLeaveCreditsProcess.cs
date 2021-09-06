@@ -49,6 +49,7 @@ namespace ProcessLayer.Processes.HR
                 }
             }
         }
+
         public PersonnelLeaveCredit GetRemainingCredits(long personnelID, byte leaveTypeID, DateTime? date)
         {
             using (DBTools db = new DBTools())
