@@ -56,7 +56,7 @@ namespace WebTemplate.Controllers.Kiosk
                     LeaveRequest = new LeaveRequest(),
                 };
 
-                model.LeaveTypes = PersonnelLeaveCreditProcess.Instance.Value.GetLeaveWithCredits(model.Personnel?.ID ?? 0, DateTime.Now.Year);
+                model.LeaveTypes = PersonnelLeaveCreditProcess.Instance.Value.GetLeaveWithCredits(model.Personnel?.ID ?? 0, DateTime.Now);
 
                 return PartialViewCustom("_LeaveRequestNew", model);
             }

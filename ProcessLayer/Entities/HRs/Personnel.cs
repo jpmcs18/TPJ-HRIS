@@ -147,8 +147,10 @@ namespace ProcessLayer.Entities
                 DateTime dateHired = (DateHired ?? DateTime.Now);
                 DateTime dateEnd = ResignationDate ?? DateTime.Now;
                 int months = dateHired.Month - dateEnd.Month;
-                months += dateHired.Day > dateEnd.Day ? -1 : 0;
-                return months < 0 ? 0 : months;
+                months += (dateHired.Day > dateEnd.Day ? -1 : 0);
+                if (months < 0)
+                    months += (dateHired.Year != dateEnd.Year ? 12 : 0);
+                return months;
             }
         }
     }

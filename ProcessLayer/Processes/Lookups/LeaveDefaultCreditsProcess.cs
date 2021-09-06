@@ -19,8 +19,8 @@ namespace ProcessLayer.Processes
             {
                 ID = dr["ID"].ToInt(),
                 LeaveTypeID = dr["Leave Type ID"].ToByte(),
-                MinYearsInService = dr["Min Years In Service"].ToByte(),
-                MaxYearsInService = dr["Max Years In Service"].ToNullableByte(),
+                MinYearsInService = dr["Min Years In Service"].ToFloat(),
+                MaxYearsInService = dr["Max Years In Service"].ToNullableFloat(),
                 Credits = dr["Credits"].ToFloat()
             };
             leave.LeaveType = LeaveTypeProcess.Instance.Value.Get(leave.LeaveTypeID);
@@ -94,7 +94,7 @@ namespace ProcessLayer.Processes
             }
         }
 
-        public List<LeaveDefaultCredits> GetList(int yearsInService)
+        public List<LeaveDefaultCredits> GetList(float yearsInService)
         {
             using (DBTools db = new DBTools())
             {

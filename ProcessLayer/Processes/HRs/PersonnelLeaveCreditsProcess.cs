@@ -17,13 +17,15 @@ namespace ProcessLayer.Processes.HR
         private PersonnelLeaveCreditProcess() { }
         internal PersonnelLeaveCredit Converter(DataRow dr)
         {
-            var l = new PersonnelLeaveCredit
+            PersonnelLeaveCredit l = new PersonnelLeaveCredit
             {
                 ID = dr[PersonnelLeaveCreditsFields.ID].ToLong(),
                 PersonnelID = dr[PersonnelLeaveCreditsFields.PersonnelID].ToNullableLong(),
                 LeaveCredits = dr[PersonnelLeaveCreditsFields.LeaveCredits].ToNullableFloat(),
                 LeaveTypeID = dr[PersonnelLeaveCreditsFields.LeaveTypeID].ToNullableByte(),
-                YearValid = dr[PersonnelLeaveCreditsFields.YearValid].ToNullableShort()
+                YearValid = dr[PersonnelLeaveCreditsFields.YearValid].ToNullableShort(),
+                ValidFrom = dr[PersonnelLeaveCreditsFields.ValidFrom].ToNullableDateTime(),
+                ValidTo = dr[PersonnelLeaveCreditsFields.ValidTo].ToNullableDateTime()
             };
 
             l._LeaveType = LeaveTypeProcess.Instance.Value.Get(l.LeaveTypeID);
@@ -34,10 +36,10 @@ namespace ProcessLayer.Processes.HR
         {
             GenerateDefaultCredits(PersonnelID, default);
 
-            var Parameters = new Dictionary<string, object>
-                {
-                    { PersonnelLeaveCreditsParameters.PersonnelID, PersonnelID }
-                };
+            Dictionary<string, object> Parameters = new Dictionary<string, object>
+            {
+                { PersonnelLeaveCreditsParameters.PersonnelID, PersonnelID }
+            };
 
             using (var db = new DBTools())
             {
@@ -47,60 +49,58 @@ namespace ProcessLayer.Processes.HR
                 }
             }
         }
-        public PersonnelLeaveCredit GetRemainingCredits(long personnelID, byte leaveTypeID, short year)
+        public PersonnelLeaveCredit GetRemainingCredits(long personnelID, byte leaveTypeID, DateTime? date)
         {
-
-            using (var db = new DBTools())
+            using (DBTools db = new DBTools())
             {
-                return GetRemainingCredits(db, personnelID, leaveTypeID, year);
+                return GetRemainingCredits(db, personnelID, leaveTypeID, date);
             }
         }
 
-        public PersonnelLeaveCredit GetRemainingCredits(DBTools db, long personnelID, byte leaveTypeID, short year)
+        public PersonnelLeaveCredit GetRemainingCredits(DBTools db, long personnelID, byte leaveTypeID, DateTime? date)
         {
-            var eb = new PersonnelLeaveCredit();
-            var Parameters = new Dictionary<string, object>
+            Dictionary<string, object> Parameters = new Dictionary<string, object>
             {
                 { PersonnelLeaveCreditsParameters.PersonnelID, personnelID },
                 { PersonnelLeaveCreditsParameters.LeaveTypeID, leaveTypeID},
-                { PersonnelLeaveCreditsParameters.YearValid, year}
+                { PersonnelLeaveCreditsParameters.Date, date}
             };
 
-            using (var ds = db.ExecuteReader(PersonnelLeaveCreditsProcedures.GetRemainingCredits, Parameters))
+            using (DataSet ds = db.ExecuteReader(PersonnelLeaveCreditsProcedures.GetRemainingCredits, Parameters))
             {
-                eb = ds.Get(Converter);
+                return ds.Get(Converter);
             }
-
-            return eb;
         }
 
         public PersonnelLeaveCredit Get(long Id)
         {
-            var eb = new PersonnelLeaveCredit();
-
-            var Parameters = new Dictionary<string, object>
+            Dictionary<string, object> Parameters = new Dictionary<string, object>
             {
                 { PersonnelLeaveCreditsParameters.ID, Id }
             };
 
-            using (var db = new DBTools())
+            using (DBTools db = new DBTools())
             {
-                using (var ds = db.ExecuteReader(PersonnelLeaveCreditsProcedures.Get, Parameters))
+                using (DataSet ds = db.ExecuteReader(PersonnelLeaveCreditsProcedures.Get, Parameters))
                 {
-                    eb = ds.Get(Converter);
+                    return ds.Get(Converter);
                 }
             }
-
-            return eb;
         }
 
-        public List<LeaveType> GetLeaveWithCredits(long personnelID, int year)
+        public List<LeaveType> GetLeaveWithCredits(long personnelID, DateTime date)
         {
             GenerateDefaultCredits(personnelID, default);
 
-            using (var db = new DBTools())
+            using (DBTools db = new DBTools())
             {
-                using (var ds = db.ExecuteReader("hr.GetLeavesWithCredits", new Dictionary<string, object> { { "@PersonnelID", personnelID }, { "@Year", year } }))
+                Dictionary<string, object> parameters = new Dictionary<string, object> 
+                {
+                    { PersonnelEmploymentTypeParameters.PersonnelID, personnelID }, 
+                    { PersonnelLeaveCreditsParameters.Date, date }
+                };
+
+                using (var ds = db.ExecuteReader(PersonnelLeaveCreditsProcedures.GetLeavesWithCredits, parameters))
                 {
                     return ds.GetList(LeaveTypeProcess.Instance.Value.Converter);
                 }
@@ -109,7 +109,7 @@ namespace ProcessLayer.Processes.HR
 
         public PersonnelLeaveCredit CreateOrUpdate(PersonnelLeaveCredit leaveCredit, int userid)
         {
-            using (var db = new DBTools())
+            using (DBTools db = new DBTools())
             {
                 return CreateOrUpdate(db, leaveCredit, userid);
             }
@@ -117,54 +117,64 @@ namespace ProcessLayer.Processes.HR
 
         private PersonnelLeaveCredit CreateOrUpdate(DBTools db, PersonnelLeaveCredit leaveCredit, int userid)
         {
-            Dictionary<string, object> parameters = new Dictionary<string, object> {
+            leaveCredit._LeaveType = LeaveTypeProcess.Instance.Value.Get(leaveCredit.LeaveTypeID);
+
+            if (!(leaveCredit._LeaveType.IsMidYear ?? false))
+            {
+                leaveCredit.ValidFrom = new DateTime(leaveCredit.YearValid ?? 0, 1, 1);
+                leaveCredit.ValidTo = new DateTime(leaveCredit.YearValid ?? 0, 12, 31);
+            }
+
+            Dictionary<string, object> parameters = new Dictionary<string, object> 
+            {
                 {PersonnelLeaveCreditsParameters.PersonnelID, leaveCredit.PersonnelID}
                 , {PersonnelLeaveCreditsParameters.LeaveCredits, leaveCredit.LeaveCredits}
                 , {PersonnelLeaveCreditsParameters.LeaveTypeID,leaveCredit.LeaveTypeID}
                 , {PersonnelLeaveCreditsParameters.YearValid,leaveCredit.YearValid}
+                , {PersonnelLeaveCreditsParameters.ValidFrom,leaveCredit.ValidFrom}
+                , {PersonnelLeaveCreditsParameters.ValidTo,leaveCredit.ValidTo}
                 , {CredentialParameters.LogBy, userid}
             };
-            var outParameters = new List<OutParameters>
+
+            List<OutParameters> outParameters = new List<OutParameters>
             {
                 { PersonnelLeaveCreditsParameters.ID, SqlDbType.BigInt, leaveCredit.ID }
             };
+            
             db.ExecuteNonQuery(PersonnelLeaveCreditsProcedures.CreateOrUpdate, ref outParameters, parameters);
             leaveCredit.ID = outParameters.Get(PersonnelLeaveCreditsParameters.ID).ToLong();
-            leaveCredit._LeaveType = LeaveTypeProcess.Instance.Value.Get(leaveCredit.LeaveTypeID);
             return leaveCredit;
         }
 
         public void Delete(long Id, int userid)
         {
-            var Parameters = new Dictionary<string, object>
+            Dictionary<string, object> Parameters = new Dictionary<string, object>
             {
-                { PersonnelLeaveCreditsFields.ID, Id },
+                { PersonnelLeaveCreditsParameters.ID, Id },
                 { CredentialParameters.LogBy, userid }
             };
 
-            using (var db = new DBTools())
+            using (DBTools db = new DBTools())
             {
                 db.ExecuteNonQuery(PersonnelLeaveCreditsProcedures.Delete, Parameters);
             }
         }
-        public void UpdateCredits(DBTools db, long personnelId, byte leaveTypeId, int year, double credits, int userid)
+        public void UpdateCredits(DBTools db, long id, float credits, int userid)
         {
-            var parameters = new Dictionary<string, object> {
-                { "@PersonnelID", personnelId },
-                { "@LeaveTypeId", leaveTypeId },
-                { "@UsedCredits", credits },
-                { "@YearValid", year },
-                { "@LogBy", userid }
+            Dictionary<string, object> parameters = new Dictionary<string, object> {
+                { PersonnelLeaveCreditsParameters.ID, id },
+                { PersonnelLeaveCreditsParameters.UsedCredits, credits },
+                { CredentialParameters.LogBy, userid }
             };
-            db.ExecuteNonQuery("hr.UpdateLeaveCredits", parameters);
+            db.ExecuteNonQuery(PersonnelLeaveCreditsProcedures.UpdateLeaveCredits, parameters);
         }
-        public PersonnelLeaveCredit Get(long personnelID, byte leaveTypeId, int year)
+        public PersonnelLeaveCredit Get(long personnelID, byte leaveTypeId, DateTime date)
         {
             var Parameters = new Dictionary<string, object>
             {
                 { PersonnelLeaveCreditsParameters.PersonnelID, personnelID },
                 { PersonnelLeaveCreditsParameters.LeaveTypeID, leaveTypeId },
-                { PersonnelLeaveCreditsParameters.YearValid, year }
+                { PersonnelLeaveCreditsParameters.Date, date },
             };
 
             using (var db = new DBTools())
@@ -183,47 +193,77 @@ namespace ProcessLayer.Processes.HR
                 return;
             }
 
-            List<LeaveDefaultCredits> defaultCredits = LeaveDefaultCreditsProcess.Instance.Value.GetList(personnel.Years);
+            float yearsInService = personnel.Years + (personnel.Months / (float)12);
+
+            List<LeaveDefaultCredits> defaultCredits = LeaveDefaultCreditsProcess.Instance.Value.GetList(yearsInService);
             List<PersonnelLeaveCredit> leaveCredits = new List<PersonnelLeaveCredit>();
 
-            if (defaultCredits?.Any() ?? false)
+            if (!(defaultCredits?.Any() ?? false))
             {
-                foreach (LeaveDefaultCredits defaultCredit in defaultCredits)
+                return;
+            }
+            
+            foreach (LeaveDefaultCredits defaultCredit in defaultCredits)
+            {
+                PersonnelLeaveCredit leave = Get(personnel.ID, defaultCredit.LeaveTypeID, DateTime.Now);
+                if ((leave?.ID ?? 0) > 0)
                 {
-                    PersonnelLeaveCredit leave = Get(personnel.ID, defaultCredit.LeaveTypeID, DateTime.Now.Year);
-                    if ((leave?.ID ?? 0) == 0)
-                    {
-                        leaveCredits.Add(new PersonnelLeaveCredit { LeaveCredits = defaultCredit.Credits, LeaveTypeID = defaultCredit.LeaveTypeID, PersonnelID = personnel.ID, YearValid = (short)DateTime.Now.Year});
-                    }
+                    continue;
                 }
+                leaveCredits.Add(GeneratePersonnelLeaveCredit(personnel, leave, defaultCredit));
+
+            }
+            
+            SaveDefaultCredits(leaveCredits, userId);
+        }
+
+        private PersonnelLeaveCredit GeneratePersonnelLeaveCredit(Personnel personnel, PersonnelLeaveCredit leave, LeaveDefaultCredits defaultCredit)
+        {
+            PersonnelLeaveCredit personnelLeaveCredit = new PersonnelLeaveCredit
+            {
+                LeaveCredits = defaultCredit.Credits,
+                LeaveTypeID = defaultCredit.LeaveTypeID,
+                PersonnelID = personnel.ID
+            };
+
+            if (leave._LeaveType.IsMidYear ?? false)
+            {
+                personnelLeaveCredit.ValidFrom = new DateTime(DateTime.Now.Year, leave._LeaveType.DateStart?.Month ?? 0, leave._LeaveType.DateStart?.Day ?? 0);
+                personnelLeaveCredit.ValidTo = personnelLeaveCredit.ValidFrom?.AddYears(1).AddDays(-1);
+                return personnelLeaveCredit;
             }
 
-            SaveDefaultCredits(leaveCredits, userId);
+            personnelLeaveCredit.YearValid = (short)DateTime.Now.Year;
+            return personnelLeaveCredit;
         }
 
         private void SaveDefaultCredits(List<PersonnelLeaveCredit> leaveCredits, int userId)
         {
-            if(leaveCredits?.Any() ?? false)
+            if (!(leaveCredits?.Any() ?? false))
             {
-                using (DBTools db = new DBTools())
+                return;
+            }
+
+            using (DBTools db = new DBTools())
+            {
+                db.StartTransaction();
+
+                try
                 {
-                    db.StartTransaction();
-
-                    try
+                    foreach (var leaveCredit in leaveCredits)
                     {
-                        foreach (var leaveCredit in leaveCredits)
-                        {
-                            CreateOrUpdate(db, leaveCredit, userId);
-                        }
+                        CreateOrUpdate(db, leaveCredit, userId);
+                    }
 
-                        db.CommitTransaction();
-                    }
-                    catch(Exception) {
-                        db.RollBackTransaction();
-                        throw;
-                    }
+                    db.CommitTransaction();
+                }
+                catch (Exception)
+                {
+                    db.RollBackTransaction();
+                    throw;
                 }
             }
+
         }
     }
 }
