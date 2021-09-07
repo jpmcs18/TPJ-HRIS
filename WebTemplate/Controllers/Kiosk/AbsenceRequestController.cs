@@ -3,6 +3,8 @@ using ProcessLayer.Entities.Kiosk;
 using ProcessLayer.Helpers;
 using ProcessLayer.Processes;
 using ProcessLayer.Processes.Kiosk;
+using ReportLayer.Helpers;
+using ReportLayer.Reports;
 using System;
 using System.Linq;
 using System.Text;
@@ -162,7 +164,7 @@ namespace WebTemplate.Controllers.Kiosk
             }
             else
             {
-                return Json(new { msg = false, res = "Leave Request not found." });
+                return Json(new { msg = false, res = "Request not found." });
             }
 
             return Json(new { msg = true });
@@ -171,6 +173,21 @@ namespace WebTemplate.Controllers.Kiosk
         public void DeleteRequestSingle(long? id)
         {
             AbsenceRequestProcess.Instance.Value.Delete(id ?? 0);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Print(long requestId)
+        {
+            using (var report = new PrintAbsence(Server.MapPath(PrintAbsenceHelper.Instance.Value.Template)))
+            {
+                report.AbsenceRequest = AbsenceRequestProcess.Instance.Value.Get(requestId);
+
+                report.GenerateReport();
+                ViewBag.Content = report.SaveToPDF();
+            }
+            return View("~/Views/PrintingView.cshtml");
         }
     }
 }

@@ -17,7 +17,7 @@ namespace ProcessLayer.Entities.Kiosk
         public bool? IsMorning { get; set; }
         public bool? IsAfternoon { get; set; }
         public bool? IsUndertime { get; set; }
-        public TimeSpan? Time { get; set; }
+        public DateTime? Time { get; set; }
         public string Remarks
         {
             get

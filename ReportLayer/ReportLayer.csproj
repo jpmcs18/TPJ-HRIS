@@ -59,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\SpreadSheetReportExtension.cs" />
+    <Compile Include="Helpers\PrintAbsenceHelper.cs" />
     <Compile Include="Helpers\PrintCrewListHelper.cs" />
     <Compile Include="Helpers\PrintCrewMovementFormHelpers.cs" />
     <Compile Include="Helpers\PrintMedicardHelper.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="Helpers\PrintTimeSheetHelper.cs" />
     <Compile Include="Helpers\PrintVesselMovementHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reports\PrintAbsence.cs" />
     <Compile Include="Reports\PrintCrewlist.cs" />
     <Compile Include="Reports\PrintCrewMovementForm.cs" />
     <Compile Include="Bases\SpreadSheetReportBase.cs" />

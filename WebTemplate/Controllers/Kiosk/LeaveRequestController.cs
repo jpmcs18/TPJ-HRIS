@@ -226,11 +226,11 @@ namespace WebTemplate.Controllers.Kiosk
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult PrintMedicard(long leaveRequestId)
+        public ActionResult PrintMedicard(long requestId)
         {
             using (var report = new PrintMedicard(Server.MapPath(PrintMedicardHelper.Instance.Value.Template)))
             {
-                report.LeaveRequest = LeaveRequestProcess.Instance.Value.Get(leaveRequestId);
+                report.LeaveRequest = LeaveRequestProcess.Instance.Value.Get(requestId);
 
                 report.GenerateReport();
                 ViewBag.Content = report.SaveToPDF();

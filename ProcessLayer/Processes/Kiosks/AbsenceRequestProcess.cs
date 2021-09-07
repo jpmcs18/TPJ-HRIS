@@ -34,7 +34,7 @@ namespace ProcessLayer.Processes.Kiosk
                 IsMorning = dr["Is Morning"].ToNullableBoolean(),
                 IsAfternoon = dr["Is Afternoon"].ToNullableBoolean(),
                 IsUndertime = dr["Is Undertime"].ToNullableBoolean(),
-                Time = dr["Time"].ToNullableTimeSpan(),
+                Time = dr["Time"].ToNullableDateTime(),
                 CreatedOn = dr["Created On"].ToNullableDateTime(),
                 ModifiedBy = dr["Modified By"].ToNullableInt(),
                 ModifiedOn = dr["Modified On"].ToNullableDateTime(),
