@@ -149,7 +149,7 @@
                             var RowColorLabel = ""; // Model.LeaveRequests[i].Cancelled == true ? " label-danger" : Model.LeaveRequests[i].Approved == true ? " label-primary" : Model.LeaveRequests[i].ModifiedBy != null ? " label-success" : " label-info";
                             var Expired = Model.LeaveRequests[i].IsExpired == true;
                             var Approved = Model.LeaveRequests[i].Approved == true;
-                            var Noted = Model.LeaveRequests[i].Noted == true;
+                            var Noted = Model.LeaveRequests[i].Noted;
                             var Cancelled = Model.LeaveRequests[i].Cancelled == true;
                             var IsPending = !Approved && !Cancelled;
 
