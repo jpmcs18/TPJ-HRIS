@@ -15,7 +15,12 @@ namespace ProcessLayer.Entities.Kiosk
         public bool IsExpired { get { return Approved != true && Cancelled != true && CreatedOn != null && ((DateTime.Now - CreatedOn).Value.TotalHours >= 48) && false; } }
         public int? NotedBy { get; set; }
         public DateTime? NotedOn { get; set; }
-        public bool Noted { get { return (_LeaveType?.CNBNoteFirst ?? false) && (NotedBy != null); } }
+        public bool? Noted { get; set; }
+        public bool? IsAbsent { get; set; }
+        public bool? IsHalfDay { get; set; }
+        public bool? IsMorning { get; set; }
+        public bool? IsAfternoon { get; set; }
+
         public string Remarks
         {
             get
@@ -33,10 +38,10 @@ namespace ProcessLayer.Entities.Kiosk
                 if (!(Approved ?? false))
                     return "Waiting for approval.";
 
-                if ((_LeaveType?.HasDocumentNeeded ?? false) && (Approved ?? false) && string.IsNullOrEmpty(File) && !Noted)
+                if ((_LeaveType?.HasDocumentNeeded ?? false) && (Approved ?? false) && string.IsNullOrEmpty(File))
                     return "Approved, Waiting for document upload.";
 
-                if ((_LeaveType?.HasDocumentNeeded ?? false) && (Approved ?? false) && !string.IsNullOrEmpty(File) && !Noted)
+                if ((_LeaveType?.HasDocumentNeeded ?? false) && (Approved ?? false) && !string.IsNullOrEmpty(File) && (_LeaveType?.HasDocumentNeeded ?? false) && !(Noted ?? false))
                     return "Document attached, Waiting to be noted.";
 
                 if (Cancelled != null && Cancelled.Value)

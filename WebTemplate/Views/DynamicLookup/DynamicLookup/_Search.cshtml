@@ -80,6 +80,11 @@
                                                 @(data == null ? "" : data.ToString("MM/dd/yyyy"))
                                             </td>
                                             break;
+                                        case LookupDataType.monthday:
+                                            <td style="text-align: center;">
+                                                @(data == null ? "" : data.ToString("MMMM dd"))
+                                            </td>
+                                            break;
                                         case LookupDataType.amount:
                                             <td style="text-align: center;">
                                                 @(data == null ? "" : data.ToString("N2"))

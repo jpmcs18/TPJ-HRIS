@@ -48,6 +48,7 @@ namespace WebTemplate.Models.DynamicLookup
         boolean,
         model,
         date,
+        monthday,
         time,
         year
     }
@@ -146,7 +147,9 @@ namespace WebTemplate.Models.DynamicLookup
                 , new LookupSetting()
                 , new LookupSetting("BulkUse", "Bulk Use", LookupDataType.boolean)
                 , new LookupSetting("HasDocumentNeeded", "Has Document Needed", LookupDataType.boolean)
-                , new LookupSetting("CNBNoteFirst", "CNB Note First", LookupDataType.boolean)},
+                , new LookupSetting("CNBNoteFirst", "CNB Note First", LookupDataType.boolean)
+                , new LookupSetting("IsMidYear", "Is Mid Year", LookupDataType.boolean)
+                , new LookupSetting("DateStart", "Date", LookupDataType.monthday)},
             { Lookups.Leave_Default_Credits
                 , new LookupSetting("LeaveType", "Leave Type", LookupDataType.model, new LookupSetting(), LeaveTypeProcess.Instance.Value, "LeaveTypeID")
                 , new LookupSetting("MinYearsInService", "Min Years In Service", LookupDataType.number)

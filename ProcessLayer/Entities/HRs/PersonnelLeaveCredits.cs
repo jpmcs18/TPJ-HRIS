@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 
 namespace ProcessLayer.Entities.HR
 {
@@ -9,6 +10,8 @@ namespace ProcessLayer.Entities.HR
         [DisplayName("Leave Credits")]
         public float? LeaveCredits { get; set; }
         public short? YearValid { get; set; }
+        public DateTime? ValidFrom { get; set; }
+        public DateTime? ValidTo { get; set; }
         public LeaveType _LeaveType { get; set; }
     }
 }

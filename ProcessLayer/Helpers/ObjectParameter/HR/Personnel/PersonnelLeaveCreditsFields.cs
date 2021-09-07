@@ -9,5 +9,7 @@ namespace ProcessLayer.Helpers.ObjectParameter.Personnel
         public const string LeaveTypeID = "Leave Type ID";
         public const string LeaveCredits = "Leave Credits";
         public const string YearValid = "Year Valid";
+        public const string ValidFrom = "Valid From";
+        public const string ValidTo = "Valid To";
     }
 }

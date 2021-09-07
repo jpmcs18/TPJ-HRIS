@@ -8,5 +8,7 @@ namespace ProcessLayer.Helpers.ObjectParameter.Personnel
         public const string CreateOrUpdate = "hr.CreateorUpdatePersonnelLeaveCredits";
         public const string Delete = "hr.DeletePersonnelLeaveCredits";
         public const string GetRemainingCredits = "hr.GetRemainingLeaveCredits";
+        public const string GetLeavesWithCredits = "hr.GetLeavesWithCredits";
+        public const string UpdateLeaveCredits = "hr.UpdateLeaveCredits";
     }
 }

@@ -44,6 +44,9 @@
         case LookupDataType.date:
             <input type="date" name="@settings.Name" value="@(data == null ? "" : data.ToString("yyyy'-'MM'-'dd"))" class="form-control" @settings.ReadOnlyText>
             break;
+        case LookupDataType.monthday:
+            <input type="date" name="@settings.Name" value="@(data == null ? "" : data.ToString("yyyy'-'MM'-'dd"))" class="form-control" @settings.ReadOnlyText>
+            break;
         case LookupDataType.boolean:
             var ischeck = data == null ? "false" : (data ? "checked" : "");
             <div style=" padding: .45em 0;">

@@ -23,7 +23,9 @@ namespace ProcessLayer.Processes
                 BulkUse = dr["Bulk Use"].ToNullableBoolean(),
                 DaysBeforeRequest = dr["Days Before Request"].ToNullableInt(),
                 HasDocumentNeeded = dr["Has Document Needed"].ToNullableBoolean(),
-                CNBNoteFirst = dr["CNB Note First"].ToNullableBoolean()
+                CNBNoteFirst = dr["CNB Note First"].ToNullableBoolean(),
+                IsMidYear = dr["Is Mid Year"].ToNullableBoolean(),
+                DateStart = dr["Date Start"].ToNullableDateTime()
             };
         }
 
@@ -120,6 +122,8 @@ namespace ProcessLayer.Processes
                     { "@BulkUse", leave.BulkUse },
                     { "@DaysBeforeRequest", leave.DaysBeforeRequest },
                     { "@HasDocumentNeeded", leave.HasDocumentNeeded },
+                    { "@IsMidYear", leave.IsMidYear },
+                    { "@DateStart", leave.DateStart },
                     { "@LogBy", user }
                 };
 

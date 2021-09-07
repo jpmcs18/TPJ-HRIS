@@ -2384,7 +2384,7 @@
     <Content Include="Scripts\jquery-3.5.1.min.map" />
     <Content Include="Scripts\jquery-3.5.1.slim.min.map" />
     <Content Include="Views\HumanResource\Personnel\_PersonnelAssumedDeductions.cshtml" />
-    <Content Include="Views\HumanResource\Personnel\_PersonnelLeaveCredit.cshtml" />
+    <Content Include="Views\HumanResource\Personnel\_PersonnelLeaveCreditYear.cshtml" />
     <Content Include="Views\HumanResource\Personnel\_PersonnelLeaveCredits.cshtml" />
     <Content Include="Views\HumanResource\Report\ReportIndex.cshtml" />
     <Content Include="Views\HumanResource\Report\_ReportSearch.cshtml" />

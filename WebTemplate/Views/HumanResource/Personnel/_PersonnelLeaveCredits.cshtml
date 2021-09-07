@@ -3,6 +3,8 @@
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
     var LeaveCreditsTabAccess = credential.GetPage("Leave Credits") ?? new DataAccessLayer.System.Page();
     var leaveList = ProcessLayer.Processes.LeaveTypeProcess.Instance.Value.GetList();
+    var leaveListYear = leaveList.Where(x => !(x.IsMidYear ?? false)).ToList();
+    var leaveListDate = leaveList.Where(x => x.IsMidYear ?? false).ToList();
 }
 
 <div id="leavecreditsDiv" class="panel panel-primary" style="margin: 0px 15px 5px 15px;">
