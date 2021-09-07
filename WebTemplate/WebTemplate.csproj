@@ -171,6 +171,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\PersonnelApproval\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
@@ -218,6 +219,7 @@
     <Compile Include="Controllers\Maintenance\Systems\RolesController.cs" />
     <Compile Include="Controllers\Maintenance\Systems\UserController.cs" />
     <Compile Include="Controllers\Maintenance\Systems\UserProfileController.cs" />
+    <Compile Include="Controllers\PersonnelApproval\PersonnelApprovalController.cs" />
     <Compile Include="Controllers\Report\ReportController.cs" />
     <Compile Include="Controllers\RequestsApproval\HighRisksRequestsController.cs" />
     <Compile Include="Controllers\RequestsApproval\LeaveRequestsController.cs" />
@@ -297,6 +299,7 @@
     <Compile Include="Models\Payroll\PayrollDetailsManagement.cs" />
     <Compile Include="Models\Payroll\PayrollManagement.cs" />
     <Compile Include="Models\Payroll\PersonnelLoanModel.cs" />
+    <Compile Include="Models\PersonnelApproval\Index.cs" />
     <Compile Include="Models\Personnel\CompensationsAndDeductions.cs" />
     <Compile Include="Models\Personnel\ContactNumbers.cs" />
     <Compile Include="Models\Personnel\Educationbackgrounds.cs" />

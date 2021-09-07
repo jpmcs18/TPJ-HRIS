@@ -96,6 +96,7 @@ namespace ProcessLayer.Entities
         public decimal AdditionalHazardRate { get; set; }
         [DisplayName("Biomatrics ID")]
         public int BiometricsID { get; set; }
+        public bool Approved { get; set; }
 
         public List<EducationalBackground> _EducationalBackground { get; set; } = new List<EducationalBackground>();
         public List<WorkExperience> _WorkExperience { get; set; } = new List<WorkExperience>();

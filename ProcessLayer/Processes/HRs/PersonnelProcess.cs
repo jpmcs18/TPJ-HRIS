@@ -588,6 +588,85 @@ namespace ProcessLayer.Processes
 
             return emp;
         }
-    }
 
+        public static List<Personnel> GetApprovedPersonnel(string filter, int pagenumber, int gridcount, out int count)
+        {
+            Dictionary<string, object> Parameters = new Dictionary<string, object>
+            {
+                { FilterParameters.Filter, filter },
+                { FilterParameters.PageNumber, pagenumber },
+                { FilterParameters.GridCount, gridcount }
+            };
+            List<OutParameters> outParameters = new List<OutParameters>
+            {
+                { FilterParameters.PageCount, SqlDbType.Int }
+            };
+
+            using (DBTools db = new DBTools())
+            {
+                using (DataSet ds = db.ExecuteReader(PersonnelProcedures.FilterApprovedPersonnel, ref outParameters, Parameters))
+                {
+                    PersonnelOnly = true;
+                    List<Personnel> emp = ds.GetList(Converter);
+                    PersonnelOnly = false;
+                    count = outParameters.Get(FilterParameters.PageCount).ToInt();
+                    return emp;
+                }
+            }
+        }
+
+        public static List<Personnel> GetApprovingPersonnel(string filter, int pagenumber, int gridcount, out int count)
+        {
+            Dictionary<string, object> Parameters = new Dictionary<string, object>
+            {
+                { FilterParameters.Filter, filter },
+                { FilterParameters.PageNumber, pagenumber },
+                { FilterParameters.GridCount, gridcount }
+            };
+            List<OutParameters> outParameters = new List<OutParameters>
+            {
+                { FilterParameters.PageCount, SqlDbType.Int }
+            };
+
+            using (DBTools db = new DBTools())
+            {
+                using (DataSet ds = db.ExecuteReader(PersonnelProcedures.FilterApprovingPersonnel, ref outParameters, Parameters))
+                {
+                    PersonnelOnly = true;
+                    List<Personnel> emp = ds.GetList(Converter);
+                    PersonnelOnly = false;
+                    count = outParameters.Get(FilterParameters.PageCount).ToInt();
+                    return emp;
+                }
+            }
+        }
+
+        public static void Approved(long Id, int userid)
+        {
+            var Parameters = new Dictionary<string, object>
+            {
+                { PersonnelParameters.ID, Id },
+                { CredentialParameters.LogBy, userid }
+            };
+
+            using (var db = new DBTools())
+            {
+                db.ExecuteNonQuery(PersonnelProcedures.Approved, Parameters);
+            }
+        }
+
+        public static void Cancelled(long Id, int userid)
+        {
+            var Parameters = new Dictionary<string, object>
+            {
+                { PersonnelParameters.ID, Id },
+                { CredentialParameters.LogBy, userid }
+            };
+
+            using (var db = new DBTools())
+            {
+                db.ExecuteNonQuery(PersonnelProcedures.Cancelled, Parameters);
+            }
+        }
+    }
 }
