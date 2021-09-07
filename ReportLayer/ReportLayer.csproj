@@ -61,6 +61,7 @@
     <Compile Include="Extensions\SpreadSheetReportExtension.cs" />
     <Compile Include="Helpers\PrintCrewListHelper.cs" />
     <Compile Include="Helpers\PrintCrewMovementFormHelpers.cs" />
+    <Compile Include="Helpers\PrintMedicardHelper.cs" />
     <Compile Include="Helpers\PrintPayrollSheetAHelper.cs" />
     <Compile Include="Helpers\PrintPayrollSheetBHelper.cs" />
     <Compile Include="Helpers\PrintPayslipHelper.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Reports\PrintCrewlist.cs" />
     <Compile Include="Reports\PrintCrewMovementForm.cs" />
     <Compile Include="Bases\SpreadSheetReportBase.cs" />
+    <Compile Include="Reports\PrintMedicard.cs" />
     <Compile Include="Reports\PrintPayrollSheetA.cs" />
     <Compile Include="Reports\PrintPayrollSheetB.cs" />
     <Compile Include="Reports\PrintPayslip.cs" />

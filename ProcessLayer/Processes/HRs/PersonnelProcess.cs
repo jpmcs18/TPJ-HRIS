@@ -75,7 +75,6 @@ namespace ProcessLayer.Processes
             };
             p._Creator = LookupProcess.GetUser(p.CreatedBy);
             p._Modifier = LookupProcess.GetUser(p.ModifiedBy);
-            var po = PersonnelOnly;
 
             try { 
                 p.LinkedPersonnelID = dr[PersonnelFields.PersonnelLinkedID].ToNullableLong();
@@ -93,7 +92,6 @@ namespace ProcessLayer.Processes
             p._ContactNumbers = ContactNumberProcess.GetList(p.ID);
             p._AssignedLocation = PersonnelAssignedLocationProcess.GetList(p.ID);
 
-            PersonnelOnly = po;
             if (!PersonnelOnly)
             {
                 p._Vaccines = PersonnelVaccineProcess.GetByPersonnelID(p.ID);

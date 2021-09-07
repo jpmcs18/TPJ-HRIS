@@ -53,14 +53,16 @@ namespace ProcessLayer.Entities.Kiosk
                 return "";
             }
         }
-            
+
         public LeaveType _LeaveType { get; set; }
         public List<ComputedLeaveCredits> _ComputedLeaveCredits { get; set; }
-        
+
         //only for medicard
         public string Hospital { get; set; }
         public string Location { get; set; }
         public DateTime? PeriodStart { get; set; }
         public DateTime? PeriodEnd { get; set; }
+
+        public string _Noted { get; set; }
     }
 }

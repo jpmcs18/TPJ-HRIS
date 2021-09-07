@@ -4,5 +4,6 @@
     {
         public const string Get = "hr.GetPersonnelDepartment";
         public const string CreateOrUpdate = "hr.CreateOrUpdatePersonnelDepartment";
+        public const string GetCurrentDepartment = "hr.GetCurrentDepartment";
     }
 }

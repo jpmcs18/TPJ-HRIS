@@ -7,5 +7,6 @@
         public const string DepartmentID = "@DepartmentID";
         public const string StartDate = "@StartDate";
         public const string EndDate = "@EndDate";
+        public const string Date = "@Date";
     }
 }

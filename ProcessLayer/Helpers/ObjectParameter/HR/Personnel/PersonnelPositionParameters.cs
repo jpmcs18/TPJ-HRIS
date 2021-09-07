@@ -7,5 +7,6 @@
         public const string PositionID = "@PositionID";
         public const string StartDate = "@StartDate";
         public const string EndDate = "@EndDate";
+        public const string Date = "@Date";
     }
 }

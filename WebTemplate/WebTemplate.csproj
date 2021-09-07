@@ -190,6 +190,7 @@
     <Compile Include="Controllers\HumanResource\CompensationApprovalController.cs" />
     <Compile Include="Controllers\HumanResource\MemoArchiveController.cs" />
     <Compile Include="Controllers\CnB\TimeLogController.cs" />
+    <Compile Include="Controllers\Kiosk\AbsenceRequestController.cs" />
     <Compile Include="Controllers\Kiosk\HighRiskRequestController.cs" />
     <Compile Include="Controllers\Kiosk\OuterPortRequestController.cs" />
     <Compile Include="Controllers\Maintenance\Lookup\ApproverPositionController.cs" />
@@ -250,6 +251,7 @@
     <Compile Include="Models\Groups\Management.cs" />
     <Compile Include="Models\Groups\Personnels.cs" />
     <Compile Include="Models\HandleExceptionAttribute.cs" />
+    <Compile Include="Models\Kiosk\Absence Request\Index.cs" />
     <Compile Include="Models\Kiosk\High Risk Request\Index.cs" />
     <Compile Include="Models\Kiosk\Leave Request\Index.cs" />
     <Compile Include="Models\Kiosk\OT Request\Index.cs" />
@@ -561,9 +563,6 @@
     <Content Include="Content\style.min.css">
       <DependentUpon>style.css</DependentUpon>
     </Content>
-    <Content Include="Database Scripts\09022021\ALTER PROC [hr].[GetLeavesWithCredits].sql" />
-    <Content Include="Database Scripts\09022021\ALTER PROC [kiosk].[FilterApprovingLeaveRequest].sql" />
-    <Content Include="Database Scripts\09022021\ALTER PROC [kiosk].[FilterLeaveRequestThatNeedDocument].sql" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\font-awesome\css\font-awesome-v4.css" />
     <Content Include="fonts\font-awesome\css\font-awesome.css" />
@@ -778,7 +777,6 @@
     <Content Include="fonts\font-awesome\less\stepper.less" />
     <Content Include="fonts\font-awesome\less\calendar.less" />
     <Content Include="libman.json" />
-    <Content Include="DB\20210706.bak" />
     <None Include="Properties\PublishProfiles\Inspinia.pubxml" />
     <Content Include="Resources\Template\Crewlist.xlsx" />
     <Content Include="Resources\Template\Crewmovementform.xlsx" />
@@ -1640,6 +1638,7 @@
     <Content Include="Scripts\jquery-2.1.1.min.js" />
     <Content Include="Scripts\jquery-3.1.1.min.js" />
     <Content Include="Resources\Template\Timesheet.xlsx" />
+    <Content Include="Resources\Template\Medicard.xlsx" />
     <None Include="Scripts\jquery-3.5.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.5.1.js" />
     <Content Include="Scripts\jquery-3.5.1.min.js" />

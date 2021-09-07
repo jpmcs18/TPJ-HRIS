@@ -5,6 +5,7 @@ using ProcessLayer.Helpers.ObjectParameter.Personnel;
 using System.Collections.Generic;
 using DBUtilities;
 using ProcessLayer.Helpers.ObjectParameter;
+using System;
 
 namespace ProcessLayer.Processes
 {
@@ -79,6 +80,21 @@ namespace ProcessLayer.Processes
                 obj._Position = PositionProcess.Instance.Value.Get(obj.PositionID);
             }
             return obj;
+        }
+
+        public static PersonnelPosition GetCurrentPosition(long personnelId, DateTime date)
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object> {
+                { PersonnelPositionParameters.PersonnelID, personnelId },
+                { PersonnelPositionParameters.Date, date }
+            };
+            using (DBTools db = new DBTools())
+            {
+                using (DataSet ds = db.ExecuteReader(PersonnelPositionProcedures.GetCurrentPosition, parameters))
+                {
+                    return ds.Get(Converter);
+                }
+            }
         }
     }
 }
