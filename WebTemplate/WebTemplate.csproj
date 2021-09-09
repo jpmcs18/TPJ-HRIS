@@ -555,6 +555,7 @@
     <Content Include="Content\plugins\textSpinners\spinners.css" />
     <Content Include="Content\plugins\toastr\toastr.min.css" />
     <Content Include="Content\plugins\touchspin\jquery.bootstrap-touchspin.min.css" />
+    <Content Include="Content\plugins\yearpicker\yearpicker.css" />
     <Content Include="Content\sample.txt" />
     <Content Include="Content\semantic.min.css" />
     <Content Include="Content\style.css" />
@@ -2136,6 +2137,7 @@
     <Content Include="Scripts\plugins\velocity\velocity.ui.min.js" />
     <Content Include="Scripts\plugins\video\responsible-video.js" />
     <Content Include="Scripts\plugins\wow\wow.min.js" />
+    <Content Include="Scripts\plugins\yearpicker\yearpicker.js" />
     <Content Include="Views\HumanResource\Personnel\_PersonnelContact.cshtml" />
     <Content Include="Views\HumanResource\Personnel\_PersonnelContacts.cshtml" />
     <Content Include="Views\HumanResource\Personnel\_PersonnelMemoDiscussion.cshtml" />
@@ -2412,6 +2414,7 @@
     <Content Include="Views\CnB\PayrollSheetB\_Payroll.cshtml" />
     <Content Include="Views\RequestsApproval\LeaveRequestsForNote\Index.cshtml" />
     <Content Include="Views\RequestsApproval\LeaveRequestsForNote\_Search.cshtml" />
+    <Content Include="Views\HumanResource\Personnel\_PersonnelLeaveCreditDate.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">
