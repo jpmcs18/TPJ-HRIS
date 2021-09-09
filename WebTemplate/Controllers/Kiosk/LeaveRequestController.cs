@@ -119,7 +119,7 @@ namespace WebTemplate.Controllers.Kiosk
                     PersonnelID = User.UserID
                 };
 
-                if ((id ?? 0) > 0)
+                 if ((id ?? 0) > 0)
                     model = LeaveRequestProcess.Instance.Value.Get(id ?? 0);
 
                 if (model.Approved == true || model.Cancelled == true)

@@ -71,7 +71,10 @@ namespace ProcessLayer.Processes
                 CreatedBy = dr[LogDetailsFields.CreatedBy].ToNullableInt(),
                 CreatedOn = dr[LogDetailsFields.CreatedOn].ToNullableDateTime(),
                 ModifiedBy = dr[LogDetailsFields.ModifiedBy].ToNullableInt(),
-                ModifiedOn = dr[LogDetailsFields.ModifiedOn].ToNullableDateTime()
+                ModifiedOn = dr[LogDetailsFields.ModifiedOn].ToNullableDateTime(),
+                Approved = dr["Approved"].ToNullableBoolean(),
+                Cancelled = dr["Cancelled"].ToNullableBoolean(),
+
             };
             p._Creator = LookupProcess.GetUser(p.CreatedBy);
             p._Modifier = LookupProcess.GetUser(p.ModifiedBy);
