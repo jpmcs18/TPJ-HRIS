@@ -1556,7 +1556,11 @@ namespace WebTemplate.Controllers.HumanResource
             {
                 PersonnelLeaveCredit model = PersonnelLeaveCreditProcess.Instance.Value.Get(ID);
                 ModelState.Clear();
-                return PartialViewCustom("_PersonnelLeaveCredit", model);
+
+                if (model._LeaveType.IsMidYear ?? false)
+                    return PartialViewCustom("_PersonnelLeaveCreditDate", model);
+                else
+                    return PartialViewCustom("_PersonnelLeaveCreditYear", model);
             }
             catch (Exception ex)
             {
@@ -1572,7 +1576,11 @@ namespace WebTemplate.Controllers.HumanResource
             {
                 model = PersonnelLeaveCreditProcess.Instance.Value.CreateOrUpdate(model, User.UserID);
                 ModelState.Clear();
-                return PartialViewCustom("_PersonnelLeaveCredit", model);
+
+                if (model._LeaveType.IsMidYear ?? false)
+                    return PartialViewCustom("_PersonnelLeaveCreditDate", model);
+                else
+                    return PartialViewCustom("_PersonnelLeaveCreditYear", model);
             }
             catch (Exception ex)
             {

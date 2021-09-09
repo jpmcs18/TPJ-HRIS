@@ -5,7 +5,7 @@
     var leaveList = ProcessLayer.Processes.LeaveTypeProcess.Instance.Value.GetList().Where(x => !(x.IsMidYear ?? false)).ToList();
 }
 
-    <tr id="Row-Display-YearLeaveCredit-@Model.ID" class="Row-Display clickable" tpjattr="PersonnelYearLeaveCredits" style="cursor: pointer" title="">
+    <tr id="Row-Display-DateLeaveCredit-@Model.ID" class="Row-Display clickable" tpjattr="PersonnelDateLeaveCredits" style="cursor: pointer" title="">
         <td class="hidden">
             <input type="hidden" value="@Model.ID" name="ID" />
             <input type="hidden" value="@Model.LeaveTypeID" name="LeaveTypeID" />
@@ -13,24 +13,24 @@
         </td>
         <td style="text-align: center;">@Model._LeaveType.Display</td>
         <td style="text-align: center;">@Model.LeaveCredits</td>
-        <td style="text-align: center;">@Model.YearValid</td>
+        <th style="text-align: center;">@(String.Format("{0:MMM dd, yyyy} to {1:MMM dd, yyyy}", Model.ValidFrom, Model.ValidTo))</th>
         @if (LeaveCreditsTabAccess.Update || LeaveCreditsTabAccess.Delete)
         {
             <td style="text-align: center;">
                 <div class="btn-group">
                     @if (LeaveCreditsTabAccess.Delete)
                     {
-                        <button type="button" name="DeleteYearLeaveCredit" class="btn btn-outline btn-danger btn-sm btn-rounded TableDeleteButton" value="@Model.ID" title="Delete"><i class="fa fa-trash"></i></button>
+                        <button type="button" name="DeleteDateLeaveCredit" class="btn btn-outline btn-danger btn-sm btn-rounded TableDeleteButton" value="@Model.ID" title="Delete"><i class="fa fa-trash"></i></button>
                     }
                     @if (LeaveCreditsTabAccess.Update)
                     {
-                        <button type="button" name="EditYearLeaveCredit" class="btn btn-info btn-sm btn-rounded TableEditButton" value="@Model.ID" title="Edit"><i class="fa fa-pencil"></i></button>
+                        <button type="button" name="EditDateLeaveCredit" class="btn btn-info btn-sm btn-rounded TableEditButton" value="@Model.ID" title="Edit"><i class="fa fa-pencil"></i></button>
                     }
                 </div>
             </td>
         }
     </tr>
-    <tr id="Row-Input-YearLeaveCredit-@Model.ID" class="Row-Input hidden">
+    <tr id="Row-Input-DateLeaveCredit-@Model.ID" class="Row-Input hidden">
         <td style="text-align: center;">
             @Html.DropDownList("LeaveTypeID", new SelectList(leaveList, "ID", "Display", Model.LeaveTypeID), "N/A", new { @class = "form-control text-transform-none", @style = "" })
         </td>
@@ -38,14 +38,18 @@
             @Html.TextBoxFor(m => m.LeaveCredits, new { @type = "number", @class = "form-control text-transform-none", @Placeholder = "Leave Credits..." })
         </td>
         <td style="text-align: center;">
-            @Html.TextBoxFor(m => m.YearValid, new { @type = "number", @class = "form-control yearpicker", @placeholder = "Year Valid...", @maxlength = "4" })
+            <div class="input-daterange input-group" id="datepicker">
+                @Html.TextBox("ValidFrom", String.Format("{0:yyyy'-'MM'-'dd}", Model.ValidFrom), new { @type = "date", @class = "form-control" })
+                <span class="input-group-addon">to</span>
+                @Html.TextBox("ValidTo", String.Format("{0:yyyy'-'MM'-'dd}", Model.ValidTo), new { @type = "date", @class = "form-control" })
+            </div>
         </td>
         @if (LeaveCreditsTabAccess.Update)
         {
             <td style="text-align: center;">
                 <div class="btn-group">
-                    <button type="button" name="CancelYearLeaveCredit" class="btn btn-outline btn-danger btn-sm btn-rounded TableCancelButton" value="@Model.ID" title="Cancel"><i class="fa fa-times"></i></button>
-                    <button type="button" name="SaveYearLeaveCredit" class="btn btn-info btn-sm btn-rounded TableSaveButton" value="@Model.ID" title="Save"><i class="fa fa-save"></i></button>
+                    <button type="button" name="CancelDateLeaveCredit" class="btn btn-outline btn-danger btn-sm btn-rounded TableCancelButton" value="@Model.ID" title="Cancel"><i class="fa fa-times"></i></button>
+                    <button type="button" name="SaveDateLeaveCredit" class="btn btn-info btn-sm btn-rounded TableSaveButton" value="@Model.ID" title="Save"><i class="fa fa-save"></i></button>
                 </div>
             </td>
         }

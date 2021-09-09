@@ -1077,7 +1077,10 @@
                 case 'Loan':
                     urlAction = '@Url.Action("CancelPersonnelLoan", "Personnel")';
                     break;
-                case 'LeaveCredits':
+                case 'DateLeaveCredit':
+                    urlAction = '@Url.Action("CancelPersonnelLeaveCredits", "Personnel")';
+                    break;
+                case 'YearLeaveCredit':
                     urlAction = '@Url.Action("CancelPersonnelLeaveCredits", "Personnel")';
                     break;
                 case 'Vaccine':
@@ -1188,8 +1191,12 @@
                 break;
             case 'Loan':
                 urlAction = '@Url.Action("DeletePersonnelLoan", "Personnel")';
-            case 'LeaveCredits':
-                urlAction = '@Url.Action("DeletePersonnelLeaveCredits", "Personnel")';
+                break;
+            case 'DateLeaveCredit':
+                urlAction = '@Url.Action("CancelPersonnelLeaveCredits", "Personnel")';
+                break;
+            case 'YearLeaveCredit':
+                urlAction = '@Url.Action("CancelPersonnelLeaveCredits", "Personnel")';
                 break;
             case 'Vaccine':
                 urlAction = '@Url.Action("DeletePersonnelVaccine", "Personnel")';
@@ -1321,7 +1328,10 @@
             case 'Loan':
                 urlAction = '@Url.Action("SavePersonnelLoan", "Personnel")';
                 break;
-            case 'LeaveCredits':
+            case 'DateLeaveCredit':
+                urlAction = '@Url.Action("SavePersonnelLeaveCredits", "Personnel")';
+                break;
+            case 'YearLeaveCredit':
                 urlAction = '@Url.Action("SavePersonnelLeaveCredits", "Personnel")';
                 break;
             case 'Vaccine':

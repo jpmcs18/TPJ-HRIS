@@ -44,6 +44,7 @@
     <script type="text/javascript" src="~/Scripts/plugins/metisMenu/metisMenu.min.js"></script>
     <script type="text/javascript" src="~/Scripts/plugins/touchspin/jquery.bootstrap-touchspin.min.js"></script>
     <script type="text/javascript" src="~/Scripts/custom/moneymask-custom.js"></script>
+    <script type="text/javascript" src="~/Scripts/plugins/yearpicker/yearpicker.js"></script>
 
     <link rel="stylesheet" type="text/css" href="~/Content/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="~/Content/style.css" />
@@ -97,6 +98,7 @@
     <link rel="stylesheet" type="text/css" href="~/Content/plugins/bootstrapSocial/bootstrap-social.css" />
     <link rel="stylesheet" type="text/css" href="~/Content/plugins/touchspin/jquery.bootstrap-touchspin.min.css" />
     <link rel="stylesheet" type="text/css" href="~/Content/plugins/textSpinners/spinners.css" />
+    <link rel="stylesheet" type="text/css" href="~/Content/plugins/yearpicker/yearpicker.css" />
 
     <meta name="viewport" content="width=device-width" />
     <title>
@@ -356,6 +358,8 @@
 
         $(document).on('shown.bs.modal', function () {
             $("body").removeClass('no-padding-right');
+            //$('.yearpicker').yearpicker();
+            //$('.yearpicker').tpjdatetime();
         });
 
         @* To hide/ show the page heading when scrolls up/ down *@
@@ -378,6 +382,7 @@
             addToggleSpinners();
             toggleSpinnerClick();
             setSkLoadingHeight();
+            $('.yearpicker').yearpicker();
 
             $('.tool-tip').tooltip().attr({
                 'data-toggle': 'tooltip',
