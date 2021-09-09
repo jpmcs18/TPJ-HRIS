@@ -2,14 +2,17 @@
 @{
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
     var LeaveCreditsTabAccess = credential.GetPage("Leave Credits") ?? new DataAccessLayer.System.Page();
-    var leaveList = ProcessLayer.Processes.LeaveTypeProcess.Instance.Value.GetList().Where(x => !(x.IsMidYear ?? false)).ToList();
+    var leaveList = ProcessLayer.Processes.LeaveTypeProcess.Instance.Value.GetList().Where(x => x.IsMidYear ?? false).ToList();
 }
 
     <tr id="Row-Display-DateLeaveCredit-@Model.ID" class="Row-Display clickable" tpjattr="PersonnelDateLeaveCredits" style="cursor: pointer" title="">
         <td class="hidden">
-            <input type="hidden" value="@Model.ID" name="ID" />
+            @*<input type="hidden" value="@Model.ID" name="ID" />
             <input type="hidden" value="@Model.LeaveTypeID" name="LeaveTypeID" />
-            <input type="hidden" value="@Model.PersonnelID" name="PersonnelID" />
+            <input type="hidden" value="@Model.PersonnelID" name="PersonnelID" />*@
+            @Html.HiddenFor(m => m.ID)
+            @Html.HiddenFor(m => m.LeaveTypeID)
+            @Html.HiddenFor(m => m.PersonnelID)
         </td>
         <td style="text-align: center;">@Model._LeaveType.Display</td>
         <td style="text-align: center;">@Model.LeaveCredits</td>

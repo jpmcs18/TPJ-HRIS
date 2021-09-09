@@ -997,19 +997,24 @@
             $displayRow = $('#' + divName + 'sTable tr#Row-Display-' + divName + '-' + rowID);
             $inputRow = $('#' + divName + 'sTable tr#Row-Input-' + divName + '-' + rowID);
             var fileName = $displayRow.find('a').text().replace('\\' + divName + 's\\', '');
+            //var leaveTypeId = $displayRow.find("#LeaveTypeID").val();
 
             if ($('#' + divName + 'sTable tbody tr.Row-Input').is(':visible') == false) {
                 $displayRow.addClass('hidden');
                 $inputRow.removeClass('hidden');
                 $inputRow.find('.browseFileCustom').val(fileName);
+
+                var departmentId = $('#DepartmentsTable tbody tr.Row-Input:last-child').find('input[name="HiddenDepartmentID"]').val() || 0;
+                if (divName == 'Position' && departmentId > 0) {
+                    SelectPositions(rowID);
+                }
+                //if (divName.toLocaleLowerCase().indexOf("leavecredit")) {
+                //    $inputRow.find('select.form-control').val(leaveTypeId);
+                //}
+
                 $inputRow.find('select.form-control').trigger('change');
             } else {
                 toastr.warning('A row in ' + divName + ' is still being edited.');
-            }
-
-            var departmentId = $('#DepartmentsTable tbody tr.Row-Input:last-child').find('input[name="HiddenDepartmentID"]').val() || 0;
-            if (divName == 'Position' && departmentId > 0) {
-                SelectPositions(rowID);
             }
         }
 
