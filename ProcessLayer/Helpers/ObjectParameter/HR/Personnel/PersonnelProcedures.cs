@@ -5,7 +5,11 @@
         public const string GetPersonnelCount = "hr.GetPersonnelCount";
         public const string GetPersonnel = "hr.GetPersonnel";
         public const string FilterPersonnel = "hr.FilterPersonnel";
+        public const string FilterApprovedPersonnel = "hr.FilterApprovedPersonnel";
+        public const string FilterApprovingPersonnel = "hr.FilterApprovingPersonnel";
         public const string DeletePersonnel = "hr.DeletePersonnel";
+        public const string Approved = "hr.ApprovedPersonnel";
+        public const string Cancelled = "hr.CancelledPersonnel";
         public const string CreatePersonnelPesonalInfo = "hr.CreatePersonnelPesonalInfo";
         public const string UpdatePersonnelPesonalInfo = "hr.UpdatePersonnelPesonalInfo";
         public const string UpdatePersonnelEmploymentInfo = "hr.UpdatePersonnelEmploymentInfo";

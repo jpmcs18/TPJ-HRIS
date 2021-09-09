@@ -209,16 +209,30 @@
                                         </div>
 
                                         @*<div class="form-group col-xs-12 col-sm-4 col-md-4 col-lg-3">
-                                        @Html.LabelFor(m => m.Personnel.TaxTypeID, new { @class = "control-label" })
-                                        <div class="">
-                                            @Html.DropDownListFor(m => m.Personnel.TaxTypeID, new SelectList(taxTypes, "ID", "Description"), new { @class = "form-control" })
-                                        </div>
-                                    </div>*@
+            @Html.LabelFor(m => m.Personnel.TaxTypeID, new { @class = "control-label" })
+            <div class="">
+                @Html.DropDownListFor(m => m.Personnel.TaxTypeID, new SelectList(taxTypes, "ID", "Description"), new { @class = "form-control" })
+            </div>
+        </div>*@
 
                                         <div class="form-group col-xs-12 col-sm-4 col-md-4 col-lg-3">
                                             @Html.LabelFor(m => m.Personnel.NationalityID, new { @class = "control-label" })
                                             <div class="">
                                                 @Html.DropDownListFor(m => m.Personnel.NationalityID, new SelectList(nationalities, "ID", "Description", Model.Personnel.NationalityID), "N/A", new { @class = "form-control" })
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group col-xs-12 col-sm-4 col-md-4 col-lg-3">
+                                            @Html.LabelFor(m => m.Personnel.Years, new { @class = "control-label" })
+                                            <div class="">
+                                                @Model.Personnel.Years
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group col-xs-12 col-sm-4 col-md-4 col-lg-3">
+                                            @Html.LabelFor(m => m.Personnel.Months, new { @class = "control-label" })
+                                            <div class="">
+                                                @Model.Personnel.Months
                                             </div>
                                         </div>
                                     </div>

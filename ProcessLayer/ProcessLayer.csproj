@@ -60,6 +60,7 @@
     <Compile Include="Entities\CnBs\PersonnelTimesheet.cs" />
     <Compile Include="Entities\CnBs\ComputedTimelog.cs" />
     <Compile Include="Entities\HRs\AssumedPersonnelDeduction.cs" />
+    <Compile Include="Entities\Kiosks\AbsenceRequest.cs" />
     <Compile Include="Entities\Kiosks\ComputedLeaveCredits.cs" />
     <Compile Include="Entities\Kiosks\HighRiskRequest.cs" />
     <Compile Include="Entities\Kiosks\KioskNotification.cs" />
@@ -255,6 +256,7 @@
     <Compile Include="Processes\CnBs\PayrollProcess.cs" />
     <Compile Include="Processes\HRs\PersonnelLeaveCreditsProcess.cs" />
     <Compile Include="Processes\HRs\PersonnelScheduleProcess.cs" />
+    <Compile Include="Processes\Kiosks\AbsenceRequestProcess.cs" />
     <Compile Include="Processes\Kiosks\ComputedLeaveCreditsProcess.cs" />
     <Compile Include="Processes\Kiosks\HighRiskRequestProcess.cs" />
     <Compile Include="Processes\Kiosks\KioskNotificationProcess.cs" />

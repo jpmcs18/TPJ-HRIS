@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using DBUtilities;
 using ProcessLayer.Helpers.ObjectParameter;
 using ProcessLayer.Processes.Lookups;
+using System;
 
 namespace ProcessLayer.Processes
 {
@@ -80,5 +81,21 @@ namespace ProcessLayer.Processes
             }
             return obj;
         }
+
+        public static PersonnelDepartment GetCurrentDepartment(long personnelId, DateTime date)
+        {
+            var parameters = new Dictionary<string, object> {
+                { PersonnelDepartmentParameters.PersonnelID, personnelId },
+                { PersonnelDepartmentParameters.Date, date }
+            };
+            using (var db = new DBTools())
+            {
+                using (var ds = db.ExecuteReader(PersonnelDepartmentProcedures.GetCurrentDepartment, parameters))
+                {
+                    return ds.Get(Converter);
+                }
+            }
+        }
+
     }
 }

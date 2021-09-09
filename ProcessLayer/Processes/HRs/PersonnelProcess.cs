@@ -71,11 +71,13 @@ namespace ProcessLayer.Processes
                 CreatedBy = dr[LogDetailsFields.CreatedBy].ToNullableInt(),
                 CreatedOn = dr[LogDetailsFields.CreatedOn].ToNullableDateTime(),
                 ModifiedBy = dr[LogDetailsFields.ModifiedBy].ToNullableInt(),
-                ModifiedOn = dr[LogDetailsFields.ModifiedOn].ToNullableDateTime()
+                ModifiedOn = dr[LogDetailsFields.ModifiedOn].ToNullableDateTime(),
+                Approved = dr["Approved"].ToNullableBoolean(),
+                Cancelled = dr["Cancelled"].ToNullableBoolean(),
+
             };
             p._Creator = LookupProcess.GetUser(p.CreatedBy);
             p._Modifier = LookupProcess.GetUser(p.ModifiedBy);
-            var po = PersonnelOnly;
 
             try { 
                 p.LinkedPersonnelID = dr[PersonnelFields.PersonnelLinkedID].ToNullableLong();
@@ -93,7 +95,6 @@ namespace ProcessLayer.Processes
             p._ContactNumbers = ContactNumberProcess.GetList(p.ID);
             p._AssignedLocation = PersonnelAssignedLocationProcess.GetList(p.ID);
 
-            PersonnelOnly = po;
             if (!PersonnelOnly)
             {
                 p._Vaccines = PersonnelVaccineProcess.GetByPersonnelID(p.ID);
@@ -590,6 +591,85 @@ namespace ProcessLayer.Processes
 
             return emp;
         }
-    }
 
+        public static List<Personnel> GetApprovedPersonnel(string filter, int pagenumber, int gridcount, out int count)
+        {
+            Dictionary<string, object> Parameters = new Dictionary<string, object>
+            {
+                { FilterParameters.Filter, filter },
+                { FilterParameters.PageNumber, pagenumber },
+                { FilterParameters.GridCount, gridcount }
+            };
+            List<OutParameters> outParameters = new List<OutParameters>
+            {
+                { FilterParameters.PageCount, SqlDbType.Int }
+            };
+
+            using (DBTools db = new DBTools())
+            {
+                using (DataSet ds = db.ExecuteReader(PersonnelProcedures.FilterApprovedPersonnel, ref outParameters, Parameters))
+                {
+                    PersonnelOnly = true;
+                    List<Personnel> emp = ds.GetList(Converter);
+                    PersonnelOnly = false;
+                    count = outParameters.Get(FilterParameters.PageCount).ToInt();
+                    return emp;
+                }
+            }
+        }
+
+        public static List<Personnel> GetApprovingPersonnel(string filter, int pagenumber, int gridcount, out int count)
+        {
+            Dictionary<string, object> Parameters = new Dictionary<string, object>
+            {
+                { FilterParameters.Filter, filter },
+                { FilterParameters.PageNumber, pagenumber },
+                { FilterParameters.GridCount, gridcount }
+            };
+            List<OutParameters> outParameters = new List<OutParameters>
+            {
+                { FilterParameters.PageCount, SqlDbType.Int }
+            };
+
+            using (DBTools db = new DBTools())
+            {
+                using (DataSet ds = db.ExecuteReader(PersonnelProcedures.FilterApprovingPersonnel, ref outParameters, Parameters))
+                {
+                    PersonnelOnly = true;
+                    List<Personnel> emp = ds.GetList(Converter);
+                    PersonnelOnly = false;
+                    count = outParameters.Get(FilterParameters.PageCount).ToInt();
+                    return emp;
+                }
+            }
+        }
+
+        public static void Approved(long Id, int userid)
+        {
+            var Parameters = new Dictionary<string, object>
+            {
+                { PersonnelParameters.ID, Id },
+                { CredentialParameters.LogBy, userid }
+            };
+
+            using (var db = new DBTools())
+            {
+                db.ExecuteNonQuery(PersonnelProcedures.Approved, Parameters);
+            }
+        }
+
+        public static void Cancelled(long Id, int userid)
+        {
+            var Parameters = new Dictionary<string, object>
+            {
+                { PersonnelParameters.ID, Id },
+                { CredentialParameters.LogBy, userid }
+            };
+
+            using (var db = new DBTools())
+            {
+                db.ExecuteNonQuery(PersonnelProcedures.Cancelled, Parameters);
+            }
+        }
+    }
 }

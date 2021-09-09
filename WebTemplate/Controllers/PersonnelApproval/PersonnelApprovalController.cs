@@ -1,0 +1,74 @@
+﻿using ProcessLayer.Helpers;
+using ProcessLayer.Processes;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using WebTemplate.Models.PersonnelApproval;
+
+namespace WebTemplate.Controllers.PersonnelApproval
+{
+    public class PersonnelApprovalController : BaseController
+    {
+        // GET: PersonnelApproval
+        public ActionResult Index(Index model)
+        {
+            model.Page = model.Page > 1 ? model.Page : 1;
+            model.Personnel = PersonnelProcess.GetApprovingPersonnel(model.Filter, model.Page, model.GridCount, out int PageCount);
+            model.PageCount = PageCount;
+
+            if (Request.IsAjaxRequest())
+            {
+                ModelState.Clear();
+                return PartialViewCustom("_PersonnelApproval", model);
+            }
+            else
+            {
+                return ViewCustom("_PersonnelApprovalIndex", model);
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Approve(long? id)
+        {
+            if (id.HasValue)
+            {
+                try
+                {
+                    PersonnelProcess.Approved(id ?? 0, User.UserID);
+                    return Json(new { msg = true, res = "Approved" });
+
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { msg = false, res = ex.GetActualMessage() });
+                }
+            }
+            else
+                return Json(new { msg = false, res = "Unable to find personnel." });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Cancel(long? id)
+        {
+            if (id.HasValue)
+            {
+                try
+                {
+                    PersonnelProcess.Cancelled(id ?? 0, User.UserID);
+                    return Json(new { msg = true, res = "Cancelled" });
+
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { msg = false, res = ex.GetActualMessage() });
+                }
+            }
+            else
+                return Json(new { msg = false, res = "Unable to find personnel." });
+        }
+    }
+}

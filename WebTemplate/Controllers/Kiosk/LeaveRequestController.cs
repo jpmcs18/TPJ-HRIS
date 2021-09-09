@@ -5,6 +5,8 @@ using ProcessLayer.Helpers;
 using ProcessLayer.Processes;
 using ProcessLayer.Processes.HR;
 using ProcessLayer.Processes.Kiosk;
+using ReportLayer.Helpers;
+using ReportLayer.Reports;
 using System;
 using System.Configuration;
 using System.IO;
@@ -117,7 +119,7 @@ namespace WebTemplate.Controllers.Kiosk
                     PersonnelID = User.UserID
                 };
 
-                if ((id ?? 0) > 0)
+                 if ((id ?? 0) > 0)
                     model = LeaveRequestProcess.Instance.Value.Get(id ?? 0);
 
                 if (model.Approved == true || model.Cancelled == true)
@@ -220,6 +222,20 @@ namespace WebTemplate.Controllers.Kiosk
         public void DeleteRequestSingle(long? id)
         {
             LeaveRequestProcess.Instance.Value.Delete(id ?? 0, User.UserID);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult PrintMedicard(long requestId)
+        {
+            using (var report = new PrintMedicard(Server.MapPath(PrintMedicardHelper.Instance.Value.Template)))
+            {
+                report.LeaveRequest = LeaveRequestProcess.Instance.Value.Get(requestId);
+
+                report.GenerateReport();
+                ViewBag.Content = report.SaveToPDF();
+            }
+            return View("~/Views/PrintingView.cshtml");
         }
     }
 }

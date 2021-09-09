@@ -96,6 +96,8 @@ namespace ProcessLayer.Entities
         public decimal AdditionalHazardRate { get; set; }
         [DisplayName("Biomatrics ID")]
         public int BiometricsID { get; set; }
+        public bool? Approved { get; set; }
+        public bool? Cancelled { get; set; }
 
         public List<EducationalBackground> _EducationalBackground { get; set; } = new List<EducationalBackground>();
         public List<WorkExperience> _WorkExperience { get; set; } = new List<WorkExperience>();
@@ -144,9 +146,9 @@ namespace ProcessLayer.Entities
         {
             get
             {
-                DateTime dateHired = (DateHired ?? DateTime.Now);
+                DateTime dateHired = DateHired ?? DateTime.Now;
                 DateTime dateEnd = ResignationDate ?? DateTime.Now;
-                int months = dateHired.Month - dateEnd.Month;
+                int months = dateEnd.Month - dateHired.Month;
                 months += (dateHired.Day > dateEnd.Day ? -1 : 0);
                 if (months < 0)
                     months += (dateHired.Year != dateEnd.Year ? 12 : 0);

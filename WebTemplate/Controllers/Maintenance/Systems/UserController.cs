@@ -4,6 +4,7 @@ using DataAccessLayer.System;
 using DataAccessLayer.Security;
 using WebTemplate.Models.Maintenance.Systems.User;
 using DataAccessLayer.HR;
+using ProcessLayer.Processes;
 
 namespace WebTemplate.Controllers.Maintenance.Systems
 {
@@ -108,10 +109,8 @@ namespace WebTemplate.Controllers.Maintenance.Systems
 
         public ActionResult SearchPersonnel(SearchPersonnel model)
         {
-            var hr = new Personnel();
-            
             model.PageNumber = model.PageNumber > 0 ? model.PageNumber : 1;
-            model.ItemList = hr.GetList(model.PageNumber, model.GridCount, model.Filter, out int count);
+            model.ItemList = PersonnelProcess.GetApprovedPersonnel(model.Filter, model.PageNumber, model.GridCount, out int count);
             model.ItemCount = count;
 
             return PartialViewCustom("_SearchPersonnel", model);
