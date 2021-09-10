@@ -486,22 +486,20 @@
         }
         else {
             formdata.append("IsHalfday", true);
-            $('#IsHalfdayFields .form-control').each(function () {
-                var value = $(this).val();
-                var name = $(this).attr('name');
-                if (value)
-                    formdata.append(name, value);
-                else {
-                    var label = $('#' + name).prev('label').text() || name;
-                    toastr.options = {
-                        timeOut: 0,
-                        extendedTimeOut: 0
-                    };
-                    toastr.warning(label + " is required if Half-day is chosen.", "Warning");
-                    save = false;
-                    return false;
-                }
-            });
+            var halfDay = $('#IsHalfdayFields .form-control').val()
+            var name = halfDay == 1 ? 'IsMorning' : 'IsAfternoon';
+            if (halfDay) {
+                formdata.append(name, true);
+            }
+            else {
+                toastr.options = {
+                    timeOut: 0,
+                    extendedTimeOut: 0
+                };
+                toastr.warning("Time of day is required if Half-day is chosen.", "Warning");
+                save = false;
+                return false;
+            }
         }
         formdata.append('__RequestVerificationToken', $('@Html.AntiForgeryToken()').val());
 

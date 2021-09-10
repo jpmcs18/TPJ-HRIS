@@ -21,7 +21,7 @@ namespace ReportLayer.Reports
             PersonnelDepartment department = PersonnelDepartmentProcess.GetCurrentDepartment(LeaveRequest._Personnel.ID, LeaveRequest.CreatedOn ?? LeaveRequest.RequestedDate ?? DateTime.Now);
             PersonnelPosition position = PersonnelPositionProcess.GetCurrentPosition(LeaveRequest._Personnel.ID, LeaveRequest.CreatedOn ?? LeaveRequest.RequestedDate ?? DateTime.Now);
             WriteToCell(PrintMedicardHelper.Instance.Value.NameCell, LeaveRequest._Personnel.FullName);
-            WriteToCell(PrintMedicardHelper.Instance.Value.DateCell, LeaveRequest.CreatedOn);
+            WriteToCell(PrintMedicardHelper.Instance.Value.DateCell, LeaveRequest.CreatedOn?.ToString("MM/dd/yyyy"));
             WriteToCell(PrintMedicardHelper.Instance.Value.DepartmentCell, department._Department.Description);
             WriteToCell(PrintMedicardHelper.Instance.Value.PositionCell, position._Position.Description);
             WriteToCell(PrintMedicardHelper.Instance.Value.HospitalCell, LeaveRequest.Hospital);

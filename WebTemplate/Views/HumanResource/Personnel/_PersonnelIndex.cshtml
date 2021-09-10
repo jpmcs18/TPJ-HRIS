@@ -1146,70 +1146,77 @@
             var divName = $(this).attr('name').replace('Delete', '');
             $displayRow = $(this).closest('tr').prev('tr');
             $inputRow = $(this).closest('tr');
-
+            var message = divName;
             var urlAction = '';
             switch (divName) {
-            case 'ContactNumber':
-                urlAction = '@Url.Action("DeletePersonnelContactNumber", "Personnel")';
-                break;
-            case 'Dependent':
-                urlAction = '@Url.Action("DeletePersonnelDependent", "Personnel")';
-                break;
-            case 'Department':
-                urlAction = '@Url.Action("DeletePersonnelDepartment", "Personnel")';
-                break;
-            case 'Position':
-                urlAction = '@Url.Action("DeletePersonnelPosition", "Personnel")';
-                break;
-            case 'AssignedLocation':
-                urlAction = '@Url.Action("DeletePersonnelAssignedLocation", "Personnel")';
-                break;
-            case 'EmploymentType':
-                urlAction = '@Url.Action("DeletePersonnelEmploymentType", "Personnel")';
-                break;
-            case 'Schedule':
-                urlAction = '@Url.Action("DeletePersonnelSchedule", "Personnel")';
-                break;
-            case 'License':
-                urlAction = '@Url.Action("DeletePersonnelLicense", "Personnel")';
-                break;
-            case 'Memo':
-                urlAction = '@Url.Action("DeletePersonnelMemo", "Personnel")';
-                break;
-            case 'EducationalBackground':
-                urlAction = '@Url.Action("DeleteEducationalBackground", "Personnel")';
-                break;
-            case 'WorkExperience':
-                urlAction = '@Url.Action("DeleteWorkExperience", "Personnel")';
-                break;
-            case 'Training':
-                urlAction = '@Url.Action("DeleteTraining", "Personnel")';
-                break;
-            case 'Legislation':
-                urlAction = '@Url.Action("DeleteLegislation", "Personnel")';
-                break;
-            case 'Compensation':
-                urlAction = '@Url.Action("DeletePersonnelCompensation", "Personnel")';
-                break;
-            case 'Deduction':
-                urlAction = '@Url.Action("DeletePersonnelDeduction", "Personnel")';
-                break;
-            case 'Loan':
-                urlAction = '@Url.Action("DeletePersonnelLoan", "Personnel")';
-                break;
-            case 'DateLeaveCredit':
-                urlAction = '@Url.Action("CancelPersonnelLeaveCredits", "Personnel")';
-                break;
-            case 'YearLeaveCredit':
-                urlAction = '@Url.Action("CancelPersonnelLeaveCredits", "Personnel")';
-                break;
-            case 'Vaccine':
-                urlAction = '@Url.Action("DeletePersonnelVaccine", "Personnel")';
-                break;
+                case 'ContactNumber':
+                    urlAction = '@Url.Action("DeletePersonnelContactNumber", "Personnel")';
+                    message = "Contact Number";
+                    break;
+                case 'Dependent':
+                    urlAction = '@Url.Action("DeletePersonnelDependent", "Personnel")';
+                    break;
+                case 'Department':
+                    urlAction = '@Url.Action("DeletePersonnelDepartment", "Personnel")';
+                    break;
+                case 'Position':
+                    urlAction = '@Url.Action("DeletePersonnelPosition", "Personnel")';
+                    break;
+                case 'AssignedLocation':
+                    urlAction = '@Url.Action("DeletePersonnelAssignedLocation", "Personnel")';
+                    message = "Assigned Location";
+                    break;
+                case 'EmploymentType':
+                    urlAction = '@Url.Action("DeletePersonnelEmploymentType", "Personnel")';
+                    message = "Employment Type";
+                    break;
+                case 'Schedule':
+                    urlAction = '@Url.Action("DeletePersonnelSchedule", "Personnel")';
+                    break;
+                case 'License':
+                    urlAction = '@Url.Action("DeletePersonnelLicense", "Personnel")';
+                    break;
+                case 'Memo':
+                    urlAction = '@Url.Action("DeletePersonnelMemo", "Personnel")';
+                    break;
+                case 'EducationalBackground':
+                    urlAction = '@Url.Action("DeleteEducationalBackground", "Personnel")';
+                    message = "Educational Background";
+                    break;
+                case 'WorkExperience':
+                    urlAction = '@Url.Action("DeleteWorkExperience", "Personnel")';
+                    message = "Work Experience";
+                    break;
+                case 'Training':
+                    urlAction = '@Url.Action("DeleteTraining", "Personnel")';
+                    break;
+                case 'Legislation':
+                    urlAction = '@Url.Action("DeleteLegislation", "Personnel")';
+                    break;
+                case 'Compensation':
+                    urlAction = '@Url.Action("DeletePersonnelCompensation", "Personnel")';
+                    break;
+                case 'Deduction':
+                    urlAction = '@Url.Action("DeletePersonnelDeduction", "Personnel")';
+                    break;
+                case 'Loan':
+                    urlAction = '@Url.Action("DeletePersonnelLoan", "Personnel")';
+                    break;
+                case 'DateLeaveCredit':
+                    urlAction = '@Url.Action("DeletePersonnelLeaveCredits", "Personnel")';
+                    message = "Leave Credit";
+                    break;
+                case 'YearLeaveCredit':
+                    urlAction = '@Url.Action("DeletePersonnelLeaveCredits", "Personnel")';
+                    message = "Leave Credit";
+                    break;
+                case 'Vaccine':
+                    urlAction = '@Url.Action("DeletePersonnelVaccine", "Personnel")';
+                    break;
             }
 
             swal({
-                title: 'Delete ' + divName + '?',
+                title: 'Delete ' + message + '?',
                 text: "",
                 type: "warning",
                 showCancelButton: true,

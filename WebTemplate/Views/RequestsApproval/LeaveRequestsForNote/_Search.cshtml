@@ -153,9 +153,9 @@
                             var Cancelled = Model.LeaveRequests[i].Cancelled == true;
                             var IsPending = !Approved && !Cancelled;
 
-                            var LastStatus = Approved ? "<span class='label label-primary'>Approved</span>" : ((Noted ? "<span class='label label-info'>Noted</span>" : (Cancelled ? "<span class='label label-danger'>Cancelled</span>" : (Expired ? "<span class='label label-warning'>Expired</span>" : "<span class='label label-info'>Pending</span>"))));
-                            var LastUser = Approved ? Model.LeaveRequests[i]._Approver : (Noted ? Model.LeaveRequests[i]._Noted : (Cancelled ? Model.LeaveRequests[i]._Cancel : (Model.LeaveRequests[i].ModifiedBy != null ? Model.LeaveRequests[i]._Modifier : Model.LeaveRequests[i]._Creator)));
-                            var LastDate = Approved ? Model.LeaveRequests[i].ApprovedOn : (Noted ? Model.LeaveRequests[i].NotedOn : (Cancelled ? Model.LeaveRequests[i].CancelledOn : (Model.LeaveRequests[i].ModifiedBy != null ? Model.LeaveRequests[i].ModifiedOn : Model.LeaveRequests[i].CreatedOn)));
+                            var LastStatus = Approved ? "<span class='label label-primary'>Approved</span>" : ((Noted == true ? "<span class='label label-info'>Noted</span>" : (Cancelled ? "<span class='label label-danger'>Cancelled</span>" : (Expired ? "<span class='label label-warning'>Expired</span>" : "<span class='label label-info'>Pending</span>"))));
+                            var LastUser = Approved ? Model.LeaveRequests[i]._Approver : (Noted == true ? Model.LeaveRequests[i]._Noted : (Cancelled ? Model.LeaveRequests[i]._Cancel : (Model.LeaveRequests[i].ModifiedBy != null ? Model.LeaveRequests[i]._Modifier : Model.LeaveRequests[i]._Creator)));
+                            var LastDate = Approved ? Model.LeaveRequests[i].ApprovedOn : (Noted == true ? Model.LeaveRequests[i].NotedOn : (Cancelled ? Model.LeaveRequests[i].CancelledOn : (Model.LeaveRequests[i].ModifiedBy != null ? Model.LeaveRequests[i].ModifiedOn : Model.LeaveRequests[i].CreatedOn)));
                             var filename = Path.GetFileName(Model.LeaveRequests[i].File);
 
                     <tr id="Row-Display-LeaveRequests-@Model.LeaveRequests[i].ID" class="Row-Display Row-Display-LeaveRequests @RowColorLabel" style="">
@@ -188,7 +188,7 @@
                                 @Model.LeaveRequests[i].Remarks
                             </text>
                         </td>
-                        @if ((PageAccess.Approve || PageAccess.View) && !Noted)
+                        @if ((PageAccess.Approve || PageAccess.View) && !(Noted == true))
                         {
                             <td style="width: 160px;" class="row-actions">
                                 <div class="btn-group">
