@@ -5,35 +5,17 @@
     var CreatorAccess = credential.GetPage("Creator Leave Request") ?? new DataAccessLayer.System.Page();
 
     var c = User as WebTemplate.Models.CustomPrincipal;
-    var leaveTypes = ProcessLayer.Processes.HR.PersonnelLeaveCreditProcess.Instance.Value.GetLeaveWithCredits(Model.PersonnelID ?? 0, DateTime.Now.Year);
+    var leaveTypes = ProcessLayer.Processes.HR.PersonnelLeaveCreditProcess.Instance.Value.GetLeaveWithCredits(Model.PersonnelID ?? 0, DateTime.Now);
     //var IsBulkUse = Model._LeaveType.BulkUse ?? false;
+    var leaveSubTypes = new Dictionary<int, string> { { 1, "Absent" }, { 2, "Half-day" } };
+    var timeofday = new Dictionary<int, string> { { 1, "Morning" }, { 2, "Afternoon" } };
 
     var IsPending = (Model.Approved == null || Model.Approved == false) && (Model.Cancelled == null || Model.Cancelled == false);
 }
 
 @Html.Hidden("PersonnelID", Model.PersonnelID, new { @class = "form-control leave-main" })
 @Html.Hidden("ID", Model.ID, new { @class = "form-control leave-main" })
-
-<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
-    @using (Html.BeginForm("PrintRequest", "LeaveRequest", FormMethod.Post, new { @target = "_blank", @class = "pull-right" }))
-    {
-        <button class="btn btn-primary compose-mail pull-right" type="submit" id="PrintRequest" title="Print Request"><i class="fa fa-print"></i> Print</button>
-        <input type="hidden" value="@Model.ID" name="id" />
-    }
-</div>
-
-<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
-    <label class="control-label">Type</label>
-    @*<select id="LeaveTypeID" name="LeaveTypeID" class="form-control form-control">
-            <option value="" isbulk="false">N/A</option>
-            @foreach (var l in leaveTypes)
-            {
-                var selected = Model.LeaveTypeID == l.ID ? "selected" : "";
-                <option value="@l.ID" isbulk="@((l.BulkUse ?? false) ? " true" : "false" )" @selected>@l.Description</option>
-            }
-        </select>*@
-    @Html.DropDownListFor(m => m.LeaveTypeID, new SelectList(leaveTypes, "ID", "Description"), "N/A", new { @class = "form-control leave-main" })
-</div>
+@Html.Hidden("LeaveTypeID", Model._LeaveType.ID, new { @class = "form-control leave-main" })
 
 @*<div id="BulkUseDatePicker" class="@(IsBulkUse ? " " : " hidden")">
         <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
@@ -52,48 +34,98 @@
             @Html.TextBox("EndDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.EndDateTime), new { @type = "datetime-local", @class = "form-control" })
         </div>
     </div>*@
+@if ((Model._LeaveType.HasDocumentNeeded ?? false))
+{
+    <div class="row">
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            @using (Html.BeginForm("PrintMedicard", "LeaveRequest", FormMethod.Post, new { @target = "_blank", @class = "pull-right" }))
+            {
+                <button class="btn btn-primary compose-mail pull-right" type="submit" id="PrintRequest" title="Print Request" onclick="event.stopPropagation();"><i class="fa fa-print"></i> Print</button>
+                <input type="hidden" value="@Model.ID" name="requestId" />
+                @Html.AntiForgeryToken()
+            }
+        </div>
+    </div>
+}
 
-<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
-    <label class="control-label">Request Date</label>
-    @Html.TextBoxFor(m => m.RequestedDate, String.Format("{0:yyyy'-'MM'-'dd}", Model.RequestedDate), new { @type = "date", @class = "form-control leave-main" })
-</div>
-
-<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
-    <label class="control-label">No. of Days</label>
-    @Html.TextBoxFor(m => m.NoofDays, new { @type = "number", @class = "form-control leave-main" })
-</div>
-
-<div id="MedicardFields" class="@(Model.LeaveTypeID == 3 ? "" : "hidden")">
+<div class="row">
     <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
-        <label class="control-label">Hospital</label>
-        @Html.TextBoxFor(m => m.Hospital, new { @class = "form-control" })
+        <label class="control-label">Type</label>
+        <label class="form-control">@(Model._LeaveType?.Description ?? "")</label>
+        @*@Html.DropDownListFor(m => m.LeaveTypeID, new SelectList(leaveTypes, "ID", "Description"), "N/A", new { @class = "form-control leave-main" })*@
     </div>
 
     <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
-        <label class="control-label">Location</label>
-        @Html.TextBoxFor(m => m.Location, new { @class = "form-control" })
-    </div>
-
-    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
-        <label class="control-label">Period Start</label>
-        @Html.TextBoxFor(m => m.PeriodStart, String.Format("{0:yyyy'-'MM'-'dd}", Model.PeriodStart), new { @type = "date", @class = "form-control" })
-    </div>
-
-    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
-        <label class="control-label">Period End</label>
-        @Html.TextBoxFor(m => m.PeriodEnd, String.Format("{0:yyyy'-'MM'-'dd}", Model.PeriodEnd), new { @type = "date", @class = "form-control" })
+        <label class="control-label">Request Date</label>
+        @Html.TextBoxFor(m => m.RequestedDate, String.Format("{0:yyyy'-'MM'-'dd}", Model.RequestedDate), new { @type = "date", @class = "form-control leave-main" })
     </div>
 </div>
 
-<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
-    <label class="control-label">Reasons</label>
-    @Html.TextAreaFor(m => m.Reasons, new { @class = "form-control leave-main", @rows = "4", @placeholder = "Reasons..." })
+<fieldset class="form-group">
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
+        <label class="control-label"></label>
+        @{
+            var leaveSubType = (Model.IsAbsent ?? false) ? 1 : 2;
+        }
+        @Html.DropDownList("LeaveSubTypes", new SelectList(leaveSubTypes, "Key", "Value", leaveSubType), new { @class = "form-control leave-main" })
+    </div>
+
+    <div id="IsAbsentFields" class="leaveSubTypes@((Model.IsAbsent ?? false) ? "" : " hidden")">
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
+            <label class="control-label">Period Start</label>
+            @Html.TextBoxFor(m => m.PeriodStart, String.Format("{0:yyyy'-'MM'-'dd}", Model.PeriodStart), new { @type = "date", @class = "form-control" })
+        </div>
+
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
+            <label class="control-label">Period End</label>
+            @Html.TextBoxFor(m => m.PeriodEnd, String.Format("{0:yyyy'-'MM'-'dd}", Model.PeriodEnd), new { @type = "date", @class = "form-control" })
+        </div>
+
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
+            <label class="control-label">No. of Days</label>
+            @Html.TextBoxFor(m => m.NoofDays, new { @type = "number", @class = "form-control leave-main" })
+        </div>
+    </div>
+
+    <div id="IsHalfdayFields" class="@((Model.IsAbsent ?? false) ? " hidden" : "") leaveSubTypes">
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
+            <label class="control-label">Time of Day</label>
+            @{
+                var timeOfDay = (Model.IsMorning ?? false) ? 1 : 2;
+            }
+            @Html.DropDownList("TimeOfDay", new SelectList(timeofday, "Key", "Value", timeOfDay), new { @class = "form-control leave-main" })
+        </div>
+    </div>
+</fieldset>
+
+<div id="MedicardFields" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12 @(Model.LeaveTypeID == 3 ? "" : "hidden")">
+    <fieldset class="row">
+        <legend>Medicard Fields</legend>
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
+            <label class="control-label">Hospital</label>
+            @Html.TextBoxFor(m => m.Hospital, new { @class = "form-control" })
+        </div>
+
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
+            <label class="control-label">Location</label>
+            @Html.TextBoxFor(m => m.Location, new { @class = "form-control" })
+        </div>
+    </fieldset>
+</div>
+
+<div class="row">
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <label class="control-label">Reasons</label>
+        @Html.TextAreaFor(m => m.Reasons, new { @class = "form-control leave-main", @rows = "4", @placeholder = "Reasons..." })
+    </div>
 </div>
 
 @if (!(Model.IsExpired && IsPending))
 {
-    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
-        <button type="button" id="CreateLeaveRequest" onclick="SaveRequest();" class="btn btn-primary font-bold pull-right" title="Update"><i class="fa fa-save"></i>&nbsp;&nbsp;Update</button>
+    <div class="row">
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <button type="button" id="CreateLeaveRequest" onclick="SaveRequest();" class="btn btn-primary font-bold pull-right" title="Update"><i class="fa fa-save"></i>&nbsp;&nbsp;Update</button>
+        </div>
     </div>
 }
 

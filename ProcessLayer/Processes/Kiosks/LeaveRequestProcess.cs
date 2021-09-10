@@ -477,7 +477,7 @@ namespace ProcessLayer.Processes.Kiosk
         {
             var parameters = new Dictionary<string, object> {
                 { LeaveRequestParameters.ID, id },
-                { CredentialParameters.LogBy, userid }
+                //{ CredentialParameters.LogBy, userid }
             };
 
             using (var db = new DBTools())

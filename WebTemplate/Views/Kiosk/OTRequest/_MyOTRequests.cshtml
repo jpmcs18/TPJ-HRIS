@@ -92,44 +92,41 @@
             <div class="mail-box">
                 <table id="OTRequestsTable" class="table table-hover table-mail">
                     <thead>
-                        @if (Model.PageCount > 1)
-                        {
-                            <tr>
-                                <td class="text-right" colspan="10" style="background-color: white;">
-                                    <div class="pull-left m-r-md">
-                                        <button type="button" id="MultipleDelete" class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="top" title="Delete selected rows" disabled>
-                                            <i class="fa fa-trash-o"></i>
-                                        </button>
-                                    </div>
+                        <tr>
+                            <td class="text-right" colspan="10" style="background-color: white;">
+                                <div class="pull-left m-r-md">
+                                    <button type="button" id="MultipleDelete" class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="top" title="Delete selected rows" disabled>
+                                        <i class="fa fa-trash-o"></i>
+                                    </button>
+                                </div>
 
-                                    <div class="btn-group pull-left">
-                                        @if (Model.Page > 0)
+                                <div class="btn-group pull-left">
+                                    @if (Model.Page > 0)
+                                    {
+                                        <button type="button" name="@Html.NameFor(m => m.Page)" value="1" class="btn btn-white @(Model.Page == 1 ? "active" : "pages")">1 @*<i class="fa fa-angle-double-left"></i>*@</button>
+                                    }
+                                    @if (Model.Page - 1 > 2)
+                                    {
+                                        <button type="button" name="@Html.NameFor(m => m.Page)" value="@(Model.Page - 2)" class="btn btn-white pages">...@*<i class="fa fa-angle-left"></i>*@</button>
+                                    }
+                                    @for (int i = Model.Page - 1; i <= Model.Page + 1; i++)
+                                    {
+                                        if (i > 1 && i < Model.PageCount)
                                         {
-                                            <button type="button" name="@Html.NameFor(m => m.Page)" value="1" class="btn btn-white @(Model.Page == 1 ? "active" : "pages")">1 @*<i class="fa fa-angle-double-left"></i>*@</button>
+                                            <button type="button" name="@Html.NameFor(m => m.Page)" value="@(i)" class="btn btn-white @(i == Model.Page ? " active" : "pages")">@(i)</button>
                                         }
-                                        @if (Model.Page - 1 > 2)
-                                        {
-                                            <button type="button" name="@Html.NameFor(m => m.Page)" value="@(Model.Page - 2)" class="btn btn-white pages">...@*<i class="fa fa-angle-left"></i>*@</button>
-                                        }
-                                        @for (int i = Model.Page - 1; i <= Model.Page + 1; i++)
-                                        {
-                                            if (i > 1 && i < Model.PageCount)
-                                            {
-                                                <button type="button" name="@Html.NameFor(m => m.Page)" value="@(i)" class="btn btn-white @(i == Model.Page ? " active" : "pages")">@(i)</button>
-                                            }
-                                        }
-                                        @if (Model.Page + 1 < Model.PageCount - 1)
-                                        {
-                                            <button type="button" name="@Html.NameFor(m => m.Page)" value="@(Model.Page + 2)" class="btn btn-white pages">...@*<i class="fa fa-angle-right"></i>*@</button>
-                                        }
-                                        @if (Model.Page <= Model.PageCount && Model.PageCount > 1)
-                                        {
-                                            <button type="button" name="@Html.NameFor(m => m.Page)" value="@Model.PageCount" class="btn btn-white @(Model.Page == Model.PageCount ? "active" : "pages")">@Model.PageCount @*<i class="fa fa-angle-double-right"></i>*@</button>
-                                        }
-                                    </div>
-                                </td>
-                            </tr>
-                        }
+                                    }
+                                    @if (Model.Page + 1 < Model.PageCount - 1)
+                                    {
+                                        <button type="button" name="@Html.NameFor(m => m.Page)" value="@(Model.Page + 2)" class="btn btn-white pages">...@*<i class="fa fa-angle-right"></i>*@</button>
+                                    }
+                                    @if (Model.Page <= Model.PageCount && Model.PageCount > 1)
+                                    {
+                                        <button type="button" name="@Html.NameFor(m => m.Page)" value="@Model.PageCount" class="btn btn-white @(Model.Page == Model.PageCount ? "active" : "pages")">@Model.PageCount @*<i class="fa fa-angle-double-right"></i>*@</button>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
                         <tr>
                             <th style="text-align: center;" scope="col">
                                 <input id="SelectAll" type="checkbox" class="i-checks" title="Select All" value="">

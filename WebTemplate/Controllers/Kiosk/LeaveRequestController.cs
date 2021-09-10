@@ -140,11 +140,9 @@ namespace WebTemplate.Controllers.Kiosk
             try
             {
                 StringBuilder errors = new();
-                if (string.IsNullOrEmpty(model.Reasons))
-                    errors.Append("- <b>Reasons</b> is required<br>");
-
                 if (errors.Length > 0)
                     return Json(new { msg = false, res = errors.ToString() });
+
                 model._Personnel = PersonnelProcess.Get(model.PersonnelID ?? 0, true);
                 model = LeaveRequestProcess.Instance.Value.CreateOrUpdate(model, User.UserID);
                 ModelState.Clear();
@@ -225,7 +223,7 @@ namespace WebTemplate.Controllers.Kiosk
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]  
         public ActionResult PrintMedicard(long requestId)
         {
             using (var report = new PrintMedicard(Server.MapPath(PrintMedicardHelper.Instance.Value.Template)))

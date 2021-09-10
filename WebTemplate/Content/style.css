@@ -8951,6 +8951,9 @@ h3 {
   color: #f77f00;
   text-align: center;
 }
+legend {
+  font-size: 16px !important;
+}
 .legendDiv {
   float: left;
   /*width: 100%;*/
@@ -10358,6 +10361,9 @@ fieldset {
 }
 .modal textarea {
   resize: vertical;
+}
+label.form-control {
+  margin: 0;
 }
 body > .sk-spinner {
   display: none;

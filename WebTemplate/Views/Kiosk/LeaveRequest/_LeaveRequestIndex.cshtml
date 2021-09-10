@@ -132,6 +132,22 @@
             var id = $(this).attr('id');
             //$('#' + id + '.form-control:first').select();
             $(this).find('span.select2').css('width', '100%');
+            Select2Override();
+
+            $("#LeaveSubTypes").off('change').on('change', function () {
+                let value = parseInt($(this).val());
+                $('.leaveSubTypes').addClass('hidden');
+                toastr.remove();
+
+                switch (value) {
+                    case 2:
+                        $('#IsHalfdayFields').removeClass('hidden');
+                        break;
+                    default:
+                        $('#IsAbsentFields').removeClass('hidden');
+                        break;
+                }
+            });
         });
     }
 
@@ -144,15 +160,15 @@
         $('input#SelectAll').off('ifClicked').on('ifClicked', SelectAllRows);
         $('.status-checkbox').off('ifClicked').on('ifClicked', StatusFilter);
 
-        $('.i-checks').iCheck({
-            checkboxClass: 'icheckbox_square-green',
-            radioClass: 'iradio_square-green',
-        });
-
         $('#Key').off('keydown').on('keydown', function () {
             if (event.keyCode == 13) {
                 $('#Btn_Search').click();
             }
+        });
+
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green',
         });
 
         $('#Btn_Search').off('click').on('click', function () {
@@ -253,10 +269,15 @@
         $(modal + ' .modal-body').html(response);
         $(modal + ' .modal-title').html(title + ' Leave Request');
         $(modal + ' #LeaveTypeID').off('change').on('change', SetLeaveTypeID);
-        $("#browseFile").off("change").on('change', function (e) {
-            $("#ValidateFile").attr("disabled", $("#browseFile")[0].files.length == 0);
-        });
+        $("#browseFile").off("change input").on('change input', ClearDocument);
         $(modal).appendTo('body').modal('show');
+    }
+
+    function ClearDocument() {
+        var hasFile = $("#browseFile")[0].files.length == 0;
+        var title = hasFile ? $("#ValidateFile").attr("title") : "Upload";
+        $("#ValidateFile").text(title);
+        $("#ValidateFile").attr("disabled", hasFile);
     }
 
     function UploadDocument(leaveReqID, filename) {
@@ -295,7 +316,7 @@
         if (xhr) { xhr.abort(); }
         xhr = $.ajax({
             data: formdata,
-            url: '@Url.Action("UploadDocument", "LeaveRequestsDocument")',
+            url: '@Url.Action("UploadDocument", "LeaveRequest")',
             type: 'POST',
             datatype: 'JSON',
             cache: false,
@@ -387,7 +408,6 @@
             success: function (response) {
                 if (response.msg == null) {
                     ModalEvents('#LeaveRequestModal', 'New', response);
-                    Select2Override();
                 } else {
                     toastr.warning(response.res, "Warning");
                 }
@@ -405,6 +425,7 @@
         var url = '@Url.Action("SaveRequest", "LeaveRequest")';
         //var isBulkUse = $('#LeaveRequestModal #LeaveTypeID option:selected').attr('isbulk') === 'true';
         var isMedicard = $('#LeaveRequestModal #LeaveTypeID option:selected').val() == 3;
+        var isAbsent = $('#LeaveRequestModal #LeaveSubTypes option:selected').val() == 1;
         var save = true;
 
         $('#LeaveRequestModal .form-control.leave-main').each(function () {
@@ -438,7 +459,45 @@
                         timeOut: 0,
                         extendedTimeOut: 0
                     };
-                    toastr.warning(label + " is required if Leave Type is Medicard.", "Warning");
+                    toastr.warning(label + " is required if Medicard is chosen.", "Warning");
+                    save = false;
+                    return false;
+                }
+            });
+        }
+        if (isAbsent) {
+            formdata.append("IsAbsent", true);
+            $('#IsAbsentFields .form-control').each(function () {
+                var value = $(this).val();
+                var name = $(this).attr('name');
+                if (value)
+                    formdata.append(name, value);
+                else {
+                    var label = $('#' + name).prev('label').text() || name;
+                    toastr.options = {
+                        timeOut: 0,
+                        extendedTimeOut: 0
+                    };
+                    toastr.warning(label + " is required if Absent is chosen.", "Warning");
+                    save = false;
+                    return false;
+                }
+            });
+        }
+        else {
+            formdata.append("IsHalfday", true);
+            $('#IsHalfdayFields .form-control').each(function () {
+                var value = $(this).val();
+                var name = $(this).attr('name');
+                if (value)
+                    formdata.append(name, value);
+                else {
+                    var label = $('#' + name).prev('label').text() || name;
+                    toastr.options = {
+                        timeOut: 0,
+                        extendedTimeOut: 0
+                    };
+                    toastr.warning(label + " is required if Half-day is chosen.", "Warning");
                     save = false;
                     return false;
                 }
@@ -542,6 +601,7 @@
     function MultipleDelete() {
         var pagetitle = $('.page-heading h2').text().trim().toLowerCase();
         var message = $_SelectedRows.length + ' ' + pagetitle + ($_SelectedRows.length > 1 ? 's' : '');
+        var url = '@Url.Action("DeleteMultiple", "LeaveRequest")';
 
         swal({
             title: 'Delete ' + message + '?',
@@ -556,17 +616,14 @@
         },
         function(confirm) {
             if (confirm) {
-                var url = '@Url.Action("DeleteMultiple", "LeaveRequest")';
+                var formdata = new FormData();
+                formdata.append('ids', JSON.stringify($_SelectedRows));
+                formdata.append('__RequestVerificationToken', $('@Html.AntiForgeryToken()').val());
 
                 $.ajax({
-                    data: {
-                        'ids': JSON.stringify($_SelectedRows),
-                        '__RequestVerificationToken': $('@Html.AntiForgeryToken()').val()
-                    },
-                    type: 'POST',
-                    datatype: 'JSON',
                     url: url,
-                    async: true,
+                    data: formdata,
+                    type: "POST",
                     cache: false,
                     contentType: false,
                     processData: false,

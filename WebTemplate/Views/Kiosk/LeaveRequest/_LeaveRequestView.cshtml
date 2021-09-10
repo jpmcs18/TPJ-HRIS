@@ -13,13 +13,17 @@
 @Html.Hidden("PersonnelID", Model.PersonnelID, new { @class = "fix-values" })
 @Html.Hidden("ID", Model.ID, new { @class = "fix-values" })
 
-<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
-    @using (Html.BeginForm("PrintRequest", "LeaveRequest", FormMethod.Post, new { @target = "_blank", @class = "pull-right" }))
-    {
-        <button class="btn btn-primary compose-mail pull-right" type="submit" id="PrintRequest" title="Print Request"><i class="fa fa-print"></i> Print</button>
-        <input type="hidden" value="@Model.ID" name="id" />
-    }
-</div>
+@if ((Model._LeaveType.HasDocumentNeeded ?? false))
+{
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        @using (Html.BeginForm("PrintMedicard", "LeaveRequest", FormMethod.Post, new { @target = "_blank", @class = "pull-right" }))
+        {
+            <button class="btn btn-primary compose-mail pull-right" type="submit" id="PrintRequest" title="Print Request"><i class="fa fa-print"></i> Print</button>
+            <input type="hidden" value="@Model.ID" name="requestId" />
+            @Html.AntiForgeryToken()
+        }
+    </div>
+}
 
 <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
     <label class="control-label">Leave Type</label>
@@ -72,7 +76,7 @@
 {
     var filename = Path.GetFileName(Model.File);
 
-    if (Model.Noted && Model.ApprovedLeaveCredits > 0)
+    if ((Model.Noted ?? false) && Model.ApprovedLeaveCredits > 0)
     {
         <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-8">
             <label class="control-label">Document</label>
@@ -82,13 +86,16 @@
     else
     {
         <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
-            <label class="control-label">Choose Document</label>
+            <label class="control-label" style="width: 100%;">
+                Choose Document
+                <a title="Clear Document" class="pull-right" onclick="(function (e) { $('#browseFile').val(''); ClearDocument(); })()"><i class="fa fa-times"></i></a>
+            </label>
             <input id="browseFile" type="file" style=" padding-top: 2px;" class="form-control" title="@(!string.IsNullOrEmpty(filename) ? filename : "Upload Document")" value="@filename" />
         </div>
 
         <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
             <label class="control-label">Upload Document</label>
-            <button id="ValidateFile" type="button" onclick="ValidateFile()" class="form-control" disabled style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">@(!string.IsNullOrEmpty(filename) ? filename : "Upload")</button>
+            <button id="ValidateFile" type="button" onclick="ValidateFile()" class="form-control" disabled style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="@(!string.IsNullOrEmpty(filename) ? filename : "Upload Document")" >@(!string.IsNullOrEmpty(filename) ? filename : "Upload")</button>
         </div>
     }
 }
