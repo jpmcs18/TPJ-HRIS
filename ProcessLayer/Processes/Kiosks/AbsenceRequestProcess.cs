@@ -152,7 +152,7 @@ namespace ProcessLayer.Processes.Kiosk
 
             return absence;
         }
-        public void ApprovedRequest(long id, int userid)
+        public void Approved(long id, int userid)
         {
             Dictionary<string, object> parameters = new Dictionary<string, object> {
                     { "@ID", id }

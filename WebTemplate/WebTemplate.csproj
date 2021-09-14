@@ -221,6 +221,7 @@
     <Compile Include="Controllers\Maintenance\Systems\UserProfileController.cs" />
     <Compile Include="Controllers\PersonnelApproval\PersonnelApprovalController.cs" />
     <Compile Include="Controllers\Report\ReportController.cs" />
+    <Compile Include="Controllers\RequestsApproval\AbsenceRequestController.cs" />
     <Compile Include="Controllers\RequestsApproval\HighRisksRequestsController.cs" />
     <Compile Include="Controllers\RequestsApproval\LeaveRequestsController.cs" />
     <Compile Include="Controllers\RequestsApproval\LeaveRequestsDocumentController.cs" />
@@ -316,6 +317,7 @@
     <Compile Include="Models\Personnel\Trainings.cs" />
     <Compile Include="Models\Personnel\WorkExperiences.cs" />
     <Compile Include="Models\Report\Index.cs" />
+    <Compile Include="Models\RequestsApproval\Absence\Index.cs" />
     <Compile Include="Models\RequestsApproval\High Risk\Index.cs" />
     <Compile Include="Models\RequestsApproval\Leave Request\Index.cs" />
     <Compile Include="Models\RequestsApproval\OT Request\Index.cs" />
