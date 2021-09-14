@@ -139,6 +139,7 @@
                         <th class="text-left">Status</th>
                         <th class="text-left">Last Modified</th>
                         <th class="text-left">Remarks</th>
+                        <th class="text-left">Cancellation Remarks</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -147,13 +148,13 @@
                         for (int i = 0; i < Model.LeaveRequests.Count(); i++)
                         {
                             var RowColorLabel = ""; // Model.LeaveRequests[i].Cancelled == true ? " label-danger" : Model.LeaveRequests[i].Approved == true ? " label-primary" : Model.LeaveRequests[i].ModifiedBy != null ? " label-success" : " label-info";
-                            var Expired = Model.LeaveRequests[i].IsExpired == true;
-                            var Approved = Model.LeaveRequests[i].Approved == true;
-                            var Noted = Model.LeaveRequests[i].Noted;
-                            var Cancelled = Model.LeaveRequests[i].Cancelled == true;
+                            var Expired = Model.LeaveRequests[i].IsExpired;
+                            var Approved = Model.LeaveRequests[i].Approved ?? false;
+                            var Noted = Model.LeaveRequests[i].Noted ?? false;
+                            var Cancelled = Model.LeaveRequests[i].Cancelled ?? false;
                             var IsPending = !Approved && !Cancelled;
 
-                            var LastStatus = Approved ? "<span class='label label-primary'>Approved</span>" : ((Noted == true ? "<span class='label label-info'>Noted</span>" : (Cancelled ? "<span class='label label-danger'>Cancelled</span>" : (Expired ? "<span class='label label-warning'>Expired</span>" : "<span class='label label-info'>Pending</span>"))));
+                            var LastStatus = Approved ? "<span class='label label-primary'>Approved</span>" : ((Cancelled ? "<span class='label label-danger'>Cancelled</span>" : (Noted == true ? "<span class='label label-info'>Noted</span>" : (Expired ? "<span class='label label-warning'>Expired</span>" : "<span class='label label-info'>Pending</span>"))));
                             var LastUser = Approved ? Model.LeaveRequests[i]._Approver : (Noted == true ? Model.LeaveRequests[i]._Noted : (Cancelled ? Model.LeaveRequests[i]._Cancel : (Model.LeaveRequests[i].ModifiedBy != null ? Model.LeaveRequests[i]._Modifier : Model.LeaveRequests[i]._Creator)));
                             var LastDate = Approved ? Model.LeaveRequests[i].ApprovedOn : (Noted == true ? Model.LeaveRequests[i].NotedOn : (Cancelled ? Model.LeaveRequests[i].CancelledOn : (Model.LeaveRequests[i].ModifiedBy != null ? Model.LeaveRequests[i].ModifiedOn : Model.LeaveRequests[i].CreatedOn)));
                             var filename = Path.GetFileName(Model.LeaveRequests[i].File);
@@ -188,7 +189,12 @@
                                 @Model.LeaveRequests[i].Remarks
                             </text>
                         </td>
-                        @if ((PageAccess.Approve || PageAccess.View) && !(Noted == true))
+                        <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
+                            <text class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@Model.LeaveRequests[i].Remarks">
+                                @Model.LeaveRequests[i].CancellationRemarks
+                            </text>
+                        </td>
+                        @if ((PageAccess.Approve || PageAccess.View) && !(Cancelled && Approved) && !Noted)
                         {
                             <td style="width: 160px;" class="row-actions">
                                 <div class="btn-group">

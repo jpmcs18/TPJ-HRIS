@@ -36,7 +36,6 @@ namespace ProcessLayer.Processes.Kiosk
                 IsUndertime = dr["Is Undertime"].ToNullableBoolean(),
                 Time = dr["Time"].ToNullableDateTime(),
                 CreatedOn = dr["Created On"].ToNullableDateTime(),
-                ModifiedBy = dr["Modified By"].ToNullableInt(),
                 ModifiedOn = dr["Modified On"].ToNullableDateTime(),
                 NotedBy = dr["Noted By"].ToNullableInt(),
                 NotedOn = dr["Noted On"].ToNullableDateTime(),
@@ -65,8 +64,8 @@ namespace ProcessLayer.Processes.Kiosk
                 { "@IsCancelled", isCancelled },
                 { "@StartDate", startdatetime },
                 { "@EndDate", enddatetime },
-                { "#PageNumber", page },
-                { "#GridCount", gridCount }
+                { "@PageNumber", page },
+                { "@GridCount", gridCount }
             };
 
             List<OutParameters> outParameters = new List<OutParameters>

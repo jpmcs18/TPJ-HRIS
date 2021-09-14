@@ -16,6 +16,7 @@ namespace WebTemplate.Controllers.Kiosk
 {
     public class AbsenceRequestController : BaseController
     {
+        // GET: AbsenceRequest
         public ActionResult Index(Index model)
         {
             try
@@ -28,11 +29,11 @@ namespace WebTemplate.Controllers.Kiosk
                 if (Request.IsAjaxRequest())
                 {
                     ModelState.Clear();
-                    return PartialViewCustom("_MyAbsenceRequests", model);
+                    return PartialViewCustom("_Search", model);
                 }
                 else
                 {
-                    return ViewCustom("_AbsenceRequestIndex", model);
+                    return ViewCustom("Index", model);
                 }
             }
             catch (Exception ex)
@@ -54,7 +55,7 @@ namespace WebTemplate.Controllers.Kiosk
                     AbsenceRequest = new AbsenceRequest(),
                 };
 
-                return PartialViewCustom("_AbsenceRequestNew", model);
+                return PartialViewCustom("_New", model);
             }
             catch (Exception ex)
             {
@@ -68,15 +69,15 @@ namespace WebTemplate.Controllers.Kiosk
         {
             try
             {
-                AbsenceRequest model = new AbsenceRequest();
+                AbsenceRequest model = new();
 
                 if ((id ?? 0) > 0)
                     model = AbsenceRequestProcess.Instance.Value.Get(id ?? 0);
 
                 if (model.Approved == true || model.Cancelled == true)
-                    return PartialViewCustom("_AbsenceRequestView", model);
+                    return PartialViewCustom("_View", model);
                 else
-                    return PartialViewCustom("_AbsenceRequestEdit", model);
+                    return PartialViewCustom("_Edit", model);
             }
             catch (Exception ex)
             {
@@ -99,7 +100,7 @@ namespace WebTemplate.Controllers.Kiosk
                 model._Personnel = PersonnelProcess.Get(model.PersonnelID ?? 0, true);
                 model = AbsenceRequestProcess.Instance.Value.CreateOrUpdate(model);
                 ModelState.Clear();
-                return PartialViewCustom("_AbsenceRequestEdit", model);
+                return PartialViewCustom("_Edit", model);
             }
             catch (Exception ex)
             {
@@ -174,7 +175,6 @@ namespace WebTemplate.Controllers.Kiosk
         {
             AbsenceRequestProcess.Instance.Value.Delete(id ?? 0);
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
