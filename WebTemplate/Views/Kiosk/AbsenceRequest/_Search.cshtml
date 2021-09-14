@@ -133,7 +133,7 @@
                         {
                             for (int i = 0; i < Model.AbsenceRequests.Count(); i++)
                             {
-                                var leaveSubType = (Model.AbsenceRequests[i].IsUndertime ?? false) ? 3 : ((Model.AbsenceRequests[i].IsAbsent ?? false) ? 1 : 2);
+                                var absenceType = (Model.AbsenceRequests[i].IsUndertime ?? false) ? 3 : ((Model.AbsenceRequests[i].IsAbsent ?? false) ? 1 : 2);
                                 var timeOfDay = (Model.AbsenceRequests[i].IsHalfDay ?? false) ? ((Model.AbsenceRequests[i].IsMorning ?? false) ? 1 : 2) : 0;
 
                                 var RowColorLabel = ""; // Model.AbsenceRequests[i].Cancelled == true ? " label-danger" : Model.AbsenceRequests[i].Approved == true ? " label-primary" : Model.AbsenceRequests[i].ModifiedBy != null ? " label-success" : " label-info";
@@ -153,8 +153,8 @@
                                 @Html.Raw(String.Format("{0:MMM dd, yyyy}", Model.AbsenceRequests[i].RequestDate))
                             </td>
                             <td class="text-left">
-                                @absenceSubTypes.Where(m => m.Key == leaveSubType).Select(m => m.Value).FirstOrDefault()
-                                @switch (leaveSubType)
+                                @absenceSubTypes.Where(m => m.Key == absenceType).Select(m => m.Value).FirstOrDefault()
+                                @switch (absenceType)
                                 {
                                     case 3:
                                         @Html.Raw(String.Format("{0:HH:mm tt}", Model.AbsenceRequests[i].Time))

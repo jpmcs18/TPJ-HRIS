@@ -70,7 +70,6 @@
 </div>
 
 <script type="text/javascript">
-    var $_IsUnderTime = false;
     var xhr;
 
     $(document).ready(function () {
@@ -221,72 +220,6 @@
         $(modal + ' .modal-title').html(title + ' Absence Request');
         $("#browseFile").off("change input").on('change input', ClearDocument);
         $(modal).appendTo('body').modal('show');
-    }
-
-    function ClearDocument() {
-        var hasFile = $("#browseFile")[0].files.length == 0;
-        var title = hasFile ? $("#ValidateFile").attr("title") : "Upload";
-        $("#ValidateFile").text(title);
-        $("#ValidateFile").attr("disabled", hasFile);
-    }
-
-    function UploadDocument(leaveReqID, filename) {
-        e.preventDefault();
-        $tr = $('#AbsenceRequestForm tr#Row-Display-AbsenceRequests-' + leaveReqID);
-        //var action = $('#DeleteDocumentForm').attr('action');
-        filename = $tr.find('td button').attr('title');
-
-        if (leaveReqID) {
-            $('#AbsenceRequestForm #leaveRequestId').val(leaveReqID);
-            //$('#UploadDocumentModal').attr('action', action + (filename ? leaveReqID : ''));
-            $('#AbsenceRequestForm #filename').text('filename: ' + filename);
-            //$('#AbsenceRequestForm #DeleteDocument').attr(filename ? 'submit' : 'hidden');
-            $('#AbsenceRequestForm .modal-header .close').off('click').on('click', CancelDocumentUpload);
-            $("#AbsenceRequestForm #browseFile").val('');
-            //$('#UploadDocumentModal').appendTo('body').modal('show');
-        }
-        else {
-            toastr.warning('Warning', 'Absence Request not found.');
-        }
-    }
-
-    function CancelDocumentUpload() {
-        $('#SelectedFilesPreview').empty();
-        $('#AbsenceRequestForm .fileinput .close').trigger('click');
-        $("#AbsenceRequestForm #browseFile").val('');
-        //$('#UploadDocumentModal').modal('hide');
-    }
-
-    function ValidateFile() {
-        var formdata = new FormData();
-        formdata.append("fileBase", $("#AbsenceRequestForm #browseFile")[0].files[0])
-        formdata.append("leaveRequestId", $("#AbsenceRequestForm #ID").val());
-        formdata.append("__RequestVerificationToken", $('@Html.AntiForgeryToken()').val());
-
-        if (xhr) { xhr.abort(); }
-        xhr = $.ajax({
-            data: formdata,
-            url: '@Url.Action("UploadDocument", "AbsenceRequest")',
-            type: 'POST',
-            datatype: 'JSON',
-            cache: false,
-            contentType: false,
-            processData: false,
-            beforeSend: function () { ShowLoadingScreen() },
-            complete: function () { RemoveLoadingScreen() },
-            success: function (response) {
-                if (response.msg == null) {
-                    toastr.warning('Warning', response.res);
-                }
-                else {
-                    toastr.success('Success', response.res);
-                    SearchRequest();
-                }
-            },
-            error: function (x, y, z) {
-                //toastr.error('Error', x + y + z);
-            }
-        })
     }
 
     function SearchRequest() {

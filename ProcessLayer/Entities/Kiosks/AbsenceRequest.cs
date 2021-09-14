@@ -22,14 +22,14 @@ namespace ProcessLayer.Entities.Kiosk
         {
             get
             {
-                if (!(Approved ?? false))
-                    return "Waiting for approval.";
-                
-                if (Cancelled != null && Cancelled.Value)
-                    return CancellationRemarks;
-
                 if (IsExpired)
                     return "Exceeded 48 hours upon creation date.";
+
+                if ((Cancelled ?? false))
+                    return CancellationRemarks;
+
+                if (!(Approved ?? false))
+                    return "Waiting for approval.";
 
                 return "";
             }

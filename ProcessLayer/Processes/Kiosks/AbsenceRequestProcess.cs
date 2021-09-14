@@ -92,8 +92,8 @@ namespace ProcessLayer.Processes.Kiosk
                 { "@IsCancelled", isCancelled },
                 { "@StartDate", startdatetime },
                 { "@EndDate", enddatetime },
-                { "#PageNumber", page },
-                { "#GridCount", gridCount },
+                { "@PageNumber", page },
+                { "@GridCount", gridCount },
                 { "@Approver", approver }
             };
 

@@ -1,9 +1,6 @@
 ﻿using ProcessLayer.Helpers;
 using ProcessLayer.Processes;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using WebTemplate.Models.PersonnelApproval;
 
@@ -21,11 +18,11 @@ namespace WebTemplate.Controllers.PersonnelApproval
             if (Request.IsAjaxRequest())
             {
                 ModelState.Clear();
-                return PartialViewCustom("_PersonnelApproval", model);
+                return PartialViewCustom("_Search", model);
             }
             else
             {
-                return ViewCustom("_PersonnelApprovalIndex", model);
+                return ViewCustom("Index", model);
             }
         }
 

@@ -1,44 +1,27 @@
-﻿@model WebTemplate.Models.RequestsApproval.Leave_Request.Index
+﻿@model WebTemplate.Models.RequestsApproval.Absence.Index
 
-@{ var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
-                var PageAccess = credential.GetPage("RequestsApproval/LeaveRequests") ?? new DataAccessLayer.System.Page();
-                var ApproverAccess = credential.GetPage("Approver Leave Request") ?? new DataAccessLayer.System.Page();
-                //var UploadDocumentAccess = credential.GetPage("Kiosk Upload Document") ?? new DataAccessLayer.System.Page();
-                var IsBulkUse = Model.LeaveTypes.Where(m => m.ID == Model.LeaveTypeID).Select(m => m.BulkUse).FirstOrDefault() ?? false; }
-
+@{ 
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var PageAccess = credential.GetPage("RequestsApproval/AbsenceRequests") ?? new DataAccessLayer.System.Page();
+    var ApproverAccess = credential.GetPage("Approver Absence Request") ?? new DataAccessLayer.System.Page();
+    var absenceSubTypes = new Dictionary<int, string> { { 1, "Absent" }, { 2, "Half-day" }, { 3, "Undertime" } };
+    var timeofday = new Dictionary<int, string> { { 1, "Morning" }, { 2, "Afternoon" } };
+}
+               
 @if (PageAccess.View)
 {
 <form id="form_search_params" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
     @Html.Hidden("Page", Model.Page, new { @class = "form-control" })
     <fieldset>
         <legend>Search</legend>
-        <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-2">
-            <label class="control-label">Leave Type</label>
-            <select id="LeaveTypeID" name="LeaveTypeID" class="form-control form-control">
-                <option value="" isbulk="false">N/A</option>
-                @foreach (var l in Model.LeaveTypes)
-                {
-                    var selected = Model.LeaveTypeID == l.ID ? "selected" : "";
-<option value="@l.ID" isbulk="@((l.BulkUse ?? false) ? "true" : "false")" @selected>@l.Description</option>}
-            </select>
+        <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-2">
+            <label class="control-label">Start Date & Time</label>
+            @Html.TextBox("StartDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.StartDateTime), new { @type = "datetime-local", @class = "form-control form-control" })
         </div>
 
-        <div id="NonBulkUseDatePicker" class="@(IsBulkUse ? "hidden" : "")">
-            <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-2">
-                <label class="control-label">Start Date & Time</label>
-                @Html.TextBox("StartDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.StartDateTime), new { @type = "datetime-local", @class = "form-control form-control" })
-            </div>
-
-            <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-2">
-                <label class="control-label">End Date & Time</label>
-                @Html.TextBox("EndingDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.EndingDateTime), new { @type = "datetime-local", @class = "form-control form-control" })
-            </div>
-        </div>
-        <div id="BulkUseDatePicker" class="@(IsBulkUse ? "" : "hidden")">
-            <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-2">
-                <label class="control-label">Start Date</label>
-                @Html.TextBox("StartDateTime", String.Format("{0:yyyy'-'MM'-'dd}", Model.StartDateTime), new { @type = "date", @class = "form-control form-control" })
-            </div>
+        <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-2">
+            <label class="control-label">End Date & Time</label>
+            @Html.TextBox("EndingDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.EndingDateTime), new { @type = "datetime-local", @class = "form-control form-control" })
         </div>
 
         <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-3">
@@ -96,7 +79,7 @@
                                 <form id="form_search" class="pull-left" style="width: 100%;">
                                     <div class="table-responsive" style="height: 650px;">
                                         <div class="mail-box">
-                                            <table id="LeaveRequestsTable" class="table table-hover table-mail">
+                                            <table id="AbsenceRequestsTable" class="table table-hover table-mail">
                                                 <thead>
                                                     @if (Model.PageCount > 1)
                                                     {
@@ -132,63 +115,64 @@
                                     </tr>}
                                                 <tr>
                                                     <th class="text-left">Personnel</th>
-                                                    <th class="text-left">Leave Type</th>
-                                                    @*<th class="text-center">Start/End DateTime</th>*@
                                                     <th class="text-left">Requested Date</th>
-                                                    <th class="text-left">No. of. Days</th>
+                                                    <th class="text-center"></th>
                                                     <th class="text-left">Reasons</th>
                                                     <th class="text-left">Status</th>
                                                     <th class="text-left">Last Modified</th>
                                                     <th class="text-left">Remarks</th>
                                                     <th class="text-left">Cancellation Remarks</th>
-                                                    <th class="text-left">Document</th>
                                                     @if (ApproverAccess.Approve)
                                                     {
-                                                        @*if (UploadDocumentAccess.View)
-            {
-                <th class="text-left">Document</th>
-            }*@
                                                         <th style="text-align: center; min-width: 10%;" scope="col">Action</th>
                                                     }
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                    @if (Model.LeaveRequests.Count() > 0)
+                                                    @if (Model.AbsenceRequests.Count() > 0)
                                                     {
-                                                        for (int i = 0; i < Model.LeaveRequests.Count(); i++)
+                                                        for (int i = 0; i < Model.AbsenceRequests.Count(); i++)
                                                         {
-                                                            var RowColorLabel = ""; // Model.LeaveRequests[i].Cancelled == true ? " label-danger" : Model.LeaveRequests[i].Approved == true ? " label-primary" : Model.LeaveRequests[i].ModifiedBy != null ? " label-success" : " label-info";
-                                                            var Expired = Model.LeaveRequests[i].IsExpired == true;
-                                                            var Approved = Model.LeaveRequests[i].Approved == true;
-                                                            var Noted = Model.LeaveRequests[i].Noted == true;
-                                                            var Cancelled = Model.LeaveRequests[i].Cancelled == true;
+                                                            var absenceType = (Model.AbsenceRequests[i].IsUndertime ?? false) ? 3 : ((Model.AbsenceRequests[i].IsAbsent ?? false) ? 1 : 2);
+                                                            var timeOfDay = (Model.AbsenceRequests[i].IsHalfDay ?? false) ? ((Model.AbsenceRequests[i].IsMorning ?? false) ? 1 : 2) : 0;
+
+                                                            var RowColorLabel = ""; // Model.AbsenceRequests[i].Cancelled ?? false) ? " label-danger" : Model.AbsenceRequests[i].Approved ?? false) ? " label-primary" : Model.AbsenceRequests[i].ModifiedBy != null ? " label-success" : " label-info";
+                                                            var Expired = Model.AbsenceRequests[i].IsExpired;
+                                                            var Approved = (Model.AbsenceRequests[i].Approved ?? false);
+                                                            var Noted = (Model.AbsenceRequests[i].Noted ?? false);
+                                                            var Cancelled = (Model.AbsenceRequests[i].Cancelled ?? false);
                                                             var IsPending = !Approved && !Cancelled;
 
                                                             var LastStatus = Approved ? "<span class='label label-primary'>Approved</span>" : (Cancelled ? "<span class='label label-danger'>Cancelled</span>" : (Expired ? "<span class='label label-warning'>Expired</span>" : "<span class='label label-info'>Pending</span>"));
-                                                            var LastUser = Cancelled ? Model.LeaveRequests[i]._Cancel : Approved ? Model.LeaveRequests[i]._Approver : Model.LeaveRequests[i].ModifiedBy != null ? Model.LeaveRequests[i]._Modifier : Model.LeaveRequests[i]._Creator;
-                                                            var LastDate = Cancelled ? Model.LeaveRequests[i].CancelledOn : Approved ? Model.LeaveRequests[i].ApprovedOn : Model.LeaveRequests[i].ModifiedBy != null ? Model.LeaveRequests[i].ModifiedOn : Model.LeaveRequests[i].CreatedOn;
-                                                            var filename = Path.GetFileName(Model.LeaveRequests[i].File);
+                                                            var LastUser = Cancelled ? Model.AbsenceRequests[i]._Cancel : Approved ? Model.AbsenceRequests[i]._Approver : Model.AbsenceRequests[i].ModifiedBy != null ? Model.AbsenceRequests[i]._Modifier : Model.AbsenceRequests[i]._Creator;
+                                                            var LastDate = Cancelled ? Model.AbsenceRequests[i].CancelledOn : Approved ? Model.AbsenceRequests[i].ApprovedOn : Model.AbsenceRequests[i].ModifiedBy != null ? Model.AbsenceRequests[i].ModifiedOn : Model.AbsenceRequests[i].CreatedOn;
 
-                                                    <tr id="Row-Display-LeaveRequests-@Model.LeaveRequests[i].ID" class="Row-Display Row-Display-LeaveRequests @RowColorLabel" style="">
+
+                                                    <tr id="Row-Display-AbsenceRequests-@Model.AbsenceRequests[i].ID" class="Row-Display Row-Display-AbsenceRequests @RowColorLabel" style="">
                                                         <td class="text-left">
-                                                            @Html.Hidden("id", Model.LeaveRequests[i].ID)
-
-                                                            @Model.LeaveRequests[i]._Personnel.FullName
+                                                            @Html.Hidden("id", Model.AbsenceRequests[i].ID)
+                                                            @Model.AbsenceRequests[i]._Personnel.FullName
                                                         </td>
-                                                        <td class="text-left">@Model.LeaveRequests[i]._LeaveType.Description</td>
                                                         <td class="text-center">
-                                                            @*@if (Model.LeaveRequests[i].LeaveType.BulkUse ?? false)
-                    {
-            @Html.Raw(String.Format("{0:MMM dd, yyyy}", Model.LeaveRequests[i].StartDateTime)) }
-                                    else
-                                    {
-            @Html.Raw(String.Format("{0:MMM dd, yyyy @ hh:mm tt} -<br/>{1:MMM dd, yyyy @ hh:mm tt}", Model.LeaveRequests[i].StartDateTime, Model.LeaveRequests[i].EndDateTime))}*@
-                                                            @Html.Raw(String.Format("{0:MMM dd, yyyy}", Model.LeaveRequests[i].RequestedDate))
+                                                            @Html.Raw(String.Format("{0:MMM dd, yyyy}", Model.AbsenceRequests[i].RequestDate))
                                                         </td>
-                                                        <td class="text-left">@Model.LeaveRequests[i].NoofDays</td>
+                                                        <td class="text-left">
+                                                            @absenceSubTypes.Where(m => m.Key == absenceType).Select(m => m.Value).FirstOrDefault()
+                                                            @switch (absenceType)
+                                                            {
+                                                                case 3:
+                                                                    @Html.Raw(String.Format("{0:HH:mm tt}", Model.AbsenceRequests[i].Time))
+                                                                    break;
+                                                                case 2:
+                                                                    @Html.Raw(", " + timeofday.Where(m => m.Key == timeOfDay).Select(m => m.Value).FirstOrDefault())
+                                                                    break;
+                                                                default:
+                                                                    @Html.Raw(", " + Model.AbsenceRequests[i].NoofDays + " day(s)")
+                                                                    break;
+                                                            }
                                                         <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
-                                                            <text class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@Model.LeaveRequests[i].Reasons">
-                                                                @Model.LeaveRequests[i].Reasons
+                                                            <text class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@Model.AbsenceRequests[i].Reasons">
+                                                                @Model.AbsenceRequests[i].Reasons
                                                             </text>
                                                         </td>
                                                         <td class="text-center">@Html.Raw(LastStatus)</td>
@@ -196,41 +180,24 @@
                                                             @Html.Raw(String.Format("{0}<br/>{1:MM/dd/yyyy hh:mm tt}", LastUser ?? "", LastDate))
                                                         </td>
                                                         <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
-                                                            <text class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@Model.LeaveRequests[i].Remarks">
-                                                                @Model.LeaveRequests[i].Remarks
+                                                            <text class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@Model.AbsenceRequests[i].Remarks">
+                                                                @Model.AbsenceRequests[i].Remarks
                                                             </text>
                                                         </td>
                                                         <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;">
                                                             <text class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;" title="@Model.AbsenceRequests[i].CancellationRemarks">
-                                                                @Model.LeaveRequests[i].CancellationRemarks
+                                                                @Model.AbsenceRequests[i].CancellationRemarks
                                                             </text>
-                                                        </td>
-                                                        <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
-                                                            @*@if (UploadDocumentAccess.View)
-            {
-                if (Approved && (Model.LeaveRequests[i]._LeaveType.HasDocumentNeeded ?? false))
-                {
-                    <button type="button" name="" class="btn btn-default btn-md" onclick="UploadDocument(@Model.LeaveRequests[i].ID, '')" title="@(!string.IsNullOrEmpty(filename) ? filename : "Upload Document")" value="@filename"><i class="fa fa-paperclip"></i>@Html.Raw(!string.IsNullOrEmpty(filename) ? " <span class='label label-info'>1</span>" : "")</button>
-                }
-                else if (Model.LeaveRequests[i].ApprovedLeaveCredits > 0)
-                {
-                    <span class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@(filename)">@Html.Raw(filename)</span>
-                }
-            }*@
-                                                            @if (Model.LeaveRequests[i].ApprovedLeaveCredits > 0)
-                                                            {
-                                                                <span class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@(filename)">@Html.Raw(filename)</span>
-                                                            }
                                                         </td>
                                                         <td style="width: 160px;" class="row-actions">
                                                             @if (ApproverAccess.Approve)
                                                             {
-                                                                // && ((Noted && (Model.LeaveRequests[i]._LeaveType?.CNBNoteFirst ?? false) == true) || (Model.LeaveRequests[i]._LeaveType?.CNBNoteFirst ?? false) == false)
-                                                                if (!Approved)
+                                                                // && ((Noted && (Model.AbsenceRequests[i]._LeaveType?.CNBNoteFirst ?? false) ?? false)) || (Model.AbsenceRequests[i]._LeaveType?.CNBNoteFirst ?? false) == false)
+                                                                if (IsPending)
                                                                 {
                                                                     <div class="btn-group">
-                                                                        <button type="button" name="id" class="btn btn-danger btn-lg btn-rounded CancelLeaveRequest" value="@Model.LeaveRequests[i].ID" title="Disapprove"><i class="fa fa-thumbs-o-down"></i></button>
-                                                                        <button type="button" name="id" class="btn btn-primary btn-lg btn-rounded ApproveLeaveRequest" value="@Model.LeaveRequests[i].ID" title="Approve"><i class="fa fa-thumbs-o-up"></i></button>
+                                                                        <button type="button" name="id" class="btn btn-danger btn-lg btn-rounded CancelLeaveRequest" value="@Model.AbsenceRequests[i].ID" title="Disapprove"><i class="fa fa-thumbs-o-down"></i></button>
+                                                                        <button type="button" name="id" class="btn btn-primary btn-lg btn-rounded ApproveLeaveRequest" value="@Model.AbsenceRequests[i].ID" title="Approve"><i class="fa fa-thumbs-o-up"></i></button>
                                                                     </div>
                                                                 }
                                                             }
