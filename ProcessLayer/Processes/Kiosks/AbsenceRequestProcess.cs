@@ -36,7 +36,6 @@ namespace ProcessLayer.Processes.Kiosk
                 IsUndertime = dr["Is Undertime"].ToNullableBoolean(),
                 Time = dr["Time"].ToNullableDateTime(),
                 CreatedOn = dr["Created On"].ToNullableDateTime(),
-                ModifiedBy = dr["Modified By"].ToNullableInt(),
                 ModifiedOn = dr["Modified On"].ToNullableDateTime(),
                 NotedBy = dr["Noted By"].ToNullableInt(),
                 NotedOn = dr["Noted On"].ToNullableDateTime(),
@@ -153,7 +152,7 @@ namespace ProcessLayer.Processes.Kiosk
 
             return absence;
         }
-        public void ApprovedRequest(long id, int userid)
+        public void Approved(long id, int userid)
         {
             Dictionary<string, object> parameters = new Dictionary<string, object> {
                     { "@ID", id }
