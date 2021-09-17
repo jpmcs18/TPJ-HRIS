@@ -167,7 +167,7 @@
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <div class="modal-body" style="height: 79%; background-color: #fff; overflow: hidden;">
+                <div class="modal-body" style="height: 79%; background-color: #fff;">
                     <form class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
                         <div class="form-group col-xs-12 col-sm-12 col-md-4 col-lg-4">
                             <label for="ByDepartment">
@@ -278,13 +278,6 @@
         $("#btn_search").off('click').on('click', searchPersonnel);
         $('#ImportFile').off('click').on('click', ImportFile);
         $('#ExportTimeSheet').off('click').on('click', ExportTimeSheet);
-        $('#ExportTimeSheetDiv input[type="radio"]').off('ifClicked').on('ifClicked', TimeSheetSearch);
-
-        $('#ExportTimeSheetDiv #SearchPersonnelInput').off('keydown').on('keydown', function (e) {
-            if (e.keyCode == 13) {
-                SearchPersonnel();
-            }
-        });
 
         $('.i-checks').iCheck({
             checkboxClass: 'icheckbox_square-green',
@@ -425,7 +418,7 @@
         var id = $(this).attr('tpj-id');
         $(this).addClass('selected-employee');
         $('#GetTimesheetForm input[name="personnelId"]').val(id);
-        //GetTimesheet();
+        GetTimesheet();
     }
 
     function ImportFile() {
@@ -437,6 +430,12 @@
 
     function ExportTimeSheet() {
         $('#ExportTimeSheetDiv').appendTo("body").modal('show');
+        $('#ExportTimeSheetDiv input[type="radio"]').off('ifClicked').on('ifClicked', TimeSheetSearch);
+        $('#ExportTimeSheetDiv #SearchPersonnelInput').off('keydown').on('keydown', function (e) {
+            if (e.keyCode == 13) {
+                SearchPersonnel();
+            }
+        });
         $('#ExportTimeSheetDiv .modal-header .close').off('click').on('click', CancelExportTimeSheet);
         $('#btn_validate').off('click').on('click', ValidateFile);
         $('input#browseFile').off('change, input').on('change, input', EnableValidate);
