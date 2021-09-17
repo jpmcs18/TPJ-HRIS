@@ -1,0 +1,105 @@
+﻿@model ProcessLayer.Entities.Kiosk.AbsenceRequest
+
+@{
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var CreatorAccess = credential.GetPage("Creator Absence Request") ?? new DataAccessLayer.System.Page();
+
+    var c = User as WebTemplate.Models.CustomPrincipal;
+    var absenceSubTypes = new Dictionary<int, string> { { 1, "Absent" }, { 2, "Half-day" }, { 3, "Undertime" } };
+    var timeofday = new Dictionary<int, string> { { 1, "Morning" }, { 2, "Afternoon" } };
+
+    var IsPending = (Model.Approved == null || Model.Approved == false) && (Model.Cancelled == null || Model.Cancelled == false);
+}
+
+@Html.Hidden("PersonnelID", Model.PersonnelID, new { @class = "form-control absence-main" })
+@Html.Hidden("ID", Model.ID, new { @class = "form-control absence-main" })
+
+<div class="row">
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        @using (Html.BeginForm("Print", "AbsenceRequest", FormMethod.Post, new { @target = "_blank", @class = "pull-right" }))
+        {
+            <button class="btn btn-primary compose-mail pull-right" type="submit" id="PrintRequest" title="Print Request" onclick="event.stopPropagation();"><i class="fa fa-print"></i> Print</button>
+            <input type="hidden" value="@Model.ID" name="requestId" />
+            @Html.AntiForgeryToken()
+        }
+    </div>
+</div>
+
+<div class="row">
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-push-4 col-lg-4">
+        <label class="control-label">Request Date</label>
+        @Html.TextBoxFor(m => m.RequestDate, String.Format("{0:yyyy'-'MM'-'dd}", Model.RequestDate), new { @type = "date", @class = "form-control absence-main" })
+    </div>
+</div>
+
+<fieldset class="form-group">
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
+        <label class="control-label"></label>
+        @{
+            var leaveSubType = (Model.IsAbsent ?? false) ? 1 : 2;
+        }
+        @Html.DropDownList("AbsenceSubTypes", new SelectList(absenceSubTypes, "Key", "Value", leaveSubType), "N/A", new { @class = "form-control absence-main" })
+    </div>
+
+    <div id="IsAbsentFields" class="absenceSubTypes@((Model.IsAbsent ?? false) ? "" : " hidden")">
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
+            <label class="control-label">No. of Days</label>
+            @Html.TextBoxFor(m => m.NoofDays, new { @type = "number", @class = "form-control" })
+        </div>
+    </div>
+
+    <div id="IsHalfdayFields" class="absenceSubTypes@((Model.IsHalfDay ?? false) ? "" : " hidden")">
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
+            <label class="control-label">Time of Day</label>
+            @{
+                var timeOfDay = (Model.IsHalfDay ?? false) ? ((Model.IsMorning ?? false) ? 1 : 2) : 0;
+            }
+            @Html.DropDownList("TimeOfDay", new SelectList(timeofday, "Key", "Value", timeOfDay), "N/A", new { @class = "form-control" })
+        </div>
+    </div>
+
+    <div id="IsUnderTimeFields" class="absenceSubTypes@((Model.IsUndertime ?? false) ? "" : " hidden")">
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
+            <label class="control-label">Time</label>
+            @Html.TextBoxFor(m => m.Time, String.Format("{0:HH':'mm}", Model.Time), new { @type = "time", @class = "form-control" })
+        </div>
+    </div>
+</fieldset>
+
+<div class="row">
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <label class="control-label">Reasons</label>
+        @Html.TextAreaFor(m => m.Reasons, new { @class = "form-control absence-main", @rows = "4", @placeholder = "Reasons..." })
+    </div>
+</div>
+
+@if (!(Model.IsExpired && IsPending))
+{
+    <div class="row">
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <button type="button" id="CreateAbsenceRequest" onclick="SaveRequest();" class="btn btn-primary font-bold pull-right" title="Update"><i class="fa fa-save"></i>&nbsp;&nbsp;Update</button>
+        </div>
+    </div>
+}
+
+@if (CreatorAccess.Update)
+{
+    var Logs = new Dictionary<string, DateTime?>(){
+        { "Created By:" + Model._Creator, Model.CreatedOn },
+        { "Modified By:" + Model._Modifier, Model.ModifiedOn },
+        { "Approved By:" + Model._Approver, Model.ApprovedOn },
+        { "Cancelled By:" + Model._Cancel, Model.CancelledOn }
+    };
+
+    foreach (var l in Logs)
+    {
+        if (!String.IsNullOrEmpty(l.Key.Split(':')[1]))
+        {
+            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3 m-t-lg">
+                <div class='md-step-optional'>@l.Key.Split(':')[0]</div>
+                <div class='md-step-optional'><b>@Html.Raw(l.Key.Split(':')[1] ?? "&nbsp;")</b></div>
+                <div class='md-step-optional'>@Html.Raw(String.Format("{0:MM/dd/yyyy hh:mm tt}", l.Value) ?? "&nbsp;")</div>
+            </div>
+        }
+    }
+}

@@ -1,0 +1,62 @@
+﻿@model WebTemplate.Models.Kiosk.Absence_Request.Index
+
+@{
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var CreatorAccess = credential.GetPage("Creator Absence Request") ?? new DataAccessLayer.System.Page();
+    var absenceSubTypes = new Dictionary<int, string> { { 1, "Absent" }, { 2, "Half-day" }, { 3, "Undertime" } };
+    var timeofday = new Dictionary<int, string> { { 1, "Morning" }, { 2, "Afternoon" } };
+}
+
+@Html.Hidden("PersonnelID", Model.Personnel.ID, new { @class = "form-control absence-main" })
+
+<div class="row">
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-push-4 col-lg-4">
+        <label class="control-label">Request Date</label>
+        @Html.TextBox("RequestDate", String.Format("{0:yyyy'-'MM'-'dd}", DateTime.Now), new { @type = "date", @class = "form-control absence-main" })
+    </div>
+</div>
+
+<fieldset class="form-group">
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
+        <label class="control-label"></label>
+        @Html.DropDownList("AbsenceSubTypes", new SelectList(absenceSubTypes, "Key", "Value", 1), new { @class = "form-control" })
+    </div>
+
+    <div id="IsAbsentFields" class="absenceSubTypes">
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
+            <label class="control-label">No. of Days</label>
+            @Html.TextBox("NoofDays", "1", new { @type = "number", @class = "form-control" })
+        </div>
+    </div>
+
+    <div id="IsHalfdayFields" class="hidden absenceSubTypes">
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
+            <label class="control-label">Time of Day</label>
+            @Html.DropDownList("TimeOfDay", new SelectList(timeofday, "Key", "Value"), "N/A", new { @class = "form-control" })
+        </div>
+    </div>
+
+    <div id="IsUnderTimeFields" class="hidden absenceSubTypes">
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-4">
+            <label class="control-label">Time</label>
+            @Html.TextBox("Time", String.Format("{0:HH':'mm' 'tt}", DateTime.Now), new { @type = "time", @class = "form-control" })
+        </div>
+    </div>
+</fieldset>
+
+<div class="row">
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <label class="control-label">Reasons</label>
+        @Html.TextArea("Reasons", new { @class = "form-control absence-main", @rows = "4", @placeholder = "Reasons..." })
+    </div>
+</div>
+
+<div class="row">
+    @if (CreatorAccess.Update || CreatorAccess.Insert)
+    {
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <button type="button" id="CreateAbsenceRequest" onclick="SaveRequest();" class="btn btn-primary font-bold pull-right" title="Save"><i class="fa fa-save"></i>&nbsp;&nbsp;Save</button>
+        </div>
+    }
+
+</div>

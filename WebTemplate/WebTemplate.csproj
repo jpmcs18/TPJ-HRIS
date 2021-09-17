@@ -221,7 +221,7 @@
     <Compile Include="Controllers\Maintenance\Systems\UserProfileController.cs" />
     <Compile Include="Controllers\PersonnelApproval\PersonnelApprovalController.cs" />
     <Compile Include="Controllers\Report\ReportController.cs" />
-    <Compile Include="Controllers\RequestsApproval\AbsenceRequestController.cs" />
+    <Compile Include="Controllers\RequestsApproval\AbsenceRequestsController.cs" />
     <Compile Include="Controllers\RequestsApproval\HighRisksRequestsController.cs" />
     <Compile Include="Controllers\RequestsApproval\LeaveRequestsController.cs" />
     <Compile Include="Controllers\RequestsApproval\LeaveRequestsDocumentController.cs" />
@@ -2420,6 +2420,13 @@
     <Content Include="Views\RequestsApproval\LeaveRequestsForNote\Index.cshtml" />
     <Content Include="Views\RequestsApproval\LeaveRequestsForNote\_Search.cshtml" />
     <Content Include="Views\HumanResource\Personnel\_PersonnelLeaveCreditDate.cshtml" />
+    <Content Include="Views\Kiosk\AbsenceRequest\_Edit.cshtml" />
+    <Content Include="Views\Kiosk\AbsenceRequest\Index.cshtml" />
+    <Content Include="Views\Kiosk\AbsenceRequest\_New.cshtml" />
+    <Content Include="Views\Kiosk\AbsenceRequest\_View.cshtml" />
+    <Content Include="Views\Kiosk\AbsenceRequest\_Search.cshtml" />
+    <Content Include="Views\RequestsApproval\AbsenceRequests\Index.cshtml" />
+    <Content Include="Views\RequestsApproval\AbsenceRequests\_Search.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">

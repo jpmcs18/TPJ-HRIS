@@ -7,7 +7,7 @@ using WebTemplate.Models.RequestsApproval.Absence;
 
 namespace WebTemplate.Controllers.RequestsApproval
 {
-    public class AbsenceRequestController : BaseController
+    public class AbsenceRequestsController : BaseController
     {
         public ActionResult Index(Index model)
         {
@@ -18,11 +18,11 @@ namespace WebTemplate.Controllers.RequestsApproval
             if (Request.IsAjaxRequest())
             {
                 ModelState.Clear();
-                return PartialViewCustom("_AbsenceRequests", model);
+                return PartialViewCustom("_Search", model);
             }
             else
             {
-                return ViewCustom("_AbsenceRequestsIndex", model);
+                return ViewCustom("Index", model);
             }
         }
 

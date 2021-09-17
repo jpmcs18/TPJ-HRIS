@@ -64,8 +64,8 @@ namespace ProcessLayer.Processes.Kiosk
                 { "@IsCancelled", isCancelled },
                 { "@StartDate", startdatetime },
                 { "@EndDate", enddatetime },
-                { "#PageNumber", page },
-                { "#GridCount", gridCount }
+                { "@PageNumber", page },
+                { "@GridCount", gridCount }
             };
 
             List<OutParameters> outParameters = new List<OutParameters>
@@ -92,8 +92,8 @@ namespace ProcessLayer.Processes.Kiosk
                 { "@IsCancelled", isCancelled },
                 { "@StartDate", startdatetime },
                 { "@EndDate", enddatetime },
-                { "#PageNumber", page },
-                { "#GridCount", gridCount },
+                { "@PageNumber", page },
+                { "@GridCount", gridCount },
                 { "@Approver", approver }
             };
 

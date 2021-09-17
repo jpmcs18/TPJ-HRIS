@@ -97,7 +97,7 @@ namespace DataAccessLayer.System
             using (var entity = new WebDBEntities())
             {
                 var page = (from p in entity.Pages
-                            where (p.Deleted == null || p.Deleted == false)
+                            where (p.Deleted ?? false) == false
                             && p.ID == id
                             select p).FirstOrDefault();
 
@@ -125,7 +125,7 @@ namespace DataAccessLayer.System
             using (var entity = new DataLayer.WebDBEntities())
             {
                 var pl = from p in entity.Pages
-                         where (p.Deleted == null || p.Deleted == false)
+                         where (p.Deleted ?? false) == false
                          select new Page
                          {
                              ID = p.ID,
@@ -156,7 +156,7 @@ namespace DataAccessLayer.System
         {
             using (var entity = new WebDBEntities())
             {
-                return entity.Pages.Any(p => (p.Deleted == null || p.Deleted == false) && p.ID == this.ID);
+                return entity.Pages.Any(p => (p.Deleted ?? false) == false && p.ID == this.ID);
             }
         }
 
@@ -173,7 +173,7 @@ namespace DataAccessLayer.System
             using (var entity = new WebDBEntities())
             {
                 var page = (from p in entity.Pages
-                            where (p.Deleted == null || p.Deleted == false)
+                            where (p.Deleted ?? false) == false
                             && p.ID == this.ID
                             select p).FirstOrDefault();
 
