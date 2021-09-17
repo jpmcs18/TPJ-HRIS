@@ -759,7 +759,7 @@ namespace ProcessLayer.Computation.CnB
                     totalminutes = totalminutes > PayrollParameters.CNBInstance.Value.DefaultHalfdayMinutes ?
                             (totalminutes < PayrollParameters.CNBInstance.Value.DefaultHalfdayMinutesWithBreaktime ?
                                 PayrollParameters.CNBInstance.Value.DefaultHalfdayMinutes
-                                : (totalminutes - PayrollParameters.CNBInstance.Value.DefaultHalfdayMinutes))
+                                : (totalminutes - ((int)sched.BreakTimeHour * 60)))
                             : totalminutes;
                 }
                 DateTime? timeotmuststart = LoginDate?.AddMinutes((sched.BreakTimeHour.HasValue ? PayrollParameters.CNBInstance.Value.TotalMinutesPerDayWithBreak : PayrollParameters.CNBInstance.Value.TotalMinutesPerDay));

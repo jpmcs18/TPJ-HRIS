@@ -59,7 +59,7 @@ namespace HRTest
         [TestMethod]
         public void PayrollComputationTest()
         {
-            var payroll = PayrollProcess.Instance.GeneratePayroll(new ProcessLayer.Entities.CnB.PayrollPeriod
+            var payroll = PayrollProcess.Instance.Value.GeneratePayroll(new ProcessLayer.Entities.CnB.PayrollPeriod
             {
                 StartDate = new DateTime(2019, 9, 1),
                 EndDate = new DateTime(2019, 9, 15),
@@ -73,7 +73,7 @@ namespace HRTest
         [TestMethod]
         public void ValidateExistingPayroll()
         {
-            var res = PayrollProcess.Instance.ValidatePayrollGeneration("2019010120190115", ProcessLayer.Helpers.Enumerable.PayrollSheet.B);
+            var res = PayrollProcess.Instance.Value.ValidatePayrollGeneration("2019010120190115", ProcessLayer.Helpers.Enumerable.PayrollSheet.B);
             Assert.IsTrue(res);
         }
 
