@@ -14,10 +14,12 @@ namespace ProcessLayer.Entities.CnBs
         public decimal NoofDays { get; set; }
         public decimal Holiday { get; set; }
         public decimal HazRate { get; set; }
-        public bool isHazard { get; set; } = false;
+        public bool IsHazard { get; set; } = false;
         public decimal AddHazardRate { get; set; }
-        public bool isHighRisk { get; set; }
+        public bool IsHighRisk { get; set; }
+        public bool IsExtended { get; set; }
         public decimal HighRiskRate { get; set; }
+        public decimal ExtensionRate { get; set; }
         public string HolidayDesc { get; set; }
         public string LeaveDesc { get; set; }
 
@@ -27,7 +29,7 @@ namespace ProcessLayer.Entities.CnBs
         public decimal NightDiffEarlyHours { get; set; }
         public decimal NightDiffLateHours { get; set; }
         public decimal HolExcHours { get; set; }
-        public decimal HazardHours { get { return isHazard ? NoofDays : 0; } }
-        public decimal HighRiskHours { get { return isHighRisk ? (NoofDays > 0 ? 1 : 0) : 0; } }
+        public decimal HazardHours { get { return IsHazard ? NoofDays : 0; } }
+        public decimal HighRiskHours { get { return IsHighRisk ? (NoofDays > 0 ? 1 : 0) : 0; } }
     }
 }

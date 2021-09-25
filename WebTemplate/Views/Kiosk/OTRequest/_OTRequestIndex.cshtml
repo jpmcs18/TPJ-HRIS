@@ -257,17 +257,17 @@
     function ModalEvents(isAppend, modal, title, response) {
         $(modal + ' .modal-body').html(response);
         $(modal + ' .modal-title').html(title + ' OT Request');
-        $(modal + ' .i-checks').iCheck({
-            checkboxClass: 'icheckbox_square-green',
-            radioClass: 'iradio_square-green',
-        });
-        $('.ottype-checkbox').off('ifClicked').on('ifClicked', OtTypeClicked);
         if (isAppend) {
             //$('.ottype-checkbox').iCheck('uncheck');
             //ShowTimeStartEndOt();
             $(modal).appendTo('body').modal('show');
             $(modal + ' select').select2();
         }
+        $(modal + ' .i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green',
+        });
+        $('.ottype-checkbox').off('ifClicked').on('ifClicked', OtTypeClicked);
     }
 
     function NewRequest() {

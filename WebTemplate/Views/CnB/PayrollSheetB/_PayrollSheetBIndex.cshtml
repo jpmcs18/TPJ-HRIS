@@ -348,6 +348,7 @@
                     $('#PayrollsTable tr#' + payrollId + ' input[name="PayRoll.Personnel.ID"]').attr('id', 'PayRoll[' + index + '].Personnel.ID');
                     $('#PayrollsTable tr#' + payrollId + ' input[name="PayRoll.ID"]').attr('id', 'PayRoll[' + index + '].ID');
                     $('#PayrollsTable tr#' + payrollId + ' input[name="payPeriodid"]').val(payrollPeriodId);
+                    $('.Row-Display-Payrolls').off('click').on('click', ViewPayrollDetails);
                     $('.recomputepayroll').off('click').on('click', RecomputePersonnelPayroll);
                 } else {
                     toastr.error(response.res);

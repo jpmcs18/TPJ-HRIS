@@ -16,7 +16,7 @@ namespace WebTemplate.Controllers.Movement
         public ActionResult Index(Index model)
         {
             model.Page = model.Page > 1 ? model.Page : 1;
-            model.CrewList = PersonnelProcess.GetList(model.Name, null, model.Page, model.GridCount, out int PageCount, isCrew: true).ToList();
+            model.CrewList = PersonnelProcess.GetList(model.Name, null, null, null, null, model.Page, model.GridCount, out int PageCount, isCrew: true).ToList();
             model.PageCount = PageCount;
 
             if (Request.IsAjaxRequest())

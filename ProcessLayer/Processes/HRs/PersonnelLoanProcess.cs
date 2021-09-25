@@ -22,13 +22,15 @@ namespace ProcessLayer.Processes.HR
                 Amount = dr["Amount"].ToNullableDecimal(),
                 PaidAmount = dr["Paid Amount"].ToNullableDecimal() ?? 0,
                 Amortization = dr["Amortization"].ToNullableDecimal(),
-                PaymentTerms = dr["Payment Terms"].ToNullableInt(),
+                PaymentTerms = dr["Payment Terms"].ToNullableFloat(),
                 PayrollDeductible = dr["Payroll Deductible"].ToNullableBoolean(),
                 WhenToDeduct = dr["When to Deduct"].ToNullableByte(),
+                DateStart = dr["Date Start"].ToNullableDateTime(),
                 Remarks = dr["Remarks"].ToString(),
             };
                 try {
                 pl.PayrollID = dr["Payroll ID"].ToNullableLong();
+                pl.LastModified = dr["Modified On"].ToNullableDateTime();
             }
 
             catch { }
@@ -139,11 +141,14 @@ namespace ProcessLayer.Processes.HR
         {
             using (var db = new DBTools())
             {
-                if (personnelLoan.PaidAmount == 0)
+                if (personnelLoan.PaidAmount != 0)
                 {
-                    //Auto amortization amount / months to be pay and when to deduct
-                    personnelLoan.Amortization = (personnelLoan.Amount / (personnelLoan.PaymentTerms ?? 0)) / (personnelLoan.WhenToDeduct == 3 ? 2 : 1);
+                    throw new Exception("Unable to update. Loan already amortized.");
                 }
+                
+                //Auto amortization amount / months to be pay and when to deduct
+                personnelLoan.Amortization = personnelLoan.Amount / (decimal)((personnelLoan.PaymentTerms ?? 0) * (personnelLoan.WhenToDeduct == 3 ? 2 : 1));
+                
                 var parameters = new Dictionary<string, object> {
                     { "@PersonnelID", personnelLoan.PersonnelID },
                     { "@LoanID", personnelLoan.LoanID },
@@ -153,6 +158,7 @@ namespace ProcessLayer.Processes.HR
                     { "@PaymentTerms", personnelLoan.PaymentTerms },
                     { "@PayrollDeductible", personnelLoan.PayrollDeductible },
                     { "@WhenToDeduct", personnelLoan.WhenToDeduct },
+                    { "@DateStart", personnelLoan.DateStart },
                     { "@Remarks", personnelLoan.Remarks },
                     { "@LogBy", userid }
                 };

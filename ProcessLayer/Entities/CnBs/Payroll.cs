@@ -1,4 +1,5 @@
 ﻿using ProcessLayer.Entities.Kiosk;
+using ProcessLayer.Helpers;
 using ProcessLayer.Helpers.Enumerable;
 using ProcessLayer.Helpers.ObjectParameter.Payroll;
 using System;
@@ -48,6 +49,10 @@ namespace ProcessLayer.Entities.CnB
         public decimal TotalHighRiskPay { get; set; }
         public decimal HighRiskAllowanceRate { get; set; }
         public decimal TotalHighRiskAllowancePay { get; set; }
+        public decimal ExtensionRate { get; set; }
+        public decimal TotalExtensionPay { get; set; }
+        public decimal ExtensionAllowanceRate { get; set; }
+        public decimal TotalExtensionAllowancePay { get; set; }
         public decimal TotalAdditionalPay { get; set; }
         public decimal TotalAdditionalAllowancePay { get; set; }
         public decimal TotalAdditionalOvertimePay { get; set; }
@@ -70,7 +75,14 @@ namespace ProcessLayer.Entities.CnB
         public decimal PhilHealth { get { return PayrollDeductions.Where(x => x.Deduction.Description.Replace("-", "").Replace(" ", "").ToLower().Contains("philhealth")).Sum(x => x.Amount) ?? 0; } }
         public decimal Vale { get { return LoanDeductions.Where(x => x.PersonnelLoan._Loan.isPersonal ?? false).Sum(x => x.Amount); } }
         public decimal NoOfDaysPresent { get { return PayrollDetails.Where(x => x.IsPresent).Sum(x => x.RegularDay); } }
-        public decimal HighRiskPresent { get { return PayrollDetails.Where(x => x.IsHighRisk).Count(); } }
+        public decimal ExtensionPresent { get { return PayrollDetails.Where(x => x.IsExtended).Count(); } }
+        public decimal HighRiskPresent { get { return PayrollDetails.Where(x => x.IsHighRisk && (x.Location?.ID ?? 0) == 0).Count(); } }
+        public decimal HighRiskOPPresent { get { return PayrollDetails.Where(x => x.IsHighRisk && (x.Location?.ID ?? 0) > 0).Count(); } }
+        public decimal TotalHighRiskNotOP { get { return (HighRiskPresent * HighRiskPayRate).ToDecimalPlaces(2); } }
+        public decimal TotalHighRiskNotOPAll { get { return (HighRiskPresent * HighRiskAllowanceRate).ToDecimalPlaces(2); } }
+        public decimal TotalHighRiskOP { get { return (HighRiskOPPresent * HighRiskPayRate).ToDecimalPlaces(2); } }
+        public decimal TotalHighRiskOPAll { get { return (HighRiskOPPresent * HighRiskAllowanceRate).ToDecimalPlaces(2); } }
+        public string OPLocation { get { return PayrollDetails.Where(x => x.IsHighRisk && (x.Location?.ID ?? 0) > 0).Select(x => x.Location?.Description).FirstOrDefault(); } }
         //Additional Columns
         public decimal SumOfAllAllowance { get { return TotalAllowance + TotalOTAllowance; } }
         public decimal SumOfAllAdditionalPay { get { return TotalAdditionalPay + TotalAdditionalAllowancePay + TotalAdditionalOvertimePay + TotalAdditionalOvertimeAllowancePay; } }

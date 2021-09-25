@@ -18,6 +18,16 @@ namespace ProcessLayer.Helpers
         {
             return (int)((end - start)?.TotalMinutes ?? 0) - (breakTime * 60);
         }
+        public static bool IsWFH(List<PersonnelSchedule> schedules, DateTime? date)
+        {
+            if (date == null)
+            {
+                return false;
+            }
+
+            ScheduleType sched = GetSchedule(schedules, date.Value.Date) ?? new ScheduleType();
+            return sched?.AtHome ?? false;
+        }
 
 
         public static DateTime? GetPrevSchedDate(List<PersonnelSchedule> scheds, DateTime date, List<NonWorkingDays> NonWorkingDays, int? locationId)

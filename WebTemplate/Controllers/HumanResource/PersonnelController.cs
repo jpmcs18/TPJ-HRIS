@@ -25,7 +25,7 @@ namespace WebTemplate.Controllers.HumanResource
         public ActionResult Index(P.Index model)
         {
             model.Page = model.Page > 1 ? model.Page : 1;
-            model.Personnels = PersonnelProcess.GetList(model.Filter, model.EmploymentStatusID, model.Page, model.GridCount, out int PageCount).ToList();
+            model.Personnels = PersonnelProcess.GetList(model.Filter, model.EmploymentStatusID, model.DepartmentID, model.PersonnelTypeID, model.LocationID, model.Page, model.GridCount, out int PageCount).ToList();
             model.PageCount = PageCount;
 
             if (Request.IsAjaxRequest())

@@ -18,6 +18,7 @@ namespace ProcessLayer.Entities.CnB
         public bool IsHazard { get { return (Location?.ID ?? 0) > 0; } }
         public string HazardLocation { get { return Location?.Description ?? ""; } }
         public bool IsHighRisk { get; set; }
+        public bool IsExtended { get; set; }
         public int RegularOTMinutes { get; set; }
         public int SundayOTMinutes { get; set; }
         public int HolidayRegularOTMinutes { get; set; }

@@ -47,6 +47,7 @@ namespace ProcessLayer.Helpers.ObjectParameter.Personnel
         public const string AutoOT = "@AutoOT";
         public const string AdditionalHazardRate = "@AdditionalHazardRate";
         public const string BiometricsID = "@BiometricsID";
+        public const string DepartmentID = "@DepartmentID";
     }
 
 }

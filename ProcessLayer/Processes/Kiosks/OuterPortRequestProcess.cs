@@ -25,6 +25,9 @@ namespace ProcessLayer.Processes.Kiosks
 				StartDate = dr["Start Date"].ToNullableDateTime(),
 				EndDate = dr["End Date"].ToNullableDateTime(),
 				LocationID = dr["Location ID"].ToNullableByte(),
+				IsHighRisk = dr["Is High Risk"].ToNullableBoolean(),
+				HasQuarantine = dr["Has Quarantine"].ToNullableBoolean(),
+				QuarantineDateEnd = dr["Quarantine Date End"].ToNullableDateTime(),
 				Purpose = dr["Purpose"].ToString(),
 				CancellationRemarks = dr["Cancellation Remarks"].ToString(),
 				Cancelled = dr["Cancelled"].ToNullableBoolean(),
@@ -142,6 +145,9 @@ namespace ProcessLayer.Processes.Kiosks
 				{ "@EndDate", outerPortRequest.EndDate },
 				{ "@Purpose", outerPortRequest.Purpose },
 				{ "@LocationID", outerPortRequest.LocationID },
+				{ "@IsHighRisk", outerPortRequest.IsHighRisk },
+				{ "@HasQuarantine", outerPortRequest.HasQuarantine },
+				{ "@QuarantineDateEnd", outerPortRequest.QuarantineDateEnd },
 				{ "@LogBy",  userid}
 			};
 			

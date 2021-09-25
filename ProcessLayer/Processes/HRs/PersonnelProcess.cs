@@ -122,7 +122,15 @@ namespace ProcessLayer.Processes
             return p;
         }
 
-        public static IEnumerable<Personnel> GetList(string filter, int? employmentStatusID, int page, int gridCount, out int PageCount, bool? isCrew = null)
+        public static IEnumerable<Personnel> GetList(string filter,
+                                                     int? employmentStatusID,
+                                                     int? departmentID,
+                                                     int? personnelTypeID,
+                                                     int? locationID,
+                                                     int page,
+                                                     int gridCount,
+                                                     out int PageCount,
+                                                     bool? isCrew = null)
         {
             var emp = new List<Personnel>();
 
@@ -130,6 +138,9 @@ namespace ProcessLayer.Processes
             {
                 { FilterParameters.Filter, filter },
                 { PersonnelParameters.EmploymentStatusId, employmentStatusID },
+                { PersonnelParameters.DepartmentID, departmentID },
+                { PersonnelParameters.PersonnelTypeID, personnelTypeID },
+                { PersonnelParameters.HiringLocationID, locationID },
                 { "@IsCrew", isCrew},
                 { FilterParameters.PageNumber, page },
                 { FilterParameters.GridCount, gridCount }

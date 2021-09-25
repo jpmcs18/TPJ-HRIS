@@ -25,6 +25,7 @@ namespace ProcessLayer.Helpers.ObjectParameter.Payroll
             DefaultHalfdayMinutes = GetParameters(nameof(DefaultHalfdayMinutes)).ToShort();
             RegularOTRate = GetParameters(nameof(RegularOTRate)).ToDecimal();
             HighRiskRate = GetParameters(nameof(HighRiskRate)).ToDecimal();
+            ExtensionRate = GetParameters(nameof(ExtensionRate)).ToDecimal();
             SundayOTRate = GetParameters(nameof(SundayOTRate)).ToDecimal();
             HolidayOTRate = GetParameters(nameof(HolidayOTRate)).ToDecimal();
             NightDiffRate1 = GetParameters(nameof(NightDiffRate1)).ToDecimal();
@@ -38,6 +39,7 @@ namespace ProcessLayer.Helpers.ObjectParameter.Payroll
             FirstCutoffEnd = GetParameters(nameof(FirstCutoffEnd)).ToInt();
             SecondCutoffStart = GetParameters(nameof(SecondCutoffStart)).ToInt();
             SecondCutoffEnd = GetParameters(nameof(SecondCutoffEnd)).ToInt();
+            ExtendedMonths = GetParameters(nameof(ExtendedMonths)).ToInt();
         }
         public PayrollParameters() { }
         private object GetParameters(string desc)
@@ -55,6 +57,7 @@ namespace ProcessLayer.Helpers.ObjectParameter.Payroll
         public short DefaultHalfdayMinutes { get; set; }
         public int DefaultHalfdayMinutesWithBreaktime { get { return DefaultHalfdayMinutes + (DefaultBreaktimeHour * (short)Minutes); } }
         public decimal HighRiskRate { get; set; }
+        public decimal ExtensionRate { get; set; }
         public decimal RegularOTRate { get; set; }
         public decimal SundayOTRate { get; set; }
         public decimal HolidayOTRate { get; set; }
@@ -69,5 +72,6 @@ namespace ProcessLayer.Helpers.ObjectParameter.Payroll
         public int FirstCutoffEnd { get; set; }
         public int SecondCutoffStart { get; set; }
         public int SecondCutoffEnd { get; set; }
+        public int ExtendedMonths { get; set; }
     }
 }

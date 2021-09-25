@@ -7,6 +7,9 @@ namespace WebTemplate.Models.Personnel
     public class Index : BaseModel
     {
         public int? EmploymentStatusID { get; set; }
+        public int? DepartmentID { get; set; }
+        public int? PersonnelTypeID { get; set; }
+        public int? LocationID { get; set; }
         public List<ProcessLayer.Entities.Personnel> Personnels { get; set; } = new List<ProcessLayer.Entities.Personnel>();
 
         public List<ProcessLayer.Entities.Personnel> BirthdayCelebrantsRecent { get; set; } = new List<ProcessLayer.Entities.Personnel>();

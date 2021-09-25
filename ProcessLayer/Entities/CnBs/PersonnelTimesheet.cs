@@ -18,8 +18,8 @@ namespace ProcessLayer.Entities.CnBs
         public decimal TotalHazard { get { return ComputedTimelogs?.Sum(x => x.HazardHours.ToDecimalPlaces(2)) ?? 0; } }
         public decimal TotalNightDiffEarly { get { return ComputedTimelogs?.Sum(x => x.NightDiffEarlyHours) ?? 0; } }
         public decimal TotalNightDifflate { get { return ComputedTimelogs?.Sum(x => x.NightDiffLateHours) ?? 0; } }
-        public decimal HazardRate { get { return ComputedTimelogs.Where(x => x.isHazard).Select(x => x.HazRate).FirstOrDefault(); } }
-        public decimal HighRiskRate { get { return ComputedTimelogs.Where(x => x.isHighRisk).Select(x => x.HighRiskRate).FirstOrDefault(); } }
+        public decimal HazardRate { get { return ComputedTimelogs.Where(x => x.IsHazard).Select(x => x.HazRate).FirstOrDefault(); } }
+        public decimal HighRiskRate { get { return ComputedTimelogs.Where(x => x.IsHighRisk).Select(x => x.HighRiskRate).FirstOrDefault(); } }
         public decimal TotalHigRisk { get { return ComputedTimelogs?.Sum(x => x.HighRiskHours) ?? 0; } }
     }
 }

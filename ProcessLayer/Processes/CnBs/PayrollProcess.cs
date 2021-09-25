@@ -88,10 +88,14 @@ namespace ProcessLayer.Processes.CnB
                 BasicPay = dr["Basic Pay"].ToDecimal(),
                 GrossPay = dr["Gross Pay"].ToDecimal(),
                 NetPay = dr["Net Pay"].ToDecimal(),
-                HighRiskAllowanceRate = dr["High Risk Allowance Rate"].ToDecimal(),
-                HighRiskPayRate = dr["High Risk Pay Rate"].ToDecimal(),
-                TotalHighRiskAllowancePay = dr["Total High Risk Allowance Pay"].ToDecimal(),
-                TotalHighRiskPay = dr["Total High Risk Pay"].ToDecimal()
+                HighRiskAllowanceRate = dr["High Risk Allowance Rate"].ToNullableDecimal() ?? 0,
+                HighRiskPayRate = dr["High Risk Pay Rate"].ToNullableDecimal() ?? 0,
+                TotalHighRiskAllowancePay = dr["Total High Risk Allowance Pay"].ToNullableDecimal() ?? 0,
+                TotalHighRiskPay = dr["Total High Risk Pay"].ToNullableDecimal() ?? 0,
+                ExtensionAllowanceRate = dr["Extension Allowance Rate"].ToNullableDecimal() ?? 0,
+                ExtensionRate = dr["Extension Rate"].ToNullableDecimal() ?? 0,
+                TotalExtensionPay = dr["Total Extension Pay"].ToNullableDecimal() ?? 0,
+                TotalExtensionAllowancePay = dr["Total Extension Allowance Pay"].ToNullableDecimal() ?? 0
             };
             p.PayrollDetails = GetPayrollDetails(p.ID);
             p.PayrollDeductions = GetPayrollDeductions(p.ID);
@@ -145,7 +149,8 @@ namespace ProcessLayer.Processes.CnB
                 HolidayRegularOTMinutes = dr["Holiday Regular OT Minutes"].ToInt(),
                 HolidayExcessOTMinutes = dr["Holiday Excess OT Minutes"].ToInt(),
                 IsPresent = dr["Is Present"].ToNullableBoolean() ?? false,
-                IsNonTaxable = dr["Is Non Taxable"].ToNullableBoolean() ?? false
+                IsNonTaxable = dr["Is Non Taxable"].ToNullableBoolean() ?? false,
+                IsExtended = dr["Is Extended"].ToNullableBoolean() ?? false
             };
         }
         public List<PayrollPeriod> GetPayrollBases(DateTime? startDate, DateTime? endDate, PayrollSheet payrollSheet, int page, int gridCount, out int PageCount)
@@ -641,6 +646,10 @@ namespace ProcessLayer.Processes.CnB
                     { "@HighRiskAllowanceRate", payroll.HighRiskAllowanceRate },
                     { "@TotalHighRiskPay", payroll.TotalHighRiskPay },
                     { "@TotalHighRiskAllowancePay", payroll.TotalHighRiskAllowancePay },
+                    { "@ExtensionRate", payroll.ExtensionRate },
+                    { "@ExtensionAllowanceRate", payroll.ExtensionAllowanceRate },
+                    { "@TotalExtensionPay", payroll.TotalExtensionPay },
+                    { "@TotalExtensionAllowancePay", payroll.TotalExtensionAllowancePay },
                     { "@BasicPay", payroll.BasicPay },
                     { "@TotalOTPay", payroll.TotalOTPay },
                     { "@TotalOTAllowance", payroll.TotalOTAllowance },
@@ -708,6 +717,10 @@ namespace ProcessLayer.Processes.CnB
         }
         private void SaveOutstandingVale(DateTime cutoffStart, DateTime cutoffEnd, int userid, DBTools db, long personnelId, decimal outStandingVale, long payrollId)
         {
+            DateTime datestart = new DateTime(cutoffEnd.Year, cutoffEnd.Month, 15);
+            if (datestart < cutoffEnd)
+                datestart.AddMonths(1).AddDays(-15);
+
             Dictionary<string, object> parameters = new Dictionary<string, object>
             {
                 { "@PersonnelID", personnelId },
@@ -715,6 +728,7 @@ namespace ProcessLayer.Processes.CnB
                 { "@Amount", outStandingVale },
                 { "@CutOffStart", cutoffStart },
                 { "@CutoffEnd", cutoffEnd },
+                { "@DateStart", datestart },
                 { "@LogBy", userid }
             };
             db.ExecuteNonQuery("cnb.ChargeRemainingToVale", parameters);
@@ -737,6 +751,7 @@ namespace ProcessLayer.Processes.CnB
                 { "@IsHighRisk", details.IsHighRisk },
                 { "@IsNonTaxable", details.IsNonTaxable },
                 { "@IsPresent", details.IsPresent },
+                { "@IsExtended", details.IsExtended },
                 { "@LogBy", userid }
             };
 
