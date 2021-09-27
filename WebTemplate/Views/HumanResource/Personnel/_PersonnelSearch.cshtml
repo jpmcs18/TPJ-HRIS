@@ -37,18 +37,18 @@
         </div>*@
 
                 <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-2">
-                    <label class="control-label">Personnel Types</label>
-                    @Html.DropDownListFor(m => m.PersonnelTypeID, new SelectList(employmentStatuses, "ID", "Description"), "N/A", new { @class = "form-control" })
+                    <label class="control-label">Types</label>
+                    @Html.DropDownListFor(m => m.PersonnelTypeID, new SelectList(personnelTypes, "ID", "Description"), "N/A", new { @class = "form-control" })
                 </div>
 
                 <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-2">
                     <label class="control-label">Departments</label>
-                    @Html.DropDownListFor(m => m.DepartmentID, new SelectList(employmentStatuses, "ID", "Description"), "N/A", new { @class = "form-control" })
+                    @Html.DropDownListFor(m => m.DepartmentID, new SelectList(departments, "ID", "Description"), "N/A", new { @class = "form-control" })
                 </div>
 
                 <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-2">
-                    <label class="control-label">Employment Status</label>
-                    @Html.DropDownListFor(m => m.LocationID, new SelectList(employmentStatuses, "ID", "Description"), "N/A", new { @class = "form-control" })
+                    <label class="control-label">Location</label>
+                    @Html.DropDownListFor(m => m.LocationID, new SelectList(personnelLocations, "ID", "Description"), "N/A", new { @class = "form-control" })
                 </div>
 
                 <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-2">
