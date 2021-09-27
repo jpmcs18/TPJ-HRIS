@@ -7,6 +7,9 @@
     var SearchPageAccess = credential.GetPage("Search") ?? new DataAccessLayer.System.Page();
 
     var employmentStatuses = ProcessLayer.Processes.LookupProcess.GetEmployementStatus();
+    var personnelTypes = ProcessLayer.Processes.Lookups.PersonnelTypeProcess.Instance.Value.GetList();
+    var departments = ProcessLayer.Processes.Lookups.DepartmentProcess.Instance.Value.GetList();
+    var personnelLocations = ProcessLayer.Processes.LocationProcess.Instance.Value.GetList();
 }
 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
     @if (SearchPageAccess.View)
@@ -24,14 +27,29 @@
                 </div>
 
                 @*<div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-3">
-                    <label class="control-label">Department</label>
-                    @Html.DropDownListFor(m => m.DepartmentID, new SelectList(departments, "ID", "Description"), new { @class = "form-control" })
+            <label class="control-label">Department</label>
+            @Html.DropDownListFor(m => m.DepartmentID, new SelectList(departments, "ID", "Description"), new { @class = "form-control" })
+        </div>
+
+        <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-3">
+            <label class="control-label">Positions</label>
+            @Html.DropDownListFor(m => m.PositionID, new SelectList(positions, "ID", "Description"), new { @class = "form-control" })
+        </div>*@
+
+                <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-2">
+                    <label class="control-label">Personnel Types</label>
+                    @Html.DropDownListFor(m => m.PersonnelTypeID, new SelectList(employmentStatuses, "ID", "Description"), "N/A", new { @class = "form-control" })
                 </div>
 
-                <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-3">
-                    <label class="control-label">Positions</label>
-                    @Html.DropDownListFor(m => m.PositionID, new SelectList(positions, "ID", "Description"), new { @class = "form-control" })
-                </div>*@
+                <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-2">
+                    <label class="control-label">Departments</label>
+                    @Html.DropDownListFor(m => m.DepartmentID, new SelectList(employmentStatuses, "ID", "Description"), "N/A", new { @class = "form-control" })
+                </div>
+
+                <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-2">
+                    <label class="control-label">Employment Status</label>
+                    @Html.DropDownListFor(m => m.LocationID, new SelectList(employmentStatuses, "ID", "Description"), "N/A", new { @class = "form-control" })
+                </div>
 
                 <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-2">
                     <label class="control-label">Employment Status</label>
