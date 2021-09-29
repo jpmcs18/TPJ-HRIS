@@ -24,6 +24,12 @@
             @whenToDeduct.Where(x => x.Key == Model.WhenToDeduct).Select(x => x.Value).FirstOrDefault()
         </td>
         <td style="text-align: center;">
+            @(String.Format("{0:MMM dd, yyyy}", Model.DateStart))
+        </td>
+        <td style="text-align: center;">
+            @(String.Format("{0:MMM dd, yyyy}", Model.DateEnd))
+        </td>
+        <td style="text-align: center;">
             @(Model.PayrollDeductible == false ? "NO" : "YES")
         </td>
         <td style="text-align: center;">@Model.PaymentTerms</td>
@@ -59,13 +65,19 @@
             @Html.DropDownList("_Loan.GovernmentLoan", new SelectList(govLoan, "Key", "Value", Model._Loan.GovernmentLoan), "N/A", new { @class = "form-control text-transform-none", @style = "" })
         </td>
         <td style="text-align: center;">
-            @Html.DropDownList("WhenToDeduct", new SelectList(whenToDeduct, "Key", "Value", Model.WhenToDeduct), "N/A", new { @class = "form-control text-transform-none", @style = "" })
+            @Html.DropDownList("WhenToDeduct", new SelectList(whenToDeduct, "Key", "Value", Model.WhenToDeduct), "N/A", new { @class = "form-control text-transform-none whentodeduct", @style = "" })
+        </td>
+        <td style="text-align: center;">
+            @Html.TextBox("DateStart", String.Format("{0:yyyy'-'MM'-'dd}", Model.DateStart), new { @type = "date", @class = "form-control" })
+        </td>
+        <td style="text-align: center;">
+            @(String.Format("{0:MMM dd, yyyy}", Model.DateEnd))
         </td>
         <td style="text-align: center;">
             @Html.DropDownList("PayrollDeductible", new SelectList(payrollDeductible, "Key", "Value", Model.PayrollDeductible), "N/A", new { @class = "form-control text-transform-none", @style = "" })
         </td>
         <td style="text-align: center;">
-            @Html.TextBoxFor(m => m.PaymentTerms, new { @class = "form-control text-transform-none", @Placeholder = "Payment Terms..." })
+            @Html.TextBoxFor(m => m.PaymentTerms, new { @class = "form-control text-transform-none payment-terms", @Placeholder = "Payment Terms...", @type = "text" })
         </td>
         <td style="text-align: center;">
             <input type="hidden" value="@Model.PersonnelID" name="PersonnelID" />

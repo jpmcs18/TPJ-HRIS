@@ -17,6 +17,8 @@
                 <th style="text-align: center;">Loan Type</th>
                 <th style="text-align: center;">Government Loan</th>
                 <th style="text-align: center;">When To Deduct</th>
+                <th style="text-align: center;">Start Date</th>
+                <th style="text-align: center;">End Date</th>
                 <th style="text-align: center;">Payroll Deductible</th>
                 <th style="text-align: center;">Payment Terms (months)</th>
                 <th style="text-align: center;">Amount</th>
@@ -55,13 +57,18 @@
                         @Html.DropDownList("_Loan.GovernmentLoan", new SelectList(govLoan, "Key", "Value"), "N/A", new { @class = "form-control text-transform-none", @style = "" })
                     </td>
                     <td style="text-align: center;">
-                        @Html.DropDownList("WhenToDeduct", new SelectList(whenToDeduct, "Key", "Value"), "N/A", new { @class = "form-control text-transform-none", @style = "" })
+                        @Html.DropDownList("WhenToDeduct", new SelectList(whenToDeduct, "Key", "Value"), "N/A", new { @class = "form-control text-transform-none whentodeduct", @style = "" })
+                    </td>
+                    <td style="text-align: center;">
+                        @Html.TextBox("DateStart", null, new { @type = "date", @class = "form-control" })
+                    </td>
+                    <td style="text-align: center;">
                     </td>
                     <td style="text-align: center;">
                         @Html.DropDownList("PayrollDeductible", new SelectList(payrollDeductible, "Key", "Value"), "N/A", new { @class = "form-control text-transform-none", @style = "" })
                     </td>
                     <td style="text-align: center;">
-                        <input type="number" name="PaymentTerms" class="form-control text-transform-none" placeholder="Payment Terms..." />
+                        <input type="text" name="PaymentTerms" class="form-control text-transform-none payment-terms" placeholder="Payment Terms..." />
                     </td>
                     <td style="text-align: center;">
                         <input type="hidden" name="PersonnelID" class="PersonnelID" value="@Model.PersonnelID" />

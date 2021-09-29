@@ -349,7 +349,9 @@
 
         function GetCompensationsAndDeductions() { GetDatas(4) }
 
-        function GetLoans() { GetDatas(5) }
+    function GetLoans() {
+        GetDatas(5);
+    }
 
         function GetLeaveCredits() { GetDatas(6) }
 
@@ -411,7 +413,7 @@
                             $('#form-loans').html(response)
                             //$('a[href="#tab-9"]').off('click');
                             //$('.Row-Display').off('click').on('click', ViewRowDetails);
-                            $(".tpj-money").tpjmoneymask();
+                                $(".tpj-money").tpjmoneymask();
 
                             //$('#form-compded input[name="Amount"]').maskMoney();
                             break;
@@ -421,6 +423,7 @@
                             $(".tpj-money").tpjmoneymask();
                         }
                         Events2();
+                        Select2Override();
                     } else
                         toastr.error(response.res)
                 },
@@ -1395,7 +1398,6 @@
                             $('#' + divName + 'sTable tbody tr#No-Row-Display').hide();
                         }
 
-                        Events2();
                         InitDatePicker();
                         InitInputFileBrowse();
                         $('#StoreEditModel').val('');
@@ -1404,6 +1406,8 @@
                         if (divName == 'Department') SelectPositions(0);
 
                         CheckRequiredTables();
+                        Events2();
+                        Select2Override();
                     } else {
                         toastr.error(response.res);
                     }
@@ -1682,6 +1686,7 @@
 
             Select2Override();
             $('select#EmploymentStatusID').off('change').on('change', SelectChange);
+            LocalDatePicker();
         }
 
         function Events2() {
@@ -1707,6 +1712,19 @@
             InitMaskedInput();
             InitRequiredInputs();
             InitInputFileBrowse();
+
+            $('select.whentodeduct').off('change').on('change', function (e) {
+                var isBoth = $(this).val() == 3;
+                $input = $(this).closest("tr").find(".payment-terms");
+                $input.attr("onkeypress", isBoth ? "" : "return event.charCode >= 48 && event.charCode <= 57");
+                if (!isBoth) {
+                    if ($input.val().split(".")[1] == "")
+                        $input.val($input.val() + "0");
+
+                    var val = $input.val().split(".")[0];
+                    $input.val(val);
+                }
+            });
         }
 
         function GetMemoArchives() {
@@ -2260,6 +2278,8 @@
                 } else {
                     $(this).closest('tr').find('.date input').removeAttr('disabled');
                 }
+                break;
+            case "WhenToDeduct":
                 break;
             case 'EmploymentStatusID':
                 if (selectedID > 0)

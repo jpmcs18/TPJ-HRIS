@@ -690,7 +690,6 @@ namespace ProcessLayer.Processes
         {
             return new Dictionary<int, string>
             {
-                { 0, "N/A" },
                 { 1, "1st Cutoff" },
                 { 2, "2nd Cutoff" },
                 { 3, "Both" }
