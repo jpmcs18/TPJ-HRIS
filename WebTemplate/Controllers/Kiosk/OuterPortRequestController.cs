@@ -105,19 +105,19 @@ namespace WebTemplate.Controllers.Kiosk
         {
             try
             {
-                StringBuilder errors = new StringBuilder();
-                if (string.IsNullOrEmpty(model.Purpose))
-                    errors.Append("- <b>Purpose</b> is required<br>");
-                if (model.LocationID == null)
-                    errors.Append("- <b>Location</b> is required<br>");
-                if (model.PersonnelID == null)
-                    errors.Append("- <b>Personnel</b> is required<br>");
-                if (model.StartDate == null)
-                    errors.Append("- <b>StartDate</b> is required<br>");
+                //StringBuilder errors = new StringBuilder();
+                //if (string.IsNullOrEmpty(model.Purpose))
+                //    errors.Append("- <b>Purpose</b> is required<br>");
+                //if (model.LocationID == null)
+                //    errors.Append("- <b>Location</b> is required<br>");
+                //if (model.PersonnelID == null)
+                //    errors.Append("- <b>Personnel</b> is required<br>");
+                //if (model.StartDate == null)
+                //    errors.Append("- <b>StartDate</b> is required<br>");
 
 
-                if (errors.Length > 0)
-                    return Json(new { msg = false, res = errors.ToString() });
+                //if (errors.Length > 0)
+                //    return Json(new { msg = false, res = errors.ToString() });
                 model = OuterPortRequestProcess.Instance.Value.CreateOrUpdate(model, User.UserID);
                 ModelState.Clear();
                 return PartialViewCustom("_OuterPortRequestEdit", model);

@@ -379,7 +379,6 @@
                     if (response.msg == null) {
                         toastr.success('Success', 'Request saved!');
                         var modal = '#AbsenceRequestModal';
-                        //$(modal + ' #AbsenceTypeID').select2('destroy');
                         ModalEvents(modal, 'View', response);
                         $(modal + ' select').select2();
                         SearchRequest();

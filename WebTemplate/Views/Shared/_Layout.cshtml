@@ -348,6 +348,40 @@
             }
         }
 
+        function LocalDatePicker() {
+            $("input[type='date'], input[type='datetime-local']").on("change", function (e) {
+                $field = $(this).closest(".form-group");
+                $input = $field.find("input");
+                var lblText = $field.find("label").text().trim();
+                var btn = '<i class="fa fa-times" style="float: right;cursor: pointer;"></i>';
+
+                if ($(this).val()) {
+                    $field.find("label").css('width', '100%');
+                    $field.find("label").html(lblText + btn);
+                    $field.find(".fa-times").on("click", LocalDatePickerClear);
+                }
+            });
+            $("input[type='date'], input[type='datetime-local']").each(function (e) {
+                $field = $(this).closest(".form-group");
+                $input = $field.find("input");
+                var lblText = $field.find("label").text().trim();
+                var btn = '<i class="fa fa-times" style="float: right;cursor: pointer;"></i>';
+
+                if ($(this).val()) {
+                    $field.find("label").css('width', '100%');
+                    $field.find("label").html(lblText + btn);
+                    $field.find(".fa-times").on("click", LocalDatePickerClear);
+                }
+            });
+            function LocalDatePickerClear() {
+                $field = $(this).closest(".form-group");
+                $input = $field.find("input");
+                var lblText = $field.find("label").text().trim();
+                $input.val("");
+                $field.find("label").html(lblText);
+            }
+        }
+
         @* To prevent modal scrollable when open from modal and fixes the padding- right when modal closes *@
         $(document).on('hidden.bs.modal', function () {
             if ($('.modal:visible').length)

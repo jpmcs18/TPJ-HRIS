@@ -11,7 +11,7 @@
 @if (PageAccess.View)
 {
     <form id="form_search_params" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
-        @Html.Hidden("Page", Model.Page, new { @class = "search-values" })
+        @Html.Hidden("Page", Model.Page, new { @class = "form-control" })
 
         <fieldset>
             <legend>Search</legend>

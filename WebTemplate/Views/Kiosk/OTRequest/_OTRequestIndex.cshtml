@@ -405,8 +405,7 @@
             success: function (response) {
                 if (response.msg == null) {
                     toastr.success('Success', 'Request saved!');
-                    var modal = '#OTRequestForm';
-                    ModalEvents(false, modal, 'View', response);
+                    ModalEvents(false, '#OTRequestForm', 'View', response);
                     SearchRequest();
                 } else {
                     toastr.error(response.res);

@@ -11,8 +11,27 @@
 
 
 <div id="form_save" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
-    @Html.Hidden("PersonnelID", Model.PersonnelID, new { @class = "save-values" })
-    @Html.Hidden("ID", Model.ID, new { @class = "save-values" })
+    @Html.Hidden("PersonnelID", Model.PersonnelID, new { @class = "form-control" })
+    @Html.Hidden("ID", Model.ID, new { @class = "form-control" })
+
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="text-align: center;">
+        <label class="control-label">
+            @Html.CheckBox("IsHighRisk", Model.IsHighRisk ?? false, new { @class = "i-checks form-control" })
+            High Risk
+        </label>
+    </div>
+
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="text-align: center;">
+        <label class="control-label">
+            @Html.CheckBox("HasQuarantine", Model.HasQuarantine ?? false, new { @class = "i-checks hasquarantine-checkbox form-control" })
+            Has Quarantine
+        </label>
+    </div>
+
+    <div id="QuarantineDateEndDiv" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="@((Model.HasQuarantine ?? false) == true ? "" : "display: none;")">
+        <label class="control-label">Quarantine Date End</label>
+        @Html.TextBox("QuarantineDateEnd", String.Format("{0:yyyy'-'MM'-'dd}", Model.QuarantineDateEnd), new { @type = "date", @class = "form-control" })
+    </div>
 
     <div class="form-group col-xs-12 col-sm-12 col-md-4 col-lg-4">
         <label class="control-label">OuterPort Type</label>
@@ -20,14 +39,14 @@
     </div>
 
     <div class="form-group col-xs-12 col-sm-12 col-md-4 col-lg-4">
-        <label class="control-label">Start Date & Time</label>
-        @Html.TextBox("StartDate", String.Format("{0:yyyy'-'MM'-'dd}", Model.StartDate), "N/A", new { @type = "date", @class = "form-control" })
+        <label class="control-label">Start Date</label>
+        @Html.TextBox("StartDate", String.Format("{0:yyyy'-'MM'-'dd}", Model.StartDate), new { @type = "date", @class = "form-control" })
         @*@Html.TextBox("StartDate", String.Format("{0:MM/dd/yyyy}", Model.StartDate), new { @class = "form-control js-datetimepicker", @placeholder = "" })
             <span id="" class="clearInput" title="Clear"><i class="fa fa-times"></i></span>*@
     </div>
 
     <div class="form-group col-xs-12 col-sm-12 col-md-4 col-lg-4">
-        <label class="control-label">End Date & Time</label>
+        <label class="control-label">End Date</label>
         @Html.TextBox("EndDate", String.Format("{0:yyyy'-'MM'-'dd}", Model.EndDate), new { @type = "date", @class = "form-control" })
         @*@Html.TextBox("EndDate", String.Format("{0:MM/dd/yyyy}", Model.EndDate), new { @class = "form-control js-datetimepicker", @placeholder = "" })
             <span id="" class="clearInput" title="Clear"><i class="fa fa-times"></i></span>*@
@@ -42,7 +61,7 @@
     {
         <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <label class="control-label" style="width: 100%; color: #fff;">Search</label>
-            <button type="button" id="CreateOuterPortRequest" class="btn btn-primary font-bold pull-right" title="@(Model.ID > 0 ? "Update" : "Save")"><i class="fa fa-save"></i>&nbsp;&nbsp;@(Model.ID > 0 ? "Update" : "Save")</button>
+            <button type="button" id="CreateOuterPortRequest" class="btn btn-primary font-bold pull-right" onclick="SaveOuterPortRequest()" title="@(Model.ID > 0 ? "Update" : "Save")"><i class="fa fa-save"></i>&nbsp;&nbsp;@(Model.ID > 0 ? "Update" : "Save")</button>
         </div>
     }
 
@@ -68,36 +87,36 @@
         }
 
         @*@if (!String.IsNullOrEmpty(Model._Creator))
-        {
-            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3 m-t-lg">
-                <div class='md-step-optional'>Created By:</div>
-                <div class='md-step-optional'><b>@Html.Raw(Model._Creator ?? "&nbsp;")</b></div>
-                <div class='md-step-optional'>@Html.Raw(String.Format("{0:MM/dd/yyyy}", Model.CreatedOn) ?? "&nbsp;")</div>
-            </div>
-        }
-        @if (!String.IsNullOrEmpty(Model._Modifier))
-        {
-            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3 m-t-lg">
-                <div class='md-step-optional'>Modified By:</div>
-                <div class='md-step-optional'><b>@Html.Raw(Model._Modifier ?? "&nbsp;")</b></div>
-                <div class='md-step-optional'>@Html.Raw(String.Format("{0:MM/dd/yyyy}", Model.ModifiedOn) ?? "&nbsp;")</div>
-            </div>
-        }
-        @if (!String.IsNullOrEmpty(Model._Approver))
             {
                 <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3 m-t-lg">
-                    <div class='md-step-optional'>Approved By:</div>
-                    <div class='md-step-optional'><b>@Html.Raw(Model._Approver ?? "&nbsp;")</b></div>
-                    <div class='md-step-optional'>@Html.Raw(String.Format("{0:MM/dd/yyyy}", Model.ApprovedOn) ?? "&nbsp;")</div>
+                    <div class='md-step-optional'>Created By:</div>
+                    <div class='md-step-optional'><b>@Html.Raw(Model._Creator ?? "&nbsp;")</b></div>
+                    <div class='md-step-optional'>@Html.Raw(String.Format("{0:MM/dd/yyyy}", Model.CreatedOn) ?? "&nbsp;")</div>
                 </div>
             }
-        @if (!String.IsNullOrEmpty(Model._Cancel))
-        {
-            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3 m-t-lg">
-                <div class='md-step-optional'>Cancelled By:</div>
-                <div class='md-step-optional'><b>@Html.Raw(Model._Cancel ?? "&nbsp;")</b></div>
-                <div class='md-step-optional'>@Html.Raw(String.Format("{0:MM/dd/yyyy}", Model.CancelledOn) ?? "&nbsp;")</div>
-            </div>
-        }*@
+            @if (!String.IsNullOrEmpty(Model._Modifier))
+            {
+                <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3 m-t-lg">
+                    <div class='md-step-optional'>Modified By:</div>
+                    <div class='md-step-optional'><b>@Html.Raw(Model._Modifier ?? "&nbsp;")</b></div>
+                    <div class='md-step-optional'>@Html.Raw(String.Format("{0:MM/dd/yyyy}", Model.ModifiedOn) ?? "&nbsp;")</div>
+                </div>
+            }
+            @if (!String.IsNullOrEmpty(Model._Approver))
+                {
+                    <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3 m-t-lg">
+                        <div class='md-step-optional'>Approved By:</div>
+                        <div class='md-step-optional'><b>@Html.Raw(Model._Approver ?? "&nbsp;")</b></div>
+                        <div class='md-step-optional'>@Html.Raw(String.Format("{0:MM/dd/yyyy}", Model.ApprovedOn) ?? "&nbsp;")</div>
+                    </div>
+                }
+            @if (!String.IsNullOrEmpty(Model._Cancel))
+            {
+                <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3 m-t-lg">
+                    <div class='md-step-optional'>Cancelled By:</div>
+                    <div class='md-step-optional'><b>@Html.Raw(Model._Cancel ?? "&nbsp;")</b></div>
+                    <div class='md-step-optional'>@Html.Raw(String.Format("{0:MM/dd/yyyy}", Model.CancelledOn) ?? "&nbsp;")</div>
+                </div>
+            }*@
     }
 </div>

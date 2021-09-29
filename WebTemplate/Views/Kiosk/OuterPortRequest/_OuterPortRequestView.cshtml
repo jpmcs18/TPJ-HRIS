@@ -9,26 +9,45 @@
 }
 
 <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="text-align: center;">
+        <label class="control-label">
+            @Html.CheckBox("IsHighRisk", Model.IsHighRisk ?? false, new { @class = "i-checks form-control disabled", @disabled = "" })
+            High Risk
+        </label>
+    </div>
+
+    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="text-align: center;">
+        <label class="control-label">
+            @Html.CheckBox("HasQuarantine", Model.HasQuarantine ?? false, new { @class = "i-checks hasquarantine-checkbox form-control disabled", @disabled = "" })
+            Has Quarantine
+        </label>
+    </div>
+
+    <div id="QuarantineDateEndDiv" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="@((Model.HasQuarantine ?? false) == true ? "" : "display: none;")">
+        <label class="control-label">Quarantine End Date</label>
+        <label class="form-control">@String.Format("{0:MMM dd, yyyy}", Model.QuarantineDateEnd)</label>
+    </div>
+
     <div class="form-group col-xs-12 col-sm-12 col-md-4 col-lg-4">
         <label class="control-label">Location</label>
         <label class="form-control">@Model._Location.Description</label>
     </div>
 
     <div class="form-group col-xs-12 col-sm-12 col-md-4 col-lg-4">
-        <label class="control-label">Start Date & Time</label>
-        <label class="form-control">@Model.StartDate</label>
+        <label class="control-label">Start Date</label>
+        <label class="form-control">@String.Format("{0:MMM dd, yyyy}", Model.StartDate)</label>
     </div>
 
     <div class="form-group col-xs-12 col-sm-12 col-md-4 col-lg-4">
-        <label class="control-label">End Date & Time</label>
-        <label class="form-control">@Model.EndDate</label>
+        <label class="control-label">End Date</label>
+        <label class="form-control">@String.Format("{0:MMM dd, yyyy}", Model.EndDate)</label>
     </div>
 
     <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <label class="control-label">Purpose</label>
         <textarea class="form-control" rows="4">@Model.Purpose</textarea>
     </div>
-    
+
     @if (CreatorAccess.Update)
     {
         var Logs = new Dictionary<string, DateTime?>(){
