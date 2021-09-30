@@ -1,4 +1,5 @@
 ﻿using ProcessLayer.Entities;
+using ProcessLayer.Entities.Kiosk;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,15 @@ namespace ProcessLayer.Helpers
         public static int SubtractDateWithBreakTime(DateTime? end, DateTime? start, int breakTime)
         {
             return (int)((end - start)?.TotalMinutes ?? 0) - (breakTime * 60);
+        }
+        public static bool IsOuterPortWithoutTimelog(List<OuterPortRequest> outerportRequests, DateTime? date)
+        {
+            if (date == null)
+            {
+                return false;
+            }
+
+            return outerportRequests.Where(x => (x.StartDate?.Date <= date?.Date && (x.EndDate ?? DateTime.Now).Date >= date?.Date) && !(x._Location?.RequiredTimeLog ?? false)).Any();
         }
         public static bool IsWFH(List<PersonnelSchedule> schedules, DateTime? date)
         {

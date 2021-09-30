@@ -221,7 +221,7 @@ namespace ProcessLayer.Computation.CnB
                 }
                 else if (((holiday?.ID ?? 0) > 0) || (sched?.ID ?? 0) == 0 || start.DayOfWeek == DayOfWeek.Sunday)
                 {
-                    SundayAndHolidayComputation(timesheet, timelogs, start, sched, starttime, endtime, startnight1, endnight1, startnight2, endnight2, defbt, defbtend, details, (wholeDayOT ?? earlyOT) ?? afterWorkOT, holiday, prevDate);
+                    SundayAndHolidayComputation(timesheet, approvedouterportrequests, timelogs, start, sched, starttime, endtime, startnight1, endnight1, startnight2, endnight2, defbt, defbtend, details, (wholeDayOT ?? earlyOT) ?? afterWorkOT, holiday, prevDate);
                 }
                 else if (sched.AtHome ?? false)
                 {
@@ -428,9 +428,9 @@ namespace ProcessLayer.Computation.CnB
             }
         }
 
-        private static void SundayAndHolidayComputation(PersonnelTimesheet timesheet, List<TimeLog> timelogs, DateTime start, ScheduleType sched, DateTime starttime, DateTime endtime, DateTime startnight1, DateTime endnight1, DateTime startnight2, DateTime endnight2, DateTime defbt, DateTime defbtend, ComputedTimelog details, OTRequest ot, NonWorkingDays holiday, DateTime? prevDate)
+        private static void SundayAndHolidayComputation(PersonnelTimesheet timesheet, List<OuterPortRequest> approvedouterportrequests, List<TimeLog> timelogs, DateTime start, ScheduleType sched, DateTime starttime, DateTime endtime, DateTime startnight1, DateTime endnight1, DateTime startnight2, DateTime endnight2, DateTime defbt, DateTime defbtend, ComputedTimelog details, OTRequest ot, NonWorkingDays holiday, DateTime? prevDate)
         {
-            if (((holiday?.ID ?? 0) > 0) && (sched?.ID ?? 0) != 0 && (timelogs.Where(x => x.LoginDate?.Date == prevDate?.Date).Any() || GlobalHelper.IsWFH(timesheet.Personnel._Schedules, prevDate)))
+            if (((holiday?.ID ?? 0) > 0) && (sched?.ID ?? 0) != 0 && (timelogs.Where(x => x.LoginDate?.Date == prevDate?.Date).Any() || GlobalHelper.IsOuterPortWithoutTimelog(approvedouterportrequests, prevDate) || GlobalHelper.IsWFH(timesheet.Personnel._Schedules, prevDate)))
             {
                 details.NoofDays = 1;
                 details.HolidayDesc = holiday.Description;
@@ -462,8 +462,8 @@ namespace ProcessLayer.Computation.CnB
                     {
                         int regminutes = mins - PayrollParameters.CNBInstance.Value.SundayTotalMinutes;
                         if (regminutes > 0
-                            && (timelogs.Where(x => x.LoginDate?.Date == starttime.AddDays(-1).Date).Any() || GlobalHelper.IsWFH(timesheet.Personnel._Schedules, starttime.AddDays(-1)))
-                            && (timelogs.Where(x => x.LoginDate?.Date == starttime.AddDays(1).Date).Any() || GlobalHelper.IsWFH(timesheet.Personnel._Schedules, starttime.AddDays(1))))
+                            && (timelogs.Where(x => x.LoginDate?.Date == starttime.AddDays(-1).Date).Any() || GlobalHelper.IsOuterPortWithoutTimelog(approvedouterportrequests, starttime.AddDays(-1)) || GlobalHelper.IsWFH(timesheet.Personnel._Schedules, starttime.AddDays(-1)))
+                            && (timelogs.Where(x => x.LoginDate?.Date == starttime.AddDays(1).Date).Any() || GlobalHelper.IsOuterPortWithoutTimelog(approvedouterportrequests, starttime.AddDays(1)) || GlobalHelper.IsWFH(timesheet.Personnel._Schedules, starttime.AddDays(1))))
                         {
                             details.NoofDays = 1;
                             details.SunOTHours = regminutes / PayrollParameters.CNBInstance.Value.Minutes;
@@ -476,7 +476,7 @@ namespace ProcessLayer.Computation.CnB
                     {
                         int regminutes = mins - PayrollParameters.CNBInstance.Value.HolidayTotalMinutes;
                         if (regminutes > 0
-                            && (timelogs.Where(x => x.LoginDate?.Date == prevDate?.Date).Any() || GlobalHelper.IsWFH(timesheet.Personnel._Schedules, prevDate)))
+                            && (timelogs.Where(x => x.LoginDate?.Date == prevDate?.Date).Any() || GlobalHelper.IsOuterPortWithoutTimelog(approvedouterportrequests, prevDate) || GlobalHelper.IsWFH(timesheet.Personnel._Schedules, prevDate)))
                         {
                             details.Holiday = 1;
                             details.HolExcHours = regminutes / PayrollParameters.CNBInstance.Value.Minutes;
