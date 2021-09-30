@@ -367,14 +367,14 @@
         $('#OuterPortRequestForm .form-control').each(function () {
             var name = $(this).attr('name');
             var value = $(this).val();
-            if (name != "QuarantineDateEnd" && name != "EndDate") {
-                if (value) {
-                    if ($(this).attr("type") == "checkbox")
-                        formdata.append(name, $(this).is(':checked'));
-                    else
-                        formdata.append(name, value);
-                }
-                else {
+            if (value) {
+                if ($(this).attr("type") == "checkbox")
+                    formdata.append(name, $(this).is(':checked'));
+                else
+                    formdata.append(name, value);
+            }
+            else {
+                if (name !== "QuarantineDateEnd" && name !== "EndDate") {
                     var label = $('#' + name).prev('label').text() || name;
                     toastr.options = {
                         timeOut: 0,
@@ -387,26 +387,9 @@
             }
         });
         var hasQuarantine = $('#HasQuarantine').is(':checked');
-        if (hasQuarantine) {
-            var name = 'QuarantineDateEnd';
-            var value = $('#OuterPortRequestForm #QuarantineDateEnd').val();
-            if (value) {
-                formdata.append(name, value);
-            }
-            else {
-                var label = $('#' + name).prev('label').text() || name;
-                toastr.options = {
-                    timeOut: 0,
-                    extendedTimeOut: 0
-                };
-                toastr.warning(label + " is required.", "Warning");
-                save = false;
-                return false;
-            }
-        }
         formdata.append('__RequestVerificationToken', $('@Html.AntiForgeryToken()').val());
 
-        var btnTitle = $(this).attr('title');
+        var btnTitle = $('#CreateOuterPortRequest').attr('title');
         @*var serializeID = btnTitle == 'Save' ? '#CreateOuterPortRequestForm' : '#ViewOuterPortRequestForm';
         if (btnTitle == 'Save')
             $(serializeID + ' input[name="ID"]').val('');
@@ -624,8 +607,9 @@
     }
 
     function MultipleDelete() {
+        var selected = $.map($('.Row-Display-OuterPortRequests input[type=checkbox]:checked'), function (c) { return c.value; })
         var pagetitle = $('.page-heading h2').text().trim().toLowerCase();
-        var message = $_SelectedRows.length + ' ' + pagetitle + ($_SelectedRows.length > 1 ? 's' : '');
+        var message = selected.length + ' ' + pagetitle + (selected.length > 1 ? 's' : '');
 
         swal({
             title: 'Delete ' + message + '?',
@@ -642,7 +626,7 @@
             if (confirm) {
                 $.ajax({
                     data: {
-                        'ids': JSON.stringify($_SelectedRows),
+                        'ids': JSON.stringify(selected),
                         '__RequestVerificationToken': $('@Html.AntiForgeryToken()').val()
                     },
                     type: 'POST',

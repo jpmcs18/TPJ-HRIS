@@ -25,12 +25,12 @@ namespace ProcessLayer.Processes.HR
                 PaymentTerms = dr["Payment Terms"].ToNullableFloat(),
                 PayrollDeductible = dr["Payroll Deductible"].ToNullableBoolean(),
                 WhenToDeduct = dr["When to Deduct"].ToNullableByte(),
-                DateStart = dr["Date Start"].ToNullableDateTime(),
                 Remarks = dr["Remarks"].ToString(),
             };
                 try {
                 pl.PayrollID = dr["Payroll ID"].ToNullableLong();
                 pl.LastModified = dr["Modified On"].ToNullableDateTime();
+                pl.DateStart = dr["Date Start"].ToNullableDateTime();
             }
 
             catch { }

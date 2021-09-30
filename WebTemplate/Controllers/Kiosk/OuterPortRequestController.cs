@@ -1,4 +1,5 @@
-﻿using ProcessLayer.Entities;
+﻿using Newtonsoft.Json;
+using ProcessLayer.Entities;
 using ProcessLayer.Entities.Kiosk;
 using ProcessLayer.Helpers;
 using ProcessLayer.Processes;
@@ -173,10 +174,10 @@ namespace WebTemplate.Controllers.Kiosk
             {
                 try
                 {
-                    ToApplyAction[] toDelete = new JavaScriptSerializer().Deserialize<ToApplyAction[]>(ids);
+                    string[] toDelete = JsonConvert.DeserializeObject<string[]>(ids);
                     for (int i = 0; i < toDelete.Count(); i++)
                     {
-                        DeleteRequestSingle(toDelete[i].ID.ToInt());
+                        DeleteRequestSingle(toDelete[i].ToInt());
                     }
                 }
                 catch (Exception e)
