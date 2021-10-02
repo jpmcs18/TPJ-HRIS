@@ -208,6 +208,9 @@ namespace ProcessLayer.Computation.CnB
                         details.IsHoliday = default;
                         details.IsNonTaxable = default;
                         details.IsHighRisk = default;
+                        details.IsExtended = default;
+                        //details.IsAbsent = default;
+                        //details.IsHazard = default;
                         details.RegularOTMinutes = default;
                         details.SundayOTMinutes = default;
                         details.HolidayRegularOTMinutes = default;
