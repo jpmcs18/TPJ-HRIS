@@ -1,4 +1,5 @@
 ﻿using GemBox.Spreadsheet;
+using ProcessLayer.Entities;
 using ProcessLayer.Entities.CnB;
 using ProcessLayer.Helpers;
 using ProcessLayer.Helpers.ObjectParameter.Payroll;
@@ -6,6 +7,7 @@ using ReportLayer.Bases;
 using ReportLayer.Extensions;
 using ReportLayer.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ReportLayer.Reports
@@ -39,48 +41,8 @@ namespace ReportLayer.Reports
             WriteToCell(PrintPayslipHelper.Instance.Value.HDMFNoCell, "HDMF No: " + payroll.Personnel.PAGIBIG);
             WriteToCell(PrintPayslipHelper.Instance.Value.SSSNoCell, "SSS No: " + payroll.Personnel.SSS);
 
-            WriteToCell(PrintPayslipHelper.Instance.Value.RegOTHoursCell, payroll.PayrollDetails.Sum(x => x.RegularOTHours).ToString("N2"));
-            WriteToCell(PrintPayslipHelper.Instance.Value.RegOTRateCell, payroll.RegularOTRate);
-            WriteToCell(PrintPayslipHelper.Instance.Value.RegOTPayCell, payroll.RegularOTPay.ToString("N2"));
-
-            WriteToCell(PrintPayslipHelper.Instance.Value.SundayOTHoursCell, payroll.PayrollDetails.Sum(x => x.SundayOTHours).ToString("N2"));
-            WriteToCell(PrintPayslipHelper.Instance.Value.SundayOTRateCell, payroll.SundayOTRate);
-            WriteToCell(PrintPayslipHelper.Instance.Value.SundayOTPayCell, payroll.SundayOTPay.ToString("N2"));
-
-            WriteToCell(PrintPayslipHelper.Instance.Value.HolidayRegDayCell, payroll.PayrollDetails.Sum(x => x.HolidayOTDays).ToString("N2"));
-            WriteToCell(PrintPayslipHelper.Instance.Value.HolidayRegRateCell, payroll.HolidayRegularOTRate);
-            WriteToCell(PrintPayslipHelper.Instance.Value.HolidayRegPayCell, payroll.HolidayOTPay.ToString("N2"));
-
-            WriteToCell(PrintPayslipHelper.Instance.Value.HolidayExcessOTHoursCell, payroll.PayrollDetails.Sum(x => x.HolidayExcessOTHours).ToString("N2"));
-            WriteToCell(PrintPayslipHelper.Instance.Value.HolidayExcessOTRateCell, payroll.HolidayExcessOTRate);
-            WriteToCell(PrintPayslipHelper.Instance.Value.HolidayExcessOTPayCell, payroll.HolidayExcessOTPay.ToString("N2"));
-
-            if (payroll.NightDifferentialPay > 0)
-            {
-                WriteToCell(PrintPayslipHelper.Instance.Value.NightDiffHoursCell, "1");
-                WriteToCell(PrintPayslipHelper.Instance.Value.HolidayExcessOTRateCell, payroll.NightDifferentialPay.ToString("N3"));
-                WriteToCell(PrintPayslipHelper.Instance.Value.HolidayExcessOTPayCell, payroll.NightDifferentialPay.ToString("N2"));
-            }
-
             WriteToCell(PrintPayslipHelper.Instance.Value.TotalOTPayCell, payroll.TotalOTPay.ToString("N2"));
             WriteToCell(PrintPayslipHelper.Instance.Value.GrossSalaryCell, payroll.GrossPay.ToString("N2"));
-
-
-            WriteToCell(PrintPayslipHelper.Instance.Value.AllRegOTHoursCell, payroll.PayrollDetails.Sum(x => x.RegularOTHours).ToString("N2"));
-            WriteToCell(PrintPayslipHelper.Instance.Value.AllRegOTRateCell, payroll.RegularOTAllowance);
-            WriteToCell(PrintPayslipHelper.Instance.Value.AllRegOTPayCell, payroll.RegularOTAllowancePay.ToString("N2"));
-
-            WriteToCell(PrintPayslipHelper.Instance.Value.AllSundayOTHoursCell, payroll.PayrollDetails.Sum(x => x.SundayOTHours).ToString("N2"));
-            WriteToCell(PrintPayslipHelper.Instance.Value.AllSundayOTRateCell, payroll.SundayOTAllowance);
-            WriteToCell(PrintPayslipHelper.Instance.Value.AllSundayOTPayCell, payroll.SundayOTAllowancePay.ToString("N2"));
-
-            WriteToCell(PrintPayslipHelper.Instance.Value.AllHolidayRegDayCell, payroll.PayrollDetails.Sum(x => x.HolidayOTDays).ToString("N2"));
-            WriteToCell(PrintPayslipHelper.Instance.Value.AllHolidayRegRateCell, payroll.HolidayRegularOTAllowance);
-            WriteToCell(PrintPayslipHelper.Instance.Value.AllHolidayRegPayCell, payroll.HolidayOTAllowancePay.ToString("N2"));
-
-            WriteToCell(PrintPayslipHelper.Instance.Value.AllHolidayExcessOTHoursCell, payroll.PayrollDetails.Sum(x => x.HolidayExcessOTHours).ToString("N2"));
-            WriteToCell(PrintPayslipHelper.Instance.Value.AllHolidayExcessOTRateCell, payroll.HolidayExcessOTAllowance);
-            WriteToCell(PrintPayslipHelper.Instance.Value.AllHolidayExcessOTPayCell, payroll.HolidayOTExcessAllowancePay.ToString("N2"));
 
             WriteToCell(PrintPayslipHelper.Instance.Value.TotalAllOTPayCell, payroll.TotalOTAllowance.ToString("N2"));
 
@@ -124,6 +86,54 @@ namespace ReportLayer.Reports
             }
 
 
+            List<Location> locations = payroll.PayrollDetails.Where(x => x.IsHazard && x.IsHoliday && x.HolidayOTDays > 0).Select(x => x.Location).Distinct().ToList();
+            if (payroll.Allowance > 0)
+            {
+                startRow = PrintPayslipHelper.Instance.Value.AllStartRow;
+
+                WriteToCell(startRow, PrintPayslipHelper.Instance.Value.AllDescColumn, "Regular:");
+                WriteToCell(startRow, PrintPayslipHelper.Instance.Value.AllHoursColumn, payroll.PayrollDetails.Where(x => !x.IsNonTaxable).Sum(x => x.RegularOTHours).ToString("N2"));
+                WriteToCell(startRow, PrintPayslipHelper.Instance.Value.AllRateColumn, payroll.RegularOTAllowance.ToString("N3"));
+                WriteToCell(startRow, PrintPayslipHelper.Instance.Value.AllPayColumn, payroll.RegularOTAllowancePay.ToString("N2"));
+                startRow++;
+
+                WriteToCell(startRow, PrintPayslipHelper.Instance.Value.AllDescColumn, "Sunday Overtime:");
+                WriteToCell(startRow, PrintPayslipHelper.Instance.Value.AllHoursColumn, payroll.PayrollDetails.Where(x => !x.IsNonTaxable).Sum(x => x.SundayOTHours).ToString("N2"));
+                WriteToCell(startRow, PrintPayslipHelper.Instance.Value.AllRateColumn, payroll.SundayOTAllowance.ToString("N3"));
+                WriteToCell(startRow, PrintPayslipHelper.Instance.Value.AllPayColumn, payroll.SundayOTAllowancePay.ToString("N2"));
+                startRow++;
+
+                WriteToCell(startRow, PrintPayslipHelper.Instance.Value.AllDescColumn, "Holiday (Reg):");
+                WriteToCell(startRow, PrintPayslipHelper.Instance.Value.AllHoursColumn, payroll.PayrollDetails.Where(x => !x.IsNonTaxable && !x.IsHazard).Sum(x => x.HolidayOTDays).ToString("N2"));
+                WriteToCell(startRow, PrintPayslipHelper.Instance.Value.AllRateColumn, payroll.HolidayRegularOTAllowance.ToString("N3"));
+                WriteToCell(startRow, PrintPayslipHelper.Instance.Value.AllPayColumn, payroll.PayrollDetails.Where(x => !x.IsNonTaxable && !x.IsHazard).Sum(x => payroll.HolidayRegularOTAllowance * x.HolidayOTDays).ToDecimalPlaces(2).ToString("N2"));
+                startRow++;
+
+                for (int i = 0; i < locations.Count; i++)
+                {
+                    if ((startRow - PrintPayslipHelper.Instance.Value.AllStartRow) >= PrintPayslipHelper.Instance.Value.AllMaxRow)
+                    {
+                        InsertRowCopy(startRow, 1);
+                    }
+
+                    WriteToCell(startRow, PrintPayslipHelper.Instance.Value.AllDescColumn, $"Holiday ({locations[i].Prefix}):");
+                    WriteToCell(startRow, PrintPayslipHelper.Instance.Value.AllHoursColumn, payroll.PayrollDetails.Where(x => x.Location?.ID == locations[i].ID && !x.IsNonTaxable).Sum(x => x.HolidayOTDays).ToString("N2"));
+                    WriteToCell(startRow, PrintPayslipHelper.Instance.Value.AllRateColumn, (payroll.HolidayRegularOTAllowance * ((locations[i].HazardRate ?? 0) + 1)).ToString("N3"));
+                    WriteToCell(startRow, PrintPayslipHelper.Instance.Value.AllPayColumn, payroll.PayrollDetails.Where(x => x.Location?.ID == locations[i].ID && !x.IsNonTaxable).Sum(x => payroll.HolidayRegularOTAllowance * ((x.Location?.HazardRate ?? 0) + 1) * x.HolidayOTDays).ToDecimalPlaces(2).ToString("N2"));
+                    startRow++;
+                }
+
+                if ((startRow - PrintPayslipHelper.Instance.Value.AllStartRow) >= PrintPayslipHelper.Instance.Value.AllMaxRow)
+                {
+                    InsertRowCopy(startRow, 1);
+                }
+
+                WriteToCell(startRow, PrintPayslipHelper.Instance.Value.AllDescColumn, $"Holiday (Excess):");
+                WriteToCell(startRow, PrintPayslipHelper.Instance.Value.AllHoursColumn, payroll.PayrollDetails.Where(x => !x.IsNonTaxable).Sum(x => x.HolidayExcessOTHours).ToString("N2"));
+                WriteToCell(startRow, PrintPayslipHelper.Instance.Value.AllRateColumn, payroll.HolidayExcessOTAllowance.ToString("N3"));
+                WriteToCell(startRow, PrintPayslipHelper.Instance.Value.AllPayColumn, payroll.HolidayOTExcessAllowancePay.ToString("N2"));
+                startRow++;
+            }
             var allowances = payroll.PayrollDetails.GroupBy(x => x.Location?.ID ?? 0);
 
             startRow = PrintPayslipHelper.Instance.Value.AllowanceStartRow;
@@ -150,7 +160,65 @@ namespace ReportLayer.Reports
             }
 
 
-            startRow = PrintPayslipHelper.Instance.Value.AddRow;
+            startRow = PrintPayslipHelper.Instance.Value.OTStartRow;
+
+            WriteToCell(startRow, PrintPayslipHelper.Instance.Value.OTDescColumn, "Regular:");
+            WriteToCell(startRow, PrintPayslipHelper.Instance.Value.OTHoursColumn, payroll.PayrollDetails.Where(x => !x.IsNonTaxable).Sum(x => x.RegularOTHours).ToString("N2"));
+            WriteToCell(startRow, PrintPayslipHelper.Instance.Value.OTRateColumn, payroll.RegularOTRate.ToString("N3"));
+            WriteToCell(startRow, PrintPayslipHelper.Instance.Value.OTPayColumn, payroll.RegularOTPay.ToString("N2"));
+            startRow++;
+
+            WriteToCell(startRow, PrintPayslipHelper.Instance.Value.OTDescColumn, "Sunday Overtime:");
+            WriteToCell(startRow, PrintPayslipHelper.Instance.Value.OTHoursColumn, payroll.PayrollDetails.Where(x => !x.IsNonTaxable).Sum(x => x.SundayOTHours).ToString("N2"));
+            WriteToCell(startRow, PrintPayslipHelper.Instance.Value.OTRateColumn, payroll.SundayOTRate.ToString("N3"));
+            WriteToCell(startRow, PrintPayslipHelper.Instance.Value.OTPayColumn, payroll.SundayOTPay.ToString("N2"));
+            startRow++;
+
+            WriteToCell(startRow, PrintPayslipHelper.Instance.Value.OTDescColumn, "Holiday (Reg):");
+            WriteToCell(startRow, PrintPayslipHelper.Instance.Value.OTHoursColumn, payroll.PayrollDetails.Where(x => !x.IsNonTaxable && !x.IsHazard).Sum(x => x.HolidayOTDays).ToString("N2"));
+            WriteToCell(startRow, PrintPayslipHelper.Instance.Value.OTRateColumn, payroll.HolidayRegularOTRate.ToString("N3"));
+            WriteToCell(startRow, PrintPayslipHelper.Instance.Value.OTPayColumn, payroll.PayrollDetails.Where(x => !x.IsNonTaxable && !x.IsHazard).Sum(x => payroll.HolidayRegularOTRate * x.HolidayOTDays).ToDecimalPlaces(2).ToString("N2"));
+            startRow++;
+
+            for(int i = 0; i < locations.Count; i++)
+            {
+                if((startRow - PrintPayslipHelper.Instance.Value.OTStartRow) >= PrintPayslipHelper.Instance.Value.OTMaxRow)
+                {
+                    InsertRowCopy(startRow, 1);
+                }
+
+                WriteToCell(startRow, PrintPayslipHelper.Instance.Value.OTDescColumn, $"Holiday ({locations[i].Prefix}):");
+                WriteToCell(startRow, PrintPayslipHelper.Instance.Value.OTHoursColumn, payroll.PayrollDetails.Where(x => x.Location?.ID == locations[i].ID && !x.IsNonTaxable).Sum(x => x.HolidayOTDays).ToString("N2"));
+                WriteToCell(startRow, PrintPayslipHelper.Instance.Value.OTRateColumn, (payroll.HolidayRegularOTRate * ((locations[i].HazardRate ?? 0) + 1)).ToString("N3"));
+                WriteToCell(startRow, PrintPayslipHelper.Instance.Value.OTPayColumn, payroll.PayrollDetails.Where(x => x.Location?.ID == locations[i].ID && !x.IsNonTaxable).Sum(x => payroll.HolidayRegularOTRate * ((x.Location?.HazardRate ?? 0) + 1) * x.HolidayOTDays).ToDecimalPlaces(2).ToString("N2"));
+                startRow++;
+            }
+
+            if ((startRow - PrintPayslipHelper.Instance.Value.OTStartRow) >= PrintPayslipHelper.Instance.Value.OTMaxRow)
+            {
+                InsertRowCopy(startRow, 1);
+            }
+
+            WriteToCell(startRow, PrintPayslipHelper.Instance.Value.OTDescColumn, $"Holiday (Excess):");
+            WriteToCell(startRow, PrintPayslipHelper.Instance.Value.OTHoursColumn, payroll.PayrollDetails.Where(x => !x.IsNonTaxable).Sum(x => x.HolidayExcessOTHours).ToString("N2"));
+            WriteToCell(startRow, PrintPayslipHelper.Instance.Value.OTRateColumn, payroll.HolidayExcessOTRate.ToString("N3"));
+            WriteToCell(startRow, PrintPayslipHelper.Instance.Value.OTPayColumn, payroll.HolidayExcessOTPay.ToString("N2"));
+            startRow++;
+
+            if (payroll.NightDifferentialPay > 0)
+            {
+                if ((startRow - PrintPayslipHelper.Instance.Value.OTStartRow) >= PrintPayslipHelper.Instance.Value.OTMaxRow)
+                {
+                    InsertRowCopy(startRow, 1);
+                }
+                WriteToCell(startRow, PrintPayslipHelper.Instance.Value.OTDescColumn, $"Night Differential:");
+                WriteToCell(startRow, PrintPayslipHelper.Instance.Value.OTHoursColumn, "1");
+                WriteToCell(startRow, PrintPayslipHelper.Instance.Value.OTPayColumn, payroll.NightDifferentialPay.ToString("N2"));
+                startRow++;
+            }
+
+
+            startRow = PrintPayslipHelper.Instance.Value.AddStartRow;
 
             WriteToCell(startRow, PrintPayslipHelper.Instance.Value.AddPayDescColumn, "No of Days");
             WriteToCell(startRow, PrintPayslipHelper.Instance.Value.AddNoofDaysColumn, payroll.HighRiskPresent.ToString("N3"));
@@ -177,7 +245,7 @@ namespace ReportLayer.Reports
 
             if (payroll.HighRiskOPPresent > 0)
             {
-                if (startRow - PrintPayslipHelper.Instance.Value.AddRow >= 4)
+                if (startRow - PrintPayslipHelper.Instance.Value.AddStartRow >= 4)
                 {
                     InsertRowCopy(startRow, 1);
                 }
@@ -189,7 +257,7 @@ namespace ReportLayer.Reports
                 startRow++;
                 if (payroll.Allowance > 0)
                 {
-                    if (startRow - PrintPayslipHelper.Instance.Value.AddRow >= 4)
+                    if (startRow - PrintPayslipHelper.Instance.Value.AddStartRow >= 4)
                     {
                         InsertRowCopy(startRow, 1);
                     }
@@ -204,7 +272,7 @@ namespace ReportLayer.Reports
 
             if (payroll.TotalExtensionPay > 0)
             {
-                if (startRow - PrintPayslipHelper.Instance.Value.AddRow >= 4)
+                if (startRow - PrintPayslipHelper.Instance.Value.AddStartRow >= 4)
                 {
                     InsertRowCopy(startRow, 1);
                 }
@@ -216,7 +284,7 @@ namespace ReportLayer.Reports
                 startRow++;
                 if (payroll.Allowance > 0)
                 {
-                    if (startRow - PrintPayslipHelper.Instance.Value.AddRow >= 4)
+                    if (startRow - PrintPayslipHelper.Instance.Value.AddStartRow >= 4)
                     {
                         InsertRowCopy(startRow, 1);
                     }

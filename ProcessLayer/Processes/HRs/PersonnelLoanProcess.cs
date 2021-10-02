@@ -15,7 +15,8 @@ namespace ProcessLayer.Processes.HR
 
         public PersonnelLoan Converter(DataRow dr)
         {
-            var pl = new PersonnelLoan {
+            var pl = new PersonnelLoan
+            {
                 ID = dr["ID"].ToLong(),
                 PersonnelID = dr["Personnel ID"].ToNullableLong(),
                 LoanID = dr["Loan ID"].ToNullableByte(),
@@ -27,12 +28,14 @@ namespace ProcessLayer.Processes.HR
                 WhenToDeduct = dr["When to Deduct"].ToNullableByte(),
                 Remarks = dr["Remarks"].ToString(),
             };
-                try {
+
+            try
+            {
                 pl.PayrollID = dr["Payroll ID"].ToNullableLong();
                 pl.LastModified = dr["Modified On"].ToNullableDateTime();
                 pl.DateStart = dr["Date Start"].ToNullableDateTime();
+                pl.DateEnd = dr["Date End"].ToNullableDateTime();
             }
-
             catch { }
 
             if (!IsPersonnelLoanOnly)
@@ -75,14 +78,15 @@ namespace ProcessLayer.Processes.HR
             return pl;
         }
 
-        public List<PersonnelLoan> GetDeductibleAmount(long payrollID, long personnelID, DateTime date, int? id = null, bool? isGovernmentLoan = null)
+        public List<PersonnelLoan> GetDeductibleAmount(long payrollID, long personnelID, DateTime start, DateTime end, int? id = null, bool? isGovernmentLoan = null)
         {
             var pl = new List<PersonnelLoan>();
             using (var db = new DBTools())
             {
                 var parameters = new Dictionary<string, object> {
                     { "@PersonnelID", personnelID },
-                    { "@Date", date },
+                    { "@StartDate", start },
+                    { "@EndDate", end },
                     { "@ID", id },
                     { "@IsGovernmentLoan", isGovernmentLoan },
                     { "@PayrollID", payrollID }
@@ -145,10 +149,12 @@ namespace ProcessLayer.Processes.HR
                 {
                     throw new Exception("Unable to update. Loan already amortized.");
                 }
-                
-                //Auto amortization amount / months to be pay and when to deduct
-                personnelLoan.Amortization = personnelLoan.Amount / (decimal)((personnelLoan.PaymentTerms ?? 0) * (personnelLoan.WhenToDeduct == 3 ? 2 : 1));
-                
+                if ((personnelLoan.Amortization ?? 0) == 0)
+                {
+                    //Auto amortization amount / months to be pay and when to deduct
+                    personnelLoan.Amortization = personnelLoan.Amount / (decimal)((personnelLoan.PaymentTerms ?? 0) * (personnelLoan.WhenToDeduct == 3 ? 2 : 1));
+                }
+
                 var parameters = new Dictionary<string, object> {
                     { "@PersonnelID", personnelLoan.PersonnelID },
                     { "@LoanID", personnelLoan.LoanID },
@@ -159,6 +165,7 @@ namespace ProcessLayer.Processes.HR
                     { "@PayrollDeductible", personnelLoan.PayrollDeductible },
                     { "@WhenToDeduct", personnelLoan.WhenToDeduct },
                     { "@DateStart", personnelLoan.DateStart },
+                    { "@DateEnd", personnelLoan.DateEnd },
                     { "@Remarks", personnelLoan.Remarks },
                     { "@LogBy", userid }
                 };
@@ -174,7 +181,6 @@ namespace ProcessLayer.Processes.HR
 
             return personnelLoan;
         }
-
 
         public void Delete(PersonnelLoan personnelLoan, int userid)
         {

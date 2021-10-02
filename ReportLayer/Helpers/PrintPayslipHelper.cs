@@ -27,25 +27,33 @@ namespace ReportLayer.Helpers
             BasicTotalDaysCell = Get(nameof(BasicTotalDaysCell)).ToString();
             BasicSalaryCell = Get(nameof(BasicSalaryCell)).ToString();
 
-            RegOTHoursCell = Get(nameof(RegOTHoursCell)).ToString();
-            RegOTRateCell = Get(nameof(RegOTRateCell)).ToString();
-            RegOTPayCell = Get(nameof(RegOTPayCell)).ToString();
+            //RegOTHoursCell = Get(nameof(RegOTHoursCell)).ToString();
+            //RegOTRateCell = Get(nameof(RegOTRateCell)).ToString();
+            //RegOTPayCell = Get(nameof(RegOTPayCell)).ToString();
 
-            SundayOTHoursCell = Get(nameof(SundayOTHoursCell)).ToString();
-            SundayOTRateCell = Get(nameof(SundayOTRateCell)).ToString();
-            SundayOTPayCell = Get(nameof(SundayOTPayCell)).ToString();
+            //SundayOTHoursCell = Get(nameof(SundayOTHoursCell)).ToString();
+            //SundayOTRateCell = Get(nameof(SundayOTRateCell)).ToString();
+            //SundayOTPayCell = Get(nameof(SundayOTPayCell)).ToString();
 
-            HolidayRegDayCell = Get(nameof(HolidayRegDayCell)).ToString();
-            HolidayRegRateCell = Get(nameof(HolidayRegRateCell)).ToString();
-            HolidayRegPayCell = Get(nameof(HolidayRegPayCell)).ToString();
+            //HolidayRegDayCell = Get(nameof(HolidayRegDayCell)).ToString();
+            //HolidayRegRateCell = Get(nameof(HolidayRegRateCell)).ToString();
+            //HolidayRegPayCell = Get(nameof(HolidayRegPayCell)).ToString();
 
-            HolidayExcessOTHoursCell = Get(nameof(HolidayExcessOTHoursCell)).ToString();
-            HolidayExcessOTRateCell = Get(nameof(HolidayExcessOTRateCell)).ToString();
-            HolidayExcessOTPayCell = Get(nameof(HolidayExcessOTPayCell)).ToString();
+            //HolidayExcessOTHoursCell = Get(nameof(HolidayExcessOTHoursCell)).ToString();
+            //HolidayExcessOTRateCell = Get(nameof(HolidayExcessOTRateCell)).ToString();
+            //HolidayExcessOTPayCell = Get(nameof(HolidayExcessOTPayCell)).ToString();
+            OTStartRow = Get(nameof(OTStartRow)).ToInt();
+            OTDescColumn = Get(nameof(OTDescColumn)).ToInt();
+            OTHoursColumn = Get(nameof(OTHoursColumn)).ToInt();
+            OTRateColumn = Get(nameof(OTRateColumn)).ToInt();
+            OTPayColumn = Get(nameof(OTPayColumn)).ToInt();
+            OTMaxRow = Get(nameof(OTMaxRow)).ToInt();
+
+
             TotalOTPayCell = Get(nameof(TotalOTPayCell)).ToString();
             GrossSalaryCell = Get(nameof(GrossSalaryCell)).ToString();
 
-            AddRow = Get(nameof(AddRow)).ToInt();
+            AddStartRow = Get(nameof(AddStartRow)).ToInt();
 
             AddNoofDaysColumn = Get(nameof(AddNoofDaysColumn)).ToInt();
             AddPayColumn = Get(nameof(AddPayColumn)).ToInt();
@@ -56,18 +64,26 @@ namespace ReportLayer.Helpers
             AllowanceStartRow = Get(nameof(AllowanceStartRow)).ToInt();
             AllowanceMaxRow = Get(nameof(AllowanceMaxRow)).ToInt();
 
-            AllRegOTHoursCell = Get(nameof(AllRegOTHoursCell)).ToString();
-            AllRegOTRateCell = Get(nameof(AllRegOTRateCell)).ToString();
-            AllRegOTPayCell = Get(nameof(AllRegOTPayCell)).ToString();
-            AllSundayOTHoursCell = Get(nameof(AllSundayOTHoursCell)).ToString();
-            AllSundayOTRateCell = Get(nameof(AllSundayOTRateCell)).ToString();
-            AllSundayOTPayCell = Get(nameof(AllSundayOTPayCell)).ToString();
-            AllHolidayRegDayCell = Get(nameof(AllHolidayRegDayCell)).ToString();
-            AllHolidayRegRateCell = Get(nameof(AllHolidayRegRateCell)).ToString();
-            AllHolidayRegPayCell = Get(nameof(AllHolidayRegPayCell)).ToString();
-            AllHolidayExcessOTHoursCell = Get(nameof(AllHolidayExcessOTHoursCell)).ToString();
-            AllHolidayExcessOTRateCell = Get(nameof(AllHolidayExcessOTRateCell)).ToString();
-            AllHolidayExcessOTPayCell = Get(nameof(AllHolidayExcessOTPayCell)).ToString();
+            //AllRegOTHoursCell = Get(nameof(AllRegOTHoursCell)).ToString();
+            //AllRegOTRateCell = Get(nameof(AllRegOTRateCell)).ToString();
+            //AllRegOTPayCell = Get(nameof(AllRegOTPayCell)).ToString();
+            //AllSundayOTHoursCell = Get(nameof(AllSundayOTHoursCell)).ToString();
+            //AllSundayOTRateCell = Get(nameof(AllSundayOTRateCell)).ToString();
+            //AllSundayOTPayCell = Get(nameof(AllSundayOTPayCell)).ToString();
+            //AllHolidayRegDayCell = Get(nameof(AllHolidayRegDayCell)).ToString();
+            //AllHolidayRegRateCell = Get(nameof(AllHolidayRegRateCell)).ToString();
+            //AllHolidayRegPayCell = Get(nameof(AllHolidayRegPayCell)).ToString();
+            //AllHolidayExcessOTHoursCell = Get(nameof(AllHolidayExcessOTHoursCell)).ToString();
+            //AllHolidayExcessOTRateCell = Get(nameof(AllHolidayExcessOTRateCell)).ToString();
+            //AllHolidayExcessOTPayCell = Get(nameof(AllHolidayExcessOTPayCell)).ToString();
+
+            AllStartRow = Get(nameof(AllStartRow)).ToInt();
+            AllDescColumn = Get(nameof(AllDescColumn)).ToInt();
+            AllHoursColumn = Get(nameof(AllHoursColumn)).ToInt();
+            AllRateColumn = Get(nameof(AllRateColumn)).ToInt();
+            AllPayColumn = Get(nameof(AllPayColumn)).ToInt();
+            AllMaxRow = Get(nameof(AllMaxRow)).ToInt();
+
             AllowanceTotalDaysCell = Get(nameof(AllowanceTotalDaysCell)).ToString();
             AllowanceSalaryCell = Get(nameof(AllowanceSalaryCell)).ToString();
 
@@ -106,41 +122,53 @@ namespace ReportLayer.Helpers
         public string BasicSalaryCell { get; set; }
         public string AllowanceTotalDaysCell { get; set; }
         public string AllowanceSalaryCell { get; set; }
-        public string RegOTHoursCell { get; set; }
-        public string RegOTRateCell { get; set; }
-        public string RegOTPayCell { get; set; }
-        public string SundayOTHoursCell { get; set; }
-        public string SundayOTRateCell { get; set; }
-        public string SundayOTPayCell { get; set; }
-        public string HolidayRegDayCell { get; set; }
-        public string HolidayRegRateCell { get; set; }
-        public string HolidayRegPayCell { get; set; }
-        public string HolidayExcessOTHoursCell { get; set; }
-        public string HolidayExcessOTRateCell { get; set; }
-        public string HolidayExcessOTPayCell { get; set; }
-        public string NightDiffHoursCell { get; set; }
-        public string NightDiffRateCell { get; set; }
-        public string NightDiffPayCell { get; set; }
+        public int OTStartRow { get; set; }
+        public int OTDescColumn { get; set; }
+        public int OTHoursColumn { get; set; }
+        public int OTRateColumn { get; set; }
+        public int OTPayColumn { get; set; }
+        public int OTMaxRow { get; set; }
+        //public string RegOTHoursCell { get; set; }
+        //public string RegOTRateCell { get; set; }
+        //public string RegOTPayCell { get; set; }
+        //public string SundayOTHoursCell { get; set; }
+        //public string SundayOTRateCell { get; set; }
+        //public string SundayOTPayCell { get; set; }
+        //public string HolidayRegDayCell { get; set; }
+        //public string HolidayRegRateCell { get; set; }
+        //public string HolidayRegPayCell { get; set; }
+        //public string HolidayExcessOTHoursCell { get; set; }
+        //public string HolidayExcessOTRateCell { get; set; }
+        //public string HolidayExcessOTPayCell { get; set; }
+        //public string NightDiffHoursCell { get; set; }
+        //public string NightDiffRateCell { get; set; }
+        //public string NightDiffPayCell { get; set; }
         public string TotalOTPayCell { get; set; }
         public string GrossSalaryCell { get; set; }
-        public int AddRow { get; set; }
+        public int AddStartRow { get; set; }
         public int AddPayDescColumn { get; set; }
         public int AddNoofDaysColumn { get; set; }
         public int AddRateColumn { get; set; }
         public int AddPayColumn { get; set; }
         public string AddTotalPayCell { get; set; }
-        public string AllRegOTHoursCell { get; set; }
-        public string AllRegOTRateCell { get; set; }
-        public string AllRegOTPayCell { get; set; }
-        public string AllSundayOTHoursCell { get; set; }
-        public string AllSundayOTRateCell { get; set; }
-        public string AllSundayOTPayCell { get; set; }
-        public string AllHolidayRegDayCell { get; set; }
-        public string AllHolidayRegRateCell { get; set; }
-        public string AllHolidayRegPayCell { get; set; }
-        public string AllHolidayExcessOTHoursCell { get; set; }
-        public string AllHolidayExcessOTRateCell { get; set; }
-        public string AllHolidayExcessOTPayCell { get; set; }
+        public int AllStartRow { get; set; }
+        public int AllDescColumn { get; set; }
+        public int AllHoursColumn { get; set; }
+        public int AllRateColumn { get; set; }
+        public int AllPayColumn { get; set; }
+        public int AllMaxRow { get; set; }
+        //public string AllRegOTHoursCell { get; set; }
+        //public string AllRegOTRateCell { get; set; }
+        //public string AllRegOTPayCell { get; set; }
+        //public string AllSundayOTHoursCell { get; set; }
+        //public string AllSundayOTRateCell { get; set; }
+        //public string AllSundayOTPayCell { get; set; }
+        //public string AllHolidayRegDayCell { get; set; }
+        //public string AllHolidayRegRateCell { get; set; }
+        //public string AllHolidayRegPayCell { get; set; }
+        //public string AllHolidayExcessOTHoursCell { get; set; }
+        //public string AllHolidayExcessOTRateCell { get; set; }
+        //public string AllHolidayExcessOTPayCell { get; set; }
         public string TotalAllOTPayCell { get; set; }
         public string SSSCell { get; set; }
         public string ProvidentFundCell { get; set; }

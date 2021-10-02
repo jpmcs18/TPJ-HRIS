@@ -7,5 +7,7 @@
         public bool? WarehouseLocation { get; set; }
         public decimal? HazardRate { get; set; }
         public bool? RequiredTimeLog { get; set; }
+        public bool? WithHolidayAndSunday { get; set; }
+        public bool? WithAdditionalForExtension { get; set; }
     }
 }

@@ -23,7 +23,9 @@ namespace ProcessLayer.Processes
                 Description = dr["Description"].ToString(),
                 Prefix = dr["Prefix"].ToString(),
                 HazardRate = dr["Hazard Rate"].ToNullableDecimal() ?? 0,
-                RequiredTimeLog = dr["Required Time Log"].ToBoolean()
+                RequiredTimeLog = dr["Required Time Log"].ToNullableBoolean(),
+                WithHolidayAndSunday = dr["With Holiday And Sunday"].ToNullableBoolean(),
+                WithAdditionalForExtension = dr["With Additional For Extension"].ToNullableBoolean()
             };
         }
 
@@ -104,6 +106,8 @@ namespace ProcessLayer.Processes
                     { "@WarehouseLocation", location.WarehouseLocation },
                     { "@HazardRate", location.HazardRate },
                     { "@RequiredTimeLog", location.RequiredTimeLog },
+                    { "@WithHolidayAndSunday", location.WithHolidayAndSunday },
+                    { "@WithAdditionalForExtension", location.WithAdditionalForExtension },
                     { "@LogBy", user },
                 });
                 location.ID = outParams.Get("@ID").ToInt();

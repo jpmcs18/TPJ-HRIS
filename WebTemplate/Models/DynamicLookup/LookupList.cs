@@ -135,7 +135,9 @@ namespace WebTemplate.Models.DynamicLookup
                 , new LookupSetting("HazardRate", "Hazard Rate", LookupDataType.number)
                 , new LookupSetting("RequiredTimeLog", "Required Time Log", LookupDataType.boolean)
                 , new LookupSetting("OfficeLocation", "Office Location", LookupDataType.boolean)
-                , new LookupSetting("WarehouseLocation", "Warehouse Location", LookupDataType.boolean) },
+                , new LookupSetting("WarehouseLocation", "Warehouse Location", LookupDataType.boolean)
+                , new LookupSetting("WithHolidayAndSunday", "With Holiday And Sunday", LookupDataType.boolean)
+                , new LookupSetting("WithAdditionalForExtension", "With Additional For Extension", LookupDataType.boolean) },
             { Lookups.Late_Deduction
                 , new LookupSetting("TimeIn", "Time In", LookupDataType.time) 
                 , new LookupSetting("DeductedHours", "Deducted Hours", LookupDataType.number) },

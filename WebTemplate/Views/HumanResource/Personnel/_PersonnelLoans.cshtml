@@ -47,50 +47,51 @@
         <tfoot>
             @if (LoanPageAccess.Insert)
             {
-                <tr id="Row-Input-Loan-0" class="Row-Input">
-                    <td style="text-align: center;">
-                    </td>
-                    <td style="text-align: center;">
-                        @Html.DropDownList("LoanID", new SelectList(loanDescription, "ID", "Description"), "N/A", new { @class = "form-control text-transform-none", @style = "" })
-                    </td>
-                    <td style="text-align: center;">
-                        @Html.DropDownList("_Loan.GovernmentLoan", new SelectList(govLoan, "Key", "Value"), "N/A", new { @class = "form-control text-transform-none", @style = "" })
-                    </td>
-                    <td style="text-align: center;">
-                        @Html.DropDownList("WhenToDeduct", new SelectList(whenToDeduct, "Key", "Value"), "N/A", new { @class = "form-control text-transform-none whentodeduct", @style = "" })
-                    </td>
-                    <td style="text-align: center;">
-                        @Html.TextBox("DateStart", null, new { @type = "date", @class = "form-control" })
-                    </td>
-                    <td style="text-align: center;">
-                    </td>
-                    <td style="text-align: center;">
-                        @Html.DropDownList("PayrollDeductible", new SelectList(payrollDeductible, "Key", "Value"), "N/A", new { @class = "form-control text-transform-none", @style = "" })
-                    </td>
-                    <td style="text-align: center;">
-                        <input type="text" name="PaymentTerms" class="form-control text-transform-none payment-terms" placeholder="Payment Terms..." />
-                    </td>
-                    <td style="text-align: center;">
-                        <input type="hidden" name="PersonnelID" class="PersonnelID" value="@Model.PersonnelID" />
-                        @*@Html.DropDownList("LoanID", new SelectList(departments, "ID", "Description", 0), new { @class = "form-control" })*@
-                        <input type="text" name="Amount" class="form-control text-transform-none" placeholder="Amount..." />
-                    </td>
-                    <td style="text-align: center;">
-                        <input type="text" name="Amortization" class="form-control text-transform-none" placeholder="Amortization..." />
-                    </td>
-                    <td style="text-align: center;">
-                        @*<input type="text" name="Amortization" class="form-control text-transform-none" placeholder="Amortization..." />*@
-                    </td>
-                    <td style="text-align: center;">
-                        <input type="text" name="Remarks" class="form-control text-transform-none" placeholder="Remarks..." />
-                    </td>
-                    <td style="text-align: center;">
-                        <div class="btn-group" style="">
-                            <button type="button" name="CancelLoan" class="btn btn-outline btn-danger btn-sm btn-rounded CancelLoan TableCancelButton" value="0" title="Clear"><i class="fa fa-times"></i></button>
-                            <button type="button" name="SaveLoan" class="btn btn-info btn-sm btn-rounded SaveLoan TableSaveButton" value="0" title="Add"><i class="fa fa-plus"></i></button>
-                        </div>
-                    </td>
-                </tr>
+            <tr id="Row-Input-Loan-0" class="Row-Input">
+                <td style="text-align: center;">
+                </td>
+                <td style="text-align: center;">
+                    @Html.DropDownList("LoanID", new SelectList(loanDescription, "ID", "Description"), "N/A", new { @class = "form-control text-transform-none", @style = "" })
+                </td>
+                <td style="text-align: center;">
+                    @Html.DropDownList("_Loan.GovernmentLoan", new SelectList(govLoan, "Key", "Value"), "N/A", new { @class = "form-control text-transform-none", @style = "" })
+                </td>
+                <td style="text-align: center;">
+                    @Html.DropDownList("WhenToDeduct", new SelectList(whenToDeduct, "Key", "Value"), "N/A", new { @class = "form-control text-transform-none whentodeduct", @style = "" })
+                </td>
+                <td style="text-align: center;">
+                    @Html.TextBox("DateStart", null, new { @type = "date", @class = "form-control" })
+                </td>
+                <td style="text-align: center;">
+                    @Html.TextBox("DateEnd", null, new { @type = "date", @class = "form-control" })
+                </td>
+                <td style="text-align: center;">
+                    @Html.DropDownList("PayrollDeductible", new SelectList(payrollDeductible, "Key", "Value"), "N/A", new { @class = "form-control text-transform-none", @style = "" })
+                </td>
+                <td style="text-align: center;">
+                    <input type="text" name="PaymentTerms" class="form-control text-transform-none payment-terms" placeholder="Payment Terms..." />
+                </td>
+                <td style="text-align: center;">
+                    <input type="hidden" name="PersonnelID" class="PersonnelID" value="@Model.PersonnelID" />
+                    @*@Html.DropDownList("LoanID", new SelectList(departments, "ID", "Description", 0), new { @class = "form-control" })*@
+                    <input type="text" name="Amount" class="form-control text-transform-none" placeholder="Amount..." />
+                </td>
+                <td style="text-align: center;">
+                    <input type="text" name="Amortization" class="form-control text-transform-none" placeholder="Amortization..." />
+                </td>
+                <td style="text-align: center;">
+                    @*<input type="text" name="Amortization" class="form-control text-transform-none" placeholder="Amortization..." />*@
+                </td>
+                <td style="text-align: center;">
+                    <input type="text" name="Remarks" class="form-control text-transform-none" placeholder="Remarks..." />
+                </td>
+                <td style="text-align: center;">
+                    <div class="btn-group" style="">
+                        <button type="button" name="CancelLoan" class="btn btn-outline btn-danger btn-sm btn-rounded CancelLoan TableCancelButton" value="0" title="Clear"><i class="fa fa-times"></i></button>
+                        <button type="button" name="SaveLoan" class="btn btn-info btn-sm btn-rounded SaveLoan TableSaveButton" value="0" title="Add"><i class="fa fa-plus"></i></button>
+                    </div>
+                </td>
+            </tr>
             }
         </tfoot>
     </table>

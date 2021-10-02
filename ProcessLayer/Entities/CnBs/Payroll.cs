@@ -86,7 +86,6 @@ namespace ProcessLayer.Entities.CnB
         //Additional Columns
         public decimal SumOfAllAllowance { get { return TotalAllowance + TotalOTAllowance; } }
         public decimal SumOfAllAdditionalPay { get { return TotalAdditionalPay + TotalAdditionalAllowancePay + TotalAdditionalOvertimePay + TotalAdditionalOvertimeAllowancePay; } }
-
         public bool Modified { get; set; } = false;
         public List<LeaveRequest> LeaveRequests { get; set; }
         public List<ComputedLeaveCredits> ComputedLeaveCredits { get; set; }
