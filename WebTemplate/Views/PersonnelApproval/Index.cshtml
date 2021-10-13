@@ -2,7 +2,7 @@
 
 @{
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
-    var PageAccess = credential.GetPage("PersonnelApprovals") ?? new DataAccessLayer.System.Page();
+    var PageAccess = credential.GetPage("PersonnelApproval") ?? new DataAccessLayer.System.Page();
     var ApproverAccess = credential.GetPage("Approver Personnel") ?? new DataAccessLayer.System.Page();
 
     ViewBag.title = PageAccess.PageName;
