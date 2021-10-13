@@ -1,9 +1,9 @@
-﻿@model WebTemplate.Models.RequestsApproval.Absence.Index
+﻿@model WebTemplate.Models.PersonnelApproval.Index
 
 @{
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
-    var PageAccess = credential.GetPage("RequestsApproval/AbsenceRequests") ?? new DataAccessLayer.System.Page();
-    var ApproverAccess = credential.GetPage("Approver Absence Request") ?? new DataAccessLayer.System.Page();
+    var PageAccess = credential.GetPage("PersonnelApprovals") ?? new DataAccessLayer.System.Page();
+    var ApproverAccess = credential.GetPage("Approver Personnel") ?? new DataAccessLayer.System.Page();
 
     ViewBag.title = PageAccess.PageName;
 }
@@ -35,8 +35,8 @@
                         @if (ApproverAccess.Approve)
                         {
                             <div id="tab-2" class="tab-pane active" style="height: 850px;">
-                                <div id="AbsenceRequestsForm" class="panel-body" style="padding: 10px; max-height: 100%; border: 1px solid #e5e6e7; overflow-y: hidden;">
-                                    @Html.Partial("~/Views/RequestsApproval/AbsenceRequests/_Search.cshtml")
+                                <div id="PersonnelApprovalsForm" class="panel-body" style="padding: 10px; max-height: 100%; border: 1px solid #e5e6e7; overflow-y: hidden;">
+                                    @Html.Partial("~/Views/PersonnelApproval/_Search.cshtml")
                                 </div>
                             </div>
                         }
@@ -74,15 +74,15 @@
     </div>
 </div>
 
-<div class="modal inmodal custom-modal" id="AbsenceRequestModel" data-backdrop="static" data-keyboard="false" tabindex="" role="dialog" aria-hidden="true">
+<div class="modal inmodal custom-modal" id="PersonnelApprovalModel" data-backdrop="static" data-keyboard="false" tabindex="" role="dialog" aria-hidden="true">
     <div class="vertical-alignment-helper">
         <div class="modal-center vertical-align-center">
             <div class="modal-content animated fadeInDown modal-width-30">
                 <div class="modal-header">
-                    <h5 class="modal-title" style="text-align: center;">New Absence Request</h5>
+                    <h5 class="modal-title" style="text-align: center;">New Personnel Approval</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
                 </div>
-                <div id="AbsenceRequestForm" class="modal-body" style="max-height: 750px; background-color: #fff; overflow: hidden;">
+                <div id="PersonnelApprovalForm" class="modal-body" style="max-height: 750px; background-color: #fff; overflow: hidden;">
                 </div>
             </div>
         </div>
@@ -117,7 +117,7 @@
 
         $('.pages').off('click').on('click', function () {
             $('#Page').val($(this).val())
-            SearchAbsenceRequests();
+            SearchPersonnelApprovals();
         });
 
         $(document).off('keydown').on('keydown', function () {
@@ -140,14 +140,14 @@
 
         $('#Btn_Search').off('click').on('click', function () {
             $('#Page').val(1);
-            SearchAbsenceRequests();
+            SearchPersonnelApprovals();
         });
     }
 
     function SearchTabEvents() {
-        $('#Btn_Search').off('click').on('click', SearchAbsenceRequests);
-        $('.ApproveAbsenceRequest').off('click').on('click', ApproveAbsenceRequest);
-        $('.CancelAbsenceRequest').off('click').on('click', CancelAbsenceRequest);
+        $('#Btn_Search').off('click').on('click', SearchPersonnelApprovals);
+        $('.ApprovePersonnelApproval').off('click').on('click', ApprovePersonnelApproval);
+        $('.CancelPersonnelApproval').off('click').on('click', CancelPersonnelApproval);
         Select2Override();
     }
 
@@ -176,10 +176,10 @@
             $('.status-checkbox[name="All"]').iCheck('uncheck');
         }
 
-        setTimeout(SearchAbsenceRequests, 500);
+        setTimeout(SearchPersonnelApprovals, 500);
     }
 
-    function SearchAbsenceRequests() {
+    function SearchPersonnelApprovals() {
         var formdata = new FormData();
 
         $('#form_search_params .form-control*').each(function () {
@@ -192,7 +192,7 @@
 
         if (xhr) { xhr.abort(); }
         xhr = $.ajax({
-            url: '@Url.Action("Index", "AbsenceRequest")',
+            url: '@Url.Action("Index", "PersonnelApproval")',
             data: formdata,
             type: "POST",
             datatype: 'JSON',
@@ -201,14 +201,14 @@
             processData: false,
             beforeSend: function () {
                 //ShowLoadingScreen();
-                ShowHideRowLoadingDisplay('AbsenceRequestsTable', true);
+                ShowHideRowLoadingDisplay('PersonnelApprovalsTable', true);
             },
             complete: function () {
                 //RemoveLoadingScreen();
             },
             success: function (response) {
                 if (response.msg == null) {
-                    $('#AbsenceRequestsForm').html(response);
+                    $('#PersonnelApprovalsForm').html(response);
                     Events();
                 } else {
                     toastr.warning(response.res);
@@ -220,11 +220,11 @@
         });
     }
 
-    function ApproveAbsenceRequest() {
+    function ApprovePersonnelApproval() {
         var id = $(this).val();
 
         swal({
-            title: 'Continue to approve<br/>Absence Request?',
+            title: 'Continue to approve<br/>Personnel?',
             text: '', //'Choose from the actions below or<br/>Press Esc to Cancel, Enter to Continue.',
             type: 'warning',
             showConfirmButton: true,
@@ -245,7 +245,7 @@
     }
 
     function Approve(id) {
-        var params = 'id=' + id + 
+        var params = 'id=' + id +
             '&__RequestVerificationToken=' +
             $('@Html.AntiForgeryToken()').val();
 
@@ -253,7 +253,7 @@
         xhr = $.ajax({
             data: params,
             type: 'POST',
-            url: '@Url.Action("Approve", "AbsenceRequest")',
+            url: '@Url.Action("Approve", "PersonnelApproval")',
             cache: false,
             beforeSend: function () {
                 ShowLoadingScreen()
@@ -264,9 +264,9 @@
             success: function (response) {
                 if (response.msg == true) {
                     $('#ApprovalModal').modal('hide');
-                    toastr.success('Absence Request Approved!');
+                    toastr.success('Personnel Approved!');
 
-                    SearchAbsenceRequests();
+                    SearchPersonnelApprovals();
                 } else {
                     toastr.error(response.res);
                 }
@@ -277,7 +277,7 @@
         });
     }
 
-    function CancelAbsenceRequest() {
+    function CancelPersonnelApproval() {
         var id = $(this).val();
         $('#CancellationModal').appendTo("body").modal('show');
         $('#CancellationModal textarea').val('');
@@ -300,7 +300,7 @@
             xhr = $.ajax({
                 data: params,
                 type: 'POST',
-                url: '@Url.Action("Cancel", "AbsenceRequest")',
+                url: '@Url.Action("Cancel", "PersonnelApproval")',
                 cache: false,
                 beforeSend: function () {
                     ShowLoadingScreen()
@@ -311,9 +311,9 @@
                 success: function (response) {
                     if (response.msg == true) {
                         $('#CancellationModal').modal('hide');
-                        toastr.success('Absence Request cancelled!');
+                        toastr.success('Personnel cancelled!');
 
-                        SearchAbsenceRequests();
+                        SearchPersonnelApprovals();
                     } else {
                         toastr.error(response.res);
                     }
