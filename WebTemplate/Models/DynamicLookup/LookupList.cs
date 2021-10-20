@@ -120,7 +120,7 @@ namespace WebTemplate.Models.DynamicLookup
     {
         public static readonly List<KeyValuePair<Lookups, string>> LookupLists = Enum.GetValues(typeof(Lookups)).Cast<Lookups>().Select(x => new KeyValuePair<Lookups, string>(x, x.ToString().Replace("_", " "))).ToList();
 
-        public static readonly List<LookupSetting> DefaultLookupListItems = new List<LookupSetting> { new LookupSetting() };
+        public static readonly List<LookupSetting> DefaultLookupListItems = new() { new LookupSetting() };
 
         public static readonly List<KeyValuePair<Lookups, List<LookupSetting>>> LookupListItems = new List<KeyValuePair<Lookups, List<LookupSetting>>>()
         {
@@ -231,9 +231,9 @@ namespace WebTemplate.Models.DynamicLookup
         };
 
         //Include if has any custom action
-        public static readonly List<KeyValuePair<Lookups, LookupActions>> LookupActions = new List<KeyValuePair<Lookups, LookupActions>>()
+        public static readonly List<KeyValuePair<Lookups, LookupActions>> LookupActions = new()
         {
-            { Lookups.Payroll_Parameters, new LookupActions(add: false, delete: false, pagination: false) },
+            { Lookups.Payroll_Parameters, new LookupActions(add: false, delete: false, pagination: false, search: false) },
             { Lookups.Late_Deduction, new LookupActions(search: false, add:false, delete: false, pagination: false) },
             { Lookups.PhilHealth, new LookupActions(search: false) },
             { Lookups.HDMF, new LookupActions(search: false) },
@@ -241,7 +241,7 @@ namespace WebTemplate.Models.DynamicLookup
             { Lookups.Deduction, new LookupActions(add: false, delete: false) },
         };
 
-        public static readonly List<Lookups> DynamicLookups = new List<Lookups>
+        public static readonly List<Lookups> DynamicLookups = new()
         {
             Lookups.Civil_Status,
             Lookups.Code_of_Discipline,
@@ -254,8 +254,6 @@ namespace WebTemplate.Models.DynamicLookup
             Lookups.Nationality,
             Lookups.Relationship,
             Lookups.Religion,
-            Lookups.Relationship,
-            Lookups.Relationship,
         };
 
         public static dynamic GetData(dynamic data, LookupSetting setting)

@@ -184,7 +184,7 @@ namespace ProcessLayer.Computation.CnB
                         }
                     }
 
-                    if (outerPort._Location.WithAdditionalForExtension ?? false && outerPort.StartDate?.AddMonths(PayrollParameters.CNBInstance.Value.ExtendedMonths) <= start)
+                    if ((outerPort._Location.WithAdditionalForExtension ?? false) && outerPort.StartDate?.AddMonths(PayrollParameters.CNBInstance.Value.ExtendedMonths) <= start)
                     {
                         details.IsExtended = true;
                     }
