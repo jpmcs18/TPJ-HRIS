@@ -171,7 +171,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\PersonnelApproval\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
@@ -2427,6 +2426,8 @@
     <Content Include="Views\Kiosk\AbsenceRequest\_Search.cshtml" />
     <Content Include="Views\RequestsApproval\AbsenceRequests\Index.cshtml" />
     <Content Include="Views\RequestsApproval\AbsenceRequests\_Search.cshtml" />
+    <Content Include="Views\PersonnelApproval\Index.cshtml" />
+    <Content Include="Views\PersonnelApproval\_Search.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">

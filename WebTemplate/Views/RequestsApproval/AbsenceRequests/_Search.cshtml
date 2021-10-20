@@ -170,6 +170,7 @@
                                                                     @Html.Raw(", " + Model.AbsenceRequests[i].NoofDays + " day(s)")
                                                                     break;
                                                             }
+                                                        </td>
                                                         <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
                                                             <text class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@Model.AbsenceRequests[i].Reasons">
                                                                 @Model.AbsenceRequests[i].Reasons
@@ -192,12 +193,12 @@
                                                         <td style="width: 160px;" class="row-actions">
                                                             @if (ApproverAccess.Approve)
                                                             {
-                                                                // && ((Noted && (Model.AbsenceRequests[i]._LeaveType?.CNBNoteFirst ?? false) ?? false)) || (Model.AbsenceRequests[i]._LeaveType?.CNBNoteFirst ?? false) == false)
+                                                                // && ((Noted && (Model.AbsenceRequests[i]._AbsenceType?.CNBNoteFirst ?? false) ?? false)) || (Model.AbsenceRequests[i]._AbsenceType?.CNBNoteFirst ?? false) == false)
                                                                 if (IsPending)
                                                                 {
                                                                     <div class="btn-group">
-                                                                        <button type="button" name="id" class="btn btn-danger btn-lg btn-rounded CancelLeaveRequest" value="@Model.AbsenceRequests[i].ID" title="Disapprove"><i class="fa fa-thumbs-o-down"></i></button>
-                                                                        <button type="button" name="id" class="btn btn-primary btn-lg btn-rounded ApproveLeaveRequest" value="@Model.AbsenceRequests[i].ID" title="Approve"><i class="fa fa-thumbs-o-up"></i></button>
+                                                                        <button type="button" name="id" class="btn btn-danger btn-lg btn-rounded CancelAbsenceRequest" value="@Model.AbsenceRequests[i].ID" title="Disapprove"><i class="fa fa-thumbs-o-down"></i></button>
+                                                                        <button type="button" name="id" class="btn btn-primary btn-lg btn-rounded ApproveAbsenceRequest" value="@Model.AbsenceRequests[i].ID" title="Approve"><i class="fa fa-thumbs-o-up"></i></button>
                                                                     </div>
                                                                 }
                                                             }
