@@ -243,7 +243,7 @@
         }
         function removeSpinnerThenToast(toastType, toastMsg) {
             $('div.ibox-content').removeClass('sk-loading');
-            $('body').removeClass('sk-loading').css('overflow', 'hidden');
+            $('body').removeClass('sk-loading');//.css('overflow', 'hidden');
             if (toastType == 'success') { toastr.success(toastMsg); }
             else if (toastType == 'error') { toastr.error(toastMsg); }
             else if (toastType == 'warning') { toastr.warning(toastMsg); }
@@ -266,7 +266,7 @@
         }
         function toggleSpinnerClick() {
             $('.toggleSpinners').on('click', function () {
-                $('body').toggleClass('sk-loading').css('overflow', 'hidden');
+                $('body').toggleClass('sk-loading');//.css('overflow', 'hidden');
                 $('input').focusout();
             });
         }
@@ -310,12 +310,12 @@
         }
 
         function ShowLoadingScreen() {
-            $('body').addClass('sk-loading').css('overflow', 'hidden');
+            $('body').addClass('sk-loading');//.css('overflow', 'hidden');
             $('input').focusout();
             $('#BackDrop').removeClass('hidden');
         }
         function RemoveLoadingScreen() {
-            $('body').removeClass('sk-loading').css('overflow', 'hidden');
+            $('body').removeClass('sk-loading');//.css('overflow', 'hidden');
             $('#BackDrop').addClass('hidden');
         }
 
@@ -456,7 +456,7 @@
         });
     </script>
 </head>
-<body>
+<body style="height: 100vh; overflow: auto;">
     <div id="BackDrop" class="hidden" style="width: 100%; background-color: rgba(0, 0, 0, 0.23921568627450981); height: 100%; position: absolute; z-index: 1000; display: block;"></div>
     <div id="wrapper" class="@Html.PageClass()">
 
