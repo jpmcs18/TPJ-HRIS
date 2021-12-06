@@ -1,0 +1,44 @@
+﻿@model ProcessLayer.Entities.InfractionContent
+
+
+@if (!string.IsNullOrEmpty(Model.File) || !string.IsNullOrEmpty(Model.Message))
+{
+    <div class="@(Model.FromPersonnel ? "personnel-send" : "management-send")">
+        @if (!string.IsNullOrEmpty(Model.Message))
+        {
+            <div class='content-message'>@Model.Message</div>
+        }
+        @if (!string.IsNullOrEmpty(Model.File))
+        {
+            <div class="memo-file">
+                @if (Model.IsFileSupported)
+                {
+                    <embed class="content-file" src="@Model.FilePath" title="File">
+                }
+                else
+                {
+                    <a href="@Model.FilePath" class="attached-file" target="_blank" title="Download">
+                        <i class="fa fa-file-o"></i> File (@Model.File)
+                    </a>
+                }
+
+            <div class="file-actions">
+                <input type="hidden" class="selected-content-id" value="@Model.ID" />
+                <input type="hidden" class="selected-infraction-id" value="@Model.InfractionID" />
+                <div class="btn-actions">
+                    <button class="btn btn-success edit-file" title="Edit"><i class="fa fa-pencil"></i></button>
+                    <button class="btn btn-danger delete-file" title="Delete"><i class="fa fa-trash"></i></button>
+                    <button class="btn btn-primary resend-file" title="Re-send"><i class="fa fa-send"></i></button>
+                </div>
+                <div class="btn-input hidden">
+                    <div class="form-group">
+                        <input type="file" id="browseFile" name="" value="" class="browsefile form-control">
+                    </div>
+                    <button type="button" class="btn btn-success save-file" title="Save"><i class="fa fa-save"></i></button>
+                    <button type="button" class="btn btn-danger cancel-file" title="Cancel"><i class="fa fa-times"></i></button>
+                </div>
+            </div>
+            </div>
+        }
+    </div>
+}

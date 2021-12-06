@@ -1,0 +1,64 @@
+﻿@model ProcessLayer.Entities.Infraction
+
+<div class="content-container">
+    <input type="hidden" value="@ViewBag.ContentId" id="content-id" />
+    <div class="memo-info content">
+        <div>Memo No.: @Model.MemoNo</div>
+        <div>Memo Date: @Model.MemoDate.Value.ToString("MMMM dd, yyyy")</div>
+        <div>Description : @Model.Description</div>
+        @if (Model.HearingSchedule != null)
+        {
+            <div>Hearing Schedule : @Model.HearingSchedule.Value.ToString("MMMM dd, yyyy")</div>
+            if (Model.HearingStatusID != null)
+            {
+                <div>Hearing Status : @Model.HearingStatus.Description</div>
+            }
+        }
+        <div>Status : @Model.Status.Description</div>
+        @if (Model.StatusID == 2)
+        {
+            <div>Sanction : <b>@Model.Sanction.Description @(Model.SanctionDays != null ? "(" + Model.SanctionDays + " Day" + (Model.SanctionDays > 1? "s" : "") + ")" : "") @(Model.SanctionDate != null ? "(" + Model.SanctionDate.Value.ToString("MMMM dd, yyyy") + ")" : "")</b></div>
+        }
+        <button type="button" class="btn btn-info btn-w-s back-btn" title="Send">Back</button>
+    </div>
+    <div class="memo-content content">
+        <div class="content-list" id="content-list">
+            @for (int i = 0; i < Model.Content.Count; i++)
+            {
+                if (!string.IsNullOrEmpty(Model.Content[i].File) || !string.IsNullOrEmpty(Model.Content[i].Message))
+                {
+                    <div class="@(Model.Content[i].FromPersonnel ?  "management-send": "personnel-send")">
+                        @if (!string.IsNullOrEmpty(Model.Content[i].Message))
+                        {
+                            <div class='content-message'>@Model.Content[i].Message</div>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.Content[i].File))
+                        {
+                            if (Model.Content[i].IsFileSupported)
+                            {
+                                <embed class="content-file" src="@Model.Content[i].FilePath" title="File">
+                            }
+                            else
+                            {
+                                <a href="@Model.Content[i].FilePath" class="attached-file" target="_blank" title="Download">
+                                    <i class="fa fa-file-o"></i> File (@Model.Content[i].File)
+                                </a>
+                            }
+                        }
+                    </div>
+                }
+            }
+        </div>
+        @if ((Model.HearingStatusID == 1 || Model.HearingSchedule == null) && Model.StatusID == 1)
+        {
+            <div class="action" id="memo-send-fields">
+                @Html.Hidden("InfractionID", Model.ID, new { @id = "infractionID" })
+                <div class="form-group">
+                    <input type="hidden" id="" name="" value="" class="">
+                    <input type="file" id="browseFile" name="" value="" class="browsefile form-control">
+                </div>
+                <button type="button" name="SendMemo" class="btn btn-info btn-w-s SendMemo" title="Send"><i class="fa fa-send"></i></button>
+            </div>
+        }
+    </div>
+</div>

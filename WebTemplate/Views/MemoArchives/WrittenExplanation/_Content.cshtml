@@ -1,0 +1,25 @@
+﻿@model ProcessLayer.Entities.WrittenExplanationContent
+
+
+@if (!string.IsNullOrEmpty(Model.File) || !string.IsNullOrEmpty(Model.Message))
+{
+    <div class="@(Model.FromPersonnel ? "personnel-send" : "management-send")">
+        @if (!string.IsNullOrEmpty(Model.Message))
+        {
+            <div class='content-message'>@Model.Message</div>
+        }
+        @if (!string.IsNullOrEmpty(Model.File))
+        {
+            if (Model.IsFileSupported)
+            {
+                <embed class="content-file" src="@Model.FilePath" title="File">
+            }
+            else
+            {
+                <a href="@Model.FilePath" class="attached-file" target="_blank" title="Download">
+                    <i class="fa fa-file-o"></i> File (@Model.File)
+                </a>
+            }
+        }
+    </div>
+}

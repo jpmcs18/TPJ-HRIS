@@ -5,6 +5,6 @@ namespace WebTemplate.Models.Personnel
 {
     public class Memos
     {
-        public List<MemoArchives> MemoArchives { get; set; } = new List<MemoArchives>();
+        public List<ProcessLayer.Entities.MemoArchives> MemoArchives { get; set; } = new List<ProcessLayer.Entities.MemoArchives>();
     }
 }

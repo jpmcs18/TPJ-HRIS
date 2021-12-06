@@ -959,13 +959,209 @@ namespace WebTemplate.Controllers.HumanResource
         #endregion
 
         #region Memo...
+        private const string SAVE_LOCATION = "MemoSaveLocation";
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult GetPolicyAndProcedures(long personnelId)
+        {
+            try
+            {
+                PolicyAndProcedures paps = new();
+                paps.PolicyAndProcedureList = PolicyAndProcedureProcess.Instance.Value.GetListByPersonnel(personnelId);
+                ModelState.Clear();
+                return PartialViewCustom("_PersonnelPolicyAndProcedure", paps);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { msg = false, res = ex.GetActualMessage() });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult PolicyAndProcedureContents(long id)
+        {
+            try
+            {
+                PolicyAndProcedureContent model = new();
+                model.Acknowledgement = PersonnelPolicyAndProcedureProcess.Instance.Value.Get(id);
+                model.PolicyAndProcedure = PolicyAndProcedureProcess.Instance.Value.Get(model.Acknowledgement.PolicyAndProcedureID, true);
+
+                if (model != null)
+                {
+                    return PartialViewCustom("_PersonnelPolicyAndProcedureContents", model);
+                }
+                else
+                {
+                    return Json(new { msg = false, res = "Policy And Procedure not found!" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { msg = false, res = ex.GetActualMessage() });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AcknowledgePolicyAndProcedure(long id)
+        {
+            try
+            {
+                PersonnelPolicyAndProcedureProcess.Instance.Value.Acknowledge(id, User.UserID);
+                PolicyAndProcedureContent model = new();
+                model.Acknowledgement = PersonnelPolicyAndProcedureProcess.Instance.Value.Get(id);
+                model.PolicyAndProcedure = PolicyAndProcedureProcess.Instance.Value.Get(model.Acknowledgement.PolicyAndProcedureID, true);
+
+
+                ModelState.Clear();
+                return PartialViewCustom("_PersonnelPolicyAndProcedureContents", model);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { msg = false, res = ex.GetActualMessage() });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult GetInfractions(long personnelId)
+        {
+            try
+            {
+                Infractions infractions = new();
+                infractions.InfractionList = InfractionProcess.Instance.Value.GetList(personnelId, true);
+                ModelState.Clear();
+                return PartialViewCustom("_PersonnelInfractions", infractions);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { msg = false, res = ex.GetActualMessage() });
+            }
+        }
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult InfractionContents(long id)
+        {
+            try
+            {
+                Infraction model = InfractionProcess.Instance.Value.Get(id);
+
+                if (model != null)
+                {
+                    return PartialViewCustom("_PersonnelInfractionContents", model);
+                }
+                else
+                {
+                    return Json(new { msg = false, res = "Infraction not found!" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { msg = false, res = ex.GetActualMessage() });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult SaveInfractionFileContent(InfractionContent content, HttpPostedFileBase fileBase)
+        {
+            try
+            {
+                var appSettingPath = ConfigurationManager.AppSettings[SAVE_LOCATION];
+                var directory = appSettingPath.Contains("~") ? Server.MapPath(appSettingPath) : appSettingPath;
+                var infraction = InfractionProcess.Instance.Value.Get(content.InfractionID, true);
+                content.FromPersonnel = true;
+                content.File = fileBase.SaveFile(directory, $"{infraction.MemoNo}{DateTime.Now:MMddyyyyHHmmss}{Path.GetExtension(fileBase.FileName)}");
+
+                content = InfractionContentProcess.Instance.Value.Create(content, User.UserID);
+                infraction = InfractionProcess.Instance.Value.Get(content.InfractionID);
+
+                ModelState.Clear();
+                ViewBag.ContentId = infraction.Content.LastOrDefault()?.ID;
+                return PartialViewCustom("_PersonnelInfractionContents", infraction);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { msg = false, res = ex.GetActualMessage() });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult GetWrittenExplanations(long personnelId)
+        {
+            try
+            {
+                WrittenExplanations writtenExplanations = new();
+                writtenExplanations.WrittenExplanationList = WrittenExplanationProcess.Instance.Value.GetList(personnelId, true);
+                ModelState.Clear();
+                return PartialViewCustom("_PersonnelWrittenExplanations", writtenExplanations);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { msg = false, res = ex.GetActualMessage() });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult WrittenExplanationContents(long id)
+        {
+            try
+            {
+                WrittenExplanation model = WrittenExplanationProcess.Instance.Value.Get(id);
+
+                if (model != null)
+                {
+                    return PartialViewCustom("_PersonnelWrittenExplanationContents", model);
+                }
+                else
+                {
+                    return Json(new { msg = false, res = "Written Explanation not found!" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { msg = false, res = ex.GetActualMessage() });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult SaveWrittenExplanationFileContent(WrittenExplanationContent content, HttpPostedFileBase fileBase)
+        {
+            try
+            {
+                var appSettingPath = ConfigurationManager.AppSettings[SAVE_LOCATION];
+                var directory = appSettingPath.Contains("~") ? Server.MapPath(appSettingPath) : appSettingPath;
+                var writtenExplanation = WrittenExplanationProcess.Instance.Value.Get(content.WrittenExplanationID, true);
+                content.FromPersonnel = true;
+                content.File = fileBase.SaveFile(directory, $"{writtenExplanation.MemoNo}{DateTime.Now:MMddyyyyHHmmss}{Path.GetExtension(fileBase.FileName)}");
+
+                content = WrittenExplanationContentProcess.Instance.Value.Create(content, User.UserID);
+                writtenExplanation = WrittenExplanationProcess.Instance.Value.Get(content.WrittenExplanationID);
+
+                ModelState.Clear();
+                ViewBag.ContentId = writtenExplanation.Content.LastOrDefault()?.ID;
+                return PartialViewCustom("_PersonnelWrittenExplanationContents", writtenExplanation);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { msg = false, res = ex.GetActualMessage() });
+            }
+        }
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult NewPersonnelMemo()
         {
             try
             {
-                MemoArchives model = new MemoArchives() { PersonnelReply = true };
+                ProcessLayer.Entities.MemoArchives model = new ProcessLayer.Entities.MemoArchives() { PersonnelReply = true };
 
                 ModelState.Clear();
                 return PartialViewCustom("_PersonnelMemo", model);
@@ -982,7 +1178,7 @@ namespace WebTemplate.Controllers.HumanResource
         {
             try
             {
-                MemoArchives model = MemoArchiveProcess.GetPersonnelMemo(PersonnelID, ID);
+                ProcessLayer.Entities.MemoArchives model = MemoArchiveProcess.GetPersonnelMemo(PersonnelID, ID);
                 ModelState.Clear();
                 return PartialViewCustom("_PersonnelMemo", model);
             }
@@ -994,7 +1190,7 @@ namespace WebTemplate.Controllers.HumanResource
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult SavePersonnelMemo(MemoArchives model, HttpPostedFileBase fileBase, long personnelId)
+        public ActionResult SavePersonnelMemo(ProcessLayer.Entities.MemoArchives model, HttpPostedFileBase fileBase, long personnelId)
         {
             try
             {

@@ -126,7 +126,7 @@ namespace HRTest
         [TestMethod]
         public void CreateOrUpdateEmailCredential()
         {
-            var pass = "St120n6312".Encrypt();
+            var pass = "aidohfqmhiwtnlfj".Encrypt();
             var email = new EmailCredential {
                 ID = 6,
                 Owner = "Memo",

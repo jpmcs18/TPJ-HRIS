@@ -195,6 +195,9 @@
     <Compile Include="Controllers\Kiosk\OuterPortRequestController.cs" />
     <Compile Include="Controllers\Maintenance\Lookup\ApproverPositionController.cs" />
     <Compile Include="Controllers\Maintenance\Lookup\PositionController.cs" />
+    <Compile Include="Controllers\MemoArchives\PolicyAndProcedureController.cs" />
+    <Compile Include="Controllers\MemoArchives\WrittenExplanationController.cs" />
+    <Compile Include="Controllers\MemoArchives\InfractionController.cs" />
     <Compile Include="Controllers\Movement\CrewMovementController.cs" />
     <Compile Include="Controllers\Movement\VesselMovementController.cs" />
     <Compile Include="Controllers\HumanResource\VesselController.cs" />
@@ -289,6 +292,16 @@
     <Compile Include="Models\Maintenance\Systems\User\Management.cs" />
     <Compile Include="Models\Maintenance\Systems\User\SearchPersonnel.cs" />
     <Compile Include="Models\Maintenance\Systems\User\VerifyMobile.cs" />
+    <Compile Include="Models\MemoArchives\PolicyAndProcedure\Contents.cs" />
+    <Compile Include="Models\MemoArchives\PolicyAndProcedure\Index.cs" />
+    <Compile Include="Models\MemoArchives\PolicyAndProcedure\Management.cs" />
+    <Compile Include="Models\MemoArchives\PolicyAndProcedure\PolicyAndProcedures.cs" />
+    <Compile Include="Models\MemoArchives\WrittenExplanation\Contents.cs" />
+    <Compile Include="Models\MemoArchives\WrittenExplanation\Index.cs" />
+    <Compile Include="Models\MemoArchives\WrittenExplanation\Management.cs" />
+    <Compile Include="Models\MemoArchives\Infraction\Contents.cs" />
+    <Compile Include="Models\MemoArchives\Infraction\Index.cs" />
+    <Compile Include="Models\MemoArchives\Infraction\Management.cs" />
     <Compile Include="Models\MemoArchive\Index.cs" />
     <Compile Include="Models\MemoArchive\Management.cs" />
     <Compile Include="Models\MemoArchive\MemoPersonnels.cs" />
@@ -303,6 +316,7 @@
     <Compile Include="Models\Personnel\CompensationsAndDeductions.cs" />
     <Compile Include="Models\Personnel\ContactNumbers.cs" />
     <Compile Include="Models\Personnel\Educationbackgrounds.cs" />
+    <Compile Include="Models\Personnel\Infractions.cs" />
     <Compile Include="Models\Personnel\Memos.cs" />
     <Compile Include="Models\Personnel\Index.cs" />
     <Compile Include="Models\Personnel\Management.cs" />
@@ -311,10 +325,13 @@
     <Compile Include="Models\Personnel\PersonnelLeaveCredits.cs" />
     <Compile Include="Models\Personnel\PersonnelLoanDeductions.cs" />
     <Compile Include="Models\Personnel\PersonnelLoans.cs" />
+    <Compile Include="Models\Personnel\PolicyAndProcedureContent.cs" />
+    <Compile Include="Models\Personnel\PolicyAndProcedures.cs" />
     <Compile Include="Models\Personnel\PositionResponse.cs" />
     <Compile Include="Models\Personnel\ResignedPersonnels.cs" />
     <Compile Include="Models\Personnel\Trainings.cs" />
     <Compile Include="Models\Personnel\WorkExperiences.cs" />
+    <Compile Include="Models\Personnel\WrittenExplanations.cs" />
     <Compile Include="Models\Report\Index.cs" />
     <Compile Include="Models\RequestsApproval\Absence\Index.cs" />
     <Compile Include="Models\RequestsApproval\High Risk\Index.cs" />
@@ -455,6 +472,12 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\calendar.min.css" />
     <Content Include="Content\email.css" />
+    <Content Include="Content\memo-archive.css">
+      <DependentUpon>memo-archive.scss</DependentUpon>
+    </Content>
+    <Content Include="Content\memo-archive.min.css">
+      <DependentUpon>memo-archive.css</DependentUpon>
+    </Content>
     <Content Include="Content\noname11016.jpeg" />
     <Content Include="Content\patterns\1.png" />
     <Content Include="Content\patterns\2.png" />
@@ -782,6 +805,7 @@
     <Content Include="fonts\font-awesome\less\stepper.less" />
     <Content Include="fonts\font-awesome\less\calendar.less" />
     <Content Include="libman.json" />
+    <Content Include="Content\memo-archive.scss" />
     <None Include="Properties\PublishProfiles\Inspinia.pubxml" />
     <Content Include="Resources\Template\Crewlist.xlsx" />
     <Content Include="Resources\Template\Crewmovementform.xlsx" />
@@ -2428,6 +2452,38 @@
     <Content Include="Views\RequestsApproval\AbsenceRequests\_Search.cshtml" />
     <Content Include="Views\PersonnelApproval\Index.cshtml" />
     <Content Include="Views\PersonnelApproval\_Search.cshtml" />
+    <Content Include="Views\MemoArchives\Infraction\Index.cshtml" />
+    <Content Include="Views\MemoArchives\Infraction\_Search.cshtml" />
+    <Content Include="Views\MemoArchives\Infraction\_Infraction.cshtml" />
+    <Content Include="Views\MemoArchives\Infraction\_Management.cshtml" />
+    <Content Include="Views\MemoArchives\Infraction\_SearchPersonnel.cshtml" />
+    <Content Include="Views\MemoArchives\Infraction\_View.cshtml" />
+    <Content Include="Views\MemoArchives\Infraction\_Replies.cshtml" />
+    <Content Include="Views\MemoArchives\Infraction\_Content.cshtml" />
+    <Content Include="Views\HumanResource\Personnel\_PersonnelInfractions.cshtml" />
+    <Content Include="Views\HumanResource\Personnel\_PersonnelInfractionContents.cshtml" />
+    <Content Include="Views\MemoArchives\WrittenExplanation\_Content.cshtml" />
+    <Content Include="Views\MemoArchives\WrittenExplanation\_WrittenExplanation.cshtml" />
+    <Content Include="Views\MemoArchives\WrittenExplanation\_Management.cshtml" />
+    <Content Include="Views\MemoArchives\WrittenExplanation\_Replies.cshtml" />
+    <Content Include="Views\MemoArchives\WrittenExplanation\_Search.cshtml" />
+    <Content Include="Views\MemoArchives\WrittenExplanation\_SearchPersonnel.cshtml" />
+    <Content Include="Views\MemoArchives\WrittenExplanation\_View.cshtml" />
+    <Content Include="Views\MemoArchives\WrittenExplanation\Index.cshtml" />
+    <Content Include="Views\HumanResource\Personnel\_PersonnelWrittenExplanationContents.cshtml" />
+    <Content Include="Views\HumanResource\Personnel\_PersonnelWrittenExplanation.cshtml" />
+    <Content Include="Views\MemoArchives\PolicyAndProcedure\_Content.cshtml" />
+    <Content Include="Views\MemoArchives\PolicyAndProcedure\_PolicyAndProcedure.cshtml" />
+    <Content Include="Views\MemoArchives\PolicyAndProcedure\_Management.cshtml" />
+    <Content Include="Views\MemoArchives\PolicyAndProcedure\_PersonnelPolicyAndProcedures.cshtml" />
+    <Content Include="Views\MemoArchives\PolicyAndProcedure\_Search.cshtml" />
+    <Content Include="Views\MemoArchives\PolicyAndProcedure\_SearchPersonnel.cshtml" />
+    <Content Include="Views\MemoArchives\PolicyAndProcedure\_View.cshtml" />
+    <Content Include="Views\MemoArchives\PolicyAndProcedure\Index.cshtml" />
+    <Content Include="Views\MemoArchives\PolicyAndProcedure\_PolicyAndProcedures.cshtml" />
+    <Content Include="Views\MemoArchives\PolicyAndProcedure\_SearchGroup.cshtml" />
+    <Content Include="Views\HumanResource\Personnel\_PersonnelPolicyAndProcedure.cshtml" />
+    <Content Include="Views\HumanResource\Personnel\_PersonnelPolicyAndProcedureContents.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">

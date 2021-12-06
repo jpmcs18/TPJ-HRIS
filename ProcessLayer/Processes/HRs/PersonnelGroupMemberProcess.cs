@@ -57,7 +57,7 @@ namespace ProcessLayer.Processes
             return eb;
         }
 
-        public static List<PersonnelGroupMember> GetByGroup(int GroupId, bool isMemberOnly = false)
+        public static List<PersonnelGroupMember> GetByGroup(long GroupId, bool isMemberOnly = false)
         {
             var eb = new List<PersonnelGroupMember>();
 

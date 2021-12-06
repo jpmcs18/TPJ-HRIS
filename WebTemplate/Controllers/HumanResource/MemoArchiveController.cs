@@ -61,7 +61,7 @@ namespace WebTemplate.Controllers.HumanResource
         [ValidateAntiForgeryToken]
         public ActionResult New()
         {
-            MemoArchives model = new MemoArchives();
+            ProcessLayer.Entities.MemoArchives model = new ProcessLayer.Entities.MemoArchives();
             return PartialViewCustom("_New", model);
         }
 
@@ -69,7 +69,7 @@ namespace WebTemplate.Controllers.HumanResource
         [ValidateAntiForgeryToken]
         public ActionResult View(long MemoId)
         {
-            MemoArchives model = MemoArchiveProcess.GetAll(MemoId, false);
+            ProcessLayer.Entities.MemoArchives model = MemoArchiveProcess.GetAll(MemoId, false);
             model.IsExistFile = !string.IsNullOrEmpty(model.File) && System.IO.File.Exists(GetFileLocation(model.ID));
 
             return PartialViewCustom("_View", model);
@@ -163,7 +163,7 @@ namespace WebTemplate.Controllers.HumanResource
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Save(MemoArchives model, HttpPostedFileBase fileBase, long? personnelId, int? personnelGroupId)
+        public ActionResult Save(ProcessLayer.Entities.MemoArchives model, HttpPostedFileBase fileBase, long? personnelId, int? personnelGroupId)
         {
             try
             {

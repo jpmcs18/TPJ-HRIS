@@ -1,0 +1,1029 @@
+@model WebTemplate.Models.MemoArchives.Infraction.Index
+
+@{
+    var PageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("MemoArchives/Infraction");
+
+    ViewBag.title = PageAccess.PageName;
+}
+
+<div class="wrapper wrapper-content">
+    <div class="page-heading">
+        <div class="col-lg-8">
+            <h1>@Html.Raw(PageAccess.PageName ?? "&nbsp;")</h1>
+            <ol class="breadcrumb">
+                <li>
+                    <a href='@Url.Action("Index", "Home")'>Home</a>
+                </li>
+                <li class="active">
+                    <strong>@Html.Raw(PageAccess.PageName ?? "&nbsp;")</strong>
+                </li>
+            </ol>
+        </div>
+        <div class="col-lg-4">
+            <div class="title-action">
+                @if (PageAccess.Insert)
+                {
+                    <a class="btn btn-primary compose-mail" href="#" id="btnadd">New Infraction</a>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="" style="margin-top: 85px;">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 animated fadeInLef">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 m-b-sm" style="padding: 0px;">
+                <div class="tabs-container" style="border: 1px solid #009688;">
+                    <div class="tab-content" style="margin-top: 0px; max-height: unset; overflow-y: auto; overflow-x: hidden;">
+                        @if (PageAccess.View)
+                        {
+                            <div id="tab-2" class="tab-pane active" style="height: 850px;">
+                                <div id="MemoForm" class="panel-body" style="padding: 10px; max-height: 100%; border: 1px solid #e5e6e7; overflow-y: hidden;">
+                                    @Html.Partial("~/Views/MemoArchives/Infraction/_Search.cshtml")
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 animated fadeInUp">
+            <form id="form_search" enctype="multipart/form-data" class="pull-left" style="width: 100%;">
+            </form>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="StoreEditModel" />
+
+<div id="" class="customFileInput hidden">
+    <div class="input-group file-input" style="display: inline-table; width: 100%;">
+        <span class="input-group-addon"><i class="fa fa-file"></i></span>
+        <input type="text" name="File" class="browseFileCustom form-control text-transform-none" placeholder="File..." readonly="readonly" />
+        <span id="" class="clearInput" title="Clear"><i class="fa fa-times"></i></span>
+    </div>
+</div>
+
+<div class="modal inmodal custom-modal" id="NewMemo" data-backdrop="static" data-keyboard="false" tabindex="" role="dialog" aria-hidden="true">
+    <div class="vertical-alignment-helper">
+        <div class="modal-center vertical-align-center">
+            <div class="modal-content animated fadeInUp modal-width-60">
+                <div class="modal-header">
+                    <h5 class="modal-title">New Infraction</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="max-height: 750px; background-color: #fff; overflow: hidden;">
+                </div>
+                <div class="modal-footer">
+                    <div class="pull-left" style="padding: 4px 0;">
+                        <input id="SendMemo" type="checkbox" class="i-checks"> &nbsp;
+                        <label for="SendMemo">Send Email on Save </label>
+                    </div>
+                    <button type="button" name="SaveMemo" class="btn btn-info btn-w-m SaveMemo" value="0" title="Save"><i class="fa fa-save"></i> &nbsp;Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal inmodal custom-modal" id="ViewReplies" data-backdrop="static" data-keyboard="false" tabindex="" role="dialog" aria-hidden="true">
+    <div class="vertical-alignment-helper">
+        <div class="modal-center vertical-align-center">
+            <div class="modal-content animated fadeInUp modal-width-90">
+                <div class="modal-header">
+                    <h5 class="modal-title">Infraction</h5>
+                    <button type="button" class="close" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="background-color: #fff; overflow: hidden;">
+                    <div class="chat-view"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .image-crop {
+        overflow: hidden;
+        /*text-align: -webkit-center;*/
+    }
+
+        .image-crop > .cropper-container {
+            width: 150px !important;
+            height: 150px !important;
+            left: 0px !important;
+            top: 0px !important;
+        }
+
+    .Personnel-Discussion {
+        background-color: #eeeeee;
+    }
+
+    .sa-icon.sa-custom {
+        transform: scale(1.5);
+    }
+</style>
+<link href="~/Content/memo-archive.css" rel="stylesheet" />
+
+<script type="text/javascript">
+        let isSendingEmail = false;
+        var PageAccess = @Html.Raw(Json.Encode(PageAccess));
+        var interval = null;
+
+        $(document).ready(function() {
+            Events();
+        });
+
+        window.onbeforeunload = function(e) {
+            if (isSendingEmail == true)
+                return "Sending email in progress. Unable to reload page.";
+        }
+
+        $(function() {
+            $(document).keydown(function(e) {
+                if (((e.which || e.keyCode) == 116 ||
+                        (e.which || e.keyCode) == 82 ||
+                        (((e.which || e.keyCode) == 65) && e.ctrlKey)) &&
+                    isSendingEmail == true) {
+                    e.preventDefault();
+                    toastr.error('Sending email in progress. Unable to reload page.', 'Error');
+                }
+            });
+        });
+
+        function NewMemo() {
+            $.ajax({
+                data: {
+                    filter: "",
+                    __RequestVerificationToken: $('@Html.AntiForgeryToken()').val()
+                },
+                type: 'POST',
+                datatype: 'JSON',
+                url: '@Url.Action("NewMemo", "Infraction")',
+                cache: false,
+                beforeSend: function() {
+                    ShowLoadingScreen();
+                },
+                complete: function() {
+                    RemoveLoadingScreen();
+                },
+                success: function(response) {
+                    if (response.msg == false) {
+                        toastr.error(response.res);
+                    } else {
+                        $('#NewMemo .modal-body').html(response);
+                        BindSaveFunction();
+                        InitInputFileBrowse();
+                        $('#NewMemo').appendTo("body").modal('show');
+                        interval = setInterval(checkInternetConnection, 1000); //start checking internet connection
+                    }
+                },
+                error: function(x) {
+                }
+            });
+        }
+
+        function checkInternetConnection() {
+            try {
+                var isOnline = navigator.onLine;
+
+                if (isOnline) {
+                    $('#NewMemo #No-Chat-Internet').addClass('hidden');
+                    $('#NewMemo #SendMemo').closest('div.pull-left').removeClass('hidden');
+
+                    $('#ViewReplies #No-Chat-Internet').addClass('hidden');
+                    $('#ViewReplies #SendMemo').closest('div.pull-left').removeClass('hidden');
+                } else {
+                    $('#NewMemo #No-Chat-Internet').removeClass('hidden');
+                    $('#NewMemo #SendMemo').closest('div.pull-left').addClass('hidden');
+
+                    $('#ViewReplies #No-Chat-Internet').removeClass('hidden');
+                    $('#ViewReplies #SendMemo').closest('div.pull-left').addClass('hidden');
+                }
+            } catch {
+            }
+
+    }
+
+        function SaveTable() {
+            var rowID = parseFloat($(this).val());
+            $displayRow = $('tr#' + rowID);
+            var formdata = new FormData()
+
+            $('#MemoFields *').each(function () {
+                var name = $(this).attr('name');
+                var value = $(this).val();
+                if (name != null && value != null)
+                    formdata.append(name, $(this).val());
+            });
+
+            if ($('#infractionFile')[0].files.length > 0)
+                formdata.append("fileBase", $('#infractionFile')[0].files[0]);
+
+            if ($('#incidentReportFile')[0].files.length > 0)
+                formdata.append("incidentReportFile", $('#incidentReportFile')[0].files[0]);
+
+            formdata.append('personnelId',
+                $('#PersonnelsTable input[type="checkbox"]:checked').closest('tr').find('.PersonnelID').val());
+            formdata.append('sendEmail', $('#NewMemo #SendMemo').is(':checked'))
+            formdata.append("__RequestVerificationToken", $('@Html.AntiForgeryToken()').val());
+
+            $.ajax({
+                data: formdata,
+                type: 'POST',
+                datatype: 'JSON',
+                url: '@Url.Action("Save", "Infraction")',
+                cache: false,
+                contentType: false,
+                processData: false,
+                beforeSend: function() {
+                    ShowLoadingScreen()
+                },
+                complete: function() {
+                    RemoveLoadingScreen()
+                },
+                success: function (response) {
+                    if (response.msg == false) {
+                        toastr.error('Error', response.res);
+                    }
+                    else {
+                        $('#NewMemo').modal('hide');
+
+                        if ($('#NewMemo #SendMemo').is(':checked')) {
+                            showReplyModal(response);
+                            SendEmail()
+                        }
+                        else {
+                            showReplyModal(response);
+                        }
+
+                    }
+                },
+                error: function(x) {
+                }
+            });
+    }
+
+
+        function SaveFileContent() {
+            var formdata = new FormData()
+            let sendEmail = $('#send-file-content').is(':checked');
+            formdata.append("InfractionID", $("#infractionID").val())
+
+            if ($('#memo-send-fields').find(".browsefile")[0].files.length > 0)
+                formdata.append("fileBase", $('#memo-send-fields').find(".browsefile")[0].files[0]);
+            formdata.append('sendEmail', sendEmail)
+            formdata.append("__RequestVerificationToken", $('@Html.AntiForgeryToken()').val());
+
+            $.ajax({
+                data: formdata,
+                type: 'POST',
+                datatype: 'JSON',
+                url: '@Url.Action("SaveFileContent", "Infraction")',
+                cache: false,
+                contentType: false,
+                processData: false,
+                beforeSend: function() {
+                    ShowLoadingScreen()
+                },
+                complete: function() {
+                    RemoveLoadingScreen()
+                },
+                success: function (response) {
+                    if (response.msg == false) {
+                        toastr.error('Error', response.res);
+                    }
+                    else {
+                        showReplyModal(response);
+                        if (sendEmail)
+                            SendEmail();
+                    }
+                },
+                error: function(x) {
+                }
+            });
+    }
+    function ViewInfraction() {
+        var $tr = $(this);
+        var rowID = $tr.attr("id");
+
+            $.ajax({
+                data: {
+                    ID: rowID,
+                    __RequestVerificationToken: $('@Html.AntiForgeryToken()').val()
+                },
+                type: 'POST',
+                datatype: 'JSON',
+                url: '@Url.Action("Contents", "Infraction")',
+                cache: false,
+                beforeSend: function() {
+                    ShowLoadingScreen();
+                },
+                complete: function() {
+                    RemoveLoadingScreen();
+                },
+                success: function(response) {
+                    if (response.msg == false) {
+                        toastr.error(response.res);
+                    } else {
+                        showReplyModal(response);
+                    }
+                },
+                error: function(x) {
+                }
+            });
+    }
+
+
+    function DeleteInfraction() {
+        var id = $(this).attr("id");
+        swal({
+            title: "Deleting..",
+            text: "Delete this infraction? This can't be undone.",
+            type: 'warning',
+            showConfirmButton: true,
+            showCancelButton: true,
+            confirmButtonColor: "#1ab394",
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            closeOnConfirm: true,
+            closeOnCancel: true,
+            html: true
+        },
+            function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        data: {
+                            id,
+                            __RequestVerificationToken: $('@Html.AntiForgeryToken()').val()
+                        },
+                        type: 'POST',
+                        datatype: 'JSON',
+                        url: '@Url.Action("Delete", "Infraction")',
+                        cache: false,
+                        beforeSend: function () {
+                            ShowLoadingScreen();
+                        },
+                        complete: function () {
+                            RemoveLoadingScreen();
+                        },
+                        success: function (response) {
+                            if (response.msg == false) {
+                                toastr.error(response.res);
+                            } else {
+                                toastr.success(response.res);
+                                location.reload();
+                            }
+                        },
+                        error: function (x) {
+                        }
+                    });
+                }
+            });
+    }
+
+    function OnCloseViewReplies() {
+        if (isSendingEmail == false) {
+            $('#ViewReplies').modal('hide');
+            clearInterval(interval); //close interval
+            location.reload();
+        } else {
+            toastr.warning('Sending memo in progress!', 'Warning');
+        }
+    }
+
+    function showReplyModal(response) {
+        $('#ViewReplies .modal-body .chat-view').html(response);
+        $('#ViewReplies').appendTo("body").modal('show');
+        InitInputFileBrowse();
+        $('#ViewReplies .close').off('click').on('click', OnCloseViewReplies);
+
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green',
+        });
+
+        $('.SendMemo').off('click').on('click', SaveFileContent);
+        $('.hearing-btn').off('click').on('click', ScheduleHearing);
+        $('.hearing-done-btn').off('click').on('click', DoneHearing);
+        $('.hearing-resched-btn').off('click').on('click', ReschedHearing);
+        $('.hearing-reschedule-btn').off('click').on('click', RescheduleHearing);
+        $('.sanction-warning-btn').off('click').on('click', WarningInfraction);
+        $('.sanction-suspension-btn').off('click').on('click', ShowSuspension);
+        $('.sanction-dismissal-btn').off('click').on('click', ShowDismissal);
+        $('.suspension-done').off('click').on('click', SuspensionInfraction);
+        $('.dismissal-done').off('click').on('click', DismissalInfraction);
+        $('#edit-memo').off('click').on('click', EditMemo);
+        $('#cancel-memo').off('click').on('click', CancelMemo);
+        $('#save-memo').off('click').on('click', SaveMemo);
+        $('.edit-file').off('click').on('click', editFile);
+        $('.delete-file').off('click').on('click', deleteFile);
+        $('.resend-file').off('click').on('click', resendFile);
+        $('.save-file').off('click').on('click', saveFile);
+        $('.cancel-file').off('click').on('click', cancelFile);
+
+
+        ScrollContentToBottom();
+    }
+    function saveFile() {
+
+        var formdata = new FormData()
+
+        if ($(this).parent().parent().find('#browseFile')[0].files.length > 0) {
+            formdata.append("file", $(this).parent().parent().find('#browseFile')[0].files[0]);
+        }
+
+        formdata.append('id', $(this).parent().parent().find('.selected-content-id').val())
+        formdata.append('infractionId', $(this).parent().parent().find('.selected-infraction-id').val())
+        formdata.append("__RequestVerificationToken", $('@Html.AntiForgeryToken()').val());
+
+        $.ajax({
+            data: formdata,
+            type: 'POST',
+            datatype: 'JSON',
+            url: '@Url.Action("ResaveContent", "Infraction")',
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function () {
+                ShowLoadingScreen()
+            },
+            complete: function () {
+                RemoveLoadingScreen()
+            },
+            success: function (response) {
+                if (response.msg == false) {
+                    toastr.error('Error', response.res);
+                }
+                else {
+                    showReplyModal(response);
+
+                }
+            },
+            error: function (x) {
+            }
+        });
+
+    }
+    function cancelFile() {
+        $(this).parent().parent().find('.btn-input').addClass("hidden")
+        $(this).parent().parent().find('.btn-actions').removeClass("hidden")
+
+    }
+    function editFile() {
+        $(this).parent().parent().find('.btn-input').removeClass("hidden")
+        $(this).parent().parent().find('.btn-actions').addClass("hidden")
+    }
+    function deleteFile() {
+        const id = $(this).parent().parent().find('.selected-content-id').val();
+        const infractionId = $(this).parent().parent().find('.selected-infraction-id').val();
+        swal({
+            title: "Deleting..",
+            text: "Delete this file? This can't be undone.",
+            type: 'warning',
+            showConfirmButton: true,
+            showCancelButton: true,
+            confirmButtonColor: "#1ab394",
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            closeOnConfirm: true,
+            closeOnCancel: true,
+            html: true
+        },
+            function (isConfirm) {
+                if (isConfirm) {
+
+          $.ajax({
+            data: {
+                  id,
+                  infractionId,
+                '__RequestVerificationToken': $('@Html.AntiForgeryToken()').val()
+            },
+                type: 'POST',
+                datatype: 'JSON',
+                url: '@Url.Action("DeleteFile", "Infraction")',
+                cache: false,
+                beforeSend: function() {
+                    ShowLoadingScreen()
+                },
+                complete: function() {
+                    RemoveLoadingScreen()
+                },
+                success: function (response) {
+                    if (response.msg == false) {
+                        toastr.error('Error', response.res);
+                    }
+                    else {
+                        showReplyModal(response);
+                    }
+                },
+                error: function (x) {
+                    alert(x);
+                }
+            });
+                }
+            });
+    }
+    function resendFile() {
+        const id = $(this).parent().parent().find('.selected-content-id').val();
+        Send(id);
+    }
+
+    function EditMemo() {
+        $(".display-memo").addClass("hidden");
+        $(".field-memo").removeClass("hidden");
+        $(".process-actions").addClass("hidden");
+
+        $(".content-management-actions .edit").addClass("hidden");
+        $(".content-management-actions .save").removeClass("hidden");
+    }
+    function CancelMemo() {
+        $(".display-memo").removeClass("hidden");
+        $(".field-memo").addClass("hidden");
+        $(".process-actions").removeClass("hidden");
+        $(".content-management-actions .edit").removeClass("hidden");
+        $(".content-management-actions .save").addClass("hidden");
+    }
+    function SaveMemo() {
+        $(".display-memo").removeClass("hidden");
+        $(".field-memo").addClass("hidden");
+        $(".process-actions").removeClass("hidden");
+        $(".content-management-actions .edit").removeClass("hidden");
+        $(".content-management-actions .save").addClass("hidden");
+
+        var formdata = new FormData()
+
+        $('.memo-info *').each(function () {
+            var name = $(this).attr('name');
+            var value = $(this).val();
+            if (name != null && value != null)
+                formdata.append(name, $(this).val());
+        });
+
+        formdata.append("__RequestVerificationToken", $('@Html.AntiForgeryToken()').val());
+
+        $.ajax({
+            data: formdata,
+            type: 'POST',
+            datatype: 'JSON',
+            url: '@Url.Action("Resave", "Infraction")',
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                ShowLoadingScreen()
+            },
+            complete: function() {
+                RemoveLoadingScreen()
+            },
+            success: function (response) {
+                if (response.msg == false) {
+                    toastr.error('Error', response.res);
+                }
+                else {
+                    if ($('#resend-email').is(':checked')) {
+                        showReplyModal(response);
+                        SendEmail()
+                    }
+                    else {
+                        showReplyModal(response);
+                    }
+
+                }
+            },
+            error: function(x) {
+            }
+        });
+
+    }
+
+    function DismissalInfraction() {
+        CloseInfraction(3, $('#dismissal-date').val());
+    }
+    function SuspensionInfraction() {
+        CloseInfraction(2, $('#suspension-date').val(), $('#suspension-days').val());
+    }
+    function ShowDismissal() {
+        $('.sanction-suspension').addClass('hidden')
+        $('.sanction-btn').removeClass('selected');
+        $('.sanction-dismissal').removeClass('hidden')
+        $(this).addClass('selected')
+    }
+    function ShowSuspension() {
+        $('.sanction-dismissal').addClass('hidden')
+        $('.sanction-btn').removeClass('selected');
+        $('.sanction-suspension').removeClass('hidden')
+        $(this).addClass('selected')
+    }
+    function WarningInfraction() {
+        $('.sanction-add').addClass('hidden')
+        $('.sanction-btn').removeClass('selected');
+        $(this).addClass('selected')
+        CloseInfraction(1);
+    }
+    function CloseInfraction(sanction, date, days) {
+        $.ajax({
+            data: {
+                id: $('.sanction #infraction-id').val(),
+                sanction,
+                date,
+                days,
+                '__RequestVerificationToken': $('@Html.AntiForgeryToken()').val()
+            },
+                type: 'POST',
+                datatype: 'JSON',
+                url: '@Url.Action("CloseInfraction", "Infraction")',
+                cache: false,
+                beforeSend: function() {
+                    ShowLoadingScreen()
+                },
+                complete: function() {
+                    RemoveLoadingScreen()
+                },
+                success: function (response) {
+                    if (response.msg == false) {
+                        toastr.error('Error', response.res);
+                    }
+                    else {
+                        showReplyModal(response);
+                    }
+                },
+                error: function (x) {
+                    alert(x);
+                }
+            });
+    }
+    function DoneHearing() {
+        $('.hearing-reschedule').addClass('hidden')
+        $('.hearing-status-btn').removeClass('selected');
+        $(this).addClass('selected')
+        $.ajax({
+            data: {
+                id: $('.hearing-schedule #infraction-id').val(),
+                '__RequestVerificationToken': $('@Html.AntiForgeryToken()').val()
+            },
+                type: 'POST',
+                datatype: 'JSON',
+                url: '@Url.Action("DoneHearing", "Infraction")',
+                cache: false,
+                beforeSend: function() {
+                    ShowLoadingScreen()
+                },
+                complete: function() {
+                    RemoveLoadingScreen()
+                },
+                success: function (response) {
+                    if (response.msg == false) {
+                        toastr.error('Error', response.res);
+                    }
+                    else {
+                        showReplyModal(response);
+                        if ($('#memo-send-fields  #SendMemo').is(':checked'))
+                            GetPersonnelIDs(MemoID);
+                    }
+                },
+                error: function (x) {
+                    alert(x);
+                }
+            });
+    }
+    function ReschedHearing() {
+        $('.hearing-status-btn').removeClass('selected');
+        $(this).addClass('selected')
+        $('.hearing-schedule').removeClass('hidden')
+    }
+
+    function RescheduleHearing() {
+        SchedHearing(true)
+    }
+
+    function ScheduleHearing() {
+        SchedHearing(false);
+    }
+    function SchedHearing(resched) {
+        let sendEmail = $('#save-hearing-only').is(':checked');
+        $.ajax({
+            data: {
+                id: $('.hearing-schedule #infraction-id').val(),
+                saveOnly: $('.hearing-schedule #save-only').val(),
+                sendEmail,
+                hearingSchedule: $('.hearing-schedule #hearing-schedule').val(),
+                resched,
+                '__RequestVerificationToken': $('@Html.AntiForgeryToken()').val()
+            },
+                type: 'POST',
+                datatype: 'JSON',
+                url: '@Url.Action("ScheduleHearing", "Infraction")',
+                cache: false,
+                beforeSend: function() {
+                    ShowLoadingScreen()
+                },
+                complete: function() {
+                    RemoveLoadingScreen()
+                },
+                success: function (response) {
+                    if (response.msg == false) {
+                        toastr.error('Error', response.res);
+                    }
+                    else {
+
+                        showReplyModal(response);
+                        if (sendEmail)
+                            SendEmail();
+                    }
+                },
+                error: function (x) {
+                    alert(x);
+                }
+            });
+    }
+
+    function ScrollContentToBottom() {
+        let element = document.getElementById("content-list");
+        element.scrollTop = element.scrollHeight;
+    }
+
+
+        function InitDatePicker() {
+            $('.input-group.date')
+                .find('.form-control').attr('readonly', true)
+                .css('background-color', '#fff')
+                .datepicker({
+                    todayBtn: "linked",
+                    keyboardNavigation: false,
+                    forceParse: false,
+                    calendarWeeks: true,
+                    autoclose: true
+                }).off('change').on('change',
+                    function() {
+                        showClearInput($(this));
+                    });
+
+            $('.input-group.date').each(function() {
+                $(this).closest('.form-group').css({
+                    'margin-bottom': '7px'
+                });
+                showClearInput($(this).find('input.form-control'));
+            });
+        }
+
+        function BrowseFile() {
+            $x = $(this);
+            $(this).parent().parent().find('.browsefile').trigger('click');
+            $(this).parent().parent().find('.browsefile').off('change').on('change',
+                function(e) {
+                    if ($(this)[0].files.length > 0) {
+                        $x.val($(this)[0].files[0].name);
+                        $('.send').show();
+                    } else {
+                        $('.send').hide();
+                    }
+                });
+        }
+
+        function InitInputFileBrowse() {
+            $('input.browsefile').each(function() {
+                $(this).fileInput();
+                showClearInput($(this));
+            }).off('change').on('change',
+                function() {
+                    showClearInput($(this));
+                });
+
+            $('input.browseFileCustom').off('click').on('click', BrowseFile);
+            $('.clearInput').off('click').on('click', ClearField);
+        }
+
+        function showClearInput($this) {
+            var $input = $('#' + $this.attr('id'))
+            var $clearBtn = $input.next('.clearInput');
+
+            if ($input.val() == "") {
+                $clearBtn.hide();
+            } else {
+                $clearBtn.show();
+            }
+        }
+
+        function ClearField() {
+            $input = $(this).prev('input');
+            $inputHidden = $(this).closest('td').find('input[type="hidden"]');
+            $input.val('');
+            $inputHidden.val('');
+            showClearInput($input);
+            $('.send').hide();
+
+            if ($(this).parent().parent().find('input.form-control').attr('id') == 'browseImage' &&
+                $('#ImageCanvasImg').attr('src') != '\Images\default.jpg') {
+                $('#ImageCanvasImg').attr('src', '\\Images\\default.jpg');
+                $input.val('default.jpg');
+            }
+        }
+
+        function SearchPersonnel() {
+            var filter = $('#SearchPersonnelDiv input').val();
+
+            $.ajax({
+                url: '@Url.Action("SearchPersonnel", "Infraction")',
+                data: {
+                    filter: filter,
+                    '__RequestVerificationToken': $('@Html.AntiForgeryToken()').val()
+                },
+                type: "POST",
+                cache: false,
+                beforeSend: function() {
+                    $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr').addClass('hidden');
+                    $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr#Row-Loading-Display').removeClass('hidden');
+                },
+                complete: function() {
+                    $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr').addClass('hidden');
+                    if ($('#SearchPersonnelOrGroup #SearchTableDiv tbody tr.personnel').length > 0) {
+                        $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr.personnel').removeClass('hidden');
+                    } else
+                        $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr#No-Row-Display').removeClass('hidden');
+                },
+                success: function(response) {
+                    if (response.msg == null) {
+                        $("#SearchTable").find('#SearchPersonnelInput').val(filter).focus();
+                        $("#SearchTableDiv").html(response);
+
+                        BindSaveFunction();
+
+                        if ($("#SearchTableDiv tbody tr.personnel").length == 1)
+                            $("#SearchTableDiv tbody tr.personnel button").trigger('click');
+                        else
+                            $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr#No-Row-Display').removeClass('hidden');
+                    } else {
+                        toastr.error(response.res);
+                    }
+                },
+                error: function() {
+                    toastr.error('AJAX backend error', 'An error has occured.');
+                }
+            });
+        }
+
+        function Search() {
+            $.ajax({
+                url: '@Url.Action("Index", "Infraction")',
+                data: $('#form_search_params *').serialize(),
+                type: "GET",
+                cache: false,
+                beforeSend: function () {
+                    //ShowLoadingScreen();
+                    ShowHideRowLoadingDisplay('MemosTable', true);
+                },
+                complete: function () {
+                        //RemoveLoadingScreen();
+                        //ShowHideRowLoadingDisplay('MemosTable', false);
+                },
+                success: function(response) {
+                    if (response.msg == null) {
+                        $("#MemoForm").html(response);
+                        Events();
+                        $('.txt_search').focus()
+                    } else {
+                        toastr.error(response.res);
+                    }
+                },
+                error: function() {
+                    toastr.error('AJAX backend error', 'An error has occured.');
+                }
+            });
+        }
+
+        function Events() {
+
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+
+            $('#btnadd').off('click').on('click', NewMemo);
+
+            $('.pages').off('click').on('click',
+                function() {
+                    $('#hid_page').val($(this).val())
+                    Search();
+                });
+            $('.txt_search').off('keydown').on('keydown',
+                function() {
+                    if (event.keyCode == 13) {
+                        $('#btn_search').click();
+                    }
+                })
+            $('#btn_search').off('click').on('click',
+                function() {
+                    $('#hid_search').val($('.txt_search').val());
+                    $('#hid_date').val($('.txt_date').val());
+                    $('#hid_status').val($('.txt_status').val());
+                    $('#hid_page').val(1);
+                    Search();
+                });
+
+            $('.SaveMemo').off('click').on('click', SaveTable);
+            $('.Infraction-Record').off('click').on('click', ViewInfraction)
+            InitInputFileBrowse();
+
+            $('.clearInput').off('click').on('click', ClearField);
+            Select2Override();
+
+            $('#NewMemo .close').off('click').on('click', CloseNewMemoModal);
+
+            $('.btn-delete-memo').off('click').on('click', DeleteInfraction);
+
+        }
+
+        function CloseNewMemoModal() {
+            $('#NewMemo').modal('hide');
+            clearInterval(interval); //close interval
+        }
+        function KeyDown(e) {
+            if (e.keyCode == 13 && $(this).attr('id') == 'SearchPersonnelInput')
+                SearchPersonnel();
+            else if (e.keyCode == 13 &&
+                $(this).attr('id').substr(0, $(this).attr('id').length - 2) == 'Row-Input-Group') {
+                $(this).closest('tr').find('button[name="SaveGroup"]').trigger('click');
+            }
+        }
+        function BindSaveFunction() {
+
+            $('#SearchPersonnel').off('click').on('click', SearchPersonnel);
+            $('#SearchPersonnelInput').off('keyup').on('keyup', KeyDown);
+
+            $('#PersonnelsTable tbody tr button').off('click').on('click', SelectRow);
+            $('#PersonnelsTable tbody tr button .selectPersonnel').off('ifClicked').on('ifClicked', SelectRow);
+
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+    }
+    function SendEmail() {
+        Send($("#content-id").val())
+    }
+    function Send(contentId) {
+        $.ajax({
+            data: {
+                 contentId,
+                '__RequestVerificationToken': $('@Html.AntiForgeryToken()').val()
+            },
+                type: 'POST',
+                datatype: 'JSON',
+                url: '@Url.Action("SendEmailToPersonnel", "Infraction")',
+                cache: false,
+             beforeSend: function () {
+                    isSendingEmail = true;
+                    ShowLoadingScreen()
+                    swal({
+                        title: "",
+                        text: "Sending email. Please wait",
+                        showCancelButton: false,
+                        showConfirmButton: false,
+                        html: true
+                    });
+                },
+             complete: function () {
+                 isSendingEmail = false;
+                    RemoveLoadingScreen()
+                    swal.close();
+                },
+             success: function (response) {
+                    if (response.msg == false) {
+                        toastr.error('Error', response.res);
+                    }
+                },
+                error: function (x) {
+                    alert(x);
+                }
+            });
+    }
+
+    function SelectRow() {
+        $tableName = $(this).closest('table');
+        $tr = $(this).closest('tr');
+        $b = $tr.find('button');
+        $cb = $tr.find('input[type="checkbox"]');
+
+        $tableName.find('button').removeClass('btn-primary').addClass('btn-white');
+        $tableName.find('input[type="checkbox"]').iCheck('uncheck');
+
+        $b.removeClass('btn-white').addClass('btn-primary');
+        $cb.iCheck('check');
+
+
+    }
+
+    $.fn.fileInput = function() {
+        $customInput = $('div.customFileInput');
+
+        $(this).attr('name', '');
+        $(this).parent().find('div').remove();
+        $(this).after($customInput.html());
+        $(this).next('div.customFileInput').removeClass('hidden');
+        $(this).addClass('hidden');
+    }
+</script>

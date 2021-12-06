@@ -34,7 +34,9 @@
     var WorkExperiencesTabAccess = credential.GetPage("Work Experiences") ?? new DataAccessLayer.System.Page ();
     var TrainingsAndSeminarsTabAccess = credential.GetPage("Trainings and Seminars") ?? new DataAccessLayer.System.Page ();
     var MemoTabAccess = credential.GetPage("Memo") ?? new DataAccessLayer.System.Page ();
-    var InfractionsTabAccess = credential.GetPage("Infractions") ?? new DataAccessLayer.System.Page ();
+    var WrittenExplanationTabAccess = credential.GetPage("Written Explanations") ?? new DataAccessLayer.System.Page();
+    var InfractionsTabAccess = credential.GetPage("Infractions") ?? new DataAccessLayer.System.Page();
+    var PolicyAndProceduresTabAccess = credential.GetPage("Policy And Procedures") ?? new DataAccessLayer.System.Page ();
     var CompensationsTabAccess = credential.GetPage("Compensations") ?? new DataAccessLayer.System.Page ();
     var DeductionsTabAccess = credential.GetPage("Deductions") ?? new DataAccessLayer.System.Page ();
     var LoansTabAccess = credential.GetPage("Loans") ?? new DataAccessLayer.System.Page();
@@ -70,25 +72,29 @@
             {
                 <li class=""><a data-toggle="tab" href="#tab-5"><i class="fa fa-certificate"></i> Trainings and Seminars</a></li>
             }
-            @if (MemoTabAccess.View)
+            @if (WrittenExplanationTabAccess.View)
             {
-                <li class=""><a data-toggle="tab" href="#tab-6"><i class="fa fa-files-o"></i> Memos</a></li>
+                <li class=""><a data-toggle="tab" href="#tab-6"><i class="fa fa-files-o"></i> Written Explanations</a></li>
             }
             @if (InfractionsTabAccess.View)
             {
                 <li class=""><a data-toggle="tab" href="#tab-7"><i class="fa fa-exclamation-circle"></i> Infractions</a></li>
             }
+            @if (PolicyAndProceduresTabAccess.View)
+            {
+                <li class=""><a data-toggle="tab" href="#tab-8"><i class="fa fa-exclamation-circle"></i> Policy And Procedures</a></li>
+            }
             @if (CompensationsTabAccess.View || DeductionsTabAccess.View)
             {
-                <li class=""><a data-toggle="tab" href="#tab-8"><i class="fa fa-money"></i> Compensation and Deductions</a></li>
+                <li class=""><a data-toggle="tab" href="#tab-9"><i class="fa fa-money"></i> Compensation and Deductions</a></li>
             }
             @if (LeaveCreditsTabAccess.View)
             {
-                <li class=""><a data-toggle="tab" href="#tab-9"><i class="fa fa-calculator"></i> Leave Credits</a></li>
+                <li class=""><a data-toggle="tab" href="#tab-10"><i class="fa fa-calculator"></i> Leave Credits</a></li>
             }
             @if (LoansTabAccess.View)
             {
-                <li class=""><a data-toggle="tab" href="#tab-10"><i class="fa fa-calculator"></i> Loans</a></li>
+                <li class=""><a data-toggle="tab" href="#tab-11"><i class="fa fa-calculator"></i> Loans</a></li>
             }
         </ul>
         <div class="tab-content" style="padding: 0;">
@@ -209,11 +215,11 @@
                                         </div>
 
                                         @*<div class="form-group col-xs-12 col-sm-4 col-md-4 col-lg-3">
-            @Html.LabelFor(m => m.Personnel.TaxTypeID, new { @class = "control-label" })
-            <div class="">
-                @Html.DropDownListFor(m => m.Personnel.TaxTypeID, new SelectList(taxTypes, "ID", "Description"), new { @class = "form-control" })
-            </div>
-        </div>*@
+                                        @Html.LabelFor(m => m.Personnel.TaxTypeID, new { @class = "control-label" })
+                                        <div class="">
+                                            @Html.DropDownListFor(m => m.Personnel.TaxTypeID, new SelectList(taxTypes, "ID", "Description"), new { @class = "form-control" })
+                                        </div>
+                                    </div>*@
 
                                         <div class="form-group col-xs-12 col-sm-4 col-md-4 col-lg-3">
                                             @Html.LabelFor(m => m.Personnel.NationalityID, new { @class = "control-label" })
@@ -424,24 +430,24 @@
                                         </div>
 
                                         @*<div class="form-group col-xs-12 col-sm-4 col-md-4 col-lg-3">
-            @Html.LabelFor(m => m.Personnel.Allowance, new { @class = "control-label" })
-            <div class="input-group">
-                <span class="input-group-addon input-group-addon-dropdown">
-                    @Html.DropDownListFor(m => m.Personnel.AllowanceCurrencyID, new SelectList(currencies, "ID", "Description"), new { @class = "form-control" })
-                </span>
-                @Html.TextBoxFor(m => m.Personnel.Allowance, new { @class = "form-control text-transform-none moneyInput" })
-            </div>
-        </div>*@
+                                        @Html.LabelFor(m => m.Personnel.Allowance, new { @class = "control-label" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon input-group-addon-dropdown">
+                                                @Html.DropDownListFor(m => m.Personnel.AllowanceCurrencyID, new SelectList(currencies, "ID", "Description"), new { @class = "form-control" })
+                                            </span>
+                                            @Html.TextBoxFor(m => m.Personnel.Allowance, new { @class = "form-control text-transform-none moneyInput" })
+                                        </div>
+                                    </div>*@
 
                                         @*<div class="form-group col-xs-12 col-sm-4 col-md-4 col-lg-3">
-            @Html.LabelFor(m => m.Personnel.Salary, new { @class = "control-label" })
-            <div class="input-group">
-                <span class="input-group-addon input-group-addon-dropdown">
-                    @Html.DropDownListFor(m => m.Personnel.SalaryCurrencyID, new SelectList(currencies, "ID", "Description"), new { @class = "form-control" })
-                </span>
-                @Html.TextBoxFor(m => m.Personnel.Salary, new { @class = "form-control text-transform-none moneyInput" })
-            </div>
-        </div>*@
+                                        @Html.LabelFor(m => m.Personnel.Salary, new { @class = "control-label" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon input-group-addon-dropdown">
+                                                @Html.DropDownListFor(m => m.Personnel.SalaryCurrencyID, new SelectList(currencies, "ID", "Description"), new { @class = "form-control" })
+                                            </span>
+                                            @Html.TextBoxFor(m => m.Personnel.Salary, new { @class = "form-control text-transform-none moneyInput" })
+                                        </div>
+                                    </div>*@
                                     </div>
                                 </div>
                             </div>
@@ -577,46 +583,46 @@
                             </div>
                         }
                         @*<div class="row">
-                            <div id="SchedDiv" class="panel panel-primary" style="margin: 0px 15px 5px 15px;">
-                                <div class="panel-heading" style="padding: 5px 10px;">Schedule</div>
-                                @*<div id="Days" class="panel-body" style="padding: 0px;">
-                                    <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-2">
-                                        <label>Sunday</label>
-                                        @Html.DropDownListFor(m => m.Personnel._Schedule.SundayScheduleID, new SelectList(sched, "ID", "Description", Model.Personnel._Schedule.CheckIfNull<PersonnelSchedule>().SundayScheduleID), "N/A", new { @class = "form-control required" })
-                                    </div>
-                                    <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-2">
-                                        <label>Monday</label>
-                                        @Html.DropDownListFor(m => m.Personnel._Schedule.MondayScheduleID, new SelectList(sched, "ID", "Description", Model.Personnel._Schedule.CheckIfNull<PersonnelSchedule>().MondayScheduleID), "N/A", new { @class = "form-control required" })
-                                    </div>
-                                    <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-2">
-                                        <label>Tuesday</label>
-                                        @Html.DropDownListFor(m => m.Personnel._Schedule.TuesdayScheduleID, new SelectList(sched, "ID", "Description", Model.Personnel._Schedule.CheckIfNull<PersonnelSchedule>().TuesdayScheduleID), "N/A", new { @class = "form-control required" })
-                                    </div>
-                                    <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-2">
-                                        <label>Wednesday</label>
-                                        @Html.DropDownListFor(m => m.Personnel._Schedule.WednesdayScheduleID, new SelectList(sched, "ID", "Description", Model.Personnel._Schedule.CheckIfNull<PersonnelSchedule>().WednesdayScheduleID), "N/A", new { @class = "form-control required" })
-                                    </div>
-                                    <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-2">
-                                        <label>Thursday</label>
-                                        @Html.DropDownListFor(m => m.Personnel._Schedule.ThursdayScheduleID, new SelectList(sched, "ID", "Description", Model.Personnel._Schedule.CheckIfNull<PersonnelSchedule>().ThursdayScheduleID), "N/A", new { @class = "form-control required" })
-                                    </div>
-                                    <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-2">
-                                        <label>Friday</label>
-                                        @Html.DropDownListFor(m => m.Personnel._Schedule.FridayScheduleID, new SelectList(sched, "ID", "Description", Model.Personnel._Schedule.CheckIfNull<PersonnelSchedule>().FridayScheduleID), "N/A", new { @class = "form-control required" })
-                                    </div>
-                                    <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-2">
-                                        <label>Saturday</label>
-                                        @Html.DropDownListFor(m => m.Personnel._Schedule.SaturdayScheduleID, new SelectList(sched, "ID", "Description", Model.Personnel._Schedule.CheckIfNull<PersonnelSchedule>().SaturdayScheduleID), "N/A", new { @class = "form-control required" })
-                                    </div>
+                        <div id="SchedDiv" class="panel panel-primary" style="margin: 0px 15px 5px 15px;">
+                            <div class="panel-heading" style="padding: 5px 10px;">Schedule</div>
+                            @*<div id="Days" class="panel-body" style="padding: 0px;">
+                                <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-2">
+                                    <label>Sunday</label>
+                                    @Html.DropDownListFor(m => m.Personnel._Schedule.SundayScheduleID, new SelectList(sched, "ID", "Description", Model.Personnel._Schedule.CheckIfNull<PersonnelSchedule>().SundayScheduleID), "N/A", new { @class = "form-control required" })
                                 </div>
-                                <div class="panel-body" style="padding: 0px;">
-                                    <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-2">
-                                        @Html.LabelFor(m => m.Personnel.PayrollTypeID, new { @class = "control-label" })
-                                        @Html.DropDownListFor(m => m.Personnel.PayrollTypeID, new SelectList(paytype, "ID", "Description", Model.Personnel.PayrollTypeID), "N/A", new { @class = "form-control required" })
-                                    </div>
+                                <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-2">
+                                    <label>Monday</label>
+                                    @Html.DropDownListFor(m => m.Personnel._Schedule.MondayScheduleID, new SelectList(sched, "ID", "Description", Model.Personnel._Schedule.CheckIfNull<PersonnelSchedule>().MondayScheduleID), "N/A", new { @class = "form-control required" })
+                                </div>
+                                <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-2">
+                                    <label>Tuesday</label>
+                                    @Html.DropDownListFor(m => m.Personnel._Schedule.TuesdayScheduleID, new SelectList(sched, "ID", "Description", Model.Personnel._Schedule.CheckIfNull<PersonnelSchedule>().TuesdayScheduleID), "N/A", new { @class = "form-control required" })
+                                </div>
+                                <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-2">
+                                    <label>Wednesday</label>
+                                    @Html.DropDownListFor(m => m.Personnel._Schedule.WednesdayScheduleID, new SelectList(sched, "ID", "Description", Model.Personnel._Schedule.CheckIfNull<PersonnelSchedule>().WednesdayScheduleID), "N/A", new { @class = "form-control required" })
+                                </div>
+                                <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-2">
+                                    <label>Thursday</label>
+                                    @Html.DropDownListFor(m => m.Personnel._Schedule.ThursdayScheduleID, new SelectList(sched, "ID", "Description", Model.Personnel._Schedule.CheckIfNull<PersonnelSchedule>().ThursdayScheduleID), "N/A", new { @class = "form-control required" })
+                                </div>
+                                <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-2">
+                                    <label>Friday</label>
+                                    @Html.DropDownListFor(m => m.Personnel._Schedule.FridayScheduleID, new SelectList(sched, "ID", "Description", Model.Personnel._Schedule.CheckIfNull<PersonnelSchedule>().FridayScheduleID), "N/A", new { @class = "form-control required" })
+                                </div>
+                                <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-2">
+                                    <label>Saturday</label>
+                                    @Html.DropDownListFor(m => m.Personnel._Schedule.SaturdayScheduleID, new SelectList(sched, "ID", "Description", Model.Personnel._Schedule.CheckIfNull<PersonnelSchedule>().SaturdayScheduleID), "N/A", new { @class = "form-control required" })
                                 </div>
                             </div>
-                        </div>*@
+                            <div class="panel-body" style="padding: 0px;">
+                                <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-2">
+                                    @Html.LabelFor(m => m.Personnel.PayrollTypeID, new { @class = "control-label" })
+                                    @Html.DropDownListFor(m => m.Personnel.PayrollTypeID, new SelectList(paytype, "ID", "Description", Model.Personnel.PayrollTypeID), "N/A", new { @class = "form-control required" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>*@
 
                         @* Particulars *@
                         @if (LicenseTabAccess.View)
@@ -682,17 +688,17 @@
 
                         @* Vacation *@
                         @*<div class="row">
-            <div id="VacationsDiv" class="panel panel-primary" style="margin: 0px 15px 5px 15px;">
-                <div class="panel-heading" style="padding: 5px 10px;">Vacations</div>
-                <div class="panel-body" style="padding: 0px;">
-                    <div class="row" style="padding: 0px 13px 0px 14px;">
-                        <div id="form-vaccines">
-                            @Html.Partial("~/Views/HumanResource/Personnel/_PersonnelVacations.cshtml")
+                        <div id="VacationsDiv" class="panel panel-primary" style="margin: 0px 15px 5px 15px;">
+                            <div class="panel-heading" style="padding: 5px 10px;">Vacations</div>
+                            <div class="panel-body" style="padding: 0px;">
+                                <div class="row" style="padding: 0px 13px 0px 14px;">
+                                    <div id="form-vaccines">
+                                        @Html.Partial("~/Views/HumanResource/Personnel/_PersonnelVacations.cshtml")
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>*@
+                    </div>*@
                     </div>
 
                     @if (PersonnelTabAccess.Update)
@@ -747,28 +753,17 @@
                 </div>
             }
 
-            @* Memos *@
-            @if (MemoTabAccess.View)
+
+            @* Written Explanation *@
+            @if (WrittenExplanationTabAccess.View)
             {
                 <div id="tab-6" class="tab-pane">
-                    <div class="panel-body" style="padding: 10px;">
-                        <div id="form-memos" class="">
-                            <div id="MemosDiv" class="panel panel-primary" style="margin: 0px;">
-                                @*Html.Partial("~/Views/HumanResource/Personnel/_PersonnelMemos.cshtml")*@
+                    <div class="panel-body tab-panel-body" style="width: 100%; overflow-y: auto; padding: 10px;">
+                        <div id="form-writtenexplanation" class="">
+                            <div id="writtenexplanation-div" class="panel panel-primary" style="margin: 0px;">
                             </div>
-                            <div id="MemoRepliesDiv" class="panel panel-info hidden" style="margin: 0px;">
-                                <div class="panel-heading" style="padding: 5px 10px; font-size: 23px;">
-                                    <button type="button" class="close" style="float: left; font-size: 30px; font-weight: 800; color: #fff; opacity: 1;">
-                                        <span aria-hidden="true"><i class="fa fa-angle-left"></i></span>
-                                    </button>
-                                    &nbsp; Memo Replies
-                                </div>
+                            <div id="writtenexplanation-contents-div" class="hidden panel panel-info  content-panel" style="margin: 0px;">
                                 <div class="panel-body" style="padding: 0px;">
-                                    <div class="chat-view">
-                                        <div class="col-md-12 col-lg-offset-3 col-lg-6" style="padding: 0px;">
-                                            <div class="chat-discussion"></div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -781,20 +776,28 @@
             {
                 <div id="tab-7" class="tab-pane">
                     <div class="panel-body tab-panel-body" style="width: 100%; overflow-y: auto; padding: 10px;">
-                        <div id="form-legislation" class="">
-                            <div id="LegislationsDiv" class="panel panel-primary" style="margin: 0px;">
-                                @*Html.Partial("~/Views/HumanResource/Personnel/_PersonnelLegislations.cshtml")*@
+                        <div id="form-infraction" class="">
+                            <div id="infractions-div" class="panel panel-primary" style="margin: 0px;">
                             </div>
-                            <div id="LegislationRepliesDiv" class="panel panel-info hidden" style="margin: 0px;">
-                                <div class="panel-heading" style="padding: 5px 10px; font-size: 23px;">
-                                    <button type="button" class="close" style="float: left; font-size: 30px; font-weight: 800; color: #fff; opacity: 1;">
-                                        <span aria-hidden="true"><i class="fa fa-angle-left"></i></span>
-                                    </button>
-                                    &nbsp; Infraction Replies
-                                </div>
+                            <div id="infraction-contents-div" class="hidden panel panel-info  content-panel" style="margin: 0px;">
                                 <div class="panel-body" style="padding: 0px;">
-                                    <div class="chat-view">
-                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @* Policy And Procedure *@
+            @if (PolicyAndProceduresTabAccess.View)
+            {
+                <div id="tab-8" class="tab-pane">
+                    <div class="panel-body tab-panel-body" style="width: 100%; overflow-y: auto; padding: 10px;">
+                        <div id="form-policyandprocedure" class="">
+                            <div id="policyandprocedures-div" class="panel panel-primary" style="margin: 0px;">
+                            </div>
+                            <div id="policyandprocedure-contents-div" class="hidden panel panel-info  content-panel" style="margin: 0px;">
+                                <div class="panel-body" style="padding: 0px;">
                                 </div>
                             </div>
                         </div>
@@ -805,7 +808,7 @@
             @* Compensation and Deductions *@
             @if (CompensationsTabAccess.View || DeductionsTabAccess.View)
             {
-                <div id="tab-8" class="tab-pane">
+                <div id="tab-9" class="tab-pane">
                     <div class="panel-body tab-panel-body" style="width: 100%;">
                         <div id="form-compded">
 
@@ -817,7 +820,7 @@
             @* Leave Credits *@
             @if (LeaveCreditsTabAccess.View)
             {
-                <div id="tab-9" class="tab-pane">
+                <div id="tab-10" class="tab-pane">
                     <div class="panel-body" style="padding: 10px;">
                         <div class="row">
                             <div id="form-leavecredits">
@@ -830,7 +833,7 @@
             @* Loans *@
             @if (LoansTabAccess.View)
             {
-                <div id="tab-10" class="tab-pane">
+                <div id="tab-11" class="tab-pane">
                     <div class="panel-body" style="padding: 10px;">
                         <div class="row">
                             <div id="loansDiv" class="panel panel-primary" style="margin: 0px 15px 5px 15px;">

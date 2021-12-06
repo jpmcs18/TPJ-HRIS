@@ -1,0 +1,29 @@
+﻿@model WebTemplate.Models.Personnel.PolicyAndProcedureContent
+
+<div class="content-container">
+    <input type="hidden" value="@Model.Acknowledgement.ID" id="content-id" />
+    <div class="memo-info content single-data">
+        <div>Memo No.: @Model.PolicyAndProcedure.MemoNo</div>
+        <div>Memo Date: @Model.PolicyAndProcedure.MemoDate.Value.ToString("MMMM dd, yyyy")</div>
+        <div>Description : @Model.PolicyAndProcedure.Description</div>
+        <div class="file">
+            @if (Model.PolicyAndProcedure.IsFileSupported)
+            {
+                <embed class="content-file" src="@Model.PolicyAndProcedure.FilePath" title="File">
+            }
+            else
+            {
+                <a href="@Model.PolicyAndProcedure.FilePath" class="attached-file" target="_blank" title="Download">
+                    <i class="fa fa-file-o"></i> File (@Model.PolicyAndProcedure.File)
+                </a>
+            }
+        </div>
+        <div class="actions">
+            <button type="button" class="btn btn-info btn-w-s back-btn" title="Send">Back</button>
+            @if (!Model.Acknowledgement.Acknowledge)
+            {
+                <button type="button" name="Acknowledge" class="btn btn-info btn-w-s Acknowledged" title="Send">Acknowledge</button>
+            }
+        </div>
+    </div>
+</div>

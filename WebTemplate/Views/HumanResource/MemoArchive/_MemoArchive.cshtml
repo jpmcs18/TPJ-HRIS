@@ -1,14 +1,17 @@
 ﻿@model ProcessLayer.Entities.MemoArchives
 
+@using WebTemplate.Extension
+@using ProcessLayer.Entities
+
 @{
     var MemoArchivePageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("HumanResource/MemoArchive");
 
     var file = Model.File;
     var filename = Path.GetFileName(file);
 
-    var MemoTypeDescription = !String.IsNullOrEmpty(Model._MemoType.Description) ? Model._MemoType.Description : "";
+    var MemoTypeDescription = Model._MemoType.CheckIfNull<Lookup>().Description;
 }
-@functions{ 
+@functions{
     public bool IsImage(string str)
     {
         var imageExtensions = new string[] { ".jpg", ".jpeg", ".bmp", ".gif", ".png" };
@@ -69,13 +72,13 @@
         <td style="" class="row-actions">
             <div class="btn-group">
                 @*@if (MemoArchivePageAccess.View)
-        {
-            <button type="button" name="ViewReplies" class="btn btn-primary btn-sm btn-rounded ViewReplies" value="@Model.ID" title="View Replies"><i class="fa fa-eye"></i></button>
-        }
-        @if (MemoArchivePageAccess.Delete)
-        {
-            <button type="button" name="DeleteMemoArchive" class="btn btn-outline btn-danger btn-sm btn-rounded DeleteMemoArchive" value="@Model.ID" title="Delete"><i class="fa fa-trash"></i></button>
-        }*@
+                    {
+                        <button type="button" name="ViewReplies" class="btn btn-primary btn-sm btn-rounded ViewReplies" value="@Model.ID" title="View Replies"><i class="fa fa-eye"></i></button>
+                    }
+                    @if (MemoArchivePageAccess.Delete)
+                    {
+                        <button type="button" name="DeleteMemoArchive" class="btn btn-outline btn-danger btn-sm btn-rounded DeleteMemoArchive" value="@Model.ID" title="Delete"><i class="fa fa-trash"></i></button>
+                    }*@
                 @if (Model._MemoStatus.Description.ToUpper() != "CLOSED")
                 {
                     <button type="button" name="CloseMemoArchive" class="btn btn-outline btn-danger btn-sm btn-rounded CloseMemoArchive" value="@Model.ID" title="Close Memo">Close</button>
@@ -85,6 +88,6 @@
                     <span class='label label-default'>Closed</span>
                 }
             </div>
-    </td>
+        </td>
     }
 </tr>

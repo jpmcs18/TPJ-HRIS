@@ -1,0 +1,54 @@
+﻿@model WebTemplate.Models.Personnel.WrittenExplanations
+
+@{
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var MemoPageAccess = credential.GetPage("Memo") ?? new DataAccessLayer.System.Page();
+}
+
+<div class="table-responsive" style="">
+    <table id="MemosTable" class="table table-stripped table-bordered">
+        <thead>
+            <tr>
+                <th class="text-left">No.</th>
+                <th class="text-center">Date</th>
+                <th class="text-center" style="width:5em">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.WrittenExplanationList.Count() > 0)
+            {
+                for (int i = 0; i < Model.WrittenExplanationList.Count(); i++)
+                {
+                    <tr id="@Model.WrittenExplanationList[i].ID" class="Row-Display Row-Display-MemoArchive read writtenexplanation-record" title="Click to open record" style="cursor:pointer">
+                        <td class="text-left">
+                            <input hidden class="MemoNo" value="@Model.WrittenExplanationList[i].MemoNo" />
+                            <input hidden class="Subject" value="@Model.WrittenExplanationList[i].Subject" />
+                            <b style="font-size: 10px;">@Model.WrittenExplanationList[i].MemoNo</b>
+                            <br />
+                            <text class="font-bold-500" style="font-size: 10px; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;">
+                                @(!String.IsNullOrEmpty(Model.WrittenExplanationList[i].Description) ? Model.WrittenExplanationList[i].Description : "")
+                            </text>
+                        </td>
+                        <td class="text-center mail-date" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">@String.Format("{0:MMM dd, yyyy}", Model.WrittenExplanationList[i].MemoDate)</td>
+                        <td style="" class="row-actions">
+                            <div class="memo-status">
+                                <span class='label label-default'>@Model.WrittenExplanationList[i].Status.Description</span>
+                                @if (Model.WrittenExplanationList[i].StatusID == 2)
+                                {
+                                    <div class='saction-detail'><b>@Model.WrittenExplanationList[i].Recommendation.Description</b></div>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+
+                }
+            }
+            else
+            {
+                <tr id="No-Row-Display"><td style="text-align: center;" colspan="6">No Written Explanations found...</td></tr>
+            }
+        </tbody>
+        <tfoot>
+        </tfoot>
+    </table>
+</div>

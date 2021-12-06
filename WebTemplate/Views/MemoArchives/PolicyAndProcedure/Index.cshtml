@@ -1,0 +1,981 @@
+@model WebTemplate.Models.MemoArchives.PolicyAndProcedure.Index
+
+@{
+    var PageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("MemoArchives/PolicyAndProcedure");
+
+    ViewBag.title = PageAccess.PageName;
+}
+
+<div class="wrapper wrapper-content">
+    <div class="page-heading">
+        <div class="col-lg-8">
+            <h1>@Html.Raw(PageAccess.PageName ?? "&nbsp;")</h1>
+            <ol class="breadcrumb">
+                <li>
+                    <a href='@Url.Action("Index", "Home")'>Home</a>
+                </li>
+                <li class="active">
+                    <strong>@Html.Raw(PageAccess.PageName ?? "&nbsp;")</strong>
+                </li>
+            </ol>
+        </div>
+        <div class="col-lg-4">
+            <div class="title-action">
+                @if (PageAccess.Insert)
+                {
+                    <a class="btn btn-primary compose-mail btnadd" href="#">New Policy And Procedure</a>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="" style="margin-top: 85px;">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 animated fadeInLef">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 m-b-sm" style="padding: 0px;">
+                <div class="tabs-container" style="border: 1px solid #009688;">
+                    <div class="tab-content" style="margin-top: 0px; max-height: unset; overflow-y: auto; overflow-x: hidden;">
+                        @if (PageAccess.View)
+                        {
+                            <div id="tab-2" class="tab-pane active" style="height: 850px;">
+                                <div id="MemoForm" class="panel-body" style="padding: 10px; max-height: 100%; border: 1px solid #e5e6e7; overflow-y: hidden;">
+                                    @Html.Partial("~/Views/MemoArchives/PolicyAndProcedure/_Search.cshtml")
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 animated fadeInUp">
+            <form id="form_search" enctype="multipart/form-data" class="pull-left" style="width: 100%;">
+            </form>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="StoreEditModel" />
+
+<div id="" class="customFileInput hidden">
+    <div class="input-group file-input" style="display: inline-table; width: 100%;">
+        <span class="input-group-addon"><i class="fa fa-file"></i></span>
+        <input type="text" name="File" class="browseFileCustom form-control text-transform-none" placeholder="File..." readonly="readonly" />
+        <span id="" class="clearInput" title="Clear"><i class="fa fa-times"></i></span>
+    </div>
+</div>
+
+<div class="modal inmodal custom-modal" id="NewMemoModal" data-backdrop="static" data-keyboard="false" tabindex="" role="dialog" aria-hidden="true">
+    <div class="vertical-alignment-helper">
+        <div class="modal-center vertical-align-center">
+            <div class="modal-content animated fadeInUp modal-width-60">
+                <div class="modal-header">
+                    <h5 class="modal-title">New Infraction</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="max-height: 750px; background-color: #fff; overflow: hidden;">
+                </div>
+                <div class="modal-footer">
+                    <div class="pull-left" style="padding: 4px 0;">
+                        <input id="SendMemo" type="checkbox" class="i-checks"> &nbsp;
+                        <label for="SendMemo">Send Email on Save </label>
+                    </div>
+                    <button type="button" name="SaveMemo" class="btn btn-info btn-w-m SaveMemo" value="0" title="Save"><i class="fa fa-save"></i> &nbsp;Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal inmodal custom-modal" id="ViewReplies" data-backdrop="static" data-keyboard="false" tabindex="" role="dialog" aria-hidden="true">
+    <div class="vertical-alignment-helper">
+        <div class="modal-center vertical-align-center">
+            <div class="modal-content animated fadeInUp modal-width-90">
+                <div class="modal-header">
+                    <h5 class="modal-title">Infraction</h5>
+                    <button type="button" class="close" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="background-color: #fff; overflow: hidden;">
+                    <div class="chat-view"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal inmodal custom-modal" id="ViewPolicyAndProcedures" data-backdrop="static" data-keyboard="false" tabindex="" role="dialog" aria-hidden="true">
+    <div class="vertical-alignment-helper">
+        <div class="modal-center vertical-align-center">
+            <div class="modal-content animated fadeInUp modal-width-90">
+                <div class="modal-header">
+                    <h5 class="modal-title">Policy And Procedure</h5>
+                    <button type="button" class="close" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <input type="hidden" id="hid_modal_year" />
+                <input type="hidden" id="hid_modal_page" />
+                <div class="modal-body" style="background-color: #fff; overflow: hidden;">
+                    <div class="modal-data data"></div>
+                    <div class="modal-data management hidden"></div>
+                    <div class="modal-data personnels hidden"></div>
+                </div>
+
+                <div class="modal-footer">
+                    <div class="pull-left" style="padding: 4px 0;">
+                        <input id="SendModalMemo" type="checkbox" class="i-checks"> &nbsp;
+                        <label for="SendModalMemo">Send Email on Save </label>
+                    </div>
+                    <button type="button" name="SaveModalMemo" class="btn btn-info btn-w-m SaveModalMemo" value="0" title="Save"><i class="fa fa-save"></i> &nbsp;Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .image-crop {
+        overflow: hidden;
+        /*text-align: -webkit-center;*/
+    }
+
+        .image-crop > .cropper-container {
+            width: 150px !important;
+            height: 150px !important;
+            left: 0px !important;
+            top: 0px !important;
+        }
+
+    .Personnel-Discussion {
+        background-color: #eeeeee;
+    }
+
+    .sa-icon.sa-custom {
+        transform: scale(1.5);
+    }
+</style>
+<link href="~/Content/memo-archive.css" rel="stylesheet" />
+
+<script type="text/javascript">
+        let isSendingEmail = false;
+        var PageAccess = @Html.Raw(Json.Encode(PageAccess));
+        var interval = null;
+
+        $(document).ready(function() {
+            Events();
+        });
+
+        window.onbeforeunload = function(e) {
+            if (isSendingEmail == true)
+                return "Sending email in progress. Unable to reload page.";
+        }
+
+        $(function() {
+            $(document).keydown(function(e) {
+                if (((e.which || e.keyCode) == 116 ||
+                        (e.which || e.keyCode) == 82 ||
+                        (((e.which || e.keyCode) == 65) && e.ctrlKey)) &&
+                    isSendingEmail == true) {
+                    e.preventDefault();
+                    toastr.error('Sending email in progress. Unable to reload page.', 'Error');
+                }
+            });
+        });
+
+        function NewMemo() {
+            $.ajax({
+                data: {
+                    __RequestVerificationToken: $('@Html.AntiForgeryToken()').val()
+                },
+                type: 'POST',
+                datatype: 'JSON',
+                url: '@Url.Action("NewMemo", "PolicyAndProcedure")',
+
+                cache: false,
+                beforeSend: function() {
+                    ShowLoadingScreen();
+                },
+                complete: function() {
+                    RemoveLoadingScreen();
+                },
+                success: function(response) {
+                    if (response.msg == false) {
+                        toastr.error(response.res);
+                    } else {
+                        showPolicyAndProcedureManagement(response)
+                    }
+                },
+                error: function(x) {
+                }
+            });
+    }
+    function showPolicyAndProcedureManagement(response) {
+        $('#ViewPolicyAndProcedures .modal-body .management').html(response);
+        $('#ViewPolicyAndProcedures').appendTo("body").modal('show');
+        showDiv('management');
+        $('#ViewPolicyAndProcedures .close').off('click').on('click', closeOther);
+        EmptySearch('SearchTableDiv', 'p');
+        EmptySearch('GroupTableDiv', 'g');
+        InitInputFileBrowse();
+        $('.radioMemberType').off('ifClicked').on('ifClicked', MemberType);
+        $('#NewMemo div[id="SearchPersonnelOrGroup"]').removeClass('hidden');
+        BindSaveFunction();
+    }
+    function MemberType() {
+        var action = $(this).val();
+        var action = $(this).val();
+
+        if (action == 'Personnel') {
+            $('#SearchTable').show();
+            $('#GroupTable').hide();
+        } else {
+            $('#SearchTable').hide();
+            $('#GroupTable').show();
+        }
+    }
+
+        function checkInternetConnection() {
+            try {
+                var isOnline = navigator.onLine;
+
+                if (isOnline) {
+                    $('#NewMemo #No-Chat-Internet').addClass('hidden');
+                    $('#NewMemo #SendMemo').closest('div.pull-left').removeClass('hidden');
+
+                    $('#ViewReplies #No-Chat-Internet').addClass('hidden');
+                    $('#ViewReplies #SendMemo').closest('div.pull-left').removeClass('hidden');
+                } else {
+                    $('#NewMemo #No-Chat-Internet').removeClass('hidden');
+                    $('#NewMemo #SendMemo').closest('div.pull-left').addClass('hidden');
+
+                    $('#ViewReplies #No-Chat-Internet').removeClass('hidden');
+                    $('#ViewReplies #SendMemo').closest('div.pull-left').addClass('hidden');
+                }
+            } catch {
+            }
+
+    }
+
+        function SaveTable() {
+            var formdata = new FormData()
+
+            $('#MemoFields *').each(function () {
+                var name = $(this).attr('name');
+                var value = $(this).val();
+                if (name != null && value != null)
+                    formdata.append(name, $(this).val());
+            });
+
+            if ($('#MemoFields').find(".browsefile")[0].files.length > 0)
+                formdata.append("fileBase", $('#MemoFields').find(".browsefile")[0].files[0]);
+
+            if ($('#NewMemo .radio-group').is(':checked')) {
+                formdata.append('groupId',
+                    $('#GroupTable input[type="checkbox"]:checked').closest('tr').find('.GroupID').val());
+            } else {
+                formdata.append('personnelId',
+                    $('#PersonnelsTable input[type="checkbox"]:checked').closest('tr').find('.PersonnelID').val());
+            }
+
+            formdata.append('sendEmail', $('#SendModalMemo').is(':checked'))
+            formdata.append("__RequestVerificationToken", $('@Html.AntiForgeryToken()').val());
+
+            $.ajax({
+                data: formdata,
+                type: 'POST',
+                datatype: 'JSON',
+                url: '@Url.Action("Save", "PolicyAndProcedure")',
+                cache: false,
+                contentType: false,
+                processData: false,
+                beforeSend: function() {
+                    ShowLoadingScreen()
+                },
+                complete: function() {
+                    RemoveLoadingScreen()
+                },
+                success: function (response) {
+                    if (response.msg == false) {
+                        toastr.error('Error', response.res);
+                    }
+                    else {
+                        if ($('#SendModalMemo').is(':checked')) {
+                            showPersonnelPolicyAndProcedure(response);
+                            const date = new Date($('#MemoDate').val());
+                            $('#hid_modal_year').val(date.getFullYear());
+                            $('#hid_modal_page').val(1),
+                            SendEmail()
+                        }
+                        else {
+                            showPersonnelPolicyAndProcedure(response);
+                        }
+
+                    }
+                },
+                error: function(x) {
+                }
+            });
+    }
+
+
+    function ViewPolicyAndProcedure() {
+        var $tr = $(this);
+        $('#hid_modal_year').val($tr.attr("id"))
+        $('#hid_modal_page').val(1),
+        FetchPolicyAndProcedure()
+    }
+    function FetchPolicyAndProcedure() {
+        $.ajax({
+            data: {
+                year: $('#hid_modal_year').val(),
+                page: $('#hid_modal_page').val(),
+                '__RequestVerificationToken': $('@Html.AntiForgeryToken()').val()
+            },
+            type: 'POST',
+            datatype: 'JSON',
+            url: '@Url.Action("PolicyAndProcedures", "PolicyAndProcedure")',
+            cache: false,
+            beforeSend: function() {
+                ShowLoadingScreen();
+            },
+            complete: function() {
+                RemoveLoadingScreen();
+            },
+            success: function(response) {
+                if (response.msg == false) {
+                    toastr.error(response.res);
+                } else {
+                    showPolicyAndProcedureModal(response);
+                }
+            },
+            error: function(x) {
+            }
+        });
+    }
+    function showDiv(className) {
+        $('#ViewPolicyAndProcedures .modal-body .modal-data').addClass('hidden');
+        $('#ViewPolicyAndProcedures .modal-body .' + className).removeClass('hidden')
+        $('#ViewPolicyAndProcedures .modal-footer').addClass('hidden');
+        if (className === 'management') {
+            $('#ViewPolicyAndProcedures .modal-footer').removeClass('hidden');
+        }
+
+    }
+    function showPolicyAndProcedureModal(response) {
+        $('#ViewPolicyAndProcedures .modal-body .data').html(response);
+        $('#ViewPolicyAndProcedures').appendTo("body").modal('show');
+        showDiv('data');
+        InitInputFileBrowse();
+        $('#ViewPolicyAndProcedures .close').off('click').on('click', function () { $('#ViewPolicyAndProcedures').modal('hide'); location.reload() });
+        $('.btnmodaladd').off('click').on('click', NewMemo);
+        $('.Modal-PolicyAndProcedure-Record').off('click').on('click', viewPersonnelPolicyAndProcedure);
+        $('.modal-pages').off('click').on('click',
+            function () {
+                $('#hid_modal_page').val($(this).val()),
+                FetchPolicyAndProcedure()
+            });
+
+        $('.btn-delete-memo').off('click').on('click', DeletePolicyAndProcedure);
+    }
+
+    function viewPersonnelPolicyAndProcedure() {
+        var $tr = $(this);
+        $.ajax({
+            data: {
+                papId: $tr.attr("id"),
+                '__RequestVerificationToken': $('@Html.AntiForgeryToken()').val()
+            },
+            type: 'POST',
+            datatype: 'JSON',
+            url: '@Url.Action("PersonnelPolicyAndProcedures", "PolicyAndProcedure")',
+            cache: false,
+            beforeSend: function() {
+                ShowLoadingScreen();
+            },
+            complete: function() {
+                RemoveLoadingScreen();
+            },
+            success: function(response) {
+                if (response.msg == false) {
+                    toastr.error(response.res);
+                } else {
+                    showPersonnelPolicyAndProcedure(response);
+                }
+            },
+            error: function(x) {
+            }
+        });
+    }
+
+    function showPersonnelPolicyAndProcedure(response) {
+        $('#ViewPolicyAndProcedures .modal-body .personnels').html(response);
+        showDiv('personnels');
+
+        $('#ViewPolicyAndProcedures .close').off('click').on('click', closeOther);
+
+        $('#edit-memo').off('click').on('click', EditMemo);
+        $('#cancel-memo').off('click').on('click', CancelMemo);
+        $('#save-memo').off('click').on('click', SaveMemo);
+        $('.edit-file').off('click').on('click', editFile);
+        $('.resend-file').off('click').on('click', resendFile);
+        $('.save-file').off('click').on('click', saveFile);
+        $('.cancel-file').off('click').on('click', cancelFile);
+    }
+
+    function saveFile() {
+
+        var formdata = new FormData()
+
+        if ($(this).parent().parent().find('#browseFile')[0].files.length > 0) {
+            formdata.append("file", $(this).parent().parent().find('#browseFile')[0].files[0]);
+        }
+
+        formdata.append('id', $(this).parent().parent().find('.selected-content-id').val())
+        formdata.append("__RequestVerificationToken", $('@Html.AntiForgeryToken()').val());
+
+        $.ajax({
+            data: formdata,
+            type: 'POST',
+            datatype: 'JSON',
+            url: '@Url.Action("ResaveContent", "PolicyAndProcedure")',
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function () {
+                ShowLoadingScreen()
+            },
+            complete: function () {
+                RemoveLoadingScreen()
+            },
+            success: function (response) {
+                if (response.msg == false) {
+                    toastr.error('Error', response.res);
+                }
+                else {
+                    if ($('#SendModalMemo').is(':checked')) {
+                        showPersonnelPolicyAndProcedure(response);
+                        SendEmail()
+                    }
+                    else {
+                        showPersonnelPolicyAndProcedure(response);
+                    }
+
+                }
+            },
+            error: function (x) {
+            }
+        });
+
+    }
+    function cancelFile() {
+        $(this).parent().parent().find('.btn-input').addClass("hidden")
+        $(this).parent().parent().find('.btn-actions').removeClass("hidden")
+
+    }
+    function editFile() {
+        $(this).parent().parent().find('.btn-input').removeClass("hidden")
+        $(this).parent().parent().find('.btn-actions').addClass("hidden")
+    }
+    function resendFile() {
+        const id = $(this).parent().parent().find('.selected-content-id').val();
+        Send(id);
+    }
+
+    function EditMemo() {
+        $(".display-memo").addClass("hidden");
+        $(".field-memo").removeClass("hidden");
+        $(".process-actions").addClass("hidden");
+
+        $(".content-management-actions .edit").addClass("hidden");
+        $(".content-management-actions .save").removeClass("hidden");
+    }
+    function CancelMemo() {
+        $(".display-memo").removeClass("hidden");
+        $(".field-memo").addClass("hidden");
+        $(".process-actions").removeClass("hidden");
+        $(".content-management-actions .edit").removeClass("hidden");
+        $(".content-management-actions .save").addClass("hidden");
+    }
+    function SaveMemo() {
+        $(".display-memo").removeClass("hidden");
+        $(".field-memo").addClass("hidden");
+        $(".process-actions").removeClass("hidden");
+        $(".content-management-actions .edit").removeClass("hidden");
+        $(".content-management-actions .save").addClass("hidden");
+
+        var formdata = new FormData()
+
+        $('.memo-info *').each(function () {
+            var name = $(this).attr('name');
+            var value = $(this).val();
+            if (name != null && value != null)
+                formdata.append(name, $(this).val());
+        });
+
+        formdata.append("__RequestVerificationToken", $('@Html.AntiForgeryToken()').val());
+
+        $.ajax({
+            data: formdata,
+            type: 'POST',
+            datatype: 'JSON',
+            url: '@Url.Action("Resave", "PolicyAndProcedure")',
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                ShowLoadingScreen()
+            },
+            complete: function() {
+                RemoveLoadingScreen()
+            },
+            success: function (response) {
+                if (response.msg == false) {
+                    toastr.error('Error', response.res);
+                }
+                else {
+                    if ($('#resend-email').is(':checked')) {
+                        showPersonnelPolicyAndProcedure(response);
+                        SendEmail()
+                    }
+                    else {
+                        showPersonnelPolicyAndProcedure(response);
+                    }
+
+                }
+            },
+            error: function(x) {
+            }
+        });
+
+    }
+    function closeOther() {
+        if (isSendingEmail == false) {
+            FetchPolicyAndProcedure();
+        } else {
+            toastr.warning('Sending memo in progress!', 'Warning');
+        }
+
+    }
+    function ScrollContentToBottom() {
+        let element = document.getElementById("content-list");
+        element.scrollTop = element.scrollHeight;
+    }
+
+
+        function InitDatePicker() {
+            $('.input-group.date')
+                .find('.form-control').attr('readonly', true)
+                .css('background-color', '#fff')
+                .datepicker({
+                    todayBtn: "linked",
+                    keyboardNavigation: false,
+                    forceParse: false,
+                    calendarWeeks: true,
+                    autoclose: true
+                }).off('change').on('change',
+                    function() {
+                        showClearInput($(this));
+                    });
+
+            $('.input-group.date').each(function() {
+                $(this).closest('.form-group').css({
+                    'margin-bottom': '7px'
+                });
+                showClearInput($(this).find('input.form-control'));
+            });
+        }
+
+        function BrowseFile() {
+            $x = $(this);
+            $(this).parent().parent().find('.browsefile').trigger('click');
+            $(this).parent().parent().find('.browsefile').off('change').on('change',
+                function(e) {
+                    if ($(this)[0].files.length > 0) {
+                        $x.val($(this)[0].files[0].name);
+                        $('.send').show();
+                    } else {
+                        $('.send').hide();
+                    }
+                });
+        }
+
+        function InitInputFileBrowse() {
+            $('input.browsefile').each(function() {
+                $(this).fileInput();
+                showClearInput($(this));
+            }).off('change').on('change',
+                function() {
+                    showClearInput($(this));
+                });
+
+            $('input.browseFileCustom').off('click').on('click', BrowseFile);
+            $('.clearInput').off('click').on('click', ClearField);
+        }
+
+        function showClearInput($this) {
+            var $input = $('#' + $this.attr('id'))
+            var $clearBtn = $input.next('.clearInput');
+
+            if ($input.val() == "") {
+                $clearBtn.hide();
+            } else {
+                $clearBtn.show();
+            }
+        }
+
+        function ClearField() {
+            $input = $(this).prev('input');
+            $inputHidden = $(this).closest('td').find('input[type="hidden"]');
+            $input.val('');
+            $inputHidden.val('');
+            showClearInput($input);
+            $('.send').hide();
+
+            if ($(this).parent().parent().find('input.form-control').attr('id') == 'browseImage' &&
+                $('#ImageCanvasImg').attr('src') != '\Images\default.jpg') {
+                $('#ImageCanvasImg').attr('src', '\\Images\\default.jpg');
+                $input.val('default.jpg');
+            }
+        }
+
+
+        function SearchPersonnel() {
+            var filter = $('#SearchPersonnelDiv input').val();
+
+            $.ajax({
+                url: '@Url.Action("SearchPersonnel", "PolicyAndProcedure")',
+                data: {
+                    filter: filter,
+                    '__RequestVerificationToken': $('@Html.AntiForgeryToken()').val()
+                },
+                type: "POST",
+                cache: false,
+                beforeSend: function() {
+                    $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr').addClass('hidden');
+                    $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr#Row-Loading-Display').removeClass('hidden');
+                },
+                complete: function() {
+                    $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr').addClass('hidden');
+                    if ($('#SearchPersonnelOrGroup #SearchTableDiv tbody tr.personnel').length > 0) {
+                        $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr.personnel').removeClass('hidden');
+                    } else
+                        $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr#No-Row-Display').removeClass('hidden');
+                },
+                success: function(response) {
+                    if (response.msg == null) {
+                        $("#SearchTable").find('#SearchPersonnelInput').val(filter).focus();
+                        $("#SearchTableDiv").html(response);
+
+                        BindSaveFunction();
+                        $('.radioMemberType').off('ifClicked').on('ifClicked', MemberType);
+
+                        if ($("#SearchTableDiv tbody tr.personnel").length == 1)
+                            $("#SearchTableDiv tbody tr.personnel button").trigger('click');
+                        else
+                            $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr#No-Row-Display').removeClass('hidden');
+                    } else {
+                        toastr.error(response.res);
+                    }
+                },
+                error: function() {
+                    toastr.error('AJAX backend error', 'An error has occured.');
+                }
+            });
+        }
+
+        function SearchGroup() {
+            var filter = $('#SearchGroupDiv input').val();
+
+            $.ajax({
+                url: '@Url.Action("SearchGroup", "PolicyAndProcedure")',
+                data: {
+                    filter: filter,
+                    '__RequestVerificationToken': $('@Html.AntiForgeryToken()').val()
+                },
+                type: "POST",
+                cache: false,
+                beforeSend: function() {
+                    $('#SearchPersonnelOrGroup #GroupTableDiv tbody tr').addClass('hidden');
+                    $('#SearchPersonnelOrGroup #GroupTableDiv tbody tr#Row-Loading-Display').removeClass('hidden');
+                },
+                complete: function () {
+                    $('#SearchPersonnelOrGroup #GroupTableDiv tbody tr').addClass('hidden');
+                    if ($('#SearchPersonnelOrGroup #GroupTableDiv tbody tr.member').length > 0) {
+                        $('#SearchPersonnelOrGroup #GroupTableDiv tbody tr.member').removeClass('hidden');
+                    } else
+                        $('#SearchPersonnelOrGroup #GroupTableDiv tbody tr#No-Row-Display').removeClass('hidden');
+                },
+                success: function(response) {
+                    if (response.msg == null) {
+                        $("#GroupTable").find('#SearchGroupInput').val(filter).focus();
+                        $("#GroupTableDiv").html(response);
+
+                        BindSaveFunction();
+
+                        $('.radioMemberType').off('ifClicked').on('ifClicked', MemberType);
+
+                        if ($("#GroupTableDiv tbody tr.member").length == 1)
+                            $("#GroupTableDiv tbody tr.member button").trigger('click');
+                        else
+                            $('#SearchPersonnelOrGroup #GroupTableDiv tbody tr#No-Row-Display').removeClass('hidden');
+                    } else {
+                        toastr.error(response.res);
+                    }
+                },
+                error: function() {
+                    toastr.error('AJAX backend error', 'An error has occured.');
+                }
+            });
+        }
+        function Search() {
+            $.ajax({
+                url: '@Url.Action("Index", "PolicyAndProcedure")',
+                data: $('#form_search_params *').serialize(),
+                type: "GET",
+                cache: false,
+                beforeSend: function () {
+                    //ShowLoadingScreen();
+                    ShowHideRowLoadingDisplay('MemosTable', true);
+                },
+                complete: function () {
+                        //RemoveLoadingScreen();
+                        //ShowHideRowLoadingDisplay('MemosTable', false);
+                },
+                success: function(response) {
+                    if (response.msg == null) {
+                        $("#MemoForm").html(response);
+                        Events();
+                        $('.txt_search').focus()
+                    } else {
+                        toastr.error(response.res);
+                    }
+                },
+                error: function() {
+                    toastr.error('AJAX backend error', 'An error has occured.');
+                }
+            });
+        }
+
+        function Events() {
+
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+
+            $('.btnadd').off('click').on('click', NewMemo);
+
+            $('.NewMemo .close').off('click').on('click', CloseNewMemoModal);
+
+            $('.pages').off('click').on('click',
+                function() {
+                    $('#hid_page').val($(this).val())
+                    Search();
+                });
+            $('.txt_search').off('keydown').on('keydown',
+                function() {
+                    if (event.keyCode == 13) {
+                        $('#btn_search').click();
+                    }
+                })
+            $('#btn_search').off('click').on('click',
+                function() {
+                    $('#hid_search').val($('.txt_search').val());
+                    $('#hid_date').val($('.txt_date').val());
+                    $('#hid_status').val($('.txt_status').val());
+                    $('#hid_page').val(1);
+                    Search();
+                });
+
+            $('.SaveMemo').off('click').on('click', SaveTable);
+            $('.SaveModalMemo').off('click').on('click', SaveTable);
+            $('.PolicyAndProcedure-Record').off('click').on('click', ViewPolicyAndProcedure)
+            InitInputFileBrowse();
+
+            $('.clearInput').off('click').on('click', ClearField);
+            Select2Override();
+
+        }
+
+
+    function DeletePolicyAndProcedure() {
+
+        var id = $(this).attr("id");
+        var year = $(this).val();
+        swal({
+            title: "Deleting..",
+            text: "Delete this policy and procedure? This can't be undone.",
+            type: 'warning',
+            showConfirmButton: true,
+            showCancelButton: true,
+            confirmButtonColor: "#1ab394",
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            closeOnConfirm: true,
+            closeOnCancel: true,
+            html: true
+        },
+            function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        data: {
+                            id,
+                            year,
+                            __RequestVerificationToken: $('@Html.AntiForgeryToken()').val()
+                        },
+                        type: 'POST',
+                        datatype: 'JSON',
+                        url: '@Url.Action("Delete", "PolicyAndProcedure")',
+                        cache: false,
+                        beforeSend: function () {
+                            ShowLoadingScreen();
+                        },
+                        complete: function () {
+                            RemoveLoadingScreen();
+                        },
+                        success: function (response) {
+                            if (response.msg == false) {
+                                toastr.error(response.res);
+                            } else {
+                                toastr.success(response.res);
+                                FetchPolicyAndProcedure();
+                            }
+                        },
+                        error: function (x) {
+                        }
+                    });
+                }
+            });
+    }
+        function CloseNewMemoModal() {
+            $('#NewMemo').modal('hide');
+            clearInterval(interval); //close interval
+    }
+    function KeyDown(e) {
+        if (e.keyCode == 13 && $(this).attr('id') == 'SearchPersonnelInput')
+            SearchPersonnel();
+        else if (e.keyCode == 13 && $(this).attr('id') == 'SearchGroupInput')
+            SearchGroup();
+        else if (e.keyCode == 13 &&
+            $(this).attr('id').substr(0, $(this).attr('id').length - 2) == 'Row-Input-Group') {
+            $(this).closest('tr').find('button[name="SaveGroup"]').trigger('click');
+        }
+    }
+    function BindSaveFunction() {
+
+        $('#SearchPersonnel').off('click').on('click', SearchPersonnel);
+        $('#SearchPersonnelInput').off('keyup').on('keyup', KeyDown);
+
+        $('#SearchGroup').off('click').on('click', SearchGroup);
+        $('#SearchGroupInput').off('keyup').on('keyup', KeyDown);
+
+        $('#PersonnelsTable tbody tr button').off('click').on('click', SelectRow);
+        $('#PersonnelsTable tbody tr button .selectPersonnel').off('ifClicked').on('ifClicked', SelectRow);
+        $('#GroupsTable tbody tr button').off('click').on('click', SelectRow);
+        $('#GroupsTable tbody tr button .selectMember').off('ifClicked').on('ifClicked', SelectRow);
+
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green',
+        });
+    }
+
+    function EmptySearch(div, d) {
+        var g =
+            '<div class="table-responsive" style="max-height: 550px; overflow-y: scroll;"><table id="GroupsTable" class="table table-stripped table-bordered" style="max-height: 500px;"><thead><tr><th style="text-align: center;" scope="col">Group Names</th></tr></thead><tbody><tr id="No-Row-Display" class=""><td style="text-align: center;" colspan="6">No Groups found...</td></tr></tbody><tfoot></tfoot></table></div>';
+        var p =
+            '<div class="table-responsive" style="max-height: 550px; overflow-y: scroll;"><table id="PersonnelsTable" class="table table-stripped table-bordered" style="max-height: 500px;"><thead><tr><th style="text-align: center;" scope="col">Personnels</th></tr></thead><tbody><tr id="No-Row-Display" class=""><td style="text-align: center;" colspan="6">No Personnels found...</td></tr></tbody><tfoot></tfoot></table></div>';
+
+        $('#' + div).empty().html(d == 'g' ? g : p);
+    }
+    function Send(contentId) {
+
+         $.ajax({
+            data: {
+                 contentId,
+                '__RequestVerificationToken': $('@Html.AntiForgeryToken()').val()
+            },
+                type: 'POST',
+                datatype: 'JSON',
+                url: '@Url.Action("SendEmailToPersonnel", "PolicyAndProcedure")',
+                cache: false,
+             beforeSend: function () {
+                    isSendingEmail = true;
+                    ShowLoadingScreen()
+                    swal({
+                        title: "",
+                        text: "Sending email. Please wait",
+                        showCancelButton: false,
+                        showConfirmButton: false,
+                        html: true
+                    });
+                },
+             complete: function () {
+                 isSendingEmail = false;
+                    RemoveLoadingScreen()
+                    swal.close();
+                },
+             success: function (response) {
+                        toastr.error('', response.res);
+                },
+                error: function (x) {
+                    alert(x);
+                }
+            });
+    }
+    function SendEmail() {
+        Send($("#content-id").val());
+    }
+
+
+    function SelectRow() {
+        $tableName = $(this).closest('table');
+        $tr = $(this).closest('tr');
+        $b = $tr.find('button');
+        $cb = $tr.find('input[type="checkbox"]');
+
+        $tableName.find('button').removeClass('btn-primary').addClass('btn-white');
+        $tableName.find('input[type="checkbox"]').iCheck('uncheck');
+
+        $b.removeClass('btn-white').addClass('btn-primary');
+        $cb.iCheck('check');
+
+        $('#NewMemo button[name="SaveMemoArchive"]').removeAttr('disabled');
+
+        ResetActionButton($tableName);
+    }
+
+
+    function ResetActionButton($tableName) {
+        $('#TableActions button[title="Add"]').attr('disabled', true);
+        $('#TableActions button[title="Remove"]').attr('disabled', true);
+        $('#TableActions button[title="Undo"]').attr('disabled', true);
+
+        switch ($tableName.attr('id')) {
+            case 'MembersTable':
+                if ($tableName.find('tbody tr input[type="checkbox"]:checked').length > 0) {
+                    $('#TableActions button[title="Remove"]').removeAttr('disabled');
+                }
+                break;
+            case 'PersonnelsTable':
+                if ($tableName.find('tbody tr input[type="checkbox"]:checked').length > 0) {
+                    $('#TableActions button[title="Add"]').removeAttr('disabled');
+                }
+                break;
+        }
+    }
+
+
+    $.fn.fileInput = function() {
+        $customInput = $('div.customFileInput');
+
+        $(this).attr('name', '');
+        $(this).parent().find('div').remove();
+        $(this).after($customInput.html());
+        $(this).next('div.customFileInput').removeClass('hidden');
+        $(this).addClass('hidden');
+    }
+</script>

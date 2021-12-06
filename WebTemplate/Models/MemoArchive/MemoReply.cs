@@ -5,6 +5,6 @@ namespace WebTemplate.Models.MemoArchive
 {
     public class MemoReply
     {
-        public MemoArchives MemoArchiveReply { get; set; } = new MemoArchives();
+        public ProcessLayer.Entities.MemoArchives MemoArchiveReply { get; set; } = new ProcessLayer.Entities.MemoArchives();
     }
 }

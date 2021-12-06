@@ -117,6 +117,7 @@
     }
 </style>
 
+<link href="~/Content/memo-archive.css" rel="stylesheet" />
 <script type="text/javascript">
         var $_noCourseEducArr = @Html.Raw(Json.Encode(noCourseEducation));
         var $_perpetualLicenseIds = @Html.Raw(Json.Encode(perpetualLicenseIDs));
@@ -206,15 +207,8 @@
                         //$('#btnNewTraining').val(id);
                         //$('#btnNewMemo').val(id);
 
-                        $('a[href="#tab-2"]').off('click').on('click', GetEmploymentInfos);
-                        $('a[href="#tab-3"]').off('click').on('click', GetEducationalBackgrounds);
-                        $('a[href="#tab-4"]').off('click').on('click', GetWorkExperiences);
-                        $('a[href="#tab-5"]').off('click').on('click', GetTrainingsAndSeminars);
-                        $('a[href="#tab-6"]').off('click').on('click', GetMemoArchives);
-                        $('a[href="#tab-7"]').off('click').on('click', GetMemoArchives);
-                        $('a[href="#tab-8"]').off('click').on('click', GetCompensationsAndDeductions);
-                        $('a[href="#tab-9"]').off('click').on('click', GetLeaveCredits);
-                        $('a[href="#tab-10"]').off('click').on('click', GetLoans);
+
+                        TabEvents();
                         SelectedDaysEvents();
 
                         CheckRequiredFields();
@@ -662,16 +656,7 @@
                             $('#PositionID').val($("#Personnel_PositionID").val());
 
                             ShowTabs(false);
-
-                            $('a[href="#tab-2"]').off('click').on('click', GetEmploymentInfos);
-                            $('a[href="#tab-3"]').off('click').on('click', GetEducationalBackgrounds);
-                            $('a[href="#tab-4"]').off('click').on('click', GetWorkExperiences);
-                            $('a[href="#tab-5"]').off('click').on('click', GetTrainingsAndSeminars);
-                            $('a[href="#tab-6"]').off('click').on('click', GetMemoArchives);
-                            $('a[href="#tab-7"]').off('click').on('click', GetMemoArchives);
-                            $('a[href="#tab-8"]').off('click').on('click', GetCompensationsAndDeductions);
-                            $('a[href="#tab-9"]').off('click').on('click', GetLeaveCredits);
-                            $('a[href="#tab-10"]').off('click').on('click', GetLoans);
+                            TabEvents();
 
                             isPersonnelUpdated = true;
 
@@ -686,7 +671,21 @@
             } else {
                 toastr.warning('Please check incomplete fields/tables highlighted in orange. (' + requiredFields + ')', 'Warning');
             }
-        }
+    }
+
+    function TabEvents() {
+
+        $('a[href="#tab-2"]').off('click').on('click', GetEmploymentInfos);
+        $('a[href="#tab-3"]').off('click').on('click', GetEducationalBackgrounds);
+        $('a[href="#tab-4"]').off('click').on('click', GetWorkExperiences);
+        $('a[href="#tab-5"]').off('click').on('click', GetTrainingsAndSeminars);
+        $('a[href="#tab-6"]').off('click').on('click', GetWrittenExplanations);
+        $('a[href="#tab-7"]').off('click').on('click', GetInfractions);
+        $('a[href="#tab-8"]').off('click').on('click', GetPolicyAndProcedures);
+        $('a[href="#tab-9"]').off('click').on('click', GetCompensationsAndDeductions);
+        $('a[href="#tab-10"]').off('click').on('click', GetLeaveCredits);
+        $('a[href="#tab-11"]').off('click').on('click', GetLoans);
+    }
 
         function New() {
             var personnelID = $(this).val();
@@ -1726,6 +1725,354 @@
                 }
             });
         }
+        function GetPolicyAndProcedures() {
+            var personnelID = $('#tab-1 input.PersonnelID').val();
+
+            $.ajax({
+                data: {
+                    personnelId: personnelID,
+                    __RequestVerificationToken: $('@Html.AntiForgeryToken()').val()
+                },
+                type: 'POST',
+                datatype: 'JSON',
+                url: '@Url.Action("GetPolicyAndProcedures", "Personnel")',
+                cache: false,
+                beforeSend: function() {
+                    ShowLoadingScreen();
+                },
+                complete: function() {
+                    RemoveLoadingScreen();
+                },
+                success: function(response) {
+                    if (response.msg == false) {
+                        toastr.error(response.res);
+                    } else {
+
+                        $('#policyandprocedures-div').html(response);
+                        $('#policyandprocedure-contents-div').addClass('hidden');
+                        $('#policyandprocedures-div').removeClass('hidden');
+
+                        $('.policyandprocedure-record').off('click').on('click', ViewPolicyAndProcedureContent)
+                    }
+                },
+                error: function(x) {
+                }
+            });
+        }
+        function ViewPolicyAndProcedureContent() {
+
+            $('#policyandprocedure-contents-div').removeClass('hidden');
+            $('#policyandprocedures-div').addClass('hidden');
+            $.ajax({
+                data: {
+                    id: $(this).attr("id"),
+                    __RequestVerificationToken: $('@Html.AntiForgeryToken()').val()
+                },
+                type: 'POST',
+                datatype: 'JSON',
+                url: '@Url.Action("PolicyAndProcedureContents", "Personnel")',
+                cache: false,
+                beforeSend: function() {
+                    ShowLoadingScreen();
+                },
+                complete: function() {
+                    RemoveLoadingScreen();
+                },
+                success: function(response) {
+                    if (response.msg == false) {
+                        toastr.error(response.res);
+                    } else {
+                        showPolicyAndProcedureContent(response)
+                    }
+                },
+                error: function(x) {
+                }
+            });
+        }
+        function showPolicyAndProcedureContent(response) {
+            $('#policyandprocedure-contents-div .panel-body').html(response);
+            console.log('hererer')
+            InitInputFileBrowse();
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+
+            $('#policyandprocedure-contents-div .Acknowledged').off('click').on('click', AcknowledgePolicyAndProcedure);
+
+            $('#policyandprocedure-contents-div .back-btn').off('click').on('click', ClosePolicyAndProcedure)
+        }
+        function AcknowledgePolicyAndProcedure() {
+            $.ajax({
+                data: {
+                    id: $("#content-id").val(),
+                    __RequestVerificationToken: $('@Html.AntiForgeryToken()').val()
+                },
+                type: 'POST',
+                datatype: 'JSON',
+                url: '@Url.Action("AcknowledgePolicyAndProcedure", "Personnel")',
+                cache: false,
+                beforeSend: function() {
+                    ShowLoadingScreen()
+                },
+                complete: function() {
+                    RemoveLoadingScreen()
+                },
+                success: function (response) {
+                    if (response.msg == false) {
+                        toastr.error('Error', response.res);
+                    }
+                    else {
+                        showPolicyAndProcedureContent(response);
+                    }
+                },
+                error: function(x) {
+                }
+            });
+        }
+        function ClosePolicyAndProcedure() {
+            GetPolicyAndProcedures();
+        }
+
+        function GetInfractions() {
+            var personnelID = $('#tab-1 input.PersonnelID').val();
+
+            $.ajax({
+                data: {
+                    personnelId: personnelID,
+                    __RequestVerificationToken: $('@Html.AntiForgeryToken()').val()
+                },
+                type: 'POST',
+                datatype: 'JSON',
+                url: '@Url.Action("GetInfractions", "Personnel")',
+                cache: false,
+                beforeSend: function() {
+                    ShowLoadingScreen();
+                },
+                complete: function() {
+                    RemoveLoadingScreen();
+                },
+                success: function(response) {
+                    if (response.msg == false) {
+                        toastr.error(response.res);
+                    } else {
+
+                        $('#infractions-div').html(response);
+                        $('#infraction-contents-div').addClass('hidden');
+                        $('#infractions-div').removeClass('hidden');
+
+                        $('.infraction-record').off('click').on('click', ViewInfractionContent)
+                    }
+                },
+                error: function(x) {
+                }
+            });
+    }
+    function CloseInfractionContent() {
+        $('#infraction-contents-div').addClass('hidden');
+        $('#infractions-div').removeClass('hidden');
+    }
+
+        function ViewInfractionContent() {
+
+            $('#infraction-contents-div').removeClass('hidden');
+            $('#infractions-div').addClass('hidden');
+            $.ajax({
+                data: {
+                    id: $(this).attr("id"),
+                    __RequestVerificationToken: $('@Html.AntiForgeryToken()').val()
+                },
+                type: 'POST',
+                datatype: 'JSON',
+                url: '@Url.Action("InfractionContents", "Personnel")',
+                cache: false,
+                beforeSend: function() {
+                    ShowLoadingScreen();
+                },
+                complete: function() {
+                    RemoveLoadingScreen();
+                },
+                success: function(response) {
+                    if (response.msg == false) {
+                        toastr.error(response.res);
+                    } else {
+                        showInfractionContent(response)
+                    }
+                },
+                error: function(x) {
+                }
+            });
+    }
+    function showInfractionContent(response) {
+        $('#infraction-contents-div .panel-body').html(response);
+
+        InitInputFileBrowse();
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green',
+        });
+
+        $('#infraction-contents-div .SendMemo').off('click').on('click', SaveInfractionFileContent);
+
+        $('#infraction-contents-div .back-btn').off('click').on('click', CloseInfractionContent)
+        ScrollContentToBottom();
+    }
+
+        function SaveInfractionFileContent() {
+            var formdata = new FormData()
+            formdata.append("InfractionID", $("#infractionID").val())
+            if ($('#infraction-contents-div #memo-send-fields').find(".browsefile")[0].files.length > 0)
+                formdata.append("fileBase", $('#infraction-contents-div  #memo-send-fields').find(".browsefile")[0].files[0]);
+            formdata.append("__RequestVerificationToken", $('@Html.AntiForgeryToken()').val());
+
+            $.ajax({
+                data: formdata,
+                type: 'POST',
+                datatype: 'JSON',
+                url: '@Url.Action("SaveInfractionFileContent", "Personnel")',
+                cache: false,
+                contentType: false,
+                processData: false,
+                beforeSend: function() {
+                    ShowLoadingScreen()
+                },
+                complete: function() {
+                    RemoveLoadingScreen()
+                },
+                success: function (response) {
+                    if (response.msg == false) {
+                        toastr.error('Error', response.res);
+                    }
+                    else {
+                        showInfractionContent(response);
+                    }
+                },
+                error: function(x) {
+                }
+            });
+    }
+
+        function GetWrittenExplanations() {
+            var personnelID = $('#tab-1 input.PersonnelID').val();
+
+            $.ajax({
+                data: {
+                    personnelId: personnelID,
+                    __RequestVerificationToken: $('@Html.AntiForgeryToken()').val()
+                },
+                type: 'POST',
+                datatype: 'JSON',
+                url: '@Url.Action("GetWrittenExplanations", "Personnel")',
+                cache: false,
+                beforeSend: function() {
+                    ShowLoadingScreen();
+                },
+                complete: function() {
+                    RemoveLoadingScreen();
+                },
+                success: function(response) {
+                    if (response.msg == false) {
+                        toastr.error(response.res);
+                    } else {
+
+                        $('#writtenexplanation-div').html(response);
+                        $('#writtenexplanation-contents-div').addClass('hidden');
+                        $('#writtenexplanation-div').removeClass('hidden');
+
+                        $('.writtenexplanation-record').off('click').on('click', ViewWrittenExplanationContent)
+                    }
+                },
+                error: function(x) {
+                }
+            });
+    }
+    function CloseWrittenExplanationContent() {
+        $('#writtenexplanation-contents-div').addClass('hidden');
+        $('#writtenexplanation-div').removeClass('hidden');
+    }
+
+    function ViewWrittenExplanationContent() {
+
+        $('#writtenexplanation-contents-div').removeClass('hidden');
+        $('#writtenexplanation-div').addClass('hidden');
+            $.ajax({
+                data: {
+                    id: $(this).attr("id"),
+                    __RequestVerificationToken: $('@Html.AntiForgeryToken()').val()
+                },
+                type: 'POST',
+                datatype: 'JSON',
+                url: '@Url.Action("WrittenExplanationContents", "Personnel")',
+                cache: false,
+                beforeSend: function() {
+                    ShowLoadingScreen();
+                },
+                complete: function() {
+                    RemoveLoadingScreen();
+                },
+                success: function(response) {
+                    if (response.msg == false) {
+                        toastr.error(response.res);
+                    } else {
+                        showWrittenExplanationContent(response)
+                    }
+                },
+                error: function(x) {
+                }
+            });
+    }
+    function showWrittenExplanationContent(response) {
+        $('#writtenexplanation-contents-div .panel-body').html(response);
+
+        InitInputFileBrowse();
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green',
+        });
+
+        $('#writtenexplanation-contents-div .SendMemo').off('click').on('click', SaveWrittenExplanationFileContent);
+
+        $('#writtenexplanation-contents-div .back-btn').off('click').on('click', CloseWrittenExplanationContent)
+        ScrollContentToBottom();
+    }
+
+    function SaveWrittenExplanationFileContent() {
+            var formdata = new FormData()
+        formdata.append("WrittenExplanationID", $("#writtenExplanationID").val())
+        if ($('#writtenexplanation-contents-div #memo-send-fields').find(".browsefile")[0].files.length > 0)
+            formdata.append("fileBase", $('#writtenexplanation-contents-div #memo-send-fields').find(".browsefile")[0].files[0]);
+            formdata.append("__RequestVerificationToken", $('@Html.AntiForgeryToken()').val());
+
+            $.ajax({
+                data: formdata,
+                type: 'POST',
+                datatype: 'JSON',
+                url: '@Url.Action("SaveWrittenExplanationFileContent", "Personnel")',
+                cache: false,
+                contentType: false,
+                processData: false,
+                beforeSend: function() {
+                    ShowLoadingScreen()
+                },
+                complete: function() {
+                    RemoveLoadingScreen()
+                },
+                success: function (response) {
+                    if (response.msg == false) {
+                        toastr.error('Error', response.res);
+                    }
+                    else {
+                        showWrittenExplanationContent(response);
+                    }
+                },
+                error: function(x) {
+                }
+            });
+    }
+    function ScrollContentToBottom() {
+        let element = document.getElementById("content-list");
+        element.scrollTop = element.scrollHeight;
+    }
 
         function GetMemoArchives() {
             var personnelID = $('#tab-1 input.PersonnelID').val();
@@ -1751,13 +2098,12 @@
                     if (response.msg == false) {
                         toastr.error(response.res);
                     } else {
-                        var ViewName = memoTypeID == 1 ? "Memo" : "Legislation";
 
-                        $('#' + ViewName + 'sDiv').html(response);
+                        $('#MemosDiv').html(response);
                         $('.DeleteMemo').off('click').on('click', DeleteTable);
                         $('.ViewReplies').off('click').on('click', GetReplies);
-                        $('#' + ViewName + 'RepliesDiv').addClass('hidden');
-                        $('#' + ViewName + 'sDiv').removeClass('hidden');
+                        $('#MemoRepliesDiv').addClass('hidden');
+                        $('#MemosDiv').removeClass('hidden');
                     }
                 },
                 error: function(x) {

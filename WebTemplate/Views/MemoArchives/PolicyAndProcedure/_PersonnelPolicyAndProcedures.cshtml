@@ -1,0 +1,94 @@
+﻿@model ProcessLayer.Entities.PolicyAndProcedure
+
+@{
+}
+
+<div class="content-container">
+    <input type="hidden" value="@ViewBag.ContentId" id="content-id"/>
+    <div class="memo-info content">
+        @Html.HiddenFor(m => m.ID)
+        <div>
+            Memo No.: <span class="display-memo">@Model.MemoNo</span>
+            <span class="field-memo hidden">
+                @Html.TextBoxFor(m => m.MemoNo, new { @class = "form-control", @id = "memo-no" })
+            </span>
+        </div>
+        <div>
+            Memo Date: <span class="display-memo">@Model.MemoDate.Value.ToString("MMMM dd, yyyy")</span>
+            <span class="input-group date field-memo hidden">
+                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                @Html.TextBoxFor(m => m.MemoDate, String.Format("{0:yyyy'-'MM'-'dd}", Model.MemoDate), new { @type = "date", @class = "form-control", @id = "memo-date" })
+            </span>
+        </div>
+        <div>
+            Description : <span class="display-memo">@Model.Description</span>
+            <span class="field-memo hidden">
+                @Html.TextBoxFor(m => m.Description, new { @class = "form-control", @id = "memo-description" })
+            </span>
+        </div>
+        <div class="file memo-file process-actions">
+
+            @if (Model.IsFileSupported)
+            {
+                <embed class="content-file" src="@Model.FilePath" title="File">
+            }
+            else
+            {
+                <a href="@Model.FilePath" class="attached-file" target="_blank" title="Download">
+                    <i class="fa fa-file-o"></i> File (@Model.File)
+                </a>
+            }
+
+            @if (Model.IsNew)
+            {
+                <div class="file-actions">
+                    <input type="hidden" class="selected-content-id" value="@Model.ID" />
+                    <div class="btn-actions">
+                        <button class="btn btn-success edit-file" title="Edit"><i class="fa fa-pencil"></i></button>
+                        <button class="btn btn-primary resend-file" title="Re-send"><i class="fa fa-send"></i></button>
+                    </div>
+                    <div class="btn-input hidden">
+                        <div class="form-group">
+                            <input type="file" id="browseFile" name="" value="" class="browsefile form-control">
+                        </div>
+                        <button type="button" class="btn btn-success save-file" title="Save"><i class="fa fa-save"></i></button>
+                        <button type="button" class="btn btn-danger cancel-file" title="Cancel"><i class="fa fa-times"></i></button>
+                    </div>
+                </div>
+            }
+        </div>
+
+        @if (Model.IsNew)
+        {
+            <div class="content-management-actions">
+                <div class="edit pull-right">
+                    <button class="btn btn-primary" id="edit-memo" title="edit"><i class="fa fa-pencil"></i></button>
+                </div>
+                <div class="save pull-right hidden">
+                    <div class="pull-left">
+                        @Html.CheckBox("ResendEmail", new { @id = "resend-email", @class = "i-checks resend-email" }) &nbsp;
+                        <label for="resend-email">Resend Email</label>
+                    </div> &nbsp; &nbsp;
+                    <button class="btn btn-danger" id="cancel-memo" title="cancel"><i class="fa fa-times"></i></button>
+                    <button class="btn btn-success" id="save-memo" title="save"><i class="fa fa-save"></i></button>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="memo-content content">
+        <div class="content-list" id="content-list">
+            @for (int i = 0; i < Model.Content.Count; i++)
+            {
+            <div class="personnel-status">
+                <i class="fa fa-check-circle @(Model.Content[i].Acknowledge ? "acknowledged" : "unacknowledge")"></i>
+                <h3>@Model.Content[i].Personnel.FullName</h3>
+            </div>
+            }
+            @if (Model.Content.Count == 0)
+            { 
+        <div class="personnel-status">
+            <h3>No Personnel</h3>
+        </div>}
+        </div>
+    </div>
+</div>

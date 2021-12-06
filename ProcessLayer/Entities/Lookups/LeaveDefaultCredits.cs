@@ -9,4 +9,5 @@
         public float Credits { get; set; }
         public LeaveType LeaveType { get; set; }
     }
+
 }

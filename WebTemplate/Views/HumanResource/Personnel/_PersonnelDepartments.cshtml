@@ -1,4 +1,6 @@
 ﻿@model WebTemplate.Models.Personnel.Management
+@using WebTemplate.Extension
+@using ProcessLayer.Entities
 @{
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
     var DepartmentPageAccess = credential.GetPage("Departments") ?? new DataAccessLayer.System.Page();
@@ -26,34 +28,34 @@
                 {
                     //Html.Partial("~/Views/HumanResource/Personnel/_PersonnelDepartment.cshtml", Model.Personnel._Departments[i])
 
-            <tr id="Row-Display-Department-@Model.Personnel._Departments[i].ID" class="Row-Display">
-                <td class="hidden">
-                    <input type="hidden" value="@Model.Personnel._Departments[i].PersonnelID " name="PersonnelID" />
-                </td>
-                <td style="text-align: center;">@Model.Personnel._Departments[i]._Department.Description</td>
-                <td style="text-align: center;">@(String.Format("{0:MMMM dd, yyyy}", Model.Personnel._Departments[i].StartDate))</td>
-                <td style="text-align: center;">
-                    @if (i < Model.Personnel._Departments.Count() - 1)
-                    {
-                        @(String.Format("{0:MMMM dd, yyyy}", Model.Personnel._Departments[i].EndDate))
-                    }
-                </td>
-                @if (DepartmentPageAccess.Update || DepartmentPageAccess.Delete)
-                {
-                    <td style="text-align: center;">
-                        <div class="">
-                            @if (DepartmentPageAccess.Delete)
+                    <tr id="Row-Display-Department-@Model.Personnel._Departments[i].ID" class="Row-Display">
+                        <td class="hidden">
+                            <input type="hidden" value="@Model.Personnel._Departments[i].PersonnelID " name="PersonnelID" />
+                        </td>
+                        <td style="text-align: center;">@Model.Personnel._Departments[i]._Department.CheckIfNull().Description</td>
+                        <td style="text-align: center;">@(String.Format("{0:MMMM dd, yyyy}", Model.Personnel._Departments[i].StartDate))</td>
+                        <td style="text-align: center;">
+                            @if (i < Model.Personnel._Departments.Count() - 1)
                             {
-                                <button type="button" name="DeleteDepartment" class="btn btn-outline btn-danger btn-sm btn-rounded DeleteDepartment hidden TableDeleteButton" value="@Model.Personnel._Departments[i].ID" title="Delete"><i class="fa fa-trash"></i></button>
+                                @(String.Format("{0:MMMM dd, yyyy}", Model.Personnel._Departments[i].EndDate))
                             }
-                            @if (DepartmentPageAccess.Update)
-                            {
-                                <button type="button" name="EditDepartment" class="btn btn-info btn-sm btn-rounded EditDepartment TableEditButton" value="@Model.Personnel._Departments[i].ID" title="Edit"><i class="fa fa-pencil"></i></button>
-                            }
-                        </div>
-                    </td>
-                }
-            </tr>
+                        </td>
+                        @if (DepartmentPageAccess.Update || DepartmentPageAccess.Delete)
+                        {
+                            <td style="text-align: center;">
+                                <div class="">
+                                    @if (DepartmentPageAccess.Delete)
+                                    {
+                                        <button type="button" name="DeleteDepartment" class="btn btn-outline btn-danger btn-sm btn-rounded DeleteDepartment hidden TableDeleteButton" value="@Model.Personnel._Departments[i].ID" title="Delete"><i class="fa fa-trash"></i></button>
+                                    }
+                                    @if (DepartmentPageAccess.Update)
+                                    {
+                                        <button type="button" name="EditDepartment" class="btn btn-info btn-sm btn-rounded EditDepartment TableEditButton" value="@Model.Personnel._Departments[i].ID" title="Edit"><i class="fa fa-pencil"></i></button>
+                                    }
+                                </div>
+                            </td>
+                        }
+                    </tr>
                     <tr id="Row-Input-Department-@Model.Personnel._Departments[i].ID" class="Row-Input hidden">
                         <td style="text-align: center;">
                             <input type="hidden" value="@Model.Personnel._Departments[i].PersonnelID" name="PersonnelID" />
@@ -80,7 +82,7 @@
                             }
                         </td>
                         @if (DepartmentPageAccess.Update)
-                                    {
+                        {
                             <td style="text-align: center;">
                                 <div class="btn-group">
                                     <button type="button" name="CancelDepartment" class="btn btn-outline btn-danger btn-sm btn-rounded TableCancelButton TableCancelButton" value="@Model.Personnel._Departments[i].ID" title="Cancel"><i class="fa fa-times"></i></button>
@@ -92,7 +94,7 @@
                 }
             }
             else
-                                {
+            {
                 <tr id="No-Row-Display"><td style="text-align: center;" colspan="6">No Departments found...</td></tr>
             }
         </tbody>
@@ -109,7 +111,7 @@
                             <div class="col-md-12">
                                 <div class="input-group date">
                                     <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="StartDate" class="form-control text-transform-none"/>
+                                    <input type="text" name="StartDate" class="form-control text-transform-none" />
                                     <span id="" class="clearInput" title="Clear"><i class="fa fa-times"></i></span>
                                 </div>
                             </div>
@@ -120,7 +122,7 @@
                             <div class="col-md-12">
                                 <div class="input-group date">
                                     <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="EndDate" class="form-control text-transform-none"/>
+                                    <input type="text" name="EndDate" class="form-control text-transform-none" />
                                     <span id="" class="clearInput" title="Clear"><i class="fa fa-times"></i></span>
                                 </div>
                             </div>

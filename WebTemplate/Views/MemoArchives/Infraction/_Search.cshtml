@@ -1,0 +1,113 @@
+﻿@model WebTemplate.Models.MemoArchives.Infraction.Index
+
+@{
+    var PageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("MemoArchives/Infraction");
+    var memoTypes = ProcessLayer.Processes.LookupProcess.GetMemoType();
+
+    ViewBag.title = PageAccess.PageName;
+    var status = ProcessLayer.Processes.Lookups.InfractionStatusProcess.Instance.Value.GetList();
+}
+
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    @if (PageAccess.View)
+    {
+        <div class="file-manager">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px; margin: 0px -15px;">
+                <div id="form_search_params" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="hid_page" name="@Html.NameFor(m => m.Page)" value="@Html.ValueFor(m => m.Page)" />
+                    <input type="hidden" id="hid_search" name="@Html.NameFor(m => m.Personnel)" value="@Html.ValueFor(m => m.Personnel)" />
+                    <input type="hidden" id="hid_date" name="@Html.NameFor(m => m.Date)" value="@Html.ValueFor(m => m.Date)" />
+                    <input type="hidden" id="hid_status" name="@Html.NameFor(m => m.StatusID)" value="@Html.ValueFor(m => m.StatusID)" />
+
+
+                    <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                        <label class="control-label">Personnel</label>
+                        <input type="text" id="txt_personnel" class="form-control txt_search" placeholder="Personnel" name="@Html.NameFor(m => m.Personnel)" value="@Html.ValueFor(m => m.Personnel)" />
+                    </div>
+
+                    <div class="form-group col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                        <label class="control-label">Memo Date</label>
+                        <div class="input-group date">
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            @Html.TextBox("Date", String.Format("{0:yyyy'-'MM'-'dd}", Model.Date), new { @type = "date", @class = "form-control txt_date" })
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-2">
+                        <label class="control-label">Status</label>
+                        @Html.DropDownListFor(m => m.StatusID, new SelectList(status, "ID", "Description"), "N/A", new { @class = "form-control txt_status" })
+                    </div>
+
+                    <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                        <label class="control-label" style="width: 100%; color: #fff;">Search</label>
+                        <button type="button" id="btn_search" class="btn btn-primary font-bold"><i class="fa fa-search"></i> Search</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <form id="form_search" class="pull-left" style="width: 100%;">
+        <div class="table-responsive" style="height: 650px;">
+            <div class="mail-box">
+                <table id="MemosTable" class="table table-hover table-mail">
+                    <thead>
+                        @if (Model.Infractions.Count() > 0)
+                        {
+                            <tr>
+                                <td class="text-right" colspan="10" style="background-color: white;">
+                                    <div class="btn-group pull-left">
+                                        @if (Model.Page > 0)
+                                        {
+                                            <button type="button" name="@Html.NameFor(m => m.Page)" value="1" class="btn btn-white @(Model.Page == 1 ? "active" : "pages")">1 @*<i class="fa fa-angle-double-left"></i>*@</button>
+                                        }
+                                        @if (Model.Page - 1 > 2)
+                                        {
+                                            <button type="button" name="@Html.NameFor(m => m.Page)" value="@(Model.Page - 2)" class="btn btn-white pages">...@*<i class="fa fa-angle-left"></i>*@</button>
+                                        }
+                                        @for (int i = Model.Page - 1; i <= Model.Page + 1; i++)
+                                        {
+                                            if (i > 1 && i < Model.PageCount)
+                                            {
+                                                <button type="button" name="@Html.NameFor(m => m.Page)" value="@(i)" class="btn btn-white @(i == Model.Page ? "active" : "pages")">@(i)</button>
+                                            }
+                                        }
+                                        @if (Model.Page + 1 < Model.PageCount - 1)
+                                        {
+                                            <button type="button" name="@Html.NameFor(m => m.Page)" value="@(Model.Page + 2)" class="btn btn-white pages">...@*<i class="fa fa-angle-right"></i>*@</button>
+                                        }
+                                        @if (Model.Page <= Model.PageCount && Model.PageCount > 1)
+                                        {
+                                            <button type="button" name="@Html.NameFor(m => m.Page)" value="@Model.PageCount" class="btn btn-white @(Model.Page == Model.PageCount ? "active" : "pages")">@Model.PageCount @*<i class="fa fa-angle-double-right"></i>*@</button>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    <tr>
+                        <th class="text-left">No.</th>
+                        <th class="text-left">Personnel</th>
+                        <th class="text-center">Date</th>
+                        <th class="text-center">Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Infractions.Count() > 0)
+                        {
+                            for (int i = 0; i < Model.Infractions.Count(); i++)
+                            {
+                                @Html.Partial("~/Views/MemoArchives/Infraction/_Infraction.cshtml", Model.Infractions[i])
+                            }
+                        }
+                        else
+                        {
+                            <tr id="No-Row-Display"><td style="text-align: center;" colspan="6">No @PageAccess.PageName found...</td></tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </form>
+</div>

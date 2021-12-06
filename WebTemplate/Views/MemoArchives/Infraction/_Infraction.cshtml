@@ -1,0 +1,47 @@
+﻿@model ProcessLayer.Entities.Infraction
+
+@{
+    var PageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("MemoArchives/Infraction");
+}
+@functions{
+    public bool IsImage(string str)
+    {
+        var imageExtensions = new string[] { ".jpg", ".jpeg", ".bmp", ".gif", ".png" };
+        return imageExtensions.Contains(Path.GetExtension(str));
+    }
+}
+
+<tr id="@Model.ID" class="Row-Display Row-Display-MemoArchive read Infraction-Record" title="Click to open record">
+    <td class="text-left">
+        <input hidden class="MemoNo" value="@Model.MemoNo" />
+        <input hidden class="Subject" value="@Model.Subject" />
+        <b style="font-size: 10px;">@Model.MemoNo</b>
+        <br />
+        <text class="font-bold-500" style="font-size: 10px; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;">
+            @(!String.IsNullOrEmpty(Model.Description) ? Model.Description : "")
+        </text>
+    </td>
+    <td class="mail-contact" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 300px;">
+        <div style="line-height: .9;">
+            <b class="text-primary">@Model.Personnel.FullName</b><br />
+        </div>
+    </td>
+    <td class="text-center mail-date" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">@String.Format("{0:MMM dd, yyyy}", Model.MemoDate)</td>
+    <td style="" class="row-actions">
+        <div class="memo-status">
+            <span class='label label-default'>@Model.Status.Description</span>
+            @if (Model.StatusID == 2)
+            {
+                <div class='saction-detail'><b>@Model.Sanction.Description @(Model.SanctionDays != null ? "(" + Model.SanctionDays + " Day" + (Model.SanctionDays > 1? "s" : "") + ")" : "") @(Model.SanctionDate != null ? "(" + Model.SanctionDate.Value.ToString("MMMM dd, yyyy") + ")" : "")</b></div>
+            }
+            @if (Model.IsNew)
+            {
+                <div class='infraction-action'>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-danger btn-sm btn-rounded btn-outline btn-delete-memo" title="Delete" id="@Model.ID"><i class="fa fa-trash"></i></button>
+                    </div>
+                </div>
+            }
+        </div>
+    </td>
+</tr>

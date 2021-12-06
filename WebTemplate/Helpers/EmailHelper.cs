@@ -15,7 +15,7 @@ namespace WebTemplate.Helpers
 {
     public static class EmailUtil
     {
-        public static IEnumerable<EmailResult> SendEmail(EmailCredential credential, int userid, IEnumerable<string> emails, string category, long? itemid, string file, string body = "", string subject = null)
+        public static IEnumerable<EmailResult> SendEmail(EmailCredential credential, int userid, IEnumerable<string> emails, string category, long? itemid, string file, string body = "", string subject = null, bool? isMultiFile = null, List<string> files = null, string ids = null)
         {
             if (subject == null)
                 subject = ConfigurationManager.AppSettings["Subject"];
@@ -28,7 +28,7 @@ namespace WebTemplate.Helpers
                     foreach (var email in emails)
                     {
 
-                        emailhelper.EmailCredential = credential;
+                        //emailhelper.EmailCredential = credential;
                         emailhelper.ReceiverEmail = email;
                         emailhelper.Category = category;
                         emailhelper.ItemId = itemid;
@@ -36,6 +36,10 @@ namespace WebTemplate.Helpers
                         emailhelper.Body = body;
                         emailhelper.UserId = userid;
                         emailhelper.FileName = file;
+                        emailhelper.IsMultiFile = isMultiFile ?? false;
+                        emailhelper.Files = files;
+                        emailhelper.Ids = ids;
+
 
                         emailhelper.Send();
                         res.Add(true);
@@ -55,7 +59,14 @@ namespace WebTemplate.Helpers
             if (subject == null)
                 subject = ConfigurationManager.AppSettings["Subject"];
 
-            return SendEmail(credential, userid, new List<string> { email }, category, itemid, file, body, subject).FirstOrDefault();
+            return SendEmail(credential, userid, new List<string> { email }, category, itemid, file, body, subject, false, null, null).FirstOrDefault();
+        }
+        public static EmailResult SendEmail(EmailCredential credential, int userid, string email, string category, bool isMultiFile = false, List<string> files = null, string ids = null, string subject = null)
+        {
+            if (subject == null)
+                subject = ConfigurationManager.AppSettings["Subject"];
+
+            return SendEmail(credential, userid, new List<string> { email }, category, null, null, null, subject, isMultiFile, files, ids).FirstOrDefault();
         }
     }
 
@@ -91,14 +102,17 @@ namespace WebTemplate.Helpers
         public string Subject { get; set; }
         public string Body { get; set; }
         public string ReceiverEmail { get; set; }
-        public EmailCredential EmailCredential { get; set; }
+        public bool IsMultiFile { get; set; }
+        public List<string> Files { get; set; }
+        public string Ids { get; set; }
+        //public EmailCredential EmailCredential { get; set; }
 
         private SmtpClient Client { get; }
         private NetworkCredential Credential { get; }
         private MailMessage MailMessage { get; set; }
 
         private MailAddress EmailTo { get { return new MailAddress(ReceiverEmail); } }
-        private MailAddress EmailFrom { get { return new MailAddress(EmailCredential.Email); } }
+        private MailAddress EmailFrom { get { return new MailAddress("legaltpj21@gmail.com"); } }
         //private string Password { get { return ConfigurationManager.AppSettings["Password"]; } }
         private int Port { get { return Int32.TryParse(ConfigurationManager.AppSettings["Port"], out int port) ? port : 587; } }
         private string Host { get { return ConfigurationManager.AppSettings["Host"]; /*smtp.gmail.com*/} }
@@ -106,11 +120,8 @@ namespace WebTemplate.Helpers
 
         private void InitializeCredential()
         {
-            if (EmailCredential == null)
-                throw new Exception("Invalid Credential");
-
-            Credential.UserName = EmailCredential.Email;
-            Credential.Password = EmailCredential.Password.Decrypt();
+            Credential.UserName = "legaltpj21@gmail.com";
+            Credential.Password = "TPJ@12345";
         }
 
         private void InitializeComponents()
@@ -128,7 +139,17 @@ namespace WebTemplate.Helpers
         private void ConstructMessage()
         {
             MailMessage = new MailMessage(EmailFrom, EmailTo);
-            MailMessage.Attachments.Add(new Attachment(FileName));
+            if (!string.IsNullOrEmpty(FileName))
+            {
+                MailMessage.Attachments.Add(new Attachment(FileName));
+            }
+            if(Files?.Any() ?? false)
+            {
+                Files.ForEach(file =>
+                {
+                    MailMessage.Attachments.Add(new Attachment(file));
+                });
+            }
             MailMessage.Subject = Subject;
             MailMessage.Body = Body;
             MailMessage.BodyEncoding = UTF8Encoding.UTF8;

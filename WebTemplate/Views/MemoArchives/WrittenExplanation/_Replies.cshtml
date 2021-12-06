@@ -1,0 +1,187 @@
+﻿@model ProcessLayer.Entities.WrittenExplanation
+
+@{
+}
+
+<div class="content-container">
+    <input type="hidden" value="@ViewBag.ContentId" id="content-id" />
+    <div class="memo-info content">
+        @Html.HiddenFor(m => m.ID)
+        <h3>@Model.Personnel.FullName</h3>
+        <div>
+            Memo No.: <span class="display-memo">@Model.MemoNo</span>
+            <span class="field-memo hidden">
+                @Html.TextBoxFor(m => m.MemoNo, new { @class = "form-control", @id = "memo-no" })
+            </span>
+        </div>
+        <div>
+            Memo Date: <span class="display-memo">@Model.MemoDate.Value.ToString("MMMM dd, yyyy")</span>
+            <span class="input-group date field-memo hidden">
+                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                @Html.TextBoxFor(m => m.MemoDate, String.Format("{0:yyyy'-'MM'-'dd}", Model.MemoDate), new { @type = "date", @class = "form-control", @id = "memo-date" })
+            </span>
+        </div>
+        <div>
+            Description : <span class="display-memo">@Model.Description</span>
+            <span class="field-memo hidden">
+                @Html.TextBoxFor(m => m.Description, new { @class = "form-control", @id = "memo-description" })
+            </span>
+        </div>
+
+        @if (Model.ConsultationSchedule != null)
+        {
+            <div>Consultation Schedule : @Model.ConsultationSchedule.Value.ToString("MMMM dd, yyyy")</div>
+            if (Model.ConsultationStatusID != null)
+            {
+                <div>Consultation Status : @Model.ConsultationStatus.Description</div>
+            }
+        }
+        <div>Status : @Model.Status.Description</div>
+        @if (Model.StatusID == 2)
+        {
+            <div>Recommendation : <b>@Model.Recommendation.Description</b></div>
+        }
+
+        <div class="process-actions">
+            @if (Model.ConsultationSchedule != null && Model.ConsultationStatusID != 1)
+            {
+                <div class="memo-action consultation-status">
+                    <label>Consultation Status</label>
+                    <div class="actions">
+                        <button type="button" class="btn btn-info btn-w-s consultation-done-btn consultation-status-btn selection-btn">Done</button>
+                        <button type="button" class="btn btn-info btn-w-s consultation-resched-btn consultation-status-btn selection-btn">Reschedule</button>
+                    </div>
+
+                    <div class="memo-action consultation-schedule hidden">
+                        <label>Schedule Consultation</label>
+                        <div class="actions">
+                            @Html.HiddenFor(m => m.ID, new { @id = "writtenexplanation-id" })
+                            <div class="pull-left">
+                                @Html.CheckBox("SaveOnly", new { @id = "save-consultation-only", @class = "i-checks save-only" }) &nbsp;
+                                <label for="save-only">Send Email</label>
+                            </div>
+                            <div class="input-group date  margin-left">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                @Html.TextBox("ConsultationSchedule", String.Format("{0:yyyy'-'MM'-'dd}", DateTime.Now), new { @type = "date", @class = "form-control consultation-sched", @id = "consultation-schedule" })
+                            </div>
+                            <button type="button" class="btn btn-info btn-w-s consultation-reschedule-btn  margin-left">Reschedule Consultation</button>
+                        </div>
+                    </div>
+                </div>
+            }
+            @if (Model.StatusID == 1 && Model.ConsultationSchedule == null)
+            {
+                <div class="memo-action consultation-schedule">
+                    <label>Schedule Consultation</label>
+                    <div class="actions">
+                        @Html.HiddenFor(m => m.ID, new { @id = "writtenexplanation-id" })
+                        <div class="pull-left">
+                            @Html.CheckBox("SaveOnly", new { @id = "save-consultation-only", @class = "i-checks save-only" }) &nbsp;
+                            <label for="save-only">Send Email</label>
+                        </div>
+                        <div class="input-group date margin-left">
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            @Html.TextBox("ConsultationSchedule", String.Format("{0:yyyy'-'MM'-'dd}", DateTime.Now), new { @type = "date", @class = "form-control consultation-sched", @id = "consultation-schedule" })
+                        </div>
+                        <button type="button" class="btn btn-info btn-w-s consultation-btn margin-left">Schedule Consultation</button>
+                    </div>
+                </div>
+            }
+            @if (Model.ConsultationStatusID == 1 && Model.StatusID == 1)
+            {
+                <div class="memo-action recommendation">
+                    <label>Recommendation</label>
+                    <div class="actions">
+                        @Html.HiddenFor(m => m.ID, new { @id = "writtenexplanation-id" })
+                        <button type="button" class="btn btn-info btn-w-s recommendation-warning-btn recommendation-btn selection-btn">Warning</button>
+                        <button type="button" class="btn btn-info btn-w-s recommendation-notice-btn recommendation-btn selection-btn">For Second Notice</button>
+                    </div>
+                </div>
+            }
+        </div>
+        @if (Model.IsNew)
+        {
+            <div class="content-management-actions">
+                <div class="edit pull-right">
+                    <button class="btn btn-primary" id="edit-memo" title="edit"><i class="fa fa-pencil"></i></button>
+                </div>
+                <div class="save pull-right hidden">
+                    <div class="pull-left">
+                        @Html.CheckBox("ResendEmail", new { @id = "resend-email", @class = "i-checks resend-email" }) &nbsp;
+                        <label for="resend-email">Resend Email</label>
+                    </div> &nbsp; &nbsp;
+                    <button class="btn btn-danger" id="cancel-memo" title="cancel"><i class="fa fa-times"></i></button>
+                    <button class="btn btn-success" id="save-memo" title="save"><i class="fa fa-save"></i></button>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="memo-content content">
+        <div class="content-list" id="content-list">
+            @for (int i = 0; i < Model.Content.Count; i++)
+            {
+                if (!string.IsNullOrEmpty(Model.Content[i].File) || !string.IsNullOrEmpty(Model.Content[i].Message))
+                {
+                    <div class="@(Model.Content[i].FromPersonnel ? "personnel-send" : "management-send")">
+                        @if (!string.IsNullOrEmpty(Model.Content[i].Message))
+                        {
+                            <div class='content-message'>@Model.Content[i].Message</div>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.Content[i].File))
+                        {
+                    <div class="memo-file">
+                        @if (Model.Content[i].IsFileSupported)
+                        {
+                            <embed class="content-file" src="@Model.Content[i].FilePath" title="File">
+                        }
+                        else
+                        {
+                            <a href="@Model.Content[i].FilePath" class="attached-file" target="_blank" title="Download">
+                                <i class="fa fa-file-o"></i> File (@Model.Content[i].File)
+                            </a>
+                        }
+
+
+                        @if (Model.IsNew)
+                        {
+                            <div class="file-actions">
+                                <input type="hidden" class="selected-content-id" value="@Model.Content[i].ID" />
+                                <input type="hidden" class="selected-written-explanation-id" value="@Model.Content[i].WrittenExplanationID" />
+                                <div class="btn-actions">
+                                    <button class="btn btn-success edit-file" title="Edit"><i class="fa fa-pencil"></i></button>
+                                    <button class="btn btn-danger delete-file" title="Delete"><i class="fa fa-trash"></i></button>
+                                    <button class="btn btn-primary resend-file" title="Re-send"><i class="fa fa-send"></i></button>
+                                </div>
+                                <div class="btn-input hidden">
+                                    <div class="form-group">
+                                        <input type="file" id="browseFile" name="" value="" class="browsefile form-control">
+                                    </div>
+                                    <button type="button" class="btn btn-success save-file" title="Save"><i class="fa fa-save"></i></button>
+                                    <button type="button" class="btn btn-danger cancel-file" title="Cancel"><i class="fa fa-times"></i></button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                        }
+
+                    </div>
+                }
+            }
+        </div>
+        @if ((Model.ConsultationStatusID == 1 || Model.ConsultationSchedule == null) && Model.StatusID == 1)
+        {
+            <div class="action" id="memo-send-fields">
+                @Html.Hidden("WrittenExplanationID", Model.ID, new { @id = "writtenexplanationID" })
+                <div class="pull-left">
+                    @Html.CheckBox("SaveOnly", new { @id = "send-file-content", @class = "i-checks" }) &nbsp;
+                    <label for="SendMemo">Send Email</label>
+                </div>
+                <div class="form-group">
+                    <input type="hidden" id="" name="" value="" class="">
+                    <input type="file" id="browseFile" name="" value="" class="browsefile form-control">
+                </div>
+                <button type="button" name="SendMemo" class="btn btn-info btn-w-s SendMemo" title="Send"><i class="fa fa-send"></i></button>
+            </div>
+        }
+    </div>
+</div>

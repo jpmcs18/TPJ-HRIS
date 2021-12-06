@@ -2,6 +2,7 @@
 using ProcessLayer.Processes;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
@@ -12,6 +13,22 @@ namespace ProcessLayer.Helpers
 {
     public static class Web
     {
+        public static bool IsFileSupported(string file)
+        {
+            return new List<string> {
+                    ".jpeg",
+                    ".png",
+                    ".jpg",
+                    ".gif",
+                    ".tiff",
+                    ".psd",
+                    ".pdf",
+                    ".eps",
+                    ".ai",
+                    ".indd",
+                    ".raw"
+                }.Contains(Path.GetExtension(file));
+        }
         public static List<int> PerpetialLicenseIDs(IEnumerable<LicenseType> licensetype)
         {
             return licensetype.Where(x => x.Perpetual).Select(x => x.ID).ToList();

@@ -1,0 +1,250 @@
+﻿:root {
+    --btn-color: #23c6c8;
+}
+
+.content-container {
+    display: flex;
+    justify-content: space-between;
+
+    .file {
+        margin-top: 1em;
+
+        .content-file {
+            width: 25em;
+            height: 25em;
+        }
+
+        .attached-file {
+            text-decoration: none;
+        }
+    }
+
+    .content {
+        box-shadow: 0em 0em .2em 0em #ccc;
+        height: 55vh;
+    }
+
+    .single-data {
+        margin: 0 auto;
+    }
+
+    .memo-info {
+        width: 30%;
+        padding: .4em;
+        position: relative;
+
+        .back-btn {
+            position: absolute;
+            bottom: .4em;
+            left: .4em;
+        }
+
+        .Acknowledged {
+            position: absolute;
+            bottom: .4em;
+            right: .4em;
+        }
+
+        .content-management-actions {
+            position: absolute;
+            bottom: .4em;
+            right: .4em;
+        }
+    }
+
+    .memo-content {
+        width: 70%;
+        display: flex;
+        flex-direction: column;
+
+        .content-list {
+            flex-grow: 1;
+            overflow: auto;
+
+            .personnel-status {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 1em;
+                margin: .5em;
+                box-shadow: 0em 0em .2em 0.1em #ccc;
+
+                .fa {
+                    font-size: 1.5em !important;
+                    margin-right: 1em
+                }
+
+                .acknowledged {
+                    color: green;
+                }
+
+                .unacknowledge {
+                    color: gray;
+                }
+
+                h3 {
+                    margin: 0;
+                    width: 100%
+                }
+            }
+        }
+
+        .action {
+            padding: .5em;
+            display: flex;
+            align-items: center;
+            box-shadow: 0em 0em .2em 0em #ccc;
+
+            button {
+                margin: 0;
+            }
+
+            .form-group {
+                flex-grow: 1;
+                margin: 0 .5em -0.3em 0.5em;
+            }
+        }
+    }
+}
+
+.personnel-send {
+    box-shadow: 0em 0em .3em 0em #CCC;
+    clear: both;
+    padding: 1em;
+    margin: 1em;
+    background: #eee;
+    border-radius: 0.5em;
+    position: relative;
+    float: left;
+
+    &:before {
+        content: '';
+        position: absolute;
+        height: 1em;
+        width: 1em;
+        background: #eee;
+        transform: rotate(45deg);
+        left: 0;
+        margin-left: -0.5em;
+    }
+
+    .content-file {
+        width: 30em;
+        height: 30em;
+    }
+
+    .attached-file {
+        text-decoration: none;
+    }
+}
+.management-send {
+    box-shadow: 0em 0em .3em 0em #CCC;
+    clear: both;
+    padding: 1em;
+    margin: 1em;
+    background: #eee;
+    border-radius: 0.5em;
+    position: relative;
+    float: right;
+
+    &:before {
+        content: '';
+        position: absolute;
+        height: 1em;
+        width: 1em;
+        background: #eee;
+        transform: rotate(45deg);
+        right: 0;
+        bottom: 1em;
+        margin-right: -0.5em;
+    }
+
+    .content-file {
+        width: 30em;
+        height: 30em;
+    }
+
+    .attached-file {
+        text-decoration: none;
+    }
+}
+.memo-status {
+    display: flex;
+    flex-flow: column;
+}
+.memo-action {
+    border-top: 1px solid #ccc;
+    margin-top: 1em;
+    padding-top: 1em;
+
+    .actions {
+        display: flex;
+        align-items: center;
+
+        .margin-left {
+            margin-left: .5em;
+        }
+
+        .selection-btn {
+            width: 10em !important;
+            margin-right: 1em;
+            background: unset;
+            color: var(--btn-color);
+
+            &:hover {
+                color: white;
+                background: var(--btn-color);
+            }
+        }
+
+        .selected {
+            color: white;
+            background: var(--btn-color);
+        }
+    }
+}
+
+
+.hidden {
+    display: none
+}
+
+.content-panel {
+    display: flex;
+    flex-direction: column;
+
+    .panel-heading {
+        padding: .5em;
+
+        .close {
+            font-weight: bold !important;
+            font-size: 1.3em !important;
+        }
+    }
+}
+
+.i-checks {
+    label:before {
+        content: none;
+    }
+}
+
+.memo-file {
+    &:hover .file-actions {
+        display: block;
+    }
+}
+    
+.file-actions {
+    background: #eee;
+    padding: 1em;
+    border-radius: .3em;
+    display: none;
+}
+
+.show-file-actions {
+    display:block !important;
+}
+body {
+    overflow: auto;
+}

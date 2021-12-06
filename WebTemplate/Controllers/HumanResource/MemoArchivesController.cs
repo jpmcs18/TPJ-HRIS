@@ -165,9 +165,9 @@ namespace WebTemplate.Controllers.HumanResource
         [ValidateAntiForgeryToken]
         public ActionResult NewMemoArchive()
         {
-            M.Management model = new M.Management
+            M.Management model = new()
             {
-                MemoArchive = new MemoArchives() { InReplyTo = null, PersonnelReply = false }
+                MemoArchive = new ProcessLayer.Entities.MemoArchives() { InReplyTo = null, PersonnelReply = false }
             };
 
             return PartialViewCustom("_MemoManagement", model);
@@ -179,7 +179,7 @@ namespace WebTemplate.Controllers.HumanResource
         {
             try
             {
-                MemoArchives model = new MemoArchives { InReplyTo = MemoId };
+                ProcessLayer.Entities.MemoArchives model = new ProcessLayer.Entities.MemoArchives { InReplyTo = MemoId };
                 ModelState.Clear();
                 return PartialViewCustom("_MemoArchive", model);
             }
@@ -195,7 +195,7 @@ namespace WebTemplate.Controllers.HumanResource
         {
             try
             {
-                MemoArchives model = new MemoArchives { InReplyTo = MemoId, PersonnelReply = true };
+                ProcessLayer.Entities.MemoArchives model = new ProcessLayer.Entities.MemoArchives { InReplyTo = MemoId, PersonnelReply = true };
                 ModelState.Clear();
                 return PartialViewCustom("_MemoArchive", model);
             }
@@ -211,7 +211,7 @@ namespace WebTemplate.Controllers.HumanResource
         {
             try
             {
-                MemoArchives model = MemoArchiveProcess.Get(ID);
+                ProcessLayer.Entities.MemoArchives model = MemoArchiveProcess.Get(ID);
                 ModelState.Clear();
                 return PartialViewCustom("_MemoArchive", model);
             }
@@ -223,7 +223,7 @@ namespace WebTemplate.Controllers.HumanResource
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult SaveMemoArchive(MemoArchives model, HttpPostedFileBase fileBase, long? personnelId, int? personnelGroupId)
+        public ActionResult SaveMemoArchive(ProcessLayer.Entities.MemoArchives model, HttpPostedFileBase fileBase, long? personnelId, int? personnelGroupId)
         {
             try
             {

@@ -1,0 +1,51 @@
+﻿@model ProcessLayer.Entities.WrittenExplanation
+
+@{ 
+    var PageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("MemoArchives/WrittenExplanation");
+
+    ViewBag.title = PageAccess.PageName;
+
+    var currentDate = DateTime.Now;
+    var MemoDate = Model.MemoDate?.Date.ToString(string.Format("MMM dd{0}", Model.MemoDate?.Date.Year != DateTime.Now.Year ? ", yyyy" : ""));
+    MemoDate = DateTime.Now.ToString("MMM dd") == MemoDate ? "Today" : DateTime.Now.AddDays(-1).ToString("MMM dd") == MemoDate ? "Yesterday" : MemoDate;
+}
+<input id="WrittenExplanationID" type="hidden" name="ID" value="@Model.ID" />
+
+<div class="mail-box-header">
+    <h2 style="margin: 0; text-align: center;">View</h2>
+</div>
+<div class="mail-box">
+    <div class="mail-body">
+        <div id="Compose">
+            @if (!string.IsNullOrEmpty(Model.MemoNo))
+            {
+                <div class="formgroup">
+                    <label>Number: </label>
+                    <h3>@(Model.MemoNo ?? "(No Number)")</h3>
+                </div>
+            }
+            @if (!string.IsNullOrEmpty(Model.Subject))
+            {
+                <div class="formgroup">
+                    <label>Subject: </label>
+                    <h3>@(Model.Subject ?? "(No Subject)")</h3>
+                </div>
+            }
+            @if (!string.IsNullOrEmpty(MemoDate))
+            {
+                <div class="formgroup">
+                    <label>Memo Date: </label>
+                    <h3>@(MemoDate ?? "(No Date)")</h3>
+                </div>
+            }
+        <div class="mail-text h-200">
+            <br /><br />
+            @Model.Description
+        </div>
+            <div class="text-right tooltip-demo">
+               
+                <button class="btn btn-white btn-sm DiscardMemoArchive" value="0" saving-option="d" data-toggle="tooltip" data-placement="top" title="Close"><i class="fa fa-times"></i> Close</button>
+            </div>
+        </div>
+    </div>
+</div>
