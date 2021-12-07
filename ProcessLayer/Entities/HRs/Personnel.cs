@@ -74,6 +74,7 @@ namespace ProcessLayer.Entities
         public string EmergencyContactAddress { get; set; }
         [DisplayName("Contact No.")]
         public string EmergencyContactNumber { get; set; }
+        [DisplayName("Relationship")]
         public int? EmergencyRelationshipID { get; set; }
         public string Email { get; set; }
         [DisplayName("Referred By")]

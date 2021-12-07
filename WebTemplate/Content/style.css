@@ -9669,7 +9669,7 @@ table .Row-Display .clickable-text:hover {
   box-shadow: none;
 }
 #PersonnelProfile #form_personelprofile .modal-body .tab-content {
-  height: 850px;
+  height: 750px;
   overflow-y: auto;
   overflow-x: hidden;
   margin-top: 0;

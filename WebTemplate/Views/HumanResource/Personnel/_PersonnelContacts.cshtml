@@ -72,8 +72,8 @@
     <table id="ContactNumbersTable" class="table table-stripped table-bordered table-fixed">
         <thead>
             <tr>
-                <th style="text-align: center;">Contact No Type</th>
-                <th style="text-align: center;">Number</th>
+                <th style="text-align: center;">Type</th>
+                <th style="text-align: center;">Details</th>
                 @if (ContactsPageAccess.Update || ContactsPageAccess.Delete)
                 {
                     <th style="text-align: center;">Action</th>
@@ -121,7 +121,7 @@
                             @Html.DropDownList("ContactNoTypeID", new SelectList(contactnotypes, "ID", "Description", Model.Personnel._ContactNumbers[i].ContactNoTypeID), "N/A", new { @class = "form-control" })
                         </td>
                         <td style="text-align: center;">
-                            @Html.TextBox("Number", Model.Personnel._ContactNumbers[i].Number, new { @class = "form-control text-transform-none" })
+                            @Html.TextBox("Number", Model.Personnel._ContactNumbers[i].Number, new { @class = "form-control text-transform-none", @placeholder = "Details..." })
                         </td>
                         @if (ContactsPageAccess.Update)
                         {
@@ -151,7 +151,7 @@
                         @Html.DropDownList("ContactNoTypeID", new SelectList(contactnotypes, "ID", "Description", 0), "N/A", new { @class = "form-control" })
                     </td>
                     <td style="text-align: center;">
-                        <input type="text" name="Number" class="form-control text-transform-none" placeholder="Number..." />
+                        <input type="text" name="Number" class="form-control text-transform-none" placeholder="Details..." />
                     </td>
                     <td style="text-align: center;">
                         <div class="btn-group" style="">

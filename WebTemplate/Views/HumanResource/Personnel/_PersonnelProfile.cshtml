@@ -9,6 +9,7 @@
     var civilStatuses = ProcessLayer.Processes.LookupProcess.GetCivilStatus();
     var religions = ProcessLayer.Processes.LookupProcess.GetReligion();
     var personnelTypes = ProcessLayer.Processes.Lookups.PersonnelTypeProcess.Instance.Value.GetList();
+    var emergencyRelationshipTypes = ProcessLayer.Processes.LookupProcess.GetRelationship();
     //var personnelLocations = ProcessLayer.Processes.LocationProcess.Instance.Value.GetList();
     var employmentStatuses = ProcessLayer.Processes.LookupProcess.GetEmployementStatus();
     var nationalities = ProcessLayer.Processes.LookupProcess.GetNationality();
@@ -97,7 +98,7 @@
                 <li class=""><a data-toggle="tab" href="#tab-11"><i class="fa fa-calculator"></i> Loans</a></li>
             }
         </ul>
-        <div class="tab-content" style="padding: 0;">
+        <div class="tab-content" style="padding: 0 0 10em 0;">
             @* Personal Info *@
             @if (PersonnelTabAccess.View)
             {
@@ -273,7 +274,7 @@
                         {
                             <div class="row">
                                 <div id="ContactsDiv" class="panel panel-primary" style="margin: 0px 15px 5px 15px;">
-                                    <div class="panel-heading" style="padding: 5px 10px;">Contacts</div>
+                                    <div class="panel-heading" style="padding: 5px 10px;">Contact Information</div>
                                     <div class="panel-body" style="padding: 0px;">
                                         <div class="">
                                             <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-3">
@@ -341,6 +342,13 @@
                                             @Html.LabelFor(m => m.Personnel.EmergencyContactPerson, new { @class = "control-label" })
                                             <div class="">
                                                 @Html.TextBoxFor(m => m.Personnel.EmergencyContactPerson, new { @class = "form-control text-transform-none" })
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group col-xs-12 col-sm-4 col-md-4 col-lg-3">
+                                            @Html.LabelFor(m => m.Personnel.EmergencyRelationshipID, new { @class = "control-label" })
+                                            <div class="">
+                                                @Html.DropDownListFor(m => m.Personnel.EmergencyRelationshipID, new SelectList(emergencyRelationshipTypes, "ID", "Description"), "N/A", new { @class = "form-control" })
                                             </div>
                                         </div>
 
