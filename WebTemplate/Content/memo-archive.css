@@ -13,13 +13,20 @@
       text-decoration: none; }
   .content-container .content {
     box-shadow: 0em 0em .2em 0em #ccc;
-    height: 55vh; }
+    height: 80vh; }
   .content-container .single-data {
     margin: 0 auto; }
+  .content-container .pap-info {
+    width: 55% !important; }
+  .content-container .pap-content {
+    width: 45% !important; }
+  .content-container .pap-file {
+    z-index: 1; }
   .content-container .memo-info {
     width: 30%;
     padding: .4em;
-    position: relative; }
+    position: relative;
+    overflow: auto; }
     .content-container .memo-info .back-btn {
       position: absolute;
       bottom: .4em;
@@ -126,9 +133,8 @@
   padding-top: 1em; }
   .memo-action .actions {
     display: flex;
-    align-items: center; }
-    .memo-action .actions .margin-left {
-      margin-left: .5em; }
+    align-items: center;
+    flex-direction: column; }
     .memo-action .actions .selection-btn {
       width: 10em !important;
       margin-right: 1em;
@@ -140,6 +146,8 @@
     .memo-action .actions .selected {
       color: white;
       background: var(--btn-color); }
+    .memo-action .actions .btn {
+      margin: .3em; }
 
 .hidden {
   display: none; }

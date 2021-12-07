@@ -77,7 +77,7 @@
                         @Html.HiddenFor(m => m.ID, new { @id = "infraction-id" })
                         <div class="pull-left">
                             @Html.CheckBox("SaveOnly", new { @id = "save-hearing-only", @class = "i-checks save-only" }) &nbsp;
-                            <label for="save-only">Send Email</label>
+                            <label for="save-hearing-only">Send Email</label>
                         </div>
                         <div class="input-group date margin-left">
                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
@@ -105,9 +105,7 @@
                                 <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                 @Html.TextBox("Date", String.Format("{0:yyyy'-'MM'-'dd}", DateTime.Now), new { @type = "date", @class = "form-control dismissal-date", @id = "suspension-date" })
                             </div>
-                            <div class="input-group">
-                                @Html.TextBox("Days", "", new { @type = "text", @class = "form-control suspension-days txt", @id = "suspension-days" })
-                            </div>
+                            @Html.TextBox("Days", "", new { @type = "text", @class = "form-control suspension-days txt", @id = "suspension-days", @placeholder="Days" })
                             <button type="button" class="btn btn-info btn-w-s suspension-done margin-left">Done</button>
                         </div>
                     </div>

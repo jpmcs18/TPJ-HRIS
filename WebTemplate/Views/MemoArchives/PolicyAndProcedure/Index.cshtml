@@ -413,6 +413,7 @@
     function showPersonnelPolicyAndProcedure(response) {
         $('#ViewPolicyAndProcedures .modal-body .personnels').html(response);
         showDiv('personnels');
+        InitInputFileBrowse();
 
         $('#ViewPolicyAndProcedures .close').off('click').on('click', closeOther);
 

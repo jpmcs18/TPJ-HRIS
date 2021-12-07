@@ -568,6 +568,12 @@
     <Content Include="Content\plugins\jsTree\throbber.gif" />
     <Content Include="Content\plugins\ladda\ladda-themeless.min.css" />
     <Content Include="Content\plugins\ladda\ladda.min.css" />
+    <Content Include="Content\plugins\main.css">
+      <DependentUpon>main.scss</DependentUpon>
+    </Content>
+    <Content Include="Content\plugins\main.min.css">
+      <DependentUpon>main.css</DependentUpon>
+    </Content>
     <Content Include="Content\plugins\morris\morris-0.4.3.min.css" />
     <Content Include="Content\plugins\nouslider\jquery.nouislider.css" />
     <Content Include="Content\plugins\select2\select2.min.css" />
@@ -806,6 +812,7 @@
     <Content Include="fonts\font-awesome\less\calendar.less" />
     <Content Include="libman.json" />
     <Content Include="Content\memo-archive.scss" />
+    <Content Include="Content\plugins\main.scss" />
     <None Include="Properties\PublishProfiles\Inspinia.pubxml" />
     <Content Include="Resources\Template\Crewlist.xlsx" />
     <Content Include="Resources\Template\Crewmovementform.xlsx" />

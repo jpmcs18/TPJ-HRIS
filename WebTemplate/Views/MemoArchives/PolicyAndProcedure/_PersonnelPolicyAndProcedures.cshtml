@@ -5,7 +5,7 @@
 
 <div class="content-container">
     <input type="hidden" value="@ViewBag.ContentId" id="content-id"/>
-    <div class="memo-info content">
+    <div class="memo-info pap-info content">
         @Html.HiddenFor(m => m.ID)
         <div>
             Memo No.: <span class="display-memo">@Model.MemoNo</span>
@@ -26,7 +26,24 @@
                 @Html.TextBoxFor(m => m.Description, new { @class = "form-control", @id = "memo-description" })
             </span>
         </div>
-        <div class="file memo-file process-actions">
+
+        @if (Model.IsNew)
+        {
+            <div class="content-management-actions">
+                <div class="edit pull-right">
+                    <button class="btn btn-primary" id="edit-memo" title="edit"><i class="fa fa-pencil"></i></button>
+                </div>
+                <div class="save pull-right hidden">
+                    <div class="pull-left">
+                        @Html.CheckBox("ResendEmail", new { @id = "resend-email", @class = "i-checks resend-email" }) &nbsp;
+                        <label for="resend-email">Resend Email</label>
+                    </div> &nbsp; &nbsp;
+                    <button class="btn btn-danger" id="cancel-memo" title="cancel"><i class="fa fa-times"></i></button>
+                    <button class="btn btn-success" id="save-memo" title="save"><i class="fa fa-save"></i></button>
+                </div>
+            </div>
+        }
+        <div class="file memo-file process-actions pap-file">
 
             @if (Model.IsFileSupported)
             {
@@ -57,25 +74,8 @@
                 </div>
             }
         </div>
-
-        @if (Model.IsNew)
-        {
-            <div class="content-management-actions">
-                <div class="edit pull-right">
-                    <button class="btn btn-primary" id="edit-memo" title="edit"><i class="fa fa-pencil"></i></button>
-                </div>
-                <div class="save pull-right hidden">
-                    <div class="pull-left">
-                        @Html.CheckBox("ResendEmail", new { @id = "resend-email", @class = "i-checks resend-email" }) &nbsp;
-                        <label for="resend-email">Resend Email</label>
-                    </div> &nbsp; &nbsp;
-                    <button class="btn btn-danger" id="cancel-memo" title="cancel"><i class="fa fa-times"></i></button>
-                    <button class="btn btn-success" id="save-memo" title="save"><i class="fa fa-save"></i></button>
-                </div>
-            </div>
-        }
     </div>
-    <div class="memo-content content">
+    <div class="memo-content pap-content content">
         <div class="content-list" id="content-list">
             @for (int i = 0; i < Model.Content.Count; i++)
             {
