@@ -36,6 +36,7 @@ namespace ProcessLayer.Helpers.ObjectParameter.Personnel
         public const string EmergencyContactAddress = "@EmergencyContactAddress";
         public const string EmergencyContactNumber = "@EmergencyContactNumber";
         public const string EmergencyContactPerson = "@EmergencyContactPerson";
+        public const string EmergencyRelationshipID = "@EmergencyRelationshipID";
         public const string EmploymentStatusId = "@EmploymentStatusId";
         public const string ReferredBy = "@ReferredBy";
         public const string ReferenceContactNo = "@ReferenceContactNo";

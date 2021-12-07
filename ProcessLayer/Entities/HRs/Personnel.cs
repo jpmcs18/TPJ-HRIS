@@ -74,6 +74,7 @@ namespace ProcessLayer.Entities
         public string EmergencyContactAddress { get; set; }
         [DisplayName("Contact No.")]
         public string EmergencyContactNumber { get; set; }
+        public int? EmergencyRelationshipID { get; set; }
         public string Email { get; set; }
         [DisplayName("Referred By")]
         public string ReferredBy { get; set; }
@@ -120,6 +121,7 @@ namespace ProcessLayer.Entities
         public Lookup _EmploymentStatus { get; set; } = new Lookup();
         public Lookup _CivilStatus { get; set; } = new Lookup();
         public Lookup _Religion { get; set; } = new Lookup();
+        public Lookup _Relationship { get; set; } = new Lookup();
         public PersonnelType _PersonnelType { get; set; } = new PersonnelType();
         public Location _HiringLocation { get; set; } = new Location();
         public ScheduleType _ScheduleType { get; set; } = new ScheduleType();

@@ -56,6 +56,7 @@ namespace ProcessLayer.Processes
                 EmergencyContactAddress = dr[PersonnelFields.EmergencyContactAddress].ToString(),
                 EmergencyContactNumber = dr[PersonnelFields.EmergencyContactNumber].ToString(),
                 EmergencyContactPerson = dr[PersonnelFields.EmergencyContactPerson].ToString(),
+                EmergencyRelationshipID = dr[PersonnelFields.EmergencyRelationshipID].ToNullableInt(),
                 EmploymentStatusId = dr[PersonnelFields.EmploymentStatusId].ToNullableInt(),
                 ReferenceContactNo = dr[PersonnelFields.ReferenceContactNo].ToString(),
                 ReferredBy = dr[PersonnelFields.ReferredBy].ToString(),
@@ -84,6 +85,7 @@ namespace ProcessLayer.Processes
                 p._LinkedPersonnel = Get(p.LinkedPersonnelID ?? 0, true);
             }
             catch { }
+
             p._PayrollType = LookupProcess.GetPayrollType(p.PayrollTypeID);
             p._Gender = LookupProcess.GetGender(p.Gender);
             p._CivilStatus = LookupProcess.GetCivilStatus(p.CivilStatusID);
@@ -94,6 +96,7 @@ namespace ProcessLayer.Processes
             p._Schedules = PersonnelScheduleProcess.Instance.Value.GetList(p.ID);
             p._ContactNumbers = ContactNumberProcess.GetList(p.ID);
             p._AssignedLocation = PersonnelAssignedLocationProcess.GetList(p.ID);
+            p._Relationship = LookupProcess.GetRelationship(p.EmergencyRelationshipID);
 
             if (!PersonnelOnly)
             {
@@ -436,6 +439,7 @@ namespace ProcessLayer.Processes
                 { PersonnelParameters.EmergencyContactAddress, personnel.EmergencyContactAddress },
                 { PersonnelParameters.EmergencyContactNumber, personnel.EmergencyContactNumber },
                 { PersonnelParameters.EmergencyContactPerson, personnel.EmergencyContactPerson },
+                { PersonnelParameters.EmergencyRelationshipID, personnel.EmergencyRelationshipID },
                 { PersonnelParameters.ImagePath, personnel.ImagePath },
                 { PersonnelParameters.PersonnelTypeID, personnel.PersonnelTypeID },
                 { PersonnelParameters.HiringLocationID, personnel.HiringLocationID },

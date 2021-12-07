@@ -28,9 +28,12 @@
         public const string PersonnelTypeID = "Personnel Type ID";
         public const string HiringLocationID = "Hiring Location ID";
         public const string Email = "Email";
+
         public const string EmergencyContactAddress = "Emergency Contact Address";
         public const string EmergencyContactNumber = "Emergency Contact Number";
         public const string EmergencyContactPerson = "Emergency Contact Person";
+        public const string EmergencyRelationshipID = "Emergency Relationship ID";
+        
         public const string EmploymentStatusId = "Employment Status Id";
         public const string ReferredBy = "Referred By";
         public const string ReferenceContactNo = "Reference Contact No";
