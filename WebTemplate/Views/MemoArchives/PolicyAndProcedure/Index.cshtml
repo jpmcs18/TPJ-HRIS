@@ -283,9 +283,12 @@
             if ($('#NewMemo .radio-group').is(':checked')) {
                 formdata.append('groupId',
                     $('#GroupTable input[type="checkbox"]:checked').closest('tr').find('.GroupID').val());
-            } else {
+            } else if ($('#NewMemo .radio-personnel').is(':checked')) {
                 formdata.append('personnelId',
                     $('#PersonnelsTable input[type="checkbox"]:checked').closest('tr').find('.PersonnelID').val());
+            }else {
+                formdata.append('vesselIds',
+                    $('#PersonnelsTable input[type="checkbox"]:checked').closest('tr').find('.vesselID').val());
             }
 
             formdata.append('sendEmail', $('#SendModalMemo').is(':checked'))
