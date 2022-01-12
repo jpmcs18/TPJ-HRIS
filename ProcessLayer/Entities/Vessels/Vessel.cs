@@ -8,6 +8,7 @@
         public decimal? GrossTon { get; set; }
         public decimal? NetTon { get; set; }
         public decimal? HP { get; set; }
+        public string Email { get; set; }
 
         public string Display { get; set; }
     }

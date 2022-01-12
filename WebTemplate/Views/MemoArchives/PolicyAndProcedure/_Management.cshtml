@@ -51,6 +51,9 @@
             <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
                 <div class="radio i-checks"><label> <i><input type="radio" class="radioMemberType radio-group" value="Group" name="a"> </i> Group </label></div>
             </div>
+            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="radio i-checks"><label> <i><input type="radio" class="radioMemberType radio-vessel" value="Vessel" name="a"> </i> Vessel </label></div>
+            </div>
         </div>
         <div class="" style="">
             <div id="SearchTable" class="tablediv">
@@ -59,7 +62,6 @@
                     <span class="input-group-addon" id="SearchPersonnel" style="cursor: pointer;"><i class="fa fa-search"></i></span>
                 </div>
                 <div id="SearchTableDiv">
-                    @Html.Partial("~/Views/MemoArchives/PolicyAndProcedure/_SearchPersonnel.cshtml")
                 </div>
             </div>
             <div id="GroupTable" class="tablediv" style="display: none;">
@@ -68,7 +70,14 @@
                     <span class="input-group-addon" id="SearchGroup" style="cursor: pointer;"><i class="fa fa-search"></i></span>
                 </div>
                 <div id="GroupTableDiv">
-                    @Html.Partial("~/Views/MemoArchives/PolicyAndProcedure/_SearchGroup.cshtml")
+                </div>
+            </div>
+            <div id="VesselTable" class="tablediv" style="display: none;">
+                <div id="SearchVesselDiv" class="input-group m-b-sm" style="width: 100%;">
+                    <input id="SearchVesselInput" class="form-control" placeholder="Search Vessel..." />
+                    <span class="input-group-addon" id="SearchVessel" style="cursor: pointer;"><i class="fa fa-search"></i></span>
+                </div>
+                <div id="VesselTableDiv">
                 </div>
             </div>
         </div>

@@ -10,5 +10,9 @@
   {
     "outputFile": "Content/plugins/main.css",
     "inputFile": "Content/plugins/main.scss"
+  },
+  {
+    "outputFile": "Content/layout.css",
+    "inputFile": "Content/layout.scss"
   }
 ]

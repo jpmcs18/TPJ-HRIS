@@ -49,14 +49,6 @@
                 <div class="modal-body" style="max-height: 750px; background-color: #fff; overflow: hidden;">
                     <div class="chat-view">
                         @Html.AntiForgeryToken()
-                        @*<div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-3">
-                                <label class="control-label">Cutoff Start Date</label>
-                                <input type="text" id="txt_startdate" name="StartDate" class="form-control js-datetimepicker tpj-startdate" placeholder="Start Date" value="@Html.ValueFor(m => m.StartDate, "{0:MM/dd/yyyy}")" />
-                            </div>
-                            <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-3">
-                                <label class="control-label">Cutoff End Date</label>
-                                <input type="text" id="txt_enddate" name="EndDate"  class="form-control js-datetimepicker tpj-enddate" placeholder="End Date" value="@Html.ValueFor(m => m.EndDate, "{0:MM/dd/yyyy}")" />
-                            </div>*@
                         <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-3">
                             <label class="control-label">Year</label>
                             <input type="text" id="txt_year" name="year" class="form-control tpj-year" placeholder="Year" value="@($"{DateTime.Now:yyyy}" )" />

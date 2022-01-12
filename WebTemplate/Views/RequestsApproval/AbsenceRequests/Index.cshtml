@@ -192,7 +192,7 @@
 
         if (xhr) { xhr.abort(); }
         xhr = $.ajax({
-            url: '@Url.Action("Index", "AbsenceRequest")',
+            url: '@Url.Action("Index", "AbsenceRequests")',
             data: formdata,
             type: "POST",
             datatype: 'JSON',

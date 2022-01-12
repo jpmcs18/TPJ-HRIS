@@ -8,5 +8,6 @@
         public const string GrossTon = "@GrossTon";
         public const string NetTon = "@NetTon";
         public const string HP = "@HP";
+        public const string Email = "@Email";
     }
 }

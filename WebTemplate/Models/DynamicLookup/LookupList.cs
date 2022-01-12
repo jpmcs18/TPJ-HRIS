@@ -221,7 +221,8 @@ namespace WebTemplate.Models.DynamicLookup
                 , new LookupSetting()
                 , new LookupSetting("GrossTon", "Gross Ton", LookupDataType.number)
                 , new LookupSetting("NetTon", "Net Ton", LookupDataType.number)
-                , new LookupSetting("HP", "HP", LookupDataType.number) },
+                , new LookupSetting("HP", "HP", LookupDataType.number)
+                , new LookupSetting("Email", "Email", LookupDataType.text) },
             { Lookups.Non_Taxable_Days
                 , new LookupSetting()
                 , new LookupSetting("StartDate", "Start Date", LookupDataType.date)

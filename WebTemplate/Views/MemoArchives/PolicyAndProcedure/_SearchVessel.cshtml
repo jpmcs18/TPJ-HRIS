@@ -1,0 +1,53 @@
+﻿@using WebTemplate.Extension;
+@model WebTemplate.Models.MemoArchives.PolicyAndProcedure.Management
+
+<div class="table-responsive" style="max-height: 550px; overflow-y: scroll;">
+    <table id="VesselsTable" class="table table-stripped table-bordered" style="max-height: 500px;">
+        <thead>
+            <tr>
+                <th style="text-align: center; " scope="col">Vessel</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr id="Row-Loading-Display" class="hidden">
+                <td style="text-align: center;" colspan="6">
+                    <i id="" class="fa fa-rotate-left rotate" style="padding: 8px; font-size: 20px; text-align: right;"></i>
+                </td>
+            </tr>
+            @if (Model.Vessels.Count() > 0)
+            {
+                <tr id="No-Row-Display" class="hidden"><td style="text-align: center;" colspan="6">No Personnels found...</td></tr>
+                for (int i = 0; i < Model.Vessels.Count(); i++)
+                {
+                    <tr id="@Model.Vessels[i].ID" class="personnel">
+                        <td class="hidden">
+                            <input class="VesselID" type="hidden" name="model[@i].VesselID" value="@Model.Vessels[i].ID" />
+                            <input class="RowIndex" type="hidden" value="@i" />
+                        </td>
+                        <td style="padding: 0px;" colspan="2">
+                            <button type="button" class="btn btn-white" style="width: 100%; padding: 3px 0px 0px 12px; cursor: pointer;">
+                                <div style="text-align: left; text-transform: uppercase; white-space: nowrap; display: flex;">
+                                    <label style="margin: 0px; margin: auto 0px;" class="checkbox i-checks pull-right">
+                                        <input type="checkbox" id="Selectvessel" class="form-control pull-right selectVessel" disabled="disabled">
+                                    </label>
+                                    <div>
+                                        <b class="" style="color: #535353;">@Model.Vessels[i].Description</b>
+                                        <text class="" style="text-transform: none;">@Model.Vessels[i].Code</text>
+                                    </div>
+                                </div>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr id="No-Row-Display">
+                    <td style="text-align: center;" colspan="6">No Vessel found...</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+        </tfoot>
+    </table>
+</div>

@@ -24,7 +24,8 @@ namespace ProcessLayer.Processes
                 Description = dr[VesselFields.Description].ToString(),
                 GrossTon = dr[VesselFields.GrossTon].ToNullableDecimal(),
                 NetTon = dr[VesselFields.NetTon].ToNullableDecimal(),
-                HP = dr[VesselFields.HP].ToNullableDecimal()
+                HP = dr[VesselFields.HP].ToNullableDecimal(),
+                Email = dr[VesselFields.Email].ToString()
             };
             
             return c;
@@ -83,7 +84,23 @@ namespace ProcessLayer.Processes
                 }
             }
         }
-        
+
+        public List<Vessel> Search(string description)
+        {
+            var Parameters = new Dictionary<string, object>
+            {
+                { VesselParameters.Description, description}
+            };
+
+            using (var db = new DBTools())
+            {
+                using (var ds = db.ExecuteReader(VesselProcedures.Search, Parameters))
+                {
+                    return ds.GetList(Converter);
+                }
+            }
+        }
+
         public Vessel CreateOrUpdate(Vessel vessel, int userid)
         {
             var Parameters = new Dictionary<string, object>
@@ -93,6 +110,7 @@ namespace ProcessLayer.Processes
                 { VesselParameters.GrossTon, vessel.GrossTon },
                 { VesselParameters.NetTon, vessel.NetTon },
                 { VesselParameters.HP, vessel.HP },
+                { VesselParameters.Email, vessel.Email },
                 { CredentialParameters.LogBy, userid }
             };
 

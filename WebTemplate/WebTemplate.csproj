@@ -472,6 +472,12 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\calendar.min.css" />
     <Content Include="Content\email.css" />
+    <Content Include="Content\layout.css">
+      <DependentUpon>layout.scss</DependentUpon>
+    </Content>
+    <Content Include="Content\layout.min.css">
+      <DependentUpon>layout.css</DependentUpon>
+    </Content>
     <Content Include="Content\memo-archive.css">
       <DependentUpon>memo-archive.scss</DependentUpon>
     </Content>
@@ -813,6 +819,7 @@
     <Content Include="libman.json" />
     <Content Include="Content\memo-archive.scss" />
     <Content Include="Content\plugins\main.scss" />
+    <Content Include="Content\layout.scss" />
     <None Include="Properties\PublishProfiles\Inspinia.pubxml" />
     <Content Include="Resources\Template\Crewlist.xlsx" />
     <Content Include="Resources\Template\Crewmovementform.xlsx" />
@@ -2491,6 +2498,7 @@
     <Content Include="Views\MemoArchives\PolicyAndProcedure\_SearchGroup.cshtml" />
     <Content Include="Views\HumanResource\Personnel\_PersonnelPolicyAndProcedure.cshtml" />
     <Content Include="Views\HumanResource\Personnel\_PersonnelPolicyAndProcedureContents.cshtml" />
+    <Content Include="Views\MemoArchives\PolicyAndProcedure\_SearchVessel.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">

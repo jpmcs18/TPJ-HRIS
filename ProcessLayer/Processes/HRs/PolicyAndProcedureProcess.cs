@@ -145,7 +145,7 @@ namespace ProcessLayer.Processes.HR
 
             }
         }
-        public PolicyAndProcedure Create(PolicyAndProcedure policyAndProcedure, long? personnelId, long? groupId, int userId)
+        public PolicyAndProcedure Create(PolicyAndProcedure policyAndProcedure, long? personnelId, long? groupId, List<int> vesselIds, int userId)
         {
 
             using (var db = new DBTools())
@@ -181,6 +181,14 @@ namespace ProcessLayer.Processes.HR
                     {
                         personnelIds = PersonnelGroupMemberProcess.GetByGroup(groupId ?? 0, true)?.Select(x => x.PersonnelID ?? 0)?.ToList();
                     }
+                    vesselIds?.ForEach((id) => {
+                        var content = new PersonnelPolicyAndProcedure()
+                        {
+                            PolicyAndProcedureID = policyAndProcedure.ID,
+                            VesselID = id
+                        };
+                        PersonnelPolicyAndProcedureProcess.Instance.Value.Create(db, content, userId);
+                    });
 
                     personnelIds?.ForEach((id) => {
                         var content = new PersonnelPolicyAndProcedure() {

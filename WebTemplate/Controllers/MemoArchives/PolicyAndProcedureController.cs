@@ -3,6 +3,7 @@ using ProcessLayer.Helpers;
 using ProcessLayer.Processes;
 using ProcessLayer.Processes.HR;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
@@ -132,9 +133,30 @@ namespace WebTemplate.Controllers.MemoArchives
                 return Json(new { msg = false, res = ex.GetActualMessage() });
             }
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Save(PolicyAndProcedure policyAndProcedure, bool sendEmail, long? personnelId, long? groupId, HttpPostedFileBase fileBase)
+        public ActionResult SearchVessel(string filter)
+        {
+            try
+            {
+                Management model = new()
+                {
+                    Vessels = VesselProcess.Instance.Value.Search(filter),
+                    VesselSearchKey = filter
+                };
+
+                return PartialViewCustom("_SearchVessel", model);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { msg = false, res = ex.GetActualMessage() });
+            }
+        }
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Save(PolicyAndProcedure policyAndProcedure, bool sendEmail, long? personnelId, long? groupId, List<int> vesselIds, HttpPostedFileBase fileBase)
         {
             try
             {
@@ -143,15 +165,9 @@ namespace WebTemplate.Controllers.MemoArchives
                 policyAndProcedure.SaveOnly = !sendEmail;
                 policyAndProcedure.File = fileBase.SaveFile(directory, $"{policyAndProcedure.MemoNo}{DateTime.Now:MMddyyyyHHmmss}{Path.GetExtension(fileBase.FileName)}");
 
-                //if (personnelId != null || groupId != null)
-                //{
-                    policyAndProcedure = PolicyAndProcedureProcess.Instance.Value.Create(policyAndProcedure, personnelId, groupId, User.UserID);
-                    policyAndProcedure = PolicyAndProcedureProcess.Instance.Value.Get(policyAndProcedure.ID);
-                //}
-                //else
-                //{
-                //    return Json(new { msg = false, res = "No recipient found. Not saved." });
-                //}
+                policyAndProcedure = PolicyAndProcedureProcess.Instance.Value.Create(policyAndProcedure, personnelId, groupId, vesselIds, User.UserID);
+                policyAndProcedure = PolicyAndProcedureProcess.Instance.Value.Get(policyAndProcedure.ID);
+             
                 ModelState.Clear();
                 ViewBag.ContentId = policyAndProcedure.ID;
                 return PartialViewCustom("_PersonnelPolicyAndProcedures", policyAndProcedure);

@@ -18,12 +18,14 @@ namespace ProcessLayer.Processes.HR
             PersonnelPolicyAndProcedure pap = new PersonnelPolicyAndProcedure
             {
                 ID = dr["ID"].ToLong(),
-                PersonnelID = dr["Personnel ID"].ToLong(),
+                PersonnelID = dr["Personnel ID"].ToNullableLong(),
+                VesselID = dr["Vessel ID"].ToNullableInt(),
                 PolicyAndProcedureID = dr["Policy And Procedure ID"].ToLong(),
                 Acknowledge = dr["Acknowledge"].ToBoolean()
             };
 
-            pap.Personnel = PersonnelProcess.Get(pap.PersonnelID, true);
+            pap.Personnel = PersonnelProcess.Get(pap.PersonnelID ?? 0, true);
+            pap.Vessel = VesselProcess.Instance.Value.Get(pap.VesselID ?? 0);
 
             return pap;
         }

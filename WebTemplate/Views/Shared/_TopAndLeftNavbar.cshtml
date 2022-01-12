@@ -56,13 +56,13 @@
             <a href="/" class=""><i class="fa fa-home"></i> <span class="side-nav-label">Home</span> </a>
         </li>
 
-        @helper DisplayMenus(IEnumerable<DataAccessLayer.System.NavMenu> nm, string level)
+        @helper DisplayMenus(IEnumerable<DataAccessLayer.System.NavMenu> nm, string level, bool isSub = false)
         {
             foreach (DataAccessLayer.System.NavMenu n in nm)
             {
                 bool active = (n.Pages.Count > 0 && n.Pages.Any(p => Request.Url.AbsolutePath.Trim('/', '\\').StartsWith(p.URL))) || Request.Url.AbsolutePath.Trim('/', '\\').StartsWith(n.NavTitle);
-                <li class="@(active ? "active" : "")">
-                    <a href="#"><i class="fa fa-@n.NavIconClass"></i><span class="side-nav-label"> @n.NavTitle</span><span class="fa arrow"></span> </a>
+                <li class="@(active ? "active" : "") @(isSub ? " sub" : "")">
+                    <a href="#"><span class="title"><i class="fa fa-@n.NavIconClass"></i><span class="side-nav-label"> @n.NavTitle</span></span><span class="fa arrow"></span> </a>
                     <ul class="nav @(active ? "in" : "")" aria-expanded="@active">
                         @if (n.Pages.Count > 0)
                         {
@@ -76,7 +76,7 @@
 
                         @if (n.ChildNavMenu != null && n.ChildNavMenu.Count > 0)
                         {
-                            @DisplayMenus(n.ChildNavMenu, "third")
+                                @DisplayMenus(n.ChildNavMenu, "third", true)
                         }
                     </ul>
                 </li>

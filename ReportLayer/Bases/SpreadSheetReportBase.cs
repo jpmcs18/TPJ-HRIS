@@ -120,7 +120,7 @@ namespace ReportLayer.Bases
             return WorkSheet.Cells.GetSubrange(startCell, lastCell);
         }
 
-        protected void SetRowHeight(int row, int height, LengthUnit lengthUnit = LengthUnit.Centimeter)
+        protected void SetRowHeight(int row, double height, LengthUnit lengthUnit = LengthUnit.Centimeter)
         {
             WorkSheet.Rows[row].SetHeight(height, lengthUnit);
         }

@@ -219,6 +219,7 @@
         $('#ViewPolicyAndProcedures .close').off('click').on('click', closeOther);
         EmptySearch('SearchTableDiv', 'p');
         EmptySearch('GroupTableDiv', 'g');
+        EmptySearch('VesselTableDiv', 'v');
         InitInputFileBrowse();
         $('.radioMemberType').off('ifClicked').on('ifClicked', MemberType);
         $('#NewMemo div[id="SearchPersonnelOrGroup"]').removeClass('hidden');
@@ -226,36 +227,43 @@
     }
     function MemberType() {
         var action = $(this).val();
-        var action = $(this).val();
 
-        if (action == 'Personnel') {
-            $('#SearchTable').show();
-            $('#GroupTable').hide();
-        } else {
-            $('#SearchTable').hide();
-            $('#GroupTable').show();
+        $('#SearchTable').hide();
+        $('#GroupTable').hide();
+        $('#VesselTable').hide();
+
+        switch (action)
+        {
+            case 'Personnel':
+                $('#SearchTable').show();
+                break;
+            case 'Group':
+                $('#GroupTable').show();
+                break;
+            case 'Vessel':
+                $('#VesselTable').show();
+                break;
         }
     }
 
-        function checkInternetConnection() {
-            try {
-                var isOnline = navigator.onLine;
+    function checkInternetConnection() {
+        try {
+            var isOnline = navigator.onLine;
 
-                if (isOnline) {
-                    $('#NewMemo #No-Chat-Internet').addClass('hidden');
-                    $('#NewMemo #SendMemo').closest('div.pull-left').removeClass('hidden');
+            if (isOnline) {
+                $('#NewMemo #No-Chat-Internet').addClass('hidden');
+                $('#NewMemo #SendMemo').closest('div.pull-left').removeClass('hidden');
 
-                    $('#ViewReplies #No-Chat-Internet').addClass('hidden');
-                    $('#ViewReplies #SendMemo').closest('div.pull-left').removeClass('hidden');
-                } else {
-                    $('#NewMemo #No-Chat-Internet').removeClass('hidden');
-                    $('#NewMemo #SendMemo').closest('div.pull-left').addClass('hidden');
+                $('#ViewReplies #No-Chat-Internet').addClass('hidden');
+                $('#ViewReplies #SendMemo').closest('div.pull-left').removeClass('hidden');
+            } else {
+                $('#NewMemo #No-Chat-Internet').removeClass('hidden');
+                $('#NewMemo #SendMemo').closest('div.pull-left').addClass('hidden');
 
-                    $('#ViewReplies #No-Chat-Internet').removeClass('hidden');
-                    $('#ViewReplies #SendMemo').closest('div.pull-left').addClass('hidden');
-                }
-            } catch {
+                $('#ViewReplies #No-Chat-Internet').removeClass('hidden');
+                $('#ViewReplies #SendMemo').closest('div.pull-left').addClass('hidden');
             }
+        } catch {}
 
     }
 
@@ -730,6 +738,52 @@
                     toastr.error('AJAX backend error', 'An error has occured.');
                 }
             });
+    }
+
+        function SearchVessel() {
+            var filter = $('#SearchVesselDiv input').val();
+
+            $.ajax({
+                url: '@Url.Action("SearchVessel", "PolicyAndProcedure")',
+                data: {
+                    filter: filter,
+                    '__RequestVerificationToken': $('@Html.AntiForgeryToken()').val()
+                },
+                type: "POST",
+                cache: false,
+                beforeSend: function() {
+                    $('#SearchPersonnelOrGroup #VesselTableDiv tbody tr').addClass('hidden');
+                    $('#SearchPersonnelOrGroup #VesselTableDiv tbody tr#Row-Loading-Display').removeClass('hidden');
+                },
+                complete: function () {
+                    $('#SearchPersonnelOrGroup #VesselTableDiv tbody tr').addClass('hidden');
+                    if ($('#SearchPersonnelOrGroup #VesselTableDiv tbody tr.member').length > 0) {
+                        $('#SearchPersonnelOrGroup #VesselTableDiv tbody tr.member').removeClass('hidden');
+                    } else
+                        $('#SearchPersonnelOrGroup #VesselTableDiv tbody tr#No-Row-Display').removeClass('hidden');
+                },
+                success: function (response) {
+                    
+                    if (response.msg == null) {
+                        $("#VesselTable").find('#SearchVesselInput').val(filter).focus();
+                        $("#VesselTableDiv").html(response);
+
+                        BindSaveFunction();
+
+                        $('.radioMemberType').off('ifClicked').on('ifClicked', MemberType);
+
+                        if ($("#VesselTableDiv tbody tr.member").length == 1)
+                            $("#VesselTableDiv tbody tr.member button").trigger('click');
+                        else
+                            $('#SearchPersonnelOrGroup #VesselTableDiv tbody tr#No-Row-Display').removeClass('hidden');
+                    } else {
+                        toastr.error(response.res);
+                    }
+                },
+                error: function() {
+                    toastr.error('AJAX backend error', 'An error has occured.');
+                }
+            });
         }
         function Search() {
             $.ajax({
@@ -860,6 +914,8 @@
             SearchPersonnel();
         else if (e.keyCode == 13 && $(this).attr('id') == 'SearchGroupInput')
             SearchGroup();
+        else if (e.keyCode == 13 && $(this).attr('id') == 'SearchVesselInput')
+            SearchVessel();
         else if (e.keyCode == 13 &&
             $(this).attr('id').substr(0, $(this).attr('id').length - 2) == 'Row-Input-Group') {
             $(this).closest('tr').find('button[name="SaveGroup"]').trigger('click');
@@ -873,10 +929,16 @@
         $('#SearchGroup').off('click').on('click', SearchGroup);
         $('#SearchGroupInput').off('keyup').on('keyup', KeyDown);
 
+
+        $('#SearchVessel').off('click').on('click', SearchVessel);
+        $('#SearchVesselInput').off('keyup').on('keyup', KeyDown);
+
         $('#PersonnelsTable tbody tr button').off('click').on('click', SelectRow);
         $('#PersonnelsTable tbody tr button .selectPersonnel').off('ifClicked').on('ifClicked', SelectRow);
         $('#GroupsTable tbody tr button').off('click').on('click', SelectRow);
         $('#GroupsTable tbody tr button .selectMember').off('ifClicked').on('ifClicked', SelectRow);
+        $('#VesselsTable tbody tr button').off('click').on('click', SelectRow);
+        $('#VesselsTable tbody tr button .selectMember').off('ifClicked').on('ifClicked', SelectRow);
 
         $('.i-checks').iCheck({
             checkboxClass: 'icheckbox_square-green',
@@ -889,8 +951,10 @@
             '<div class="table-responsive" style="max-height: 550px; overflow-y: scroll;"><table id="GroupsTable" class="table table-stripped table-bordered" style="max-height: 500px;"><thead><tr><th style="text-align: center;" scope="col">Group Names</th></tr></thead><tbody><tr id="No-Row-Display" class=""><td style="text-align: center;" colspan="6">No Groups found...</td></tr></tbody><tfoot></tfoot></table></div>';
         var p =
             '<div class="table-responsive" style="max-height: 550px; overflow-y: scroll;"><table id="PersonnelsTable" class="table table-stripped table-bordered" style="max-height: 500px;"><thead><tr><th style="text-align: center;" scope="col">Personnels</th></tr></thead><tbody><tr id="No-Row-Display" class=""><td style="text-align: center;" colspan="6">No Personnels found...</td></tr></tbody><tfoot></tfoot></table></div>';
+        var v =
+            '<div class="table-responsive" style="max-height: 550px; overflow-y: scroll;"><table id="VesselsTable" class="table table-stripped table-bordered" style="max-height: 500px;"><thead><tr><th style="text-align: center;" scope="col">Vessels</th></tr></thead><tbody><tr id="No-Row-Display" class=""><td style="text-align: center;" colspan="6">No Vessels found...</td></tr></tbody><tfoot></tfoot></table></div>';
 
-        $('#' + div).empty().html(d == 'g' ? g : p);
+        $('#' + div).empty().html(d == 'g' ? g : d == 'p' ? p : v);
     }
     function Send(contentId) {
 

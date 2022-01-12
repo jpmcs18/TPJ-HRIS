@@ -64,11 +64,22 @@ namespace ReportLayer.Extensions
             excelCell.Style.Font.Weight = weight;
             return excelCell;
         }
+        internal static ExcelCell SetItalic(this ExcelCell excelCell)
+        {
+            excelCell.Style.Font.Italic = true;
+            return excelCell;
+        }
         internal static CellRange SetFontWeight(this CellRange cellRange, int weight) //ExcelFont.Weight
         {
             cellRange.Style.Font.Weight = weight;
             return cellRange;
         }
+        internal static CellRange SetFontSize(this CellRange cellRange, int size) //ExcelFont.Size
+        {
+            cellRange.Style.Font.Size = size;
+            return cellRange;
+        }
+
         internal static CellRange SetHorizontalAlignment(this CellRange cellRange, HorizontalAlignmentStyle alignment)
         {
             cellRange.Style.HorizontalAlignment = alignment;
@@ -82,6 +93,11 @@ namespace ReportLayer.Extensions
         internal static CellRange SetBorder(this CellRange cellRange, MultipleBorders multipleBorders)
         {
             cellRange.Style.Borders.SetBorders(multipleBorders, SpreadsheetColor.FromArgb(0,0,0), LineStyle.Thin);
+            return cellRange;
+        }
+        internal static CellRange SetBackgroud(this CellRange cellRange, SpreadsheetColor fillPattern)
+        {
+            cellRange.Style.FillPattern.SetSolid(fillPattern);
             return cellRange;
         }
         internal static CellRange SetWrapText(this CellRange cellRange, bool isWrap = true)
