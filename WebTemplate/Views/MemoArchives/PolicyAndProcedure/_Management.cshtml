@@ -58,26 +58,29 @@
         <div class="" style="">
             <div id="SearchTable" class="tablediv">
                 <div id="SearchPersonnelDiv" class="input-group m-b-sm" style="width: 100%;">
-                    <input id="SearchPersonnelInput" class="form-control" placeholder="Search Personnel..." />
+                    <input id="SearchPersonnelInput" class="form-control search-input" placeholder="Search Personnel..." />
                     <span class="input-group-addon" id="SearchPersonnel" style="cursor: pointer;"><i class="fa fa-search"></i></span>
                 </div>
                 <div id="SearchTableDiv">
+                    @Html.Partial("~/Views/MemoArchives/PolicyAndProcedure/_SearchPersonnel.cshtml", Model)
                 </div>
             </div>
             <div id="GroupTable" class="tablediv" style="display: none;">
                 <div id="SearchGroupDiv" class="input-group m-b-sm" style="width: 100%;">
-                    <input id="SearchGroupInput" class="form-control" placeholder="Search Group..." />
+                    <input id="SearchGroupInput" class="form-control search-input" placeholder="Search Group..." />
                     <span class="input-group-addon" id="SearchGroup" style="cursor: pointer;"><i class="fa fa-search"></i></span>
                 </div>
                 <div id="GroupTableDiv">
+                    @Html.Partial("~/Views/MemoArchives/PolicyAndProcedure/_SearchGroup.cshtml", Model)
                 </div>
             </div>
             <div id="VesselTable" class="tablediv" style="display: none;">
                 <div id="SearchVesselDiv" class="input-group m-b-sm" style="width: 100%;">
-                    <input id="SearchVesselInput" class="form-control" placeholder="Search Vessel..." />
+                    <input id="SearchVesselInput" class="form-control search-input" placeholder="Search Vessel..." />
                     <span class="input-group-addon" id="SearchVessel" style="cursor: pointer;"><i class="fa fa-search"></i></span>
                 </div>
                 <div id="VesselTableDiv">
+                    @Html.Partial("~/Views/MemoArchives/PolicyAndProcedure/_SearchVessel.cshtml", Model)
                 </div>
             </div>
         </div>

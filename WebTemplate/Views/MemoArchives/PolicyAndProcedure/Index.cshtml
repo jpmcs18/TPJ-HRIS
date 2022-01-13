@@ -160,71 +160,72 @@
 <link href="~/Content/memo-archive.css" rel="stylesheet" />
 
 <script type="text/javascript">
-        let isSendingEmail = false;
-        var PageAccess = @Html.Raw(Json.Encode(PageAccess));
-        var interval = null;
+    let isSendingEmail = false;
+    var PageAccess = @Html.Raw(Json.Encode(PageAccess));
+    var interval = null;
 
-        $(document).ready(function() {
-            Events();
-        });
+    $(document).ready(function() {
+        Events();
+    });
 
-        window.onbeforeunload = function(e) {
-            if (isSendingEmail == true)
-                return "Sending email in progress. Unable to reload page.";
-        }
-
-        $(function() {
-            $(document).keydown(function(e) {
-                if (((e.which || e.keyCode) == 116 ||
-                        (e.which || e.keyCode) == 82 ||
-                        (((e.which || e.keyCode) == 65) && e.ctrlKey)) &&
-                    isSendingEmail == true) {
-                    e.preventDefault();
-                    toastr.error('Sending email in progress. Unable to reload page.', 'Error');
-                }
-            });
-        });
-
-        function NewMemo() {
-            $.ajax({
-                data: {
-                    __RequestVerificationToken: $('@Html.AntiForgeryToken()').val()
-                },
-                type: 'POST',
-                datatype: 'JSON',
-                url: '@Url.Action("NewMemo", "PolicyAndProcedure")',
-
-                cache: false,
-                beforeSend: function() {
-                    ShowLoadingScreen();
-                },
-                complete: function() {
-                    RemoveLoadingScreen();
-                },
-                success: function(response) {
-                    if (response.msg == false) {
-                        toastr.error(response.res);
-                    } else {
-                        showPolicyAndProcedureManagement(response)
-                    }
-                },
-                error: function(x) {
-                }
-            });
+    window.onbeforeunload = function(e) {
+        if (isSendingEmail == true)
+            return "Sending email in progress. Unable to reload page.";
     }
+
+    $(function() {
+        $(document).keydown(function(e) {
+            if (((e.which || e.keyCode) == 116 ||
+                    (e.which || e.keyCode) == 82 ||
+                    (((e.which || e.keyCode) == 65) && e.ctrlKey)) &&
+                isSendingEmail == true) {
+                e.preventDefault();
+                toastr.error('Sending email in progress. Unable to reload page.', 'Error');
+            }
+        });
+    });
+
+    function NewMemo() {
+        $.ajax({
+            data: {
+                __RequestVerificationToken: $('@Html.AntiForgeryToken()').val()
+            },
+            type: 'POST',
+            datatype: 'JSON',
+            url: '@Url.Action("NewMemo", "PolicyAndProcedure")',
+
+            cache: false,
+            beforeSend: function() {
+                ShowLoadingScreen();
+            },
+            complete: function() {
+                RemoveLoadingScreen();
+            },
+            success: function(response) {
+                if (response.msg == false) {
+                    toastr.error(response.res);
+                } else {
+                    showPolicyAndProcedureManagement(response)
+                }
+            },
+            error: function(x) {
+            }
+        });
+    }
+
     function showPolicyAndProcedureManagement(response) {
         $('#ViewPolicyAndProcedures .modal-body .management').html(response);
         $('#ViewPolicyAndProcedures').appendTo("body").modal('show');
         showDiv('management');
         $('#ViewPolicyAndProcedures .close').off('click').on('click', closeOther);
-        EmptySearch('SearchTableDiv', 'p');
-        EmptySearch('GroupTableDiv', 'g');
-        EmptySearch('VesselTableDiv', 'v');
+        //EmptySearch('SearchTableDiv', 'p');
+        //EmptySearch('GroupTableDiv', 'g');
+        //EmptySearch('VesselTableDiv', 'v');
         InitInputFileBrowse();
-        $('.radioMemberType').off('ifClicked').on('ifClicked', MemberType);
         $('#NewMemo div[id="SearchPersonnelOrGroup"]').removeClass('hidden');
         BindSaveFunction();
     }
+
     function MemberType() {
         var action = $(this).val();
 
@@ -264,73 +265,75 @@
                 $('#ViewReplies #SendMemo').closest('div.pull-left').addClass('hidden');
             }
         } catch {}
-
     }
 
-        function SaveTable() {
-            var formdata = new FormData()
+    function SaveTable() {
+        var formdata = new FormData()
 
-            $('#MemoFields *').each(function () {
-                var name = $(this).attr('name');
-                var value = $(this).val();
-                if (name != null && value != null)
-                    formdata.append(name, $(this).val());
+        $('#MemoFields *').each(function () {
+            var name = $(this).attr('name');
+            var value = $(this).val();
+            if (name != null && value != null)
+                formdata.append(name, $(this).val());
+        });
+
+        if ($('#MemoFields').find(".browsefile")[0].files.length > 0)
+            formdata.append("fileBase", $('#MemoFields').find(".browsefile")[0].files[0]);
+
+        if ($('#NewMemo .radio-group').is(':checked')) {
+            formdata.append('groupId',
+                $('#GroupTable input[type="checkbox"]:checked').closest('tr').find('.GroupID').val());
+        } else if ($('#NewMemo .radio-personnel').is(':checked')) {
+            formdata.append('personnelId',
+                $('#PersonnelsTable input[type="checkbox"]:checked').closest('tr').find('.PersonnelID').val());
+        } else {
+            var vesselIds = [];
+            $('#VesselsTable input[type="checkbox"]:checked').closest('tr').find('.VesselID').each(function (e) {
+                vesselIds.push(parseInt($(this).val()));
             });
+            formdata.append('vesselIds', JSON.stringify(vesselIds));
+        }
 
-            if ($('#MemoFields').find(".browsefile")[0].files.length > 0)
-                formdata.append("fileBase", $('#MemoFields').find(".browsefile")[0].files[0]);
+        formdata.append('sendEmail', $('#SendModalMemo').is(':checked'))
+        formdata.append("__RequestVerificationToken", $('@Html.AntiForgeryToken()').val());
 
-            if ($('#NewMemo .radio-group').is(':checked')) {
-                formdata.append('groupId',
-                    $('#GroupTable input[type="checkbox"]:checked').closest('tr').find('.GroupID').val());
-            } else if ($('#NewMemo .radio-personnel').is(':checked')) {
-                formdata.append('personnelId',
-                    $('#PersonnelsTable input[type="checkbox"]:checked').closest('tr').find('.PersonnelID').val());
-            }else {
-                formdata.append('vesselIds',
-                    $('#PersonnelsTable input[type="checkbox"]:checked').closest('tr').find('.vesselID').val());
-            }
-
-            formdata.append('sendEmail', $('#SendModalMemo').is(':checked'))
-            formdata.append("__RequestVerificationToken", $('@Html.AntiForgeryToken()').val());
-
-            $.ajax({
-                data: formdata,
-                type: 'POST',
-                datatype: 'JSON',
-                url: '@Url.Action("Save", "PolicyAndProcedure")',
-                cache: false,
-                contentType: false,
-                processData: false,
-                beforeSend: function() {
-                    ShowLoadingScreen()
-                },
-                complete: function() {
-                    RemoveLoadingScreen()
-                },
-                success: function (response) {
-                    if (response.msg == false) {
-                        toastr.error('Error', response.res);
+        $.ajax({
+            data: formdata,
+            traditional: true, // add this
+            type: 'POST',
+            datatype: 'JSON',
+            url: '@Url.Action("Save", "PolicyAndProcedure")',
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                ShowLoadingScreen()
+            },
+            complete: function() {
+                RemoveLoadingScreen()
+            },
+            success: function (response) {
+                if (response.msg == false) {
+                    toastr.error('Error', response.res);
+                }
+                else {
+                    if ($('#SendModalMemo').is(':checked')) {
+                        showPersonnelPolicyAndProcedure(response);
+                        const date = new Date($('#MemoDate').val());
+                        $('#hid_modal_year').val(date.getFullYear());
+                        $('#hid_modal_page').val(1),
+                        SendEmail()
                     }
                     else {
-                        if ($('#SendModalMemo').is(':checked')) {
-                            showPersonnelPolicyAndProcedure(response);
-                            const date = new Date($('#MemoDate').val());
-                            $('#hid_modal_year').val(date.getFullYear());
-                            $('#hid_modal_page').val(1),
-                            SendEmail()
-                        }
-                        else {
-                            showPersonnelPolicyAndProcedure(response);
-                        }
-
+                        showPersonnelPolicyAndProcedure(response);
                     }
-                },
-                error: function(x) {
-                }
-            });
-    }
 
+                }
+            },
+            error: function(x) {
+            }
+        });
+    }
 
     function ViewPolicyAndProcedure() {
         var $tr = $(this);
@@ -338,6 +341,7 @@
         $('#hid_modal_page').val(1),
         FetchPolicyAndProcedure()
     }
+
     function FetchPolicyAndProcedure() {
         $.ajax({
             data: {
@@ -356,16 +360,17 @@
                 RemoveLoadingScreen();
             },
             success: function(response) {
-                if (response.msg == false) {
-                    toastr.error(response.res);
-                } else {
-                    showPolicyAndProcedureModal(response);
-                }
+            if (response.msg == false) {
+                toastr.error(response.res);
+            } else {
+                showPolicyAndProcedureModal(response);
+            }
             },
             error: function(x) {
             }
         });
     }
+
     function showDiv(className) {
         $('#ViewPolicyAndProcedures .modal-body .modal-data').addClass('hidden');
         $('#ViewPolicyAndProcedures .modal-body .' + className).removeClass('hidden')
@@ -375,6 +380,7 @@
         }
 
     }
+
     function showPolicyAndProcedureModal(response) {
         $('#ViewPolicyAndProcedures .modal-body .data').html(response);
         $('#ViewPolicyAndProcedures').appendTo("body").modal('show');
@@ -438,7 +444,6 @@
     }
 
     function saveFile() {
-
         var formdata = new FormData()
 
         if ($(this).parent().parent().find('#browseFile')[0].files.length > 0) {
@@ -480,17 +485,18 @@
             error: function (x) {
             }
         });
-
     }
+
     function cancelFile() {
-        $(this).parent().parent().find('.btn-input').addClass("hidden")
-        $(this).parent().parent().find('.btn-actions').removeClass("hidden")
+        $(this).parent().parent().find('.btn-input').addClass("hidden");
+        $(this).parent().parent().find('.btn-actions').removeClass("hidden");
+    }
 
-    }
     function editFile() {
-        $(this).parent().parent().find('.btn-input').removeClass("hidden")
-        $(this).parent().parent().find('.btn-actions').addClass("hidden")
+        $(this).parent().parent().find('.btn-input').removeClass("hidden");
+        $(this).parent().parent().find('.btn-actions').addClass("hidden");
     }
+
     function resendFile() {
         const id = $(this).parent().parent().find('.selected-content-id').val();
         Send(id);
@@ -504,6 +510,7 @@
         $(".content-management-actions .edit").addClass("hidden");
         $(".content-management-actions .save").removeClass("hidden");
     }
+
     function CancelMemo() {
         $(".display-memo").removeClass("hidden");
         $(".field-memo").addClass("hidden");
@@ -511,6 +518,7 @@
         $(".content-management-actions .edit").removeClass("hidden");
         $(".content-management-actions .save").addClass("hidden");
     }
+
     function SaveMemo() {
         $(".display-memo").removeClass("hidden");
         $(".field-memo").addClass("hidden");
@@ -550,7 +558,7 @@
                 else {
                     if ($('#resend-email').is(':checked')) {
                         showPersonnelPolicyAndProcedure(response);
-                        SendEmail()
+                        SendEmail();
                     }
                     else {
                         showPersonnelPolicyAndProcedure(response);
@@ -563,306 +571,304 @@
         });
 
     }
+
     function closeOther() {
         if (isSendingEmail == false) {
             FetchPolicyAndProcedure();
         } else {
             toastr.warning('Sending memo in progress!', 'Warning');
         }
-
     }
+
     function ScrollContentToBottom() {
         let element = document.getElementById("content-list");
         element.scrollTop = element.scrollHeight;
     }
 
-
-        function InitDatePicker() {
-            $('.input-group.date')
-                .find('.form-control').attr('readonly', true)
-                .css('background-color', '#fff')
-                .datepicker({
-                    todayBtn: "linked",
-                    keyboardNavigation: false,
-                    forceParse: false,
-                    calendarWeeks: true,
-                    autoclose: true
-                }).off('change').on('change',
-                    function() {
-                        showClearInput($(this));
-                    });
-
-            $('.input-group.date').each(function() {
-                $(this).closest('.form-group').css({
-                    'margin-bottom': '7px'
-                });
-                showClearInput($(this).find('input.form-control'));
-            });
-        }
-
-        function BrowseFile() {
-            $x = $(this);
-            $(this).parent().parent().find('.browsefile').trigger('click');
-            $(this).parent().parent().find('.browsefile').off('change').on('change',
-                function(e) {
-                    if ($(this)[0].files.length > 0) {
-                        $x.val($(this)[0].files[0].name);
-                        $('.send').show();
-                    } else {
-                        $('.send').hide();
-                    }
-                });
-        }
-
-        function InitInputFileBrowse() {
-            $('input.browsefile').each(function() {
-                $(this).fileInput();
-                showClearInput($(this));
+    function InitDatePicker() {
+        $('.input-group.date')
+            .find('.form-control').attr('readonly', true)
+            .css('background-color', '#fff')
+            .datepicker({
+                todayBtn: "linked",
+                keyboardNavigation: false,
+                forceParse: false,
+                calendarWeeks: true,
+                autoclose: true
             }).off('change').on('change',
                 function() {
                     showClearInput($(this));
                 });
 
-            $('input.browseFileCustom').off('click').on('click', BrowseFile);
-            $('.clearInput').off('click').on('click', ClearField);
-        }
-
-        function showClearInput($this) {
-            var $input = $('#' + $this.attr('id'))
-            var $clearBtn = $input.next('.clearInput');
-
-            if ($input.val() == "") {
-                $clearBtn.hide();
-            } else {
-                $clearBtn.show();
-            }
-        }
-
-        function ClearField() {
-            $input = $(this).prev('input');
-            $inputHidden = $(this).closest('td').find('input[type="hidden"]');
-            $input.val('');
-            $inputHidden.val('');
-            showClearInput($input);
-            $('.send').hide();
-
-            if ($(this).parent().parent().find('input.form-control').attr('id') == 'browseImage' &&
-                $('#ImageCanvasImg').attr('src') != '\Images\default.jpg') {
-                $('#ImageCanvasImg').attr('src', '\\Images\\default.jpg');
-                $input.val('default.jpg');
-            }
-        }
-
-
-        function SearchPersonnel() {
-            var filter = $('#SearchPersonnelDiv input').val();
-
-            $.ajax({
-                url: '@Url.Action("SearchPersonnel", "PolicyAndProcedure")',
-                data: {
-                    filter: filter,
-                    '__RequestVerificationToken': $('@Html.AntiForgeryToken()').val()
-                },
-                type: "POST",
-                cache: false,
-                beforeSend: function() {
-                    $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr').addClass('hidden');
-                    $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr#Row-Loading-Display').removeClass('hidden');
-                },
-                complete: function() {
-                    $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr').addClass('hidden');
-                    if ($('#SearchPersonnelOrGroup #SearchTableDiv tbody tr.personnel').length > 0) {
-                        $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr.personnel').removeClass('hidden');
-                    } else
-                        $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr#No-Row-Display').removeClass('hidden');
-                },
-                success: function(response) {
-                    if (response.msg == null) {
-                        $("#SearchTable").find('#SearchPersonnelInput').val(filter).focus();
-                        $("#SearchTableDiv").html(response);
-
-                        BindSaveFunction();
-                        $('.radioMemberType').off('ifClicked').on('ifClicked', MemberType);
-
-                        if ($("#SearchTableDiv tbody tr.personnel").length == 1)
-                            $("#SearchTableDiv tbody tr.personnel button").trigger('click');
-                        else
-                            $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr#No-Row-Display').removeClass('hidden');
-                    } else {
-                        toastr.error(response.res);
-                    }
-                },
-                error: function() {
-                    toastr.error('AJAX backend error', 'An error has occured.');
-                }
+        $('.input-group.date').each(function() {
+            $(this).closest('.form-group').css({
+                'margin-bottom': '7px'
             });
-        }
+            showClearInput($(this).find('input.form-control'));
+        });
+    }
 
-        function SearchGroup() {
-            var filter = $('#SearchGroupDiv input').val();
-
-            $.ajax({
-                url: '@Url.Action("SearchGroup", "PolicyAndProcedure")',
-                data: {
-                    filter: filter,
-                    '__RequestVerificationToken': $('@Html.AntiForgeryToken()').val()
-                },
-                type: "POST",
-                cache: false,
-                beforeSend: function() {
-                    $('#SearchPersonnelOrGroup #GroupTableDiv tbody tr').addClass('hidden');
-                    $('#SearchPersonnelOrGroup #GroupTableDiv tbody tr#Row-Loading-Display').removeClass('hidden');
-                },
-                complete: function () {
-                    $('#SearchPersonnelOrGroup #GroupTableDiv tbody tr').addClass('hidden');
-                    if ($('#SearchPersonnelOrGroup #GroupTableDiv tbody tr.member').length > 0) {
-                        $('#SearchPersonnelOrGroup #GroupTableDiv tbody tr.member').removeClass('hidden');
-                    } else
-                        $('#SearchPersonnelOrGroup #GroupTableDiv tbody tr#No-Row-Display').removeClass('hidden');
-                },
-                success: function(response) {
-                    if (response.msg == null) {
-                        $("#GroupTable").find('#SearchGroupInput').val(filter).focus();
-                        $("#GroupTableDiv").html(response);
-
-                        BindSaveFunction();
-
-                        $('.radioMemberType').off('ifClicked').on('ifClicked', MemberType);
-
-                        if ($("#GroupTableDiv tbody tr.member").length == 1)
-                            $("#GroupTableDiv tbody tr.member button").trigger('click');
-                        else
-                            $('#SearchPersonnelOrGroup #GroupTableDiv tbody tr#No-Row-Display').removeClass('hidden');
-                    } else {
-                        toastr.error(response.res);
-                    }
-                },
-                error: function() {
-                    toastr.error('AJAX backend error', 'An error has occured.');
+    function BrowseFile() {
+        $x = $(this);
+        $(this).parent().parent().find('.browsefile').trigger('click');
+        $(this).parent().parent().find('.browsefile').off('change').on('change',
+            function(e) {
+                if ($(this)[0].files.length > 0) {
+                    $x.val($(this)[0].files[0].name);
+                    $('.send').show();
+                } else {
+                    $('.send').hide();
                 }
             });
     }
 
-        function SearchVessel() {
-            var filter = $('#SearchVesselDiv input').val();
+    function InitInputFileBrowse() {
+        $('input.browsefile').each(function() {
+            $(this).fileInput();
+            showClearInput($(this));
+        }).off('change').on('change',
+            function() {
+                showClearInput($(this));
+            });
 
-            $.ajax({
-                url: '@Url.Action("SearchVessel", "PolicyAndProcedure")',
-                data: {
-                    filter: filter,
-                    '__RequestVerificationToken': $('@Html.AntiForgeryToken()').val()
-                },
-                type: "POST",
-                cache: false,
-                beforeSend: function() {
-                    $('#SearchPersonnelOrGroup #VesselTableDiv tbody tr').addClass('hidden');
-                    $('#SearchPersonnelOrGroup #VesselTableDiv tbody tr#Row-Loading-Display').removeClass('hidden');
-                },
-                complete: function () {
-                    $('#SearchPersonnelOrGroup #VesselTableDiv tbody tr').addClass('hidden');
-                    if ($('#SearchPersonnelOrGroup #VesselTableDiv tbody tr.member').length > 0) {
-                        $('#SearchPersonnelOrGroup #VesselTableDiv tbody tr.member').removeClass('hidden');
-                    } else
+        $('input.browseFileCustom').off('click').on('click', BrowseFile);
+        $('.clearInput').off('click').on('click', ClearField);
+    }
+
+    function showClearInput($this) {
+        var $input = $('#' + $this.attr('id'))
+        var $clearBtn = $input.next('.clearInput');
+
+        if ($input.val() == "") {
+            $clearBtn.hide();
+        } else {
+            $clearBtn.show();
+        }
+    }
+
+    function ClearField() {
+        $input = $(this).prev('input');
+        $inputHidden = $(this).closest('td').find('input[type="hidden"]');
+        $input.val('');
+        $inputHidden.val('');
+        showClearInput($input);
+        $('.send').hide();
+
+        if ($(this).parent().parent().find('input.form-control').attr('id') == 'browseImage' &&
+            $('#ImageCanvasImg').attr('src') != '\Images\default.jpg') {
+            $('#ImageCanvasImg').attr('src', '\\Images\\default.jpg');
+            $input.val('default.jpg');
+        }
+    }
+
+    function SearchPersonnel() {
+        var filter = $('#SearchPersonnelDiv input').val();
+
+        $.ajax({
+            url: '@Url.Action("SearchPersonnel", "PolicyAndProcedure")',
+            data: {
+                filter: filter,
+                '__RequestVerificationToken': $('@Html.AntiForgeryToken()').val()
+            },
+            type: "POST",
+            cache: false,
+            beforeSend: function() {
+                $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr').addClass('hidden');
+                $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr#Row-Loading-Display').removeClass('hidden');
+            },
+            complete: function() {
+                $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr').addClass('hidden');
+                if ($('#SearchPersonnelOrGroup #SearchTableDiv tbody tr.personnel').length > 0) {
+                    $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr.personnel').removeClass('hidden');
+                } else
+                    $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr#No-Row-Display').removeClass('hidden');
+            },
+            success: function(response) {
+                if (response.msg == null) {
+                    $("#SearchTable").find('#SearchPersonnelInput').val(filter).focus();
+                    $("#SearchTableDiv").html(response);
+
+                    BindSaveFunction();
+
+                    $('.radioMemberType').off('ifClicked').on('ifClicked', MemberType);
+
+                    if ($("#SearchTableDiv tbody tr.personnel").length == 1)
+                        $("#SearchTableDiv tbody tr.personnel button").trigger('click');
+                    else
+                        $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr#No-Row-Display').removeClass('hidden');
+                } else {
+                    toastr.error(response.res);
+                }
+            },
+            error: function() {
+                toastr.error('AJAX backend error', 'An error has occured.');
+            }
+        });
+    }
+
+    function SearchGroup() {
+        var filter = $('#SearchGroupDiv input').val();
+
+        $.ajax({
+            url: '@Url.Action("SearchGroup", "PolicyAndProcedure")',
+            data: {
+                filter: filter,
+                '__RequestVerificationToken': $('@Html.AntiForgeryToken()').val()
+            },
+            type: "POST",
+            cache: false,
+            beforeSend: function() {
+                $('#SearchPersonnelOrGroup #GroupTableDiv tbody tr').addClass('hidden');
+                $('#SearchPersonnelOrGroup #GroupTableDiv tbody tr#Row-Loading-Display').removeClass('hidden');
+            },
+            complete: function () {
+                $('#SearchPersonnelOrGroup #GroupTableDiv tbody tr').addClass('hidden');
+                if ($('#SearchPersonnelOrGroup #GroupTableDiv tbody tr.member').length > 0) {
+                    $('#SearchPersonnelOrGroup #GroupTableDiv tbody tr.member').removeClass('hidden');
+                } else
+                    $('#SearchPersonnelOrGroup #GroupTableDiv tbody tr#No-Row-Display').removeClass('hidden');
+            },
+            success: function(response) {
+                if (response.msg == null) {
+                    $("#GroupTable").find('#SearchGroupInput').val(filter).focus();
+                    $("#GroupTableDiv").html(response);
+
+                    BindSaveFunction();
+
+                    $('.radioMemberType').off('ifClicked').on('ifClicked', MemberType);
+
+                    if ($("#GroupTableDiv tbody tr.member").length == 1)
+                        $("#GroupTableDiv tbody tr.member button").trigger('click');
+                    else
+                        $('#SearchPersonnelOrGroup #GroupTableDiv tbody tr#No-Row-Display').removeClass('hidden');
+                } else {
+                    toastr.error(response.res);
+                }
+            },
+            error: function() {
+                toastr.error('AJAX backend error', 'An error has occured.');
+            }
+        });
+    }
+
+    function SearchVessel() {
+        var filter = $('#SearchVesselDiv input').val();
+
+        $.ajax({
+            url: '@Url.Action("SearchVessel", "PolicyAndProcedure")',
+            data: {
+                filter: filter,
+                '__RequestVerificationToken': $('@Html.AntiForgeryToken()').val()
+            },
+            type: "POST",
+            cache: false,
+            beforeSend: function() {
+                $('#SearchPersonnelOrGroup #VesselTableDiv tbody tr').addClass('hidden');
+                $('#SearchPersonnelOrGroup #VesselTableDiv tbody tr#Row-Loading-Display').removeClass('hidden');
+            },
+            complete: function () {
+                $('#SearchPersonnelOrGroup #VesselTableDiv tbody tr').addClass('hidden');
+                if ($('#SearchPersonnelOrGroup #VesselTableDiv tbody tr.vessel').length > 0) {
+                    $('#SearchPersonnelOrGroup #VesselTableDiv tbody tr.vessel').removeClass('hidden');
+                } else
+                    $('#SearchPersonnelOrGroup #VesselTableDiv tbody tr#No-Row-Display').removeClass('hidden');
+            },
+            success: function (response) {                    
+                if (response.msg == null) {
+                    $("#VesselTable").find('#SearchVesselInput').val(filter).focus();
+                    $("#VesselTableDiv").html(response);
+
+                    BindSaveFunction();
+
+                    $('.radioMemberType').off('ifClicked').on('ifClicked', MemberType);
+
+                    if ($("#VesselTableDiv tbody tr.vessel").length == 1)
+                        $("#VesselTableDiv tbody tr.vessel button").trigger('click');
+                    else
                         $('#SearchPersonnelOrGroup #VesselTableDiv tbody tr#No-Row-Display').removeClass('hidden');
-                },
-                success: function (response) {
-                    
-                    if (response.msg == null) {
-                        $("#VesselTable").find('#SearchVesselInput').val(filter).focus();
-                        $("#VesselTableDiv").html(response);
-
-                        BindSaveFunction();
-
-                        $('.radioMemberType').off('ifClicked').on('ifClicked', MemberType);
-
-                        if ($("#VesselTableDiv tbody tr.member").length == 1)
-                            $("#VesselTableDiv tbody tr.member button").trigger('click');
-                        else
-                            $('#SearchPersonnelOrGroup #VesselTableDiv tbody tr#No-Row-Display').removeClass('hidden');
-                    } else {
-                        toastr.error(response.res);
-                    }
-                },
-                error: function() {
-                    toastr.error('AJAX backend error', 'An error has occured.');
+                } else {
+                    toastr.error(response.res);
                 }
-            });
-        }
-        function Search() {
-            $.ajax({
-                url: '@Url.Action("Index", "PolicyAndProcedure")',
-                data: $('#form_search_params *').serialize(),
-                type: "GET",
-                cache: false,
-                beforeSend: function () {
-                    //ShowLoadingScreen();
-                    ShowHideRowLoadingDisplay('MemosTable', true);
-                },
-                complete: function () {
-                        //RemoveLoadingScreen();
-                        //ShowHideRowLoadingDisplay('MemosTable', false);
-                },
-                success: function(response) {
-                    if (response.msg == null) {
-                        $("#MemoForm").html(response);
-                        Events();
-                        $('.txt_search').focus()
-                    } else {
-                        toastr.error(response.res);
-                    }
-                },
-                error: function() {
-                    toastr.error('AJAX backend error', 'An error has occured.');
+            },
+            error: function() {
+                toastr.error('AJAX backend error', 'An error has occured.');
+            }
+        });
+    }
+
+    function Search() {
+        $.ajax({
+            url: '@Url.Action("Index", "PolicyAndProcedure")',
+            data: $('#form_search_params *').serialize(),
+            type: "GET",
+            cache: false,
+            beforeSend: function () {
+                //ShowLoadingScreen();
+                ShowHideRowLoadingDisplay('MemosTable', true);
+            },
+            complete: function () {
+                    //RemoveLoadingScreen();
+                    //ShowHideRowLoadingDisplay('MemosTable', false);
+            },
+            success: function(response) {
+                if (response.msg == null) {
+                    $("#MemoForm").html(response);
+                    Events();
+                    $('.txt_search').focus()
+                } else {
+                    toastr.error(response.res);
                 }
+            },
+            error: function() {
+                toastr.error('AJAX backend error', 'An error has occured.');
+            }
+        });
+    }
+
+    function Events() {
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green',
+        });
+
+        $('.btnadd').off('click').on('click', NewMemo);
+
+        $('.NewMemo .close').off('click').on('click', CloseNewMemoModal);
+
+        $('.pages').off('click').on('click',
+            function() {
+                $('#hid_page').val($(this).val())
+                Search();
             });
-        }
-
-        function Events() {
-
-            $('.i-checks').iCheck({
-                checkboxClass: 'icheckbox_square-green',
-                radioClass: 'iradio_square-green',
+        $('.txt_search').off('keydown').on('keydown',
+            function() {
+                if (event.keyCode == 13) {
+                    $('#btn_search').click();
+                }
+            })
+        $('#btn_search').off('click').on('click',
+            function() {
+                $('#hid_search').val($('.txt_search').val());
+                $('#hid_date').val($('.txt_date').val());
+                $('#hid_status').val($('.txt_status').val());
+                $('#hid_page').val(1);
+                Search();
             });
 
-            $('.btnadd').off('click').on('click', NewMemo);
+        $('.SaveMemo').off('click').on('click', SaveTable);
+        $('.SaveModalMemo').off('click').on('click', SaveTable);
+        $('.PolicyAndProcedure-Record').off('click').on('click', ViewPolicyAndProcedure)
+        InitInputFileBrowse();
 
-            $('.NewMemo .close').off('click').on('click', CloseNewMemoModal);
-
-            $('.pages').off('click').on('click',
-                function() {
-                    $('#hid_page').val($(this).val())
-                    Search();
-                });
-            $('.txt_search').off('keydown').on('keydown',
-                function() {
-                    if (event.keyCode == 13) {
-                        $('#btn_search').click();
-                    }
-                })
-            $('#btn_search').off('click').on('click',
-                function() {
-                    $('#hid_search').val($('.txt_search').val());
-                    $('#hid_date').val($('.txt_date').val());
-                    $('#hid_status').val($('.txt_status').val());
-                    $('#hid_page').val(1);
-                    Search();
-                });
-
-            $('.SaveMemo').off('click').on('click', SaveTable);
-            $('.SaveModalMemo').off('click').on('click', SaveTable);
-            $('.PolicyAndProcedure-Record').off('click').on('click', ViewPolicyAndProcedure)
-            InitInputFileBrowse();
-
-            $('.clearInput').off('click').on('click', ClearField);
-            Select2Override();
-
-        }
-
+        $('.clearInput').off('click').on('click', ClearField);
+        Select2Override();
+        $('.radioMemberType').off('ifClicked').on('ifClicked', MemberType);
+    }
 
     function DeletePolicyAndProcedure() {
-
         var id = $(this).attr("id");
         var year = $(this).val();
+
         swal({
             title: "Deleting..",
             text: "Delete this policy and procedure? This can't be undone.",
@@ -906,136 +912,147 @@
                         }
                     });
                 }
-            });
+            },
+        );
     }
-        function CloseNewMemoModal() {
-            $('#NewMemo').modal('hide');
-            clearInterval(interval); //close interval
+
+    function CloseNewMemoModal() {
+        $('#NewMemo').modal('hide');
+        clearInterval(interval); //close interval
     }
+
     function KeyDown(e) {
-        if (e.keyCode == 13 && $(this).attr('id') == 'SearchPersonnelInput')
-            SearchPersonnel();
-        else if (e.keyCode == 13 && $(this).attr('id') == 'SearchGroupInput')
-            SearchGroup();
-        else if (e.keyCode == 13 && $(this).attr('id') == 'SearchVesselInput')
-            SearchVessel();
-        else if (e.keyCode == 13 &&
-            $(this).attr('id').substr(0, $(this).attr('id').length - 2) == 'Row-Input-Group') {
-            $(this).closest('tr').find('button[name="SaveGroup"]').trigger('click');
+        if (e.keyCode == 13) {
+            var $id = $(this).attr('id');
+            switch ($id) {
+                case 'SearchPersonnelInput':
+                    SearchPersonnel();
+                    break;
+                case 'SearchGroupInput':
+                    SearchGroup();
+                    break;
+                case 'SearchVesselInput':
+                    SearchVessel();
+                    break;
+            }
+
+            if ($id.substr(0, $id.length - 2) == 'Row-Input-Group') {
+                $(this).closest('tr').find('button[name="SaveGroup"]').trigger('click');
+            }
         }
     }
+
     function BindSaveFunction() {
-
         $('#SearchPersonnel').off('click').on('click', SearchPersonnel);
-        $('#SearchPersonnelInput').off('keyup').on('keyup', KeyDown);
-
         $('#SearchGroup').off('click').on('click', SearchGroup);
-        $('#SearchGroupInput').off('keyup').on('keyup', KeyDown);
-
-
         $('#SearchVessel').off('click').on('click', SearchVessel);
-        $('#SearchVesselInput').off('keyup').on('keyup', KeyDown);
 
-        $('#PersonnelsTable tbody tr button').off('click').on('click', SelectRow);
+        $('#SearchPersonnelOrGroup .search-input').off('keyup').on('keyup', KeyDown);
+
         $('#PersonnelsTable tbody tr button .selectPersonnel').off('ifClicked').on('ifClicked', SelectRow);
-        $('#GroupsTable tbody tr button').off('click').on('click', SelectRow);
         $('#GroupsTable tbody tr button .selectMember').off('ifClicked').on('ifClicked', SelectRow);
-        $('#VesselsTable tbody tr button').off('click').on('click', SelectRow);
-        $('#VesselsTable tbody tr button .selectMember').off('ifClicked').on('ifClicked', SelectRow);
+        $('#VesselsTable tbody tr button .selectVessel').off('ifClicked').on('ifClicked', SelectRow);
+
+        $('#SearchPersonnelOrGroup tbody tr button').off('click').on('click', SelectRow);
 
         $('.i-checks').iCheck({
             checkboxClass: 'icheckbox_square-green',
             radioClass: 'iradio_square-green',
         });
+        $('.radioMemberType').off('ifClicked').on('ifClicked', MemberType);
     }
 
-    function EmptySearch(div, d) {
-        var g =
-            '<div class="table-responsive" style="max-height: 550px; overflow-y: scroll;"><table id="GroupsTable" class="table table-stripped table-bordered" style="max-height: 500px;"><thead><tr><th style="text-align: center;" scope="col">Group Names</th></tr></thead><tbody><tr id="No-Row-Display" class=""><td style="text-align: center;" colspan="6">No Groups found...</td></tr></tbody><tfoot></tfoot></table></div>';
-        var p =
-            '<div class="table-responsive" style="max-height: 550px; overflow-y: scroll;"><table id="PersonnelsTable" class="table table-stripped table-bordered" style="max-height: 500px;"><thead><tr><th style="text-align: center;" scope="col">Personnels</th></tr></thead><tbody><tr id="No-Row-Display" class=""><td style="text-align: center;" colspan="6">No Personnels found...</td></tr></tbody><tfoot></tfoot></table></div>';
-        var v =
-            '<div class="table-responsive" style="max-height: 550px; overflow-y: scroll;"><table id="VesselsTable" class="table table-stripped table-bordered" style="max-height: 500px;"><thead><tr><th style="text-align: center;" scope="col">Vessels</th></tr></thead><tbody><tr id="No-Row-Display" class=""><td style="text-align: center;" colspan="6">No Vessels found...</td></tr></tbody><tfoot></tfoot></table></div>';
+    //function EmptySearch(div, d) {
+    //    var g =
+    //        '<div class="table-responsive" style="max-height: 550px; overflow-y: scroll;"><table id="GroupsTable" class="table table-stripped table-bordered" style="max-height: 500px;"><thead><tr><th style="text-align: center;" scope="col">Group Names</th></tr></thead><tbody><tr id="No-Row-Display" class=""><td style="text-align: center;" colspan="6">No Groups found...</td></tr></tbody><tfoot></tfoot></table></div>';
+    //    var p =
+    //        '<div class="table-responsive" style="max-height: 550px; overflow-y: scroll;"><table id="PersonnelsTable" class="table table-stripped table-bordered" style="max-height: 500px;"><thead><tr><th style="text-align: center;" scope="col">Personnels</th></tr></thead><tbody><tr id="No-Row-Display" class=""><td style="text-align: center;" colspan="6">No Personnels found...</td></tr></tbody><tfoot></tfoot></table></div>';
+    //    var v =
+    //        '<div class="table-responsive" style="max-height: 550px; overflow-y: scroll;"><table id="VesselsTable" class="table table-stripped table-bordered" style="max-height: 500px;"><thead><tr><th style="text-align: center;" scope="col">Vessels</th></tr></thead><tbody><tr id="No-Row-Display" class=""><td style="text-align: center;" colspan="6">No Vessels found...</td></tr></tbody><tfoot></tfoot></table></div>';
 
-        $('#' + div).empty().html(d == 'g' ? g : d == 'p' ? p : v);
-    }
+    //    $('#' + div).empty().html(d == 'g' ? g : d == 'p' ? p : v);
+    //}
+
     function Send(contentId) {
-
          $.ajax({
             data: {
                  contentId,
                 '__RequestVerificationToken': $('@Html.AntiForgeryToken()').val()
             },
-                type: 'POST',
-                datatype: 'JSON',
-                url: '@Url.Action("SendEmailToPersonnel", "PolicyAndProcedure")',
-                cache: false,
+            type: 'POST',
+            datatype: 'JSON',
+            url: '@Url.Action("SendEmailToPersonnel", "PolicyAndProcedure")',
+            cache: false,
              beforeSend: function () {
-                    isSendingEmail = true;
-                    ShowLoadingScreen()
-                    swal({
-                        title: "",
-                        text: "Sending email. Please wait",
-                        showCancelButton: false,
-                        showConfirmButton: false,
-                        html: true
-                    });
-                },
+                isSendingEmail = true;
+                ShowLoadingScreen()
+                swal({
+                    title: "",
+                    text: "Sending email. Please wait",
+                    showCancelButton: false,
+                    showConfirmButton: false,
+                    html: true
+                });
+            },
              complete: function () {
-                 isSendingEmail = false;
-                    RemoveLoadingScreen()
-                    swal.close();
-                },
+                isSendingEmail = false;
+                RemoveLoadingScreen()
+                swal.close();
+            },
              success: function (response) {
-                        toastr.error('', response.res);
-                },
-                error: function (x) {
-                    alert(x);
-                }
-            });
+                 if (response.msg == false) {
+                     toastr.success("Email sent and saved.");
+                 } else {
+                     toastr.error(response.res);
+                 }
+            },
+            error: function (x) {
+                alert(x);
+            }
+        });
     }
+
     function SendEmail() {
         Send($("#content-id").val());
     }
-
 
     function SelectRow() {
         $tableName = $(this).closest('table');
         $tr = $(this).closest('tr');
         $b = $tr.find('button');
         $cb = $tr.find('input[type="checkbox"]');
+        var isMultiSelect = $tableName.attr('tpj-table-multiple-select') === 'true' || false;
 
-        $tableName.find('button').removeClass('btn-primary').addClass('btn-white');
-        $tableName.find('input[type="checkbox"]').iCheck('uncheck');
+        if (!isMultiSelect) {
+            $tableName.find('button').removeClass('btn-primary').addClass('btn-white');
+            $tableName.find('input[type="checkbox"]').iCheck('uncheck');
+        }
 
         $b.removeClass('btn-white').addClass('btn-primary');
         $cb.iCheck('check');
 
         $('#NewMemo button[name="SaveMemoArchive"]').removeAttr('disabled');
 
-        ResetActionButton($tableName);
+        //ResetActionButton($tableName);
     }
 
+    //function ResetActionButton($tableName) {
+    //    //$('#TableActions button[title="Add"]').attr('disabled', true);
+    //    //$('#TableActions button[title="Remove"]').attr('disabled', true);
+    //    //$('#TableActions button[title="Undo"]').attr('disabled', true);
+    //    $('#TableActions button').attr('disabled', true);
 
-    function ResetActionButton($tableName) {
-        $('#TableActions button[title="Add"]').attr('disabled', true);
-        $('#TableActions button[title="Remove"]').attr('disabled', true);
-        $('#TableActions button[title="Undo"]').attr('disabled', true);
-
-        switch ($tableName.attr('id')) {
-            case 'MembersTable':
-                if ($tableName.find('tbody tr input[type="checkbox"]:checked').length > 0) {
-                    $('#TableActions button[title="Remove"]').removeAttr('disabled');
-                }
-                break;
-            case 'PersonnelsTable':
-                if ($tableName.find('tbody tr input[type="checkbox"]:checked').length > 0) {
-                    $('#TableActions button[title="Add"]').removeAttr('disabled');
-                }
-                break;
-        }
-    }
-
+    //    if ($tableName.find('tbody tr input[type="checkbox"]:checked').length > 0) {
+    //        switch ($tableName.attr('id')) {
+    //            case 'MembersTable':
+    //                $('#TableActions button[title="Remove"]').removeAttr('disabled');
+    //                break;
+    //            default:
+    //                $('#TableActions button[title="Add"]').removeAttr('disabled');
+    //                break;
+    //        }
+    //    }
+    //}
 
     $.fn.fileInput = function() {
         $customInput = $('div.customFileInput');
