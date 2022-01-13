@@ -6,17 +6,17 @@
     {
         <div class="personnel-status">
             <i class="fa fa-check-circle @(Model.Content[i].Acknowledge ? "acknowledged" : "unacknowledge")"></i>
-            <h3>@Model.Content[i].Personnel.FullName</h3>
+            <h3>@Model.Content[i].Personnel.FullName<br /><label style="font-size: 13px;">@($"{Model.Content[i].Personnel.Email}")</label></h3>
         </div>
     }
     if (Model.Content[i].VesselID != null)
     {
         <div class="vessel-status">
             <i class="fa fa-check-circle @(Model.Content[i].Acknowledge ? "acknowledged" : "unacknowledge")"></i>
-            <h3>@($"{Model.Content[i].Vessel.Description} - {Model.Content[i].Vessel.Code}")</h3>
+            <h3>@($"{Model.Content[i].Vessel.Description} - {Model.Content[i].Vessel.Code}")<br/><label style="font-size: 13px;">@($"{Model.Content[i].Vessel.Email}")</label></h3>
         </div>
     }
-}
+}   
 @if (Model.Content.Count == 0)
 {
     <div class="personnel-status">

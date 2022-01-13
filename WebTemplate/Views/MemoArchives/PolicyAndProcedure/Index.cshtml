@@ -702,11 +702,13 @@
             },
             type: "POST",
             cache: false,
-            beforeSend: function() {
+            beforeSend: function () {
+                ShowLoadingScreen();
                 $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr').addClass('hidden');
                 $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr#Row-Loading-Display').removeClass('hidden');
             },
-            complete: function() {
+            complete: function () {
+                RemoveLoadingScreen();
                 $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr').addClass('hidden');
                 if ($('#SearchPersonnelOrGroup #SearchTableDiv tbody tr.personnel').length > 0) {
                     $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr.personnel').removeClass('hidden');
@@ -747,11 +749,13 @@
             },
             type: "POST",
             cache: false,
-            beforeSend: function() {
+            beforeSend: function () {
+                ShowLoadingScreen();
                 $('#SearchPersonnelOrGroup #GroupTableDiv tbody tr').addClass('hidden');
                 $('#SearchPersonnelOrGroup #GroupTableDiv tbody tr#Row-Loading-Display').removeClass('hidden');
             },
             complete: function () {
+                RemoveLoadingScreen();
                 $('#SearchPersonnelOrGroup #GroupTableDiv tbody tr').addClass('hidden');
                 if ($('#SearchPersonnelOrGroup #GroupTableDiv tbody tr.member').length > 0) {
                     $('#SearchPersonnelOrGroup #GroupTableDiv tbody tr.member').removeClass('hidden');
@@ -792,11 +796,13 @@
             },
             type: "POST",
             cache: false,
-            beforeSend: function() {
+            beforeSend: function () {
+                ShowLoadingScreen();
                 $('#SearchPersonnelOrGroup #VesselTableDiv tbody tr').addClass('hidden');
                 $('#SearchPersonnelOrGroup #VesselTableDiv tbody tr#Row-Loading-Display').removeClass('hidden');
             },
             complete: function () {
+                RemoveLoadingScreen();
                 $('#SearchPersonnelOrGroup #VesselTableDiv tbody tr').addClass('hidden');
                 if ($('#SearchPersonnelOrGroup #VesselTableDiv tbody tr.vessel').length > 0) {
                     $('#SearchPersonnelOrGroup #VesselTableDiv tbody tr.vessel').removeClass('hidden');
@@ -1056,11 +1062,17 @@
 
         if (!isMultiSelect) {
             $tableName.find('button').removeClass('btn-primary').addClass('btn-white');
-            $tableName.find('input[type="checkbox"]').iCheck('uncheck');
+            $tableName.find('input[type="checkbox"]').iCheck('uncheck');            
         }
 
-        $b.removeClass('btn-white').addClass('btn-primary');
-        $cb.iCheck('check');
+        if ($cb.is(':checked')) {
+            $cb.iCheck('uncheck');
+            $b.removeClass('btn-primary').addClass('btn-white');
+        }
+        else {
+            $b.removeClass('btn-white').addClass('btn-primary');
+            $cb.iCheck('check');
+        }
 
         $('#NewMemo button[name="SaveMemoArchive"]').removeAttr('disabled');
 
