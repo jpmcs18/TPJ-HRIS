@@ -1,12 +1,12 @@
-﻿@model WebTemplate.Models.MemoArchives.WrittenExplanation.Management
+﻿@using WebTemplate.Extension;
+@model WebTemplate.Models.MemoArchives.WrittenExplanation.Management
 
 @{
     var PageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("MemoArchives/WrittenExplanation");
-
 }
 
-<div class="table-responsive" style="max-height: 550px; overflow-y: scroll;">
-    <table id="PersonnelsTable" class="table table-stripped table-bordered" style="max-height: 500px;">
+<div class="" style="max-height: 550px; overflow-y: scroll;">
+    <table id="PersonnelsTable" class="table table-stripped table-bordered" tpj-table-multiple-select="false" style="max-height: 500px;">
         <thead>
             <tr>
                 <th style="text-align: center; " scope="col">Personnel</th>
@@ -32,12 +32,13 @@
                         <td style="padding: 0px;" colspan="2">
                             <button type="button" class="btn btn-white" style="width: 100%; padding: 3px 0px 0px 12px; cursor: pointer;">
                                 <div style="text-align: left; text-transform: uppercase; white-space: nowrap; display: flex;">
-                                    @if (PageAccess.Update) { 
+                                    @if (PageAccess.Update)
+                                    {
                                         <label style="margin: 0px; margin: auto 0px;" class="checkbox i-checks pull-right">
                                             <input type="checkbox" id="SelectPersonnel" class="form-control pull-right selectPersonnel" disabled="disabled">
                                         </label>
                                     }
-                                    <img src="@(String.IsNullOrEmpty(Model.Personnels[i].ImagePath) ? "\\Images\\default.jpg": Model.Personnels[i].ImagePath)" style="height: 50px; width: 50px; min-height: 40px; min-width: 40px; border: 3px solid #eaeaea; margin: 10px ; border-radius: 50px;" title=""/>
+                                    <img src="@(String.IsNullOrEmpty(Model.Personnels[i].ImagePath) ? "\\Images\\default.jpg": Model.Personnels[i].ImagePath)" style="height: 50px; width: 50px; min-height: 40px; min-width: 40px; border: 3px solid #eaeaea; margin: 10px ; border-radius: 50px;" title="" />
                                     <div>
                                         <b class="" style="color: #535353;">@String.Format("{0}, {1} {2}", Model.Personnels[i].LastName, Model.Personnels[i].FirstName, Model.Personnels[i].MiddleName)</b>
                                         <br />

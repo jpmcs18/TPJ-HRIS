@@ -1,4 +1,5 @@
-﻿using ProcessLayer.Entities;
+﻿using Newtonsoft.Json;
+using ProcessLayer.Entities;
 using ProcessLayer.Helpers;
 using ProcessLayer.Processes;
 using ProcessLayer.Processes.HR;
@@ -156,16 +157,17 @@ namespace WebTemplate.Controllers.MemoArchives
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Save(PolicyAndProcedure policyAndProcedure, bool sendEmail, long? personnelId, long? groupId, List<int> vesselIds, HttpPostedFileBase fileBase)
+        public ActionResult Save(PolicyAndProcedure policyAndProcedure, bool sendEmail, long? personnelId, long? groupId, String vesselIds, HttpPostedFileBase fileBase)
         {
             try
             {
+                List<int> newVesselIds = JsonConvert.DeserializeObject<List<int>>(vesselIds);
                 var appSettingPath = ConfigurationManager.AppSettings[SAVE_LOCATION];
                 var directory = appSettingPath.Contains("~") ? Server.MapPath(appSettingPath) : appSettingPath;
                 policyAndProcedure.SaveOnly = !sendEmail;
                 policyAndProcedure.File = fileBase.SaveFile(directory, $"{policyAndProcedure.MemoNo}{DateTime.Now:MMddyyyyHHmmss}{Path.GetExtension(fileBase.FileName)}");
 
-                policyAndProcedure = PolicyAndProcedureProcess.Instance.Value.Create(policyAndProcedure, personnelId, groupId, vesselIds, User.UserID);
+                policyAndProcedure = PolicyAndProcedureProcess.Instance.Value.Create(policyAndProcedure, personnelId, groupId, newVesselIds, User.UserID);
                 policyAndProcedure = PolicyAndProcedureProcess.Instance.Value.Get(policyAndProcedure.ID);
              
                 ModelState.Clear();
@@ -192,6 +194,9 @@ namespace WebTemplate.Controllers.MemoArchives
 
                 PolicyAndProcedure pap = PolicyAndProcedureProcess.Instance.Value.Get(contentId ?? 0);
 
+                //if (pap.Content.Count == 0)
+                //    return Json(new { res = "Nothing to send." });
+
                 StringBuilder sb = new();
                 foreach(var content in pap.Content)
                 {
@@ -202,6 +207,11 @@ namespace WebTemplate.Controllers.MemoArchives
                             sb.AppendLine($"<br >- {content.Personnel.FullName} has no email.<br >");
                             continue;
                         }
+                        //if (string.IsNullOrEmpty(content.Vessel.Email))
+                        //{
+                        //    sb.AppendLine($"<br >- {content.Vessel.Description} - {content.Vessel.Code} has no email.<br >");
+                        //    continue;
+                        //}
 
                         string appSettingPath = ConfigurationManager.AppSettings[SAVE_LOCATION];
                         string directory = appSettingPath.Contains("~") ? Server.MapPath(appSettingPath) : appSettingPath;
