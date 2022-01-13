@@ -154,7 +154,7 @@ namespace WebTemplate.Controllers.MemoArchives
                 var appSettingPath = ConfigurationManager.AppSettings[SAVE_LOCATION];
                 var directory = appSettingPath.Contains("~") ? Server.MapPath(appSettingPath) : appSettingPath;
                 var infraction = InfractionProcess.Instance.Value.Get(infractionId, true);
-                string filePath = file.SaveFile(directory, $"{infraction.MemoNo}{DateTime.Now:MMddyyyyHHmmss}{Path.GetExtension(file.FileName)}");
+                string filePath = file.SaveFile(directory, $"{infraction.Subject.Replace(" ", "_")}{DateTime.Now:MMddyyyyHHmmss}{Path.GetExtension(file.FileName)}");
                 InfractionContentProcess.Instance.Value.UpdateFile(id, filePath, User.UserID);
                 infraction = InfractionProcess.Instance.Value.Get(infractionId);
                 ModelState.Clear();
@@ -200,7 +200,7 @@ namespace WebTemplate.Controllers.MemoArchives
                 var appSettingPath = ConfigurationManager.AppSettings[SAVE_LOCATION];
                 var directory = appSettingPath.Contains("~") ? Server.MapPath(appSettingPath) : appSettingPath;
                 var infraction = InfractionProcess.Instance.Value.Get(content.InfractionID, true);
-                content.File = fileBase.SaveFile(directory, $"{infraction.MemoNo}{DateTime.Now:MMddyyyyHHmmss}{Path.GetExtension(fileBase.FileName)}");
+                content.File = fileBase.SaveFile(directory, $"{infraction.Subject.Replace(" ", "_")}{DateTime.Now:MMddyyyyHHmmss}{Path.GetExtension(fileBase.FileName)}");
                 content.SaveOnly = !sendEmail;
                 content = InfractionContentProcess.Instance.Value.Create(content, User.UserID);
                 infraction = InfractionProcess.Instance.Value.Get(content.InfractionID);
@@ -353,7 +353,8 @@ namespace WebTemplate.Controllers.MemoArchives
 
                 var credential = Web.GetMemoEmailCreadential();
 
-                var subject = $"Infraction {infraction.MemoNo} {infraction.Subject}" ?? "(No Subject)";
+                var subject = $"Memo No: {infraction.MemoNo} {infraction.Subject}" ?? "(No Subject)";
+
                 EmailResult emailRet = null;
                 if (infractionContents.Count > 1)
                 {
@@ -361,8 +362,7 @@ namespace WebTemplate.Controllers.MemoArchives
                 }
                 else
                 {
-                    var infractionContent = infractionContents.FirstOrDefault();
-                    emailRet = EmailUtil.SendEmail(credential, User.UserID, infraction.Personnel.Email, CONTENT, infractionContent.ID, files?.FirstOrDefault(), infractionContent.Message, subject);
+                    emailRet = EmailUtil.SendEmail(credential, User.UserID, infraction.Personnel.Email, CONTENT, infraction.ID, files?.FirstOrDefault(), infraction.Description, subject);
                 }
 
                 return Json(new { msg = emailRet.IsSuccess, res = emailRet.Message });
