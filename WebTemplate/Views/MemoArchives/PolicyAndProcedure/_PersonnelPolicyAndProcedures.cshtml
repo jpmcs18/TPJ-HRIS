@@ -26,6 +26,9 @@
                 @Html.TextBoxFor(m => m.Description, new { @class = "form-control", @id = "memo-description" })
             </span>
         </div>
+        <div>
+            Subject : <span class="display-memo">@Model.Subject</span>
+        </div>
 
         @if (Model.IsNew)
         {
