@@ -46,21 +46,21 @@
     .content-container .memo-content .content-list {
       flex-grow: 1;
       overflow: auto; }
-      .content-container .memo-content .content-list .personnel-status {
+      .content-container .memo-content .content-list .personnel-status, .content-container .memo-content .content-list .vessel-status {
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 1em;
         margin: .5em;
         box-shadow: 0em 0em .2em 0.1em #ccc; }
-        .content-container .memo-content .content-list .personnel-status .fa {
+        .content-container .memo-content .content-list .personnel-status .fa, .content-container .memo-content .content-list .vessel-status .fa {
           font-size: 1.5em !important;
           margin-right: 1em; }
-        .content-container .memo-content .content-list .personnel-status .acknowledged {
+        .content-container .memo-content .content-list .personnel-status .acknowledged, .content-container .memo-content .content-list .vessel-status .acknowledged {
           color: green; }
-        .content-container .memo-content .content-list .personnel-status .unacknowledge {
+        .content-container .memo-content .content-list .personnel-status .unacknowledge, .content-container .memo-content .content-list .vessel-status .unacknowledge {
           color: gray; }
-        .content-container .memo-content .content-list .personnel-status h3 {
+        .content-container .memo-content .content-list .personnel-status h3, .content-container .memo-content .content-list .vessel-status h3 {
           margin: 0;
           width: 100%; }
     .content-container .memo-content .action {

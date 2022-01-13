@@ -76,6 +76,22 @@ namespace WebTemplate.Controllers.MemoArchives
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        public ActionResult PolicyAndProceduresContent(long papId)
+        {
+            try
+            {
+                var PolicyAndProcedure = PolicyAndProcedureProcess.Instance.Value.Get(papId);
+                ModelState.Clear();
+                return PartialViewCustom("_PolicyAndProceduresContent", PolicyAndProcedure);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { msg = false, res = ex.GetActualMessage() });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult NewMemo()
         {
             Management model = new()
@@ -187,31 +203,50 @@ namespace WebTemplate.Controllers.MemoArchives
             try
             {
                 if (contentId == null)
-                    return Json(new { res = "Nothing to send." });
+                    return Json(new { msg = false, res = "Nothing to send." });
 
                 if (!Web.HasInternetConnection())
-                    return Json(new { res = "No Internet Connection." });
+                    return Json(new { msg = false, res = "No Internet Connection." });
 
                 PolicyAndProcedure pap = PolicyAndProcedureProcess.Instance.Value.Get(contentId ?? 0);
 
-                //if (pap.Content.Count == 0)
-                //    return Json(new { res = "Nothing to send." });
+                if (pap.Content.Count == 0)
+                    return Json(new { msg = false, res = "Nothing to send." });
 
                 StringBuilder sb = new();
                 foreach(var content in pap.Content)
                 {
+                    String contentEmail = "";
+                    String contentName = "";
+
                     try
                     {
-                        if (string.IsNullOrEmpty(content.Personnel.Email))
+                        if (content.PersonnelID != null)
                         {
-                            sb.AppendLine($"<br >- {content.Personnel.FullName} has no email.<br >");
-                            continue;
+                            if (string.IsNullOrEmpty(content.Personnel.Email))
+                            {
+                                sb.AppendLine($"<br >- {content.Personnel.FullName} has no email.<br >");
+                                continue;
+                            }
+                            else
+                            {
+                                contentEmail = content.Personnel.Email;
+                                contentName = content.Personnel.FullName;
+                            }
                         }
-                        //if (string.IsNullOrEmpty(content.Vessel.Email))
-                        //{
-                        //    sb.AppendLine($"<br >- {content.Vessel.Description} - {content.Vessel.Code} has no email.<br >");
-                        //    continue;
-                        //}
+                        if (content.VesselID != null)
+                        {
+                            if (string.IsNullOrEmpty(content.Vessel.Email))
+                            {
+                                sb.AppendLine($"<br >- {content.Vessel.Description} - {content.Vessel.Code} has no email.<br >");
+                                continue;
+                            }
+                            else
+                            {
+                                contentEmail = content.Vessel.Email;
+                                contentName = $"{content.Vessel.Description} - {content.Vessel.Code}";
+                            }
+                        }
 
                         string appSettingPath = ConfigurationManager.AppSettings[SAVE_LOCATION];
                         string directory = appSettingPath.Contains("~") ? Server.MapPath(appSettingPath) : appSettingPath;
@@ -224,18 +259,18 @@ namespace WebTemplate.Controllers.MemoArchives
 
                         var subject = $"Policy And Procedure {pap.MemoNo} {pap.Subject}" ?? "(No Subject)";
 
-                        var emailRet = EmailUtil.SendEmail(credential, User.UserID, content.Personnel.Email, CONTENT, content.ID, file, "", subject);
-                        if(emailRet.IsSuccess)
-                            sb.AppendLine($"- {content.Personnel.FullName} email send.<br >");
-                        else
-                            sb.AppendLine($"- Unable to send email for {content.Personnel.FullName}<br >");
+                        var emailRet = EmailUtil.SendEmail(credential, User.UserID, contentEmail, CONTENT, content.ID, file, "", subject);
+
+                        sb.AppendLine($"- Email{(emailRet.IsSuccess ? " " : " not ")}sent to {contentName}.<br >");
+
+                        return Json(new { msg = true, res = sb.ToString() });
                     }
                     catch
                     {
-                        sb.AppendLine($"- Unable to send email for {content.Personnel.FullName}<br >");
+                        sb.AppendLine($"- Unable to send email for {contentName}<br >");
                     }
                 }
-                return Json(new { res = sb.ToString() });
+                return Json(new { msg = false, res = sb.ToString() });
             }
             catch (Exception ex)
             {

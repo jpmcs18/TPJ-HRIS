@@ -80,18 +80,7 @@
     </div>
     <div class="memo-content pap-content content">
         <div class="content-list" id="content-list">
-            @for (int i = 0; i < Model.Content.Count; i++)
-            {
-            <div class="personnel-status">
-                <i class="fa fa-check-circle @(Model.Content[i].Acknowledge ? "acknowledged" : "unacknowledge")"></i>
-                <h3>@Model.Content[i].Personnel.FullName</h3>
-            </div>
-            }
-            @if (Model.Content.Count == 0)
-            { 
-        <div class="personnel-status">
-            <h3>No Personnel</h3>
-        </div>}
+            @Html.Partial("~/Views/MemoArchives/PolicyAndProcedure/_PolicyAndProceduresContent.cshtml", Model)
         </div>
     </div>
 </div>

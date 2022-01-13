@@ -427,6 +427,36 @@
         });
     }
 
+    function getNewContent() {
+        var papId = $(".modal-data.personnels").parent().parent().find('.selected-content-id').val();
+        $.ajax({
+            data: {
+                papId: papId,
+                '__RequestVerificationToken': $('@Html.AntiForgeryToken()').val()
+            },
+            type: 'POST',
+            datatype: 'JSON',
+            url: '@Url.Action("PolicyAndProceduresContent", "PolicyAndProcedure")',
+            cache: false,
+            beforeSend: function() {
+                ShowLoadingScreen();
+            },
+            complete: function() {
+                RemoveLoadingScreen();
+            },
+            success: function(response) {
+                if (response.msg == false) {
+                    toastr.error(response.res);
+                } else {
+                    $(".modal-data.personnels .pap-content .content-list").html(response);
+                    $(".modal-data.personnels").parent().parent().find('.file-actions').addClass("hidden");
+                }
+            },
+            error: function(x) {
+            }
+        });
+    }
+
     function showPersonnelPolicyAndProcedure(response) {
         $('#ViewPolicyAndProcedures .modal-body .personnels').html(response);
         showDiv('personnels');
@@ -773,7 +803,7 @@
                 } else
                     $('#SearchPersonnelOrGroup #VesselTableDiv tbody tr#No-Row-Display').removeClass('hidden');
             },
-            success: function (response) {                    
+            success: function (response) {
                 if (response.msg == null) {
                     $("#VesselTable").find('#SearchVesselInput').val(filter).focus();
                     $("#VesselTableDiv").html(response);
@@ -1001,9 +1031,10 @@
             },
              success: function (response) {
                  if (response.msg == false) {
-                     toastr.success("Email sent and saved.");
-                 } else {
                      toastr.error(response.res);
+                 } else {
+                     toastr.success(response.res);
+                     getNewContent();
                  }
             },
             error: function (x) {
