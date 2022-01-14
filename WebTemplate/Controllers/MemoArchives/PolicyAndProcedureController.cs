@@ -181,7 +181,7 @@ namespace WebTemplate.Controllers.MemoArchives
                 var appSettingPath = ConfigurationManager.AppSettings[SAVE_LOCATION];
                 var directory = appSettingPath.Contains("~") ? Server.MapPath(appSettingPath) : appSettingPath;
                 policyAndProcedure.SaveOnly = !sendEmail;
-                policyAndProcedure.File = fileBase.SaveFile(directory, $"{policyAndProcedure.MemoNo}{DateTime.Now:MMddyyyyHHmmss}{Path.GetExtension(fileBase.FileName)}");
+                policyAndProcedure.File = fileBase.SaveFile(directory, $"{policyAndProcedure.Subject.Replace(" ", "_")}{DateTime.Now:MMddyyyyHHmmss}{Path.GetExtension(fileBase.FileName)}");
 
                 policyAndProcedure = PolicyAndProcedureProcess.Instance.Value.Create(policyAndProcedure, personnelId, groupId, newVesselIds, User.UserID);
                 policyAndProcedure = PolicyAndProcedureProcess.Instance.Value.Get(policyAndProcedure.ID);
