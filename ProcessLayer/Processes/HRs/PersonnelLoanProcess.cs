@@ -19,13 +19,13 @@ namespace ProcessLayer.Processes.HR
             {
                 ID = dr["ID"].ToLong(),
                 PersonnelID = dr["Personnel ID"].ToNullableLong(),
-                LoanID = dr["Loan ID"].ToNullableByte(),
+                LoanID = dr["Loan ID"].ToNullableInt(),
                 Amount = dr["Amount"].ToNullableDecimal(),
                 PaidAmount = dr["Paid Amount"].ToNullableDecimal() ?? 0,
                 Amortization = dr["Amortization"].ToNullableDecimal(),
                 PaymentTerms = dr["Payment Terms"].ToNullableFloat(),
                 PayrollDeductible = dr["Payroll Deductible"].ToNullableBoolean(),
-                WhenToDeduct = dr["When to Deduct"].ToNullableByte(),
+                WhenToDeduct = dr["When to Deduct"].ToNullableInt(),
                 Remarks = dr["Remarks"].ToString(),
             };
 

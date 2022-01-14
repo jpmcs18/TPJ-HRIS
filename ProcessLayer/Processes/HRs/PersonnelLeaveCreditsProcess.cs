@@ -22,7 +22,7 @@ namespace ProcessLayer.Processes.HR
                 ID = dr[PersonnelLeaveCreditsFields.ID].ToLong(),
                 PersonnelID = dr[PersonnelLeaveCreditsFields.PersonnelID].ToNullableLong(),
                 LeaveCredits = dr[PersonnelLeaveCreditsFields.LeaveCredits].ToNullableFloat(),
-                LeaveTypeID = dr[PersonnelLeaveCreditsFields.LeaveTypeID].ToNullableByte(),
+                LeaveTypeID = dr[PersonnelLeaveCreditsFields.LeaveTypeID].ToNullableInt(),
                 YearValid = dr[PersonnelLeaveCreditsFields.YearValid].ToNullableShort(),
                 ValidFrom = dr[PersonnelLeaveCreditsFields.ValidFrom].ToNullableDateTime(),
                 ValidTo = dr[PersonnelLeaveCreditsFields.ValidTo].ToNullableDateTime()
@@ -50,7 +50,7 @@ namespace ProcessLayer.Processes.HR
             }
         }
 
-        public PersonnelLeaveCredit GetRemainingCredits(long personnelID, byte leaveTypeID, DateTime? date)
+        public PersonnelLeaveCredit GetRemainingCredits(long personnelID, int leaveTypeID, DateTime? date)
         {
             using (DBTools db = new DBTools())
             {
@@ -58,7 +58,7 @@ namespace ProcessLayer.Processes.HR
             }
         }
 
-        public PersonnelLeaveCredit GetRemainingCredits(DBTools db, long personnelID, byte leaveTypeID, DateTime? date)
+        public PersonnelLeaveCredit GetRemainingCredits(DBTools db, long personnelID, int leaveTypeID, DateTime? date)
         {
             Dictionary<string, object> Parameters = new Dictionary<string, object>
             {
@@ -169,7 +169,7 @@ namespace ProcessLayer.Processes.HR
             };
             db.ExecuteNonQuery(PersonnelLeaveCreditsProcedures.UpdateLeaveCredits, parameters);
         }
-        public PersonnelLeaveCredit Get(long personnelID, byte leaveTypeId, DateTime date)
+        public PersonnelLeaveCredit Get(long personnelID, int leaveTypeId, DateTime date)
         {
             var Parameters = new Dictionary<string, object>
             {

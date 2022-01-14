@@ -23,7 +23,7 @@ namespace ProcessLayer.Processes
             {
                 ID = dr["ID"].ToInt(),
                 Description = dr["Description"].ToString()
-            };
+            };  
         }
 
         internal static Vessel VesselConverter(DataRow dr)
@@ -59,9 +59,9 @@ namespace ProcessLayer.Processes
         {
             return new PayrollType
             {
-                ID = dr["ID"].ToByte(),
+                ID = dr["ID"].ToInt(),
                 Description = dr["Description"].ToString(),
-                NoofDays = dr["No of Days"].ToNullableByte()
+                NoofDays = dr["No of Days"].ToNullableInt()
             };
         }
 
@@ -69,9 +69,9 @@ namespace ProcessLayer.Processes
         {
             return new LateDeduction
             {
-                ID = dr["ID"].ToByte(),
+                ID = dr["ID"].ToInt(),
                 TimeIn = dr["Time In"].ToNullableTimeSpan(),
-                DeductedHours = dr["Deducted Hours"].ToNullableByte()
+                DeductedHours = dr["Deducted Hours"].ToNullableInt()
             };
         }
 
@@ -374,7 +374,7 @@ namespace ProcessLayer.Processes
             {
                 ID = dr["ID"].ToInt(),
                 Description = dr["Description"].ToString(),
-                WhenToDeduct = dr["When to Deduct"].ToNullableByte(),
+                WhenToDeduct = dr["When to Deduct"].ToNullableInt(),
                 ComputedThruSalary = dr["Computed thru Salary"].ToNullableBoolean(),
                 GovernmentDeduction = dr["Government Deduction"].ToNullableBoolean()
             };
@@ -471,7 +471,7 @@ namespace ProcessLayer.Processes
             return GetLookupById(Table.PayrollStatus, id);
         }
 
-        public static Loan GetLoan(byte? id)
+        public static Loan GetLoan(int? id)
         {
             return GetLookup(LoanConverter, Table.Loan, id);
         }
@@ -529,8 +529,8 @@ namespace ProcessLayer.Processes
                     return ds.GetList((dr) => {
                         return new YearsOfService
                         {
-                            StartYear = dr["Start Year"].ToByte(),
-                            EndYear = dr["End Year"].ToByte(),
+                            StartYear = dr["Start Year"].ToInt(),
+                            EndYear = dr["End Year"].ToInt(),
                             Amount = dr["Amount"].ToDecimal()
                         };
                     });

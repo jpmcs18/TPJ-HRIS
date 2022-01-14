@@ -20,7 +20,7 @@ namespace ProcessLayer.Processes
                 ID = dr["ID"].ToInt(),
                 ApproverID = dr["Approver ID"].ToNullableLong(),
                 DepartmentID = dr["Department ID"].ToNullableInt(),
-                Sequence = dr["Sequence"].ToNullableByte()
+                Sequence = dr["Sequence"].ToNullableInt()
             };
 
             if (!IsKioskApproverOnly)

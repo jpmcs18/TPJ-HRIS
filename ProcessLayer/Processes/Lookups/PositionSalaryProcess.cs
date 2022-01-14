@@ -22,7 +22,7 @@ namespace ProcessLayer.Processes
                 Position = WithLookup
                     ? new Position()
                         {
-                            ID = dr["Position ID"].ToByte(),
+                            ID = dr["Position ID"].ToInt(),
                             Description = dr["Position Description"].ToString()
                         }
                     : null

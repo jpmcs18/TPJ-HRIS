@@ -15,7 +15,7 @@ namespace ProcessLayer.Processes.Lookups
         {
             var p = new Department
             {
-                ID = dr["ID"].ToByte(),
+                ID = dr["ID"].ToInt(),
                 Description = dr["Description"].ToString(),
                 ShortDescription = dr["ShortDescription"].ToString(),
                 Office = dr["Office"].ToNullableBoolean() ?? false

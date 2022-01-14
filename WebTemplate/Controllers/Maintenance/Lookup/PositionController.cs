@@ -29,7 +29,7 @@ namespace WebTemplate.Controllers.Maintenance.Lookup
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Get(byte? id)
+        public ActionResult Get(int? id)
         {
             try
             {
@@ -73,7 +73,7 @@ namespace WebTemplate.Controllers.Maintenance.Lookup
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(byte? id)
+        public ActionResult Delete(int? id)
         {
             try
             {

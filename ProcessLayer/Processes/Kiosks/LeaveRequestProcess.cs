@@ -34,8 +34,8 @@ namespace ProcessLayer.Processes.Kiosk
             {
                 ID = dr[LeaveRequestFields.ID].ToLong(),
                 PersonnelID = dr[LeaveRequestFields.PersonnelID].ToNullableLong(),
-                LeaveTypeID = dr[LeaveRequestFields.LeaveTypeID].ToNullableByte(),
-                _LeaveType = LeaveTypeProcess.Instance.Value.Get(dr[LeaveRequestFields.LeaveTypeID].ToNullableByte()),
+                LeaveTypeID = dr[LeaveRequestFields.LeaveTypeID].ToNullableInt(),
+                _LeaveType = LeaveTypeProcess.Instance.Value.Get(dr[LeaveRequestFields.LeaveTypeID].ToNullableInt()),
                 RequestedDate = dr[LeaveRequestFields.RequestedDate].ToNullableDateTime(),
                 Hospital = dr[LeaveRequestFields.Hospital].ToString(),
                 Location = dr[LeaveRequestFields.Location].ToString(),
@@ -88,7 +88,7 @@ namespace ProcessLayer.Processes.Kiosk
             }
             return o;
         }
-        public List<LeaveRequest> GetList(long personnelId, byte? leavetypeid, bool isExpired, bool isPending, bool isApproved, bool isCancelled, DateTime? startdatetime, DateTime? enddatetime, int page, int gridCount, out int PageCount)
+        public List<LeaveRequest> GetList(long personnelId, int? leavetypeid, bool isExpired, bool isPending, bool isApproved, bool isCancelled, DateTime? startdatetime, DateTime? enddatetime, int page, int gridCount, out int PageCount)
         {
             var Leaves = new List<LeaveRequest>();
             var parameters = new Dictionary<string, object> {
@@ -120,7 +120,7 @@ namespace ProcessLayer.Processes.Kiosk
 
             return Leaves;
         }
-        public List<LeaveRequest> GetApprovingList(string personnel, byte? leavetypeid, bool isExpired, bool isPending, bool isApproved, bool isCancelled, DateTime? startdatetime, DateTime? enddatetime, int page, int gridCount, out int PageCount, int approver)
+        public List<LeaveRequest> GetApprovingList(string personnel, int? leavetypeid, bool isExpired, bool isPending, bool isApproved, bool isCancelled, DateTime? startdatetime, DateTime? enddatetime, int page, int gridCount, out int PageCount, int approver)
         {
             var Leaves = new List<LeaveRequest>();
             var parameters = new Dictionary<string, object> {
@@ -186,7 +186,7 @@ namespace ProcessLayer.Processes.Kiosk
             }
             return Leaves;
         }
-        public List<LeaveRequest> GetRequestThatNeedDocument(string personnel, byte? leavetypeid, bool isExpired, bool isPending, bool isApproved, bool isCancelled, DateTime? startdatetime, DateTime? enddatetime, int page, int gridCount, out int PageCount)
+        public List<LeaveRequest> GetRequestThatNeedDocument(string personnel, int? leavetypeid, bool isExpired, bool isPending, bool isApproved, bool isCancelled, DateTime? startdatetime, DateTime? enddatetime, int page, int gridCount, out int PageCount)
         {
             var Leaves = new List<LeaveRequest>();
             var parameters = new Dictionary<string, object> {
@@ -235,7 +235,7 @@ namespace ProcessLayer.Processes.Kiosk
 
             return Leaves;
         }
-        public List<LeaveRequest> GetApprovedLeave(long personnelid, byte? leavetypeid, DateTime startdatetime, DateTime enddatetime)
+        public List<LeaveRequest> GetApprovedLeave(long personnelid, int? leavetypeid, DateTime startdatetime, DateTime enddatetime)
         {
             var Leaves = new List<LeaveRequest>();
             var parameters = new Dictionary<string, object>{
@@ -327,7 +327,7 @@ namespace ProcessLayer.Processes.Kiosk
             }
             return null;
         }
-        public List<LeaveRequest> GetRequestToNote(string personnel, byte? leavetypeid, bool isExpired, bool isPending, bool isNoted, bool isCancelled, DateTime? startdatetime, DateTime? enddatetime, int page, int gridCount, out int PageCount)
+        public List<LeaveRequest> GetRequestToNote(string personnel, int? leavetypeid, bool isExpired, bool isPending, bool isNoted, bool isCancelled, DateTime? startdatetime, DateTime? enddatetime, int page, int gridCount, out int PageCount)
         {
             var Leaves = new List<LeaveRequest>();
             var parameters = new Dictionary<string, object> {

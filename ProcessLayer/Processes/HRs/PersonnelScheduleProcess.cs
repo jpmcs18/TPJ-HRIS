@@ -22,13 +22,13 @@ namespace ProcessLayer.Processes.HRs
             {
                 ID = dr["ID"].ToLong(),
                 PersonnelID = dr["Personnel ID"].ToLong(),
-                SundayScheduleID = dr["Sunday Schedule ID"].ToNullableByte(),
-                MondayScheduleID = dr["Monday Schedule ID"].ToNullableByte(),
-                TuesdayScheduleID = dr["Tuesday Schedule ID"].ToNullableByte(),
-                WednesdayScheduleID = dr["Wednesday Schedule ID"].ToNullableByte(),
-                ThursdayScheduleID = dr["Thursday Schedule ID"].ToNullableByte(),
-                FridayScheduleID = dr["Friday Schedule ID"].ToNullableByte(),
-                SaturdayScheduleID = dr["Saturday Schedule ID"].ToNullableByte(),
+                SundayScheduleID = dr["Sunday Schedule ID"].ToNullableInt(),
+                MondayScheduleID = dr["Monday Schedule ID"].ToNullableInt(),
+                TuesdayScheduleID = dr["Tuesday Schedule ID"].ToNullableInt(),
+                WednesdayScheduleID = dr["Wednesday Schedule ID"].ToNullableInt(),
+                ThursdayScheduleID = dr["Thursday Schedule ID"].ToNullableInt(),
+                FridayScheduleID = dr["Friday Schedule ID"].ToNullableInt(),
+                SaturdayScheduleID = dr["Saturday Schedule ID"].ToNullableInt(),
                 EffectivityDate = dr["Effectivity Date"].ToNullableDateTime()
             };
 

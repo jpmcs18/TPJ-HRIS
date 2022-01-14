@@ -95,9 +95,9 @@ namespace ProcessLayer.Computation.CnB
 
             rate = GetRate(payroll, periodStart, periodEnd, comp, rate, noofdays);
 
-            byte payrollType = payroll.Personnel.PayrollTypeID ?? 0;
+            int payrollType = payroll.Personnel.PayrollTypeID ?? 0;
 
-            byte cutoff = (byte)((periodEnd - periodStart).TotalDays > 25 ? 0 : (periodEnd.Day <= 15 ? 1 : 2));
+            int cutoff = (int)((periodEnd - periodStart).TotalDays > 25 ? 0 : (periodEnd.Day <= 15 ? 1 : 2));
 
             List<PersonnelLoan> deductibleLoans = new List<PersonnelLoan>();
             if(type == PayrollSheet.B)
@@ -715,7 +715,7 @@ namespace ProcessLayer.Computation.CnB
             }
         }
 
-        private void ComputeDeductions(Payroll payroll, DateTime periodStart, byte cutoff, List<PersonnelDeduction> deductions)
+        private void ComputeDeductions(Payroll payroll, DateTime periodStart, int cutoff, List<PersonnelDeduction> deductions)
         {
             if (deductions?.Any() ?? false)
             {

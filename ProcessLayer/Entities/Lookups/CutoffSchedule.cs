@@ -11,9 +11,9 @@ namespace ProcessLayer.Entities
         public int ID { get; set; }
         [Required]
         [Range(1, 12, ErrorMessage = "Invalid Month")]
-        public byte Month { get; set; }
+        public int Month { get; set; }
         [Required]
         [Range(1, 31, ErrorMessage = "Invalid Day")]
-        public byte Day { get; set; }
+        public int Day { get; set; }
     }
 }

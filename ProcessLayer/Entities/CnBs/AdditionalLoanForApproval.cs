@@ -10,7 +10,7 @@ namespace ProcessLayer.Entities.CnB
     {
         public long ID { get; set; }
         public long PersonnelID { get; set; }
-        public byte LoanID { get; set; }
+        public int LoanID { get; set; }
         public decimal Amount { get; set; }
         public string Remarks { get; set; }
 

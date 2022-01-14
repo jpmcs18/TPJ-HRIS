@@ -61,7 +61,7 @@ namespace ProcessLayer.Entities
         [DisplayName("Hiring Location")]
 	    public int? HiringLocationID { get; set; }
         [DisplayName("Tax Type")]
-        public byte? TaxTypeID { get; set; }
+        public int? TaxTypeID { get; set; }
         public string SSS { get; set; }
         [DisplayName("PhilHealth")]
 	    public string Philhealth { get; set; }
@@ -87,7 +87,7 @@ namespace ProcessLayer.Entities
         public string Image { get; set; }
 
         [DisplayName("Payroll Type")]
-        public byte? PayrollTypeID { get; set; }
+        public int? PayrollTypeID { get; set; }
         [DisplayName("Fixed Salary")]
         public bool? FixedSalary { get; set; }
         public long? LinkedPersonnelID { get; set; }

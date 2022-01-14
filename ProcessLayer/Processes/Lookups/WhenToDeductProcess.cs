@@ -19,7 +19,7 @@ namespace ProcessLayer.Processes
         {
             return WhenToDeducts;
         }
-        public WhenToDeduct Get(byte id)
+        public WhenToDeduct Get(int id)
         {
             return WhenToDeducts.Where(x => x.ID == id).FirstOrDefault();
         }

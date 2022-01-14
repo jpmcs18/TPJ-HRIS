@@ -20,7 +20,7 @@ namespace ProcessLayer.Processes
             var r = new Deduction {
                 ID = dr["ID"].ToInt(),
                 Description = dr["Description"].ToString(),
-                WhenToDeduct = dr["When to Deduct"].ToNullableByte(),
+                WhenToDeduct = dr["When to Deduct"].ToNullableInt(),
                 GovernmentDeduction = dr["Government Deduction"].ToNullableBoolean(),
                 AutoCompute = dr["Auto Compute"].ToNullableBoolean(),
                 ComputedThruSalary = dr["Computed thru Salary"].ToNullableBoolean()

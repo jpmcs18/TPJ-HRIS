@@ -1000,7 +1000,7 @@
                 swal.close();
             },
              success: function (response) {
-                 if (response.msg == false) {
+                 if (response.msg) {
                      toastr.success("Email sent and saved.");
                  } else {
                      toastr.error(response.res);

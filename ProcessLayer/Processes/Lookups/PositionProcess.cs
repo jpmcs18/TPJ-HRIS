@@ -19,7 +19,7 @@ namespace ProcessLayer.Processes
         {
             var p = new Position
             {
-                ID = dr["ID"].ToByte(),
+                ID = dr["ID"].ToInt(),
                 Description = dr["Description"].ToString(),
                 Abbreviation = dr["Abbreviation"].ToString(),
                 PersonnelTypeID = dr["Personnel Type ID"].ToNullableInt(),
@@ -130,7 +130,7 @@ namespace ProcessLayer.Processes
             using (var db = new DBTools())
             {
                 var outParam = new List<OutParameters> {
-                    { "@ID", SqlDbType.TinyInt, position.ID }
+                    { "@ID", SqlDbType.Int, position.ID }
                 };
                 db.ExecuteNonQuery("lookup.CreateOrUpdatePosition", ref outParam, new Dictionary<string, object> {
                     { "@Description", position.Description},
@@ -139,7 +139,7 @@ namespace ProcessLayer.Processes
                     { "@PersonnelTypeID", position.PersonnelTypeID},
                     { "@LogBy", userid},
                 });
-                position.ID = outParam.Get("@ID").ToByte();
+                position.ID = outParam.Get("@ID").ToInt();
                 return position;
             }
 

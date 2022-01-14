@@ -10,7 +10,7 @@ namespace WebTemplate.Models.Kiosk.Leave_Request
         public string Key { get; set; }
         public DateTime? StartDateTime { get; set; }
         public DateTime? EndingDateTime { get; set; }
-        public byte? LeaveTypeID { get; set; }
+        public int? LeaveTypeID { get; set; }
         public ProcessLayer.Entities.Personnel Personnel { get; set; } = new ProcessLayer.Entities.Personnel();
         public List<LeaveType> LeaveTypes { get; set; } = new List<LeaveType>();
 

@@ -18,7 +18,7 @@ namespace ProcessLayer.Processes
             var leave = new LeaveDefaultCredits
             {
                 ID = dr["ID"].ToInt(),
-                LeaveTypeID = dr["Leave Type ID"].ToByte(),
+                LeaveTypeID = dr["Leave Type ID"].ToInt(),
                 MinYearsInService = dr["Min Years In Service"].ToFloat(),
                 MaxYearsInService = dr["Max Years In Service"].ToNullableFloat(),
                 Credits = dr["Credits"].ToFloat()

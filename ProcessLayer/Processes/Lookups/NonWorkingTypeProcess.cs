@@ -15,7 +15,7 @@ namespace ProcessLayer.Processes.Lookups
             new Lookup() {ID = 3, Description = "Work Suspension"},
         };
 
-        public Lookup Get(byte id)
+        public Lookup Get(int id)
         {
             return List.Where(x => x.ID == id).FirstOrDefault();
         }

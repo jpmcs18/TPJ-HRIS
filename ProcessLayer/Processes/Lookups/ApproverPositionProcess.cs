@@ -89,7 +89,7 @@ namespace ProcessLayer.Processes
                 if (ret is null)
                     throw new Exception();
                 else
-                    position.ID = outParameters.Get("@id").ToByte();
+                    position.ID = outParameters.Get("@id").ToInt();
             }
 
             return position;

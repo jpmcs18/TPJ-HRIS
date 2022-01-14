@@ -2,6 +2,6 @@
 {
     public class PayrollType : Lookup<int>
     {
-        public byte? NoofDays { get; set; }
+        public int? NoofDays { get; set; }
     }
 }

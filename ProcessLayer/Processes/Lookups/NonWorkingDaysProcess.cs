@@ -25,7 +25,7 @@ namespace ProcessLayer.Processes.Lookups
                 StartTime = dr["Start Time"].ToNullableTimeSpan(),
                 EndTime = dr["End Time"].ToNullableTimeSpan(),
                 Description = dr["Description"].ToString(),
-                NonWorkingType = dr["Non-Working Type"].ToNullableByte(),
+                NonWorkingType = dr["Non-Working Type"].ToNullableInt(),
                 LocationID = dr["Location ID"].ToNullableInt(),
                 Yearly = dr["Yearly"].ToNullableBoolean(),
                 IsGlobal = dr["Is Global"].ToNullableBoolean(),

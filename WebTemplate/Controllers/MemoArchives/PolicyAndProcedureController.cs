@@ -187,57 +187,49 @@ namespace WebTemplate.Controllers.MemoArchives
             try
             {
                 if (contentId == null)
-                    return Json(new { res = "Nothing to send." });
+                    return Json(new { msg = false, res = "Nothing to send." });
 
                 if (!Web.HasInternetConnection())
-                    return Json(new { res = "No Internet Connection." });
+                    return Json(new { msg = false, res = "No Internet Connection." });
 
-                PolicyAndProcedure pap = PolicyAndProcedureProcess.Instance.Value.Get(contentId ?? 0);
-
-                //if (pap.Content.Count == 0)
-                //    return Json(new { res = "Nothing to send." });
-
-                StringBuilder sb = new();
-                foreach(var content in pap.Content)
+                PolicyAndProcedure policyAndProcedure = PolicyAndProcedureProcess.Instance.Value.Get(contentId ?? 0);
+                
+                List<string> files = new List<string>();
+                string appSettingPath = ConfigurationManager.AppSettings[SAVE_LOCATION];
+                string directory = appSettingPath.Contains("~") ? Server.MapPath(appSettingPath) : appSettingPath;
+                for (int i = 0; i < (policyAndProcedure.Content?.Count ?? 0); i++)
                 {
-                    try
+                    if (policyAndProcedure.Content[i].PersonnelID != null && string.IsNullOrEmpty(policyAndProcedure.Content[i].Personnel.Email))
+                        return Json(new { msg = false, res = policyAndProcedure.Content[i].Personnel.FullName + " has no email." });
+
+                    if (policyAndProcedure.Content[i].VesselID != null && string.IsNullOrEmpty(policyAndProcedure.Content[i].Vessel.Email))
+                        return Json(new { msg = false, res = policyAndProcedure.Content[i].Vessel.Description + " has no email." });
+
+
+                }
+
+                string file = Path.Combine(directory, Path.GetFileName(policyAndProcedure.File));
+
+
+                var credential = Web.GetMemoEmailCreadential();
+
+                var subject = $"Memo No: {policyAndProcedure.MemoNo} {policyAndProcedure.Subject}" ?? "(No Subject)";
+
+                EmailResult emailRet = null;
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < policyAndProcedure.Content.Count; i++)
+                {
+                    string email = policyAndProcedure.Content[i].PersonnelID == null ? policyAndProcedure.Content[i].Vessel.Email : policyAndProcedure.Content[i].Personnel.Email;
+                    emailRet = EmailUtil.SendEmail(credential, User.UserID, email, CONTENT, policyAndProcedure.Content[i].ID, file, policyAndProcedure.Description, subject);
+                    if (!emailRet.IsSuccess)
                     {
-                        if (string.IsNullOrEmpty(content.Personnel.Email))
-                        {
-                            sb.AppendLine($"<br >- {content.Personnel.FullName} has no email.<br >");
-                            continue;
-                        }
-                        //if (string.IsNullOrEmpty(content.Vessel.Email))
-                        //{
-                        //    sb.AppendLine($"<br >- {content.Vessel.Description} - {content.Vessel.Code} has no email.<br >");
-                        //    continue;
-                        //}
-
-                        string appSettingPath = ConfigurationManager.AppSettings[SAVE_LOCATION];
-                        string directory = appSettingPath.Contains("~") ? Server.MapPath(appSettingPath) : appSettingPath;
-                        string file = "";
-                        
-                        if (System.IO.File.Exists(Path.Combine(directory, Path.GetFileName(pap.File))))
-                            file = Path.Combine(directory, Path.GetFileName(pap.File));
-
-                        var credential = Web.GetMemoEmailCreadential();
-
-                        var subject = $"Policy And Procedure {pap.MemoNo} {pap.Subject}" ?? "(No Subject)";
-
-                        var emailRet = EmailUtil.SendEmail(credential, User.UserID, content.Personnel.Email, CONTENT, content.ID, file, "", subject);
-                        if(emailRet.IsSuccess)
-                            sb.AppendLine($"- {content.Personnel.FullName} email send.<br >");
-                        else
-                            sb.AppendLine($"- Unable to send email for {content.Personnel.FullName}<br >");
-                    }
-                    catch
-                    {
-                        sb.AppendLine($"- Unable to send email for {content.Personnel.FullName}<br >");
+                        sb.Append(emailRet.Message + "<br >");
                     }
                 }
-                return Json(new { res = sb.ToString() });
+
+                return Json(new { msg = sb.Length == 0, res = sb.ToString() });
             }
-            catch (Exception ex)
+            catch (Exception ex) 
             {
                 return Json(new { msg = false, res = ex.GetActualMessage() });
             }

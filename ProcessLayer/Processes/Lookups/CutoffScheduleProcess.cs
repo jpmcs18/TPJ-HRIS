@@ -19,8 +19,8 @@ namespace ProcessLayer.Processes
             return new CutoffSchedule()
             {
                 ID = dr["ID"].ToInt(),
-                Month = dr["Month"].ToByte(),
-                Day = dr["Start Day"].ToByte()
+                Month = dr["Month"].ToInt(),
+                Day = dr["Start Day"].ToInt()
             };
         }
 
@@ -104,7 +104,7 @@ namespace ProcessLayer.Processes
             }
         }
 
-        public static List<CutoffSchedule> GetPage(byte? Filter, int PageNumber, int GridCount, out int Count)
+        public static List<CutoffSchedule> GetPage(int? Filter, int PageNumber, int GridCount, out int Count)
         {
             List<CutoffSchedule> Lookup = new List<CutoffSchedule>();
             Dictionary<string, object> Parameters = new Dictionary<string, object>()

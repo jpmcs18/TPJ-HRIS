@@ -24,7 +24,7 @@ namespace ProcessLayer.Processes.Kiosks
 				PersonnelID = dr["Personnel ID"].ToLong(),
 				StartDate = dr["Start Date"].ToNullableDateTime(),
 				EndDate = dr["End Date"].ToNullableDateTime(),
-				LocationID = dr["Location ID"].ToNullableByte(),
+				LocationID = dr["Location ID"].ToNullableInt(),
 				IsHighRisk = dr["Is High Risk"].ToNullableBoolean(),
 				HasQuarantine = dr["Has Quarantine"].ToNullableBoolean(),
 				QuarantineDateEnd = dr["Quarantine Date End"].ToNullableDateTime(),
@@ -106,7 +106,7 @@ namespace ProcessLayer.Processes.Kiosks
 			return o;
 		}
 
-		public List<OuterPortRequest> GetApprovedOuterPort(long personnelid, byte? locationid, DateTime startdate, DateTime enddate)
+		public List<OuterPortRequest> GetApprovedOuterPort(long personnelid, int? locationid, DateTime startdate, DateTime enddate)
 		{
 			var OP = new List<OuterPortRequest>();
 			var parameters = new Dictionary<string, object>{

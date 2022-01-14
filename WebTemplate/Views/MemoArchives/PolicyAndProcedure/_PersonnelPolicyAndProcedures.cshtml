@@ -4,7 +4,7 @@
 }
 
 <div class="content-container">
-    <input type="hidden" value="@ViewBag.ContentId" id="content-id"/>
+    <input type="hidden" value="@ViewBag.ContentId" id="content-id" />
     <div class="memo-info pap-info content">
         @Html.HiddenFor(m => m.ID)
         <div>
@@ -84,14 +84,23 @@
             {
             <div class="personnel-status">
                 <i class="fa fa-check-circle @(Model.Content[i].Acknowledge ? "acknowledged" : "unacknowledge")"></i>
-                <h3>@Model.Content[i].Personnel.FullName</h3>
+
+                @if (Model.Content[i].PersonnelID != null)
+                {
+                    <h3>@Model.Content[i].Personnel.FullName</h3>
+                }
+                @if (Model.Content[i].VesselID != null)
+                {
+                    <h3>@Model.Content[i].Vessel.Description - @Model.Content[i].Vessel.Code</h3>
+                }
             </div>
             }
             @if (Model.Content.Count == 0)
-            { 
-        <div class="personnel-status">
-            <h3>No Personnel</h3>
-        </div>}
+            {
+                <div class="personnel-status">
+                    <h3>No Personnel</h3>
+                </div>
+            }
         </div>
     </div>
 </div>

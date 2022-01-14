@@ -5,7 +5,7 @@ namespace ProcessLayer.Entities.Kiosk
 {
     public class LeaveRequest : KioskBase
     {
-        public byte? LeaveTypeID { get; set; }
+        public int? LeaveTypeID { get; set; }
         public float? ApprovedLeaveCredits { get; set; }
         public float? ComputedLeaveCredits { get; set; }
         public float? NoofDays { get; set; }

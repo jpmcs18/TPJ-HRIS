@@ -27,7 +27,7 @@ namespace ProcessLayer.Processes.Lookups
                 FixedTax = dr["Fixed Tax"].ToNullableDecimal(),
                 AdditionalTax = dr["Additional Tax"].ToNullableDecimal(),
                 ExcessOver = dr["Excess Over"].ToNullableDecimal(),
-                TaxScheduleID = dr["Tax Schedule ID"].ToNullableByte(),
+                TaxScheduleID = dr["Tax Schedule ID"].ToNullableInt(),
                 EffectiveStartDate = dr["Effective Start Date"].ToNullableDateTime(),
                 EffectiveEndDate = dr["Effective End Date"].ToNullableDateTime()
             };
@@ -36,7 +36,7 @@ namespace ProcessLayer.Processes.Lookups
             return tax;
         }
 
-        public List<TaxTable> GetList(byte? taxschedid = null, DateTime? date = null)
+        public List<TaxTable> GetList(int? taxschedid = null, DateTime? date = null)
         {
             using (var db = new DBTools())
             {

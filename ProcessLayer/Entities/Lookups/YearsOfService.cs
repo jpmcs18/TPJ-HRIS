@@ -2,8 +2,8 @@
 {
     public class YearsOfService
     {
-        public byte StartYear { get; set; }
-        public byte EndYear { get; set; }
+        public int StartYear { get; set; }
+        public int EndYear { get; set; }
         public decimal Amount { get; set; }
     }
 }

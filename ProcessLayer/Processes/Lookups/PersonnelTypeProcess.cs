@@ -18,7 +18,7 @@ namespace ProcessLayer.Processes.Lookups
         {
             return new PersonnelType()
             {
-                ID = dr["ID"].ToByte(),
+                ID = dr["ID"].ToInt(),
                 Description = dr["Description"].ToString()
             };
         }

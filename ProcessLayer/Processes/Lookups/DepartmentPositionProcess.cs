@@ -20,7 +20,7 @@ namespace ProcessLayer.Processes
             var dept = new DepartmentPosition
             {
                 ID = dr["ID"].ToInt(),
-                PositionID = dr["Position ID"].ToByte(),
+                PositionID = dr["Position ID"].ToInt(),
                 DepartmentID = dr["Department ID"].ToInt()
             };
 

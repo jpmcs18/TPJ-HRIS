@@ -8,7 +8,7 @@ namespace WebTemplate.Models.RequestsApproval.Leave_Request
     public class Index : BaseModel
     {
         public string Personnel { get; set; }
-        public byte? LeaveTypeID { get; set; }
+        public int? LeaveTypeID { get; set; }
         public DateTime? StartDateTime { get; set; }
         public DateTime? EndingDateTime { get; set; }
         public List<LeaveType> LeaveTypes { get; set; } = new();

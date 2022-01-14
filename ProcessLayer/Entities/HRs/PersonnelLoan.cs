@@ -9,13 +9,13 @@ namespace ProcessLayer.Entities.HR
 {
     public class PersonnelLoan : PersonnelBase
     {
-        public byte? LoanID { get; set; }
+        public int? LoanID { get; set; }
         public decimal? Amount { get; set; }
         public decimal PaidAmount { get; set; }
         public decimal? Amortization { get; set; }
         public float? PaymentTerms { get; set; }
         public bool? PayrollDeductible { get; set; }
-        public byte? WhenToDeduct { get; set; }
+        public int? WhenToDeduct { get; set; }
         public DateTime? DateStart { get; set; }
         public string Remarks { get; set; }
         public long? PayrollID { get; set; }

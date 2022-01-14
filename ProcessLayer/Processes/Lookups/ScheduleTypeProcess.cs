@@ -22,14 +22,14 @@ namespace ProcessLayer.Processes.Lookups
         {
             return new ScheduleType
             {
-                ID = dr["ID"].ToByte(),
+                ID = dr["ID"].ToInt(),
                 Description = dr["Description"].ToString(),
                 TimeIn = dr["Time In"].ToNullableTimeSpan(),
                 TimeOut = dr["Time Out"].ToNullableTimeSpan(),
                 BreakTime = dr["Break Time"].ToNullableTimeSpan(),
-                BreakTimeHour = dr["Break Time Hour"].ToNullableByte(),
+                BreakTimeHour = dr["Break Time Hour"].ToNullableInt(),
                 AtHome = dr["At Home"].ToNullableBoolean(),
-                TotalWorkingHours = dr["Total Working Hours"].ToNullableByte(),
+                TotalWorkingHours = dr["Total Working Hours"].ToNullableInt(),
                 MustBePresentOnly = dr["Must Be Present Only"].ToNullableBoolean()
             };
         }
@@ -58,7 +58,7 @@ namespace ProcessLayer.Processes.Lookups
                     { "@MustBePresentOnly", scheduleType.MustBePresentOnly},
                     { "@LogBy", user},
                 });
-                scheduleType.ID = outParam.Get("@ID").ToByte();
+                scheduleType.ID = outParam.Get("@ID").ToInt();
                 return scheduleType;
             }
 

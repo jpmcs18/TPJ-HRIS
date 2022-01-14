@@ -6,7 +6,7 @@ namespace ProcessLayer.Entities.HR
     public class PersonnelLeaveCredit : PersonnelBase
     {
         [DisplayName("Leave Type ID")]
-        public byte? LeaveTypeID { get; set; }
+        public int? LeaveTypeID { get; set; }
         [DisplayName("Leave Credits")]
         public float? LeaveCredits { get; set; }
         public short? YearValid { get; set; }

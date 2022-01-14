@@ -2,7 +2,7 @@
 
 namespace ProcessLayer.Entities
 {
-    public class LeaveType : Lookup<byte>
+    public class LeaveType : Lookup<int>
     {
         public int? MaxAllowedDays { get; set; }
         public bool? BulkUse { get; set; }

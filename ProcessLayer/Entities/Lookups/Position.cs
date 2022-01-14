@@ -2,7 +2,7 @@
 
 namespace ProcessLayer.Entities
 {
-    public class Position : Lookup<byte>
+    public class Position : Lookup<int>
     {
         public string Abbreviation { get; set; }
         public string Display { get { return string.IsNullOrEmpty(Abbreviation) ? (string.IsNullOrEmpty(Description) ? null : Description) : Abbreviation; } }

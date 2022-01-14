@@ -76,6 +76,12 @@
         $(".btn_edit").off('click').on('click', editItem);
         $("#btn_add").off('click').on('click', addItem);
         $("#btn_save").off('click').on('click', saveItem);
+        $('.search_key').off('keydown').on('keydown',
+            function () {
+                if (event.keyCode == 13) {
+                    $('#btn_search').click();
+                }
+            });
         Select2Override();
     }
 

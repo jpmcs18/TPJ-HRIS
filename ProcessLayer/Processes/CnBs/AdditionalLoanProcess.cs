@@ -20,7 +20,7 @@ namespace ProcessLayer.Processes.CnB
             {
                 ID = dr["ID"].ToLong(),
                 Amount = dr["Amount"].ToDecimal(),
-                LoanID = dr["Loan ID"].ToByte(),
+                LoanID = dr["Loan ID"].ToInt(),
                 PersonnelID = dr["Personnel ID"].ToLong(),
                 Remarks = dr["Remarks"].ToString()
             };

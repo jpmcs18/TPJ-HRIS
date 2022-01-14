@@ -20,7 +20,7 @@ namespace ProcessLayer.Processes.Lookups
             return new LateDeduction
             {
                 ID = dr["ID"].ToShort(),
-                DeductedHours = dr["Deducted Hours"].ToNullableByte(),
+                DeductedHours = dr["Deducted Hours"].ToNullableInt(),
                 TimeIn = dr["TIme In"].ToNullableTimeSpan()
             };
         }

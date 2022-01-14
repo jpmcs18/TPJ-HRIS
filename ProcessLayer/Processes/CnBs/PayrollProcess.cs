@@ -30,7 +30,7 @@ namespace ProcessLayer.Processes.CnB
                 AdjustedStartDate = dr["Adjusted Start Date"].ToNullableDateTime(),
                 AdjustedEndDate = dr["Adjusted End Date"].ToNullableDateTime(),
                 Type = dr["Type"].ToPayrollSheet(),
-                PayrollStatus = LookupProcess.GetPayrollStatus(dr["Status ID"].ToByte()),
+                PayrollStatus = LookupProcess.GetPayrollStatus(dr["Status ID"].ToInt()),
                 PreparedBy = LookupProcess.GetUser(dr["Prepared By"].ToNullableInt()),
                 PreparedOn = dr["Prepared On"].ToNullableDateTime(),
                 CheckedBy = LookupProcess.GetUser(dr["Checked By"].ToNullableInt()),
@@ -140,7 +140,7 @@ namespace ProcessLayer.Processes.CnB
                 LoggedDate = dr["Logged Date"].ToDateTime(),
                 TotalRegularMinutes = dr["Total Regular Minutes"].ToNullableShort() ?? 0,
                 TotalLeaveMinutes = dr["Total Leave Minutes"].ToNullableShort() ?? 0,
-                Location = LocationProcess.Instance.Value.Get(dr["Location ID"].ToNullableByte()),
+                Location = LocationProcess.Instance.Value.Get(dr["Location ID"].ToNullableInt()),
                 IsHoliday = dr["Is Holiday"].ToBoolean(),
                 IsSunday = dr["Is Sunday"].ToBoolean(),
                 RegularOTMinutes = dr["Regular OT Minutes"].ToInt(),
@@ -206,7 +206,7 @@ namespace ProcessLayer.Processes.CnB
                 return pbase;
             }
         }
-        public PayrollDeductions GetPhilHealth(long? personnelID, decimal gross, byte cutoff, DateTime date)
+        public PayrollDeductions GetPhilHealth(long? personnelID, decimal gross, int cutoff, DateTime date)
         {
             var pd = new PayrollDeductions();
             using (var db = new DBTools())
@@ -232,15 +232,15 @@ namespace ProcessLayer.Processes.CnB
             }
             return pd;
         }
-        public byte GetMonthlyTaxScheduleID()
+        public int GetMonthlyTaxScheduleID()
         {
             using (var db = new DBTools())
             {
-                return db.ExecuteScalar("lookup.GetMonthlyTaxScheduleID").ToNullableByte() ?? 0;
+                return db.ExecuteScalar("lookup.GetMonthlyTaxScheduleID").ToNullableInt() ?? 0;
             }
 
         }
-        public PayrollDeductions GetHDMF(long? personnelID, decimal gross, byte cutoff, DateTime date)
+        public PayrollDeductions GetHDMF(long? personnelID, decimal gross, int cutoff, DateTime date)
         {
             using (var db = new DBTools())
             {
@@ -264,7 +264,7 @@ namespace ProcessLayer.Processes.CnB
                 }
             }
         }
-        public PayrollDeductions GetSSS(long? personnelID, decimal gross, byte cutoff, DateTime date)
+        public PayrollDeductions GetSSS(long? personnelID, decimal gross, int cutoff, DateTime date)
         {
             using (var db = new DBTools())
             {
@@ -289,7 +289,7 @@ namespace ProcessLayer.Processes.CnB
                 }
             }
         }
-        public PayrollDeductions GetProvidentFund(long? personnelID, decimal gross, byte cutoff, DateTime date)
+        public PayrollDeductions GetProvidentFund(long? personnelID, decimal gross, int cutoff, DateTime date)
         {
             using (var db = new DBTools())
             {
@@ -411,7 +411,7 @@ namespace ProcessLayer.Processes.CnB
                 return GetPayroll(payroll.ID);
             }
         }
-        public decimal? GetTax(long personnelId, PayrollSheet type, decimal? gross, byte cutoff, DateTime date)
+        public decimal? GetTax(long personnelId, PayrollSheet type, decimal? gross, int cutoff, DateTime date)
         {
 
             var parameters = new Dictionary<string, object> {
@@ -815,7 +815,7 @@ namespace ProcessLayer.Processes.CnB
                 return (db.ExecuteScalar("cnb.HasPayrollAhead", new Dictionary<string, object> {
                         { "@PayrollType", type },
                         { "@StartDate", date },
-                     }).ToNullableByte() ?? 0) > 0;
+                     }).ToNullableInt() ?? 0) > 0;
             }
         }
         public PayrollPeriod GeneratePayroll(int month, int year, int cutoff, PayrollSheet payrollSheet, int userid)

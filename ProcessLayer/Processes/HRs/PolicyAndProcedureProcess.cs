@@ -147,7 +147,6 @@ namespace ProcessLayer.Processes.HR
         }
         public PolicyAndProcedure Create(PolicyAndProcedure policyAndProcedure, long? personnelId, long? groupId, List<int> vesselIds, int userId)
         {
-
             using (var db = new DBTools())
             {
                 bool newPolicyAndProcedure = policyAndProcedure.ID == 0;

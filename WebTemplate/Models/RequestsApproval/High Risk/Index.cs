@@ -9,7 +9,7 @@ namespace WebTemplate.Models.RequestsApproval.High_Risk
     public class Index : BaseModel
     {
         public string Personnel { get; set; }
-        public byte? LeaveTypeID { get; set; }
+        public int? LeaveTypeID { get; set; }
         public DateTime? StartDateTime { get; set; }
         public DateTime? EndingDateTime { get; set; }
 

@@ -10,7 +10,7 @@ namespace ProcessLayer.Entities
     {
         public int ID { get; set; }
         public int? DepartmentID { get; set; }
-        public byte? PositionID { get; set; }
+        public int? PositionID { get; set; }
         public Department Department { get; set; }
         public Position Position { get; set; }
     }

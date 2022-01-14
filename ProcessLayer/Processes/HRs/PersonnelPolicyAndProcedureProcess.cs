@@ -64,6 +64,23 @@ namespace ProcessLayer.Processes.HR
 
         }
 
+        public List<PersonnelPolicyAndProcedure> GetList(string ids)
+        {
+            using (var db = new DBTools())
+            {
+
+                Dictionary<string, object> Parameters = new Dictionary<string, object>
+                {
+                    { "@IDs", ids }
+                };
+
+                using (DataSet ds = db.ExecuteReader("hr.GetPersonnelPolicyAndProcedure", Parameters))
+                {
+                    return ds.GetList(Converter);
+                }
+            }
+
+        }
         public List<PersonnelPolicyAndProcedure> GetListOfPersonnel(long policyAndProcedureID)
         {
             using (var db = new DBTools())
@@ -132,6 +149,7 @@ namespace ProcessLayer.Processes.HR
             {
                 { "@PolicyAndProcedureID", pap.PolicyAndProcedureID },
                 { "@PersonnelID", pap.PersonnelID },
+                { "@VesselID", pap.VesselID },
                 { "@LogBy",  userId },
             };
 

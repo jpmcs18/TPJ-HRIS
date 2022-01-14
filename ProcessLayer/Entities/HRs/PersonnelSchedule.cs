@@ -4,13 +4,13 @@ namespace ProcessLayer.Entities
 {
     public class PersonnelSchedule : PersonnelBase
     {
-        public byte? SundayScheduleID { get; set; }
-        public byte? MondayScheduleID { get; set; }
-        public byte? TuesdayScheduleID { get; set; }
-        public byte? WednesdayScheduleID { get; set; }
-        public byte? ThursdayScheduleID { get; set; }
-        public byte? FridayScheduleID { get; set; }
-        public byte? SaturdayScheduleID { get; set; }
+        public int? SundayScheduleID { get; set; }
+        public int? MondayScheduleID { get; set; }
+        public int? TuesdayScheduleID { get; set; }
+        public int? WednesdayScheduleID { get; set; }
+        public int? ThursdayScheduleID { get; set; }
+        public int? FridayScheduleID { get; set; }
+        public int? SaturdayScheduleID { get; set; }
         public DateTime? EffectivityDate { get; set; }
 
         public ScheduleType _SundaySchedule { get; set; }
