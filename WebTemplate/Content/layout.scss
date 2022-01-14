@@ -16,6 +16,10 @@
 .tab-content {
     height: 68vh;
     overflow-y: auto;
+
+    .panel-body {
+        padding: 20px !important;
+    }
 }
 
 a {

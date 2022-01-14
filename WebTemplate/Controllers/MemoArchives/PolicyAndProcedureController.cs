@@ -109,7 +109,7 @@ namespace WebTemplate.Controllers.MemoArchives
         {
             try
             {
-                Management model = new Management
+                Management model = new()
                 {
                     Personnels = PersonnelProcess.GetList(filter),
                     PersonnelSearchKey = filter
@@ -137,7 +137,7 @@ namespace WebTemplate.Controllers.MemoArchives
         {
             try
             {
-                Management model = new Management
+                Management model = new()
                 {
                     PersonnelGroups = PersonnelGroupProcess.GetList(filter),
                     PersonnelGroupSearchKey = filter
@@ -210,7 +210,7 @@ namespace WebTemplate.Controllers.MemoArchives
 
                 PolicyAndProcedure policyAndProcedure = PolicyAndProcedureProcess.Instance.Value.Get(contentId ?? 0);
                 
-                List<string> files = new List<string>();
+                List<string> files = new();
                 string appSettingPath = ConfigurationManager.AppSettings[SAVE_LOCATION];
                 string directory = appSettingPath.Contains("~") ? Server.MapPath(appSettingPath) : appSettingPath;
                 for (int i = 0; i < (policyAndProcedure.Content?.Count ?? 0); i++)
@@ -232,7 +232,7 @@ namespace WebTemplate.Controllers.MemoArchives
                 var subject = $"Memo No: {policyAndProcedure.MemoNo} {policyAndProcedure.Subject}" ?? "(No Subject)";
 
                 EmailResult emailRet = null;
-                StringBuilder sb = new StringBuilder();
+                StringBuilder sb = new();
                 for (int i = 0; i < policyAndProcedure.Content.Count; i++)
                 {
                     string email = policyAndProcedure.Content[i].PersonnelID == null ? policyAndProcedure.Content[i].Vessel.Email : policyAndProcedure.Content[i].Personnel.Email;
