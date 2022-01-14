@@ -11,18 +11,26 @@ namespace WebTemplate.Controllers.PersonnelApproval
         // GET: PersonnelApproval
         public ActionResult Index(Index model)
         {
-            model.Page = model.Page > 1 ? model.Page : 1;
-            model.Personnel = PersonnelProcess.GetApprovingPersonnel(model.Filter, model.Page, model.GridCount, out int PageCount);
-            model.PageCount = PageCount;
+            try
+            {
+                model.Page = model.Page > 1 ? model.Page : 1;
+                model.Personnel = PersonnelProcess.GetApprovingPersonnel(model.Filter, model.Page, model.GridCount, out int PageCount);
+                model.PageCount = PageCount;
 
-            if (Request.IsAjaxRequest())
-            {
-                ModelState.Clear();
-                return PartialViewCustom("_Search", model);
-            }
-            else
-            {
+                if (Request.IsAjaxRequest())
+                {
+                    ModelState.Clear();
+                    return PartialViewCustom("_Search", model);
+                }
+                else
+                {
                 return ViewCustom("Index", model);
+                }
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Message = ex.GetActualMessage();
+                return View("~/Views/Security/Error.cshtml");
             }
         }
 

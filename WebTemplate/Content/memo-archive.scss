@@ -73,7 +73,7 @@
             flex-grow: 1;
             overflow: auto;
 
-            .personnel-status {
+            .personnel-status, .vessel-status {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;

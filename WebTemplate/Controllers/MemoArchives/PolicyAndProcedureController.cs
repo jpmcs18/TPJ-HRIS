@@ -76,6 +76,22 @@ namespace WebTemplate.Controllers.MemoArchives
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        public ActionResult PolicyAndProceduresContent(long papId)
+        {
+            try
+            {
+                var PolicyAndProcedure = PolicyAndProcedureProcess.Instance.Value.Get(papId);
+                ModelState.Clear();
+                return PartialViewCustom("_PolicyAndProceduresContent", PolicyAndProcedure);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { msg = false, res = ex.GetActualMessage() });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult NewMemo()
         {
             Management model = new()

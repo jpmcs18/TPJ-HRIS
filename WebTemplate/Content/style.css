@@ -153,7 +153,7 @@ body.modal-open {
   padding: 10px;
   width: 400px;
   height: 550px;
-  background-color: #fff;
+  background-color: #ffe6e6;
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   -ms-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
@@ -200,12 +200,12 @@ body.modal-open {
   margin: 0 auto;
   padding: 10px;
   margin-bottom: 15px;
-  border-radius: 30px;
+  border-radius: 10px;
   background: #f7f7f7;
-  border-style: none;
   font-size: 15px;
   color: #666;
   font-weight: 600;
+  border: 1px solid #ffcccc;
 }
 .login .login-body .login-input input:focus {
   outline-width: 0;
@@ -218,20 +218,21 @@ body.modal-open {
 }
 .login .login-body .login-button button {
   padding: 10px;
-  background: transparent;
   border-style: none;
   width: 300px;
   border: 2px solid #ebebeb;
   border-radius: 10px;
   font-size: 15px;
   font-weight: 600;
-  color: #aaa;
   margin-top: 5px;
+  background-color: #ff0000;
+  color: #fff;
 }
 .login .login-body .login-button button:hover,
 .login .login-body .login-button button:focus {
-  background: #fcfcfc;
-  outline: 0;
+  /*background: #fcfcfc;
+                outline: 0;*/
+  background-color: #cc0000;
 }
 .login .login-body .login-signin .login-input {
   margin-top: 50px;
@@ -247,12 +248,11 @@ body.modal-open {
   display: block;
   font-size: 13px;
   font-weight: 500;
-  color: #ccc;
 }
 .login .login-body .login-signin .login-footer .login-footer-text .clickable-text {
   font-weight: 600;
   text-decoration: underline;
-  color: #ccc;
+  color: #ff0000;
 }
 .login .login-body .login-verification .login-username {
   margin-top: 20px;

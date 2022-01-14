@@ -1,0 +1,25 @@
+﻿@model ProcessLayer.Entities.PolicyAndProcedure
+
+@for (int i = 0; i < Model.Content.Count; i++)
+{
+    if (Model.Content[i].PersonnelID != null)
+    {
+        <div class="personnel-status">
+            <i class="fa fa-check-circle @(Model.Content[i].Acknowledge ? "acknowledged" : "unacknowledge")"></i>
+            <h3>@Model.Content[i].Personnel.FullName<br /><label style="font-size: 13px;">@($"{Model.Content[i].Personnel.Email}")</label></h3>
+        </div>
+    }
+    if (Model.Content[i].VesselID != null)
+    {
+        <div class="vessel-status">
+            <i class="fa fa-check-circle @(Model.Content[i].Acknowledge ? "acknowledged" : "unacknowledge")"></i>
+            <h3>@($"{Model.Content[i].Vessel.Description} - {Model.Content[i].Vessel.Code}")<br/><label style="font-size: 13px;">@($"{Model.Content[i].Vessel.Email}")</label></h3>
+        </div>
+    }
+}   
+@if (Model.Content.Count == 0)
+{
+    <div class="personnel-status">
+        <h3>No records found</h3>
+    </div>
+}

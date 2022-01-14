@@ -427,6 +427,36 @@
         });
     }
 
+    function getNewContent() {
+        var papId = $(".modal-data.personnels").parent().parent().find('.selected-content-id').val();
+        $.ajax({
+            data: {
+                papId: papId,
+                '__RequestVerificationToken': $('@Html.AntiForgeryToken()').val()
+            },
+            type: 'POST',
+            datatype: 'JSON',
+            url: '@Url.Action("PolicyAndProceduresContent", "PolicyAndProcedure")',
+            cache: false,
+            beforeSend: function() {
+                ShowLoadingScreen();
+            },
+            complete: function() {
+                RemoveLoadingScreen();
+            },
+            success: function(response) {
+                if (response.msg == false) {
+                    toastr.error(response.res);
+                } else {
+                    $(".modal-data.personnels .pap-content .content-list").html(response);
+                    $(".modal-data.personnels").parent().parent().find('.file-actions').addClass("hidden");
+                }
+            },
+            error: function(x) {
+            }
+        });
+    }
+
     function showPersonnelPolicyAndProcedure(response) {
         $('#ViewPolicyAndProcedures .modal-body .personnels').html(response);
         showDiv('personnels');
@@ -672,11 +702,13 @@
             },
             type: "POST",
             cache: false,
-            beforeSend: function() {
+            beforeSend: function () {
+                ShowLoadingScreen();
                 $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr').addClass('hidden');
                 $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr#Row-Loading-Display').removeClass('hidden');
             },
-            complete: function() {
+            complete: function () {
+                RemoveLoadingScreen();
                 $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr').addClass('hidden');
                 if ($('#SearchPersonnelOrGroup #SearchTableDiv tbody tr.personnel').length > 0) {
                     $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr.personnel').removeClass('hidden');
@@ -717,11 +749,13 @@
             },
             type: "POST",
             cache: false,
-            beforeSend: function() {
+            beforeSend: function () {
+                ShowLoadingScreen();
                 $('#SearchPersonnelOrGroup #GroupTableDiv tbody tr').addClass('hidden');
                 $('#SearchPersonnelOrGroup #GroupTableDiv tbody tr#Row-Loading-Display').removeClass('hidden');
             },
             complete: function () {
+                RemoveLoadingScreen();
                 $('#SearchPersonnelOrGroup #GroupTableDiv tbody tr').addClass('hidden');
                 if ($('#SearchPersonnelOrGroup #GroupTableDiv tbody tr.member').length > 0) {
                     $('#SearchPersonnelOrGroup #GroupTableDiv tbody tr.member').removeClass('hidden');
@@ -762,18 +796,20 @@
             },
             type: "POST",
             cache: false,
-            beforeSend: function() {
+            beforeSend: function () {
+                ShowLoadingScreen();
                 $('#SearchPersonnelOrGroup #VesselTableDiv tbody tr').addClass('hidden');
                 $('#SearchPersonnelOrGroup #VesselTableDiv tbody tr#Row-Loading-Display').removeClass('hidden');
             },
             complete: function () {
+                RemoveLoadingScreen();
                 $('#SearchPersonnelOrGroup #VesselTableDiv tbody tr').addClass('hidden');
                 if ($('#SearchPersonnelOrGroup #VesselTableDiv tbody tr.vessel').length > 0) {
                     $('#SearchPersonnelOrGroup #VesselTableDiv tbody tr.vessel').removeClass('hidden');
                 } else
                     $('#SearchPersonnelOrGroup #VesselTableDiv tbody tr#No-Row-Display').removeClass('hidden');
             },
-            success: function (response) {                    
+            success: function (response) {
                 if (response.msg == null) {
                     $("#VesselTable").find('#SearchVesselInput').val(filter).focus();
                     $("#VesselTableDiv").html(response);
@@ -1003,7 +1039,8 @@
                  if (response.msg) {
                      toastr.success("Email sent and saved.");
                  } else {
-                     toastr.error(response.res);
+                     toastr.success(response.res);
+                     getNewContent();
                  }
             },
             error: function (x) {
@@ -1025,11 +1062,17 @@
 
         if (!isMultiSelect) {
             $tableName.find('button').removeClass('btn-primary').addClass('btn-white');
-            $tableName.find('input[type="checkbox"]').iCheck('uncheck');
+            $tableName.find('input[type="checkbox"]').iCheck('uncheck');            
         }
 
-        $b.removeClass('btn-white').addClass('btn-primary');
-        $cb.iCheck('check');
+        if ($cb.is(':checked')) {
+            $cb.iCheck('uncheck');
+            $b.removeClass('btn-primary').addClass('btn-white');
+        }
+        else {
+            $b.removeClass('btn-white').addClass('btn-primary');
+            $cb.iCheck('check');
+        }
 
         $('#NewMemo button[name="SaveMemoArchive"]').removeAttr('disabled');
 

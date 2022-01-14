@@ -2205,6 +2205,7 @@
     <Content Include="Views\Maintenance\Lookup\ApproverPosition\Index.cshtml" />
     <Content Include="Views\Maintenance\Lookup\ApproverPosition\_Management.cshtml" />
     <Content Include="Views\Maintenance\Lookup\ApproverPosition\_Search.cshtml" />
+    <Content Include="Views\MemoArchives\PolicyAndProcedure\_PolicyAndProceduresContent.cshtml" />
     <Content Include="Views\RequestsApproval\LeaveRequests\_LeaveRequests.cshtml" />
     <Content Include="Views\RequestsApproval\LeaveRequests\_LeaveRequestsIndex.cshtml" />
     <Content Include="Views\RequestsApproval\OTRequests\_OTRequests.cshtml" />
