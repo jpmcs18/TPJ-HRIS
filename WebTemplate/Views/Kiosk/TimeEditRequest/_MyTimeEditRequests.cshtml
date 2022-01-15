@@ -11,63 +11,68 @@
     {
     <div class="file-manager">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px; margin: 0px -15px;">
-            <div id="form_search_params" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
+            <form id="form_search_params" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
                 <input type="hidden" id="hid_search" name="@Html.NameFor(m => m.Key)" value="@Html.ValueFor(m => m.Key)" />
                 <input type="hidden" id="hid_page" name="@Html.NameFor(m => m.Page)" value="@Html.ValueFor(m => m.Page)" />
                 @Html.AntiForgeryToken()
 
-                <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-2">
-                    <label class="control-label">Start Date & Time</label>
-                    @Html.TextBox("LoginDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.LoginDateTime), new { @type = "datetime-local", @class = "form-control" })
-                </div>
+                <fieldset>
+                    <legend>Search</legend>
+                    <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-2">
+                        <label class="control-label">Start Date & Time</label>
+                        @Html.TextBox("LoginDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.LoginDateTime), new { @type = "datetime-local", @class = "form-control" })
+                    </div>
 
-                <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-2">
-                    <label class="control-label">End Date & Time</label>
-                    @Html.TextBox("LogoutDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.LogoutDateTime), new { @type = "datetime-local", @class = "form-control" })
-                </div>
+                    <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-2">
+                        <label class="control-label">End Date & Time</label>
+                        @Html.TextBox("LogoutDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.LogoutDateTime), new { @type = "datetime-local", @class = "form-control" })
+                    </div>
 
-                <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
-                    <label class="control-label" style="width: 100%; color: #fff;">Search</label>
-                    <button type="button" id="btn_search" class="btn btn-primary font-bold"><i class="fa fa-search"></i> Search</button>
-                </div>
-            </div>
-            <div id="status_search_params" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
-                <div class="form-group col-xs-12 col-sm-3 col-md-2 col-lg-1">
-                    <label class="control-label">
-                        @Html.CheckBoxFor(m => m.IsPending, new { @class = "i-checks status-checkbox" })
-                        @*<input type="checkbox" class="i-checks status-checkbox" name="IsPending" />*@
-                        Pending
-                    </label>
-                </div>
+                    <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                        <label class="control-label" style="width: 100%; color: #fff;">Search</label>
+                        <button type="button" id="btn_search" class="btn btn-primary font-bold"><i class="fa fa-search"></i> Search</button>
+                    </div>
+                </fieldset>
+            </form>
+            <form id="status_search_params" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
+                <fieldset>
+                    <legend>Status</legend><div class="form-group col-xs-12 col-sm-3 col-md-2 col-lg-1">
+                        <label class="control-label">
+                            @Html.CheckBoxFor(m => m.IsPending, new { @class = "i-checks status-checkbox" })
+                            @*<input type="checkbox" class="i-checks status-checkbox" name="IsPending" />*@
+                            Pending
+                        </label>
+                    </div>
 
-                <div class="form-group col-xs-12 col-sm-3 col-md-2 col-lg-1">
-                    <label class="control-label">
-                        @Html.CheckBoxFor(m => m.IsCancelled, new { @class = "i-checks status-checkbox" })
-                        Cancelled
-                    </label>
-                </div>
+                    <div class="form-group col-xs-12 col-sm-3 col-md-2 col-lg-1">
+                        <label class="control-label">
+                            @Html.CheckBoxFor(m => m.IsCancelled, new { @class = "i-checks status-checkbox" })
+                            Cancelled
+                        </label>
+                    </div>
 
-                <div class="form-group col-xs-12 col-sm-3 col-md-2 col-lg-1">
-                    <label class="control-label">
-                        @Html.CheckBoxFor(m => m.IsApproved, new { @class = "i-checks status-checkbox" })
-                        Approved
-                    </label>
-                </div>
+                    <div class="form-group col-xs-12 col-sm-3 col-md-2 col-lg-1">
+                        <label class="control-label">
+                            @Html.CheckBoxFor(m => m.IsApproved, new { @class = "i-checks status-checkbox" })
+                            Approved
+                        </label>
+                    </div>
 
-                <div class="form-group col-xs-12 col-sm-3 col-md-2 col-lg-1">
-                    <label class="control-label">
-                        @Html.CheckBoxFor(m => m.IsExpired, new { @class = "i-checks status-checkbox" })
-                        Expired
-                    </label>
-                </div>
+                    <div class="form-group col-xs-12 col-sm-3 col-md-2 col-lg-1">
+                        <label class="control-label">
+                            @Html.CheckBoxFor(m => m.IsExpired, new { @class = "i-checks status-checkbox" })
+                            Expired
+                        </label>
+                    </div>
 
-                <div class="form-group col-xs-12 col-sm-3 col-md-2 col-lg-1">
-                    <label class="control-label">
-                        @Html.CheckBoxFor(m => m.All, new { @class = "i-checks status-checkbox" })
-                        All
-                    </label>
-                </div>
-            </div>
+                    <div class="form-group col-xs-12 col-sm-3 col-md-2 col-lg-1">
+                        <label class="control-label">
+                            @Html.CheckBoxFor(m => m.All, new { @class = "i-checks status-checkbox" })
+                            All
+                        </label>
+                    </div>
+                </fieldset>
+            </form>
         </div>
     </div>
     }

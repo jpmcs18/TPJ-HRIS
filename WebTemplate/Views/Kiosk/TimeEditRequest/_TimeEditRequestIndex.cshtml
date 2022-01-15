@@ -36,15 +36,15 @@
             </div>
         </div>
     </div>
-    <div class="" style="margin-top: 85px;">
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 animated fadeInLef">
+    <div class="" style="margin-top: 80px;">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 animated fadeInLef" style="padding: 0px;">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 m-b-sm" style="padding: 0px;">
-                <div class="tabs-container" style="border: 1px solid #009688;">
-                    <div class="tab-content" style="margin-top: 0px; max-height: unset; overflow-y: hidden; overflow-x: hidden; height: 770px;">
+                <div class="tabs-container" style="">
+                    <div class="tab-content" style="margin-top: 0px; max-height: unset; overflow-y: hidden; overflow-x: hidden; height: unset;">
                         @if (TimeEditRequestCreator.View)
                         {
                             <div id="tab-2" class="tab-pane active" style="height: 850px;">
-                                <div id="TimeEditRequestsForm" class="panel-body" style="padding: 10px; max-height: 100%; border: 1px solid #e5e6e7; overflow-y: hidden;">
+                                <div id="TimeEditRequestsForm" class="panel-body" style="padding: 10px !important; max-height: 100%; border: 1px solid #e5e6e7; overflow-y: hidden;">
                                     @if (TimeEditRequestCreator.View)
                                     {
                                         @Html.Partial("~/Views/Kiosk/TimeEditRequest/_MyTimeEditRequests.cshtml")

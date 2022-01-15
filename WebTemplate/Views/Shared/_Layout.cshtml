@@ -314,10 +314,12 @@
             $('body').addClass('sk-loading');//.css('overflow', 'hidden');
             $('input').focusout();
             $('#BackDrop').removeClass('hidden');
+            $('body').css('overflow', 'hidden');
         }
         function RemoveLoadingScreen() {
             $('body').removeClass('sk-loading');//.css('overflow', 'hidden');
             $('#BackDrop').addClass('hidden');
+            $('body').css('overflow', 'unset');
         }
 
         function ShowErrorMsg(x) {
