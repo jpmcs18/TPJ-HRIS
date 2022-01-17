@@ -24,38 +24,6 @@ namespace WebTemplate
 
         protected void Application_PreRequestHandlerExecute(object sender, EventArgs e)
         {
-            //HttpCookie authCookie = Request.Cookies[FormsAuthentication.FormsCookieName];
-
-            //if (authCookie != null)
-            //{
-            //    FormsAuthenticationTicket authTicket = FormsAuthentication.Decrypt(authCookie.Value);
-            //    JavaScriptSerializer serializer = new JavaScriptSerializer();
-            //    string decUserdata = authTicket.UserData;
-            //    CustomPrincipalSerialize serializeModel = serializer.Deserialize<CustomPrincipalSerialize>(decUserdata);
-
-            //    CustomPrincipal newUser = new CustomPrincipal(authTicket.Name);
-            //    newUser.UserID = serializeModel.UserID;
-            //    newUser.FirstName = serializeModel.FirstName;
-            //    newUser.LastName = serializeModel.LastName;
-            //    newUser.Department = serializeModel.Department;
-            //    newUser.Position = serializeModel.Position;
-            //    newUser.ForcePasswordChange = serializeModel.ForcePasswordChange;
-
-            //    HttpContext.Current.User = newUser;
-
-            //    if (newUser.ForcePasswordChange == true 
-            //        && !Request.Url.AbsolutePath.Contains("Maintenance/Systems/UserProfile")
-            //        && !Request.Url.AbsolutePath.Contains("Security/Logout")
-            //        && !Request.Url.AbsolutePath.Contains("Security/Login")
-            //        && !Request.Url.AbsolutePath.Contains("Security/Error")
-            //        && !Request.Url.AbsolutePath.Contains("Security/ServerError")
-            //        && !Request.Url.AbsolutePath.Contains("Security/NotFound")
-            //        && !Request.Url.AbsolutePath.Contains("Security/Unauthorized"))
-            //    {
-            //        Response.Redirect("~/Maintenance/Systems/UserProfile");
-            //    }
-            //}
-
             var ctx = HttpContext.Current;
             if(ctx.Session != null)
             {

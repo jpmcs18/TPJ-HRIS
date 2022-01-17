@@ -185,6 +185,8 @@ namespace WebTemplate.Controllers.DynamicLookup
                     return NonTaxableDayProcess.Instance.Value;
                 case Lookups.Leave_Default_Credits:
                     return LeaveDefaultCreditsProcess.Instance.Value;
+                case Lookups.Crew_Position_Salary:
+                    return CrewPositionSalaryProcess.Instance.Value;
                 default:
                     return DynamicLookupProcess.Instance.Value;
             }

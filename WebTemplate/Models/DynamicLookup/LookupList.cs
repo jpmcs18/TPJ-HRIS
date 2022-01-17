@@ -37,7 +37,8 @@ namespace WebTemplate.Models.DynamicLookup
         Memo_Type,
         Nationality,
         Relationship,
-        Religion
+        Religion,
+        Crew_Position_Salary
     }
     public enum LookupDataType
     {
@@ -228,7 +229,11 @@ namespace WebTemplate.Models.DynamicLookup
                 , new LookupSetting("StartDate", "Start Date", LookupDataType.date)
                 , new LookupSetting("EndDate", "End Date", LookupDataType.date)
                 , new LookupSetting("IsGlobal", "Global", LookupDataType.boolean)
-                , new LookupSetting("Location", null, LookupDataType.model, new LookupSetting(), LocationProcess.Instance.Value, "LocationID", hasDefault: true) }
+                , new LookupSetting("Location", null, LookupDataType.model, new LookupSetting(), LocationProcess.Instance.Value, "LocationID", hasDefault: true) },
+            { Lookups.Crew_Position_Salary
+                , new LookupSetting("Position", null, LookupDataType.model, new LookupSetting(), PositionProcess.Instance.Value, "PositionID", hasDefault: true)
+                , new LookupSetting("FishingGroundRate", "Fishing Ground Rate", LookupDataType.amount)
+                , new LookupSetting("StandbyGroundRate", "Standby Ground Rate", LookupDataType.amount) }
         };
 
         //Include if has any custom action

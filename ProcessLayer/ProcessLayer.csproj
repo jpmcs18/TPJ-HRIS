@@ -71,6 +71,7 @@
     <Compile Include="Entities\Kiosks\HighRiskRequest.cs" />
     <Compile Include="Entities\Kiosks\KioskNotification.cs" />
     <Compile Include="Entities\Lookups\ConsultationStatus.cs" />
+    <Compile Include="Entities\Lookups\CrewPositionSalary.cs" />
     <Compile Include="Entities\Lookups\Department.cs" />
     <Compile Include="Entities\Lookups\HDMF.cs" />
     <Compile Include="Entities\Lookups\HearingStatus.cs" />
@@ -283,6 +284,7 @@
     <Compile Include="Processes\Kiosks\OuterPortRequestProcess.cs" />
     <Compile Include="Processes\Kiosks\TimeEditRequestProcess.cs" />
     <Compile Include="Processes\Lookups\ConsultationStatusProcess.cs" />
+    <Compile Include="Processes\Lookups\CrewPositionSalaryProcess.cs" />
     <Compile Include="Processes\Lookups\DeductionProcess.cs" />
     <Compile Include="Processes\Lookups\DefaultLookupProcess.cs" />
     <Compile Include="Processes\Lookups\DepartmentPositionProcess.cs" />
