@@ -15,12 +15,15 @@ namespace ProcessLayer.Helpers.ObjectParameter.VesselCrewMovement
         public const string DepartmentID = "Department ID";
         public const string PositionID = "Position ID";
         public const string VesselID = "Vessel ID";
+        public const string DailyRate = "Daily Rate";
         public const string SNPositionID = "SN Position ID";
         public const string SNVesselID = "SN Vessel ID";
+        public const string SNDailyRate = "SN Daily Rate";
         public const string OnboardDate = "Onboard Date";
         public const string OffboardDate = "Offboard Date";
         public const string Remarks = "Remarks";
         public const string Status = "Status";
+        public const string DryDock = "Dry Dock";
 
         public const string CreatedBy = "Created By";
         public const string ModifiedBy = "Modified By";

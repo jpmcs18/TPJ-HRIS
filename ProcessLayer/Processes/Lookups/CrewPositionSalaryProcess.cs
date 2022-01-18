@@ -88,5 +88,16 @@ namespace ProcessLayer.Processes.Lookups
                 }
             }
         }
+
+        public CrewPositionSalary GetDefaultSalary(int positionID)
+        {
+            using (var db = new DBTools())
+            {
+                using (var ds = db.ExecuteReader("lookup.GetDefaultCrewSalary", new Dictionary<string, object> { { "@PositionID", positionID } }))
+                {
+                    return ds.Get(Converter);
+                }
+            }
+        }
     }
 }

@@ -29,8 +29,10 @@ namespace ProcessLayer.Processes
                 DepartmentID = dr[CrewMovementFields.DepartmentID].ToNullableInt(),
                 PositionID = dr[CrewMovementFields.PositionID].ToNullableInt(),
                 VesselID = dr[CrewMovementFields.VesselID].ToNullableInt(),
+                DailyRate = dr[CrewMovementFields.DailyRate].ToNullableDecimal(),
                 SNPositionID = dr[CrewMovementFields.SNPositionID].ToNullableInt(),
                 SNVesselID = dr[CrewMovementFields.SNVesselID].ToNullableInt(),
+                SNDailyRate = dr[CrewMovementFields.SNDailyRate].ToNullableDecimal(),
                 OffboardDate = dr[CrewMovementFields.OffboardDate].ToNullableDateTime(),
                 OnboardDate = dr[CrewMovementFields.OnboardDate].ToNullableDateTime(),
                 Status = dr[CrewMovementFields.Status].ToInt(),
@@ -46,7 +48,9 @@ namespace ProcessLayer.Processes
                 ModifiedDate = dr[CrewMovementFields.ModifiedDate].ToNullableDateTime(),
                 NotedDate = dr[CrewMovementFields.NotedDate].ToNullableDateTime(),
                 PostedDate = dr[CrewMovementFields.PostedDate].ToNullableDateTime(),
-                CancelledDate = dr[CrewMovementFields.CancelledDate].ToNullableDateTime()
+                CancelledDate = dr[CrewMovementFields.CancelledDate].ToNullableDateTime(),
+                DryDock = dr[CrewMovementFields.DryDock].ToBoolean(),
+
             };
 
             if (WithPreviousCrewMovement)
@@ -69,6 +73,16 @@ namespace ProcessLayer.Processes
                 c._Vessel = VesselProcess.Instance.Value.Get(c.VesselID);
                 c._SNPosition = PositionProcess.Instance.Value.Get(c.SNPositionID);
                 c._SNVessel = VesselProcess.Instance.Value.Get(c.SNVesselID);
+            }
+
+            if(c.Status == 2)
+            {
+                CrewPositionSalary crewPositionSalary = null;
+                if (c.DailyRate == null)
+                    crewPositionSalary = CrewPositionSalaryProcess.Instance.Value.GetDefaultSalary(c.PositionID ?? 0);
+                
+                c.DailyRate = c.DailyRate ?? (c.DryDock ? crewPositionSalary?.StandbyGroundRate : crewPositionSalary?.FishingGroundRate);
+                c.SNDailyRate = c.SNDailyRate ?? CrewPositionSalaryProcess.Instance.Value.GetDefaultSalary(c.PositionID ?? 0)?.FishingGroundRate;
             }
             return c;
         }
@@ -202,6 +216,7 @@ namespace ProcessLayer.Processes
                 , {CrewMovementParameters.OnboardDate, crew.OnboardDate}
                 , {CrewMovementParameters.OffboardDate, crew.OffboardDate}
                 , {CrewMovementParameters.Remarks, crew.Remarks}
+                , {CrewMovementParameters.DryDock, crew.DryDock}
                 , {CredentialParameters.LogBy, userid}
             };
             var outparameters = new List<OutParameters> {
@@ -222,7 +237,10 @@ namespace ProcessLayer.Processes
                 {CrewMovementParameters.ID, crew.ID}
                 , {CrewMovementParameters.DepartmentID, crew.DepartmentID}
                 , {CrewMovementParameters.PositionID, crew.PositionID}
+                , {CrewMovementParameters.DailyRate, crew.DailyRate}
                 , {CrewMovementParameters.SNPositionID, crew.SNPositionID}
+                , {CrewMovementParameters.SNDailyRate, crew.SNDailyRate}
+                , {CrewMovementParameters.DryDock, crew.DryDock}
                 , {CrewMovementParameters.Remarks, crew.Remarks}
                 , {CredentialParameters.LogBy, userid}
             };
@@ -238,6 +256,8 @@ namespace ProcessLayer.Processes
         {
             var parameters = new Dictionary<string, object> {
                 {CrewMovementParameters.ID, crew.ID}
+                , {CrewMovementParameters.DailyRate, crew.DailyRate}
+                , {CrewMovementParameters.SNDailyRate, crew.SNDailyRate}
                 , {CredentialParameters.LogBy, userid}
             };
             using (var db = new DBTools())
