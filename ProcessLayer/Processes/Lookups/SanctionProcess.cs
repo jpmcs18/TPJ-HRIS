@@ -10,7 +10,7 @@ namespace ProcessLayer.Processes.Lookups
 
     public sealed class SanctionProcess
     {
-        public static readonly Lazy<SanctionProcess> Instance = new Lazy<SanctionProcess>(() => new SanctionProcess());
+        public static readonly SanctionProcess Instance = new SanctionProcess();
         private SanctionProcess() { }
         internal Sanction Converter(DataRow dr)
         {

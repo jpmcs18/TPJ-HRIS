@@ -13,7 +13,7 @@ namespace ProcessLayer.Processes
 {
     public sealed class VesselProcess : ILookupProcess<Vessel>
     {
-        public static readonly Lazy<VesselProcess> Instance = new Lazy<VesselProcess>(() => new VesselProcess());
+        public static readonly VesselProcess Instance = new VesselProcess();
         private VesselProcess() { }
         internal Vessel Converter(DataRow dr)
         {

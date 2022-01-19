@@ -3,7 +3,7 @@
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
     var DepartmentPageAccess = credential.GetPage("Departments") ?? new DataAccessLayer.System.Page();
 
-    var departments = ProcessLayer.Processes.Lookups.DepartmentProcess.Instance.Value.GetList();
+    var departments = ProcessLayer.Processes.Lookups.DepartmentProcess.Instance.GetList();
 }
 
 <tr id="Row-Display-Department-@Model.ID" class="Row-Display">

@@ -12,7 +12,7 @@ namespace ProcessLayer.Processes
 {
     public sealed class NonTaxableDayProcess : ILookupProcess<NonTaxableDay>
     {
-        public static readonly Lazy<NonTaxableDayProcess> Instance = new Lazy<NonTaxableDayProcess>(() => new NonTaxableDayProcess());
+        public static readonly NonTaxableDayProcess Instance = new NonTaxableDayProcess();
         private NonTaxableDayProcess() { }
 
         public NonTaxableDay Converter(DataRow dr)
@@ -26,7 +26,7 @@ namespace ProcessLayer.Processes
                 LocationID = dr["Location ID"].ToNullableInt(),
                 IsGlobal = dr["Is Global"].ToNullableBoolean(),
             };
-            n.Location = LocationProcess.Instance.Value.Get(n.LocationID);
+            n.Location = LocationProcess.Instance.Get(n.LocationID);
             return n;
         }
         public NonTaxableDay CreateOrUpdate(string item, int user)

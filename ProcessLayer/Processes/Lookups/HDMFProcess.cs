@@ -11,7 +11,7 @@ namespace ProcessLayer.Processes.Lookups
 {
     public sealed class HDMFProcess : ILookupProcess<HDMF>
     {
-        public static readonly Lazy<HDMFProcess> Instance = new Lazy<HDMFProcess>(() => new HDMFProcess());
+        public static readonly HDMFProcess Instance = new HDMFProcess();
         private HDMFProcess() { }
 
         internal HDMF Converter(DataRow dr)

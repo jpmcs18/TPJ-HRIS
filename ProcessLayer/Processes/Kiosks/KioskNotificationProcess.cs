@@ -9,7 +9,7 @@ namespace ProcessLayer.Processes.Kiosk
 {
     public sealed class KioskNotificationProcess
     {
-        public static readonly Lazy<KioskNotificationProcess> Instance = new Lazy<KioskNotificationProcess>(() => new KioskNotificationProcess());
+        public static readonly KioskNotificationProcess Instance = new KioskNotificationProcess();
         private KioskNotificationProcess() { }
 
         public KioskNotification Converter(DataRow dr)

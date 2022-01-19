@@ -14,7 +14,7 @@ namespace WebTemplate.Controllers.HumanResource
         public ActionResult Index(C model)
         {
             model.Page = model.Page > 1 ? model.Page : 1;
-            model.Vessels = VesselProcess.Instance.Value.Filter(model.ID, model.Code, model.Description, model.Page, model.GridCount, out int PageCount).ToList();
+            model.Vessels = VesselProcess.Instance.Filter(model.ID, model.Code, model.Description, model.Page, model.GridCount, out int PageCount).ToList();
             model.PageCount = PageCount;
 
             if (Request.IsAjaxRequest())
@@ -36,7 +36,7 @@ namespace WebTemplate.Controllers.HumanResource
             {
                 try
                 {
-                    Vessel model = VesselProcess.Instance.Value.Get(id ?? 0);
+                    Vessel model = VesselProcess.Instance.Get(id ?? 0);
                     ModelState.Clear();
                     return PartialViewCustom("_Vessel", model);
                 }
@@ -74,7 +74,7 @@ namespace WebTemplate.Controllers.HumanResource
         {
             try
             {
-                Vessel model = VesselProcess.Instance.Value.Get(id ?? 0);
+                Vessel model = VesselProcess.Instance.Get(id ?? 0);
                 ModelState.Clear();
                 return PartialViewCustom("_Vessel", model);
             }
@@ -90,7 +90,7 @@ namespace WebTemplate.Controllers.HumanResource
         {
             try
             {
-                model = VesselProcess.Instance.Value.CreateOrUpdate(model, User.UserID);
+                model = VesselProcess.Instance.CreateOrUpdate(model, User.UserID);
 
                 ModelState.Clear();
                 return PartialViewCustom("_Vessel", model);
@@ -109,7 +109,7 @@ namespace WebTemplate.Controllers.HumanResource
             {
                 try
                 {
-                    VesselProcess.Instance.Value.Delete(id.Value, User.UserID);
+                    VesselProcess.Instance.Delete(id.Value, User.UserID);
                 }
                 catch
                 {

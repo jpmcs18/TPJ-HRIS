@@ -68,21 +68,21 @@ namespace ProcessLayer.Processes
             if (!IsCrewMovementOnly)
             {
                 c._Personnel = PersonnelProcess.Get(c.PersonnelID, true);
-                c._Department = DepartmentProcess.Instance.Value.Get(c.DepartmentID ?? 0);
-                c._Position = PositionProcess.Instance.Value.Get(c.PositionID);
-                c._Vessel = VesselProcess.Instance.Value.Get(c.VesselID);
-                c._SNPosition = PositionProcess.Instance.Value.Get(c.SNPositionID);
-                c._SNVessel = VesselProcess.Instance.Value.Get(c.SNVesselID);
+                c._Department = DepartmentProcess.Instance.Get(c.DepartmentID ?? 0);
+                c._Position = PositionProcess.Instance.Get(c.PositionID);
+                c._Vessel = VesselProcess.Instance.Get(c.VesselID);
+                c._SNPosition = PositionProcess.Instance.Get(c.SNPositionID);
+                c._SNVessel = VesselProcess.Instance.Get(c.SNVesselID);
             }
 
             if(c.Status == 2)
             {
                 CrewPositionSalary crewPositionSalary = null;
                 if (c.DailyRate == null)
-                    crewPositionSalary = CrewPositionSalaryProcess.Instance.Value.GetDefaultSalary(c.PositionID ?? 0);
+                    crewPositionSalary = CrewPositionSalaryProcess.Instance.GetDefaultSalary(c.PositionID ?? 0);
                 
                 c.DailyRate = c.DailyRate ?? (c.DryDock ? crewPositionSalary?.StandbyGroundRate : crewPositionSalary?.FishingGroundRate);
-                c.SNDailyRate = c.SNDailyRate ?? CrewPositionSalaryProcess.Instance.Value.GetDefaultSalary(c.PositionID ?? 0)?.FishingGroundRate;
+                c.SNDailyRate = c.SNDailyRate ?? CrewPositionSalaryProcess.Instance.GetDefaultSalary(c.PositionID ?? 0)?.FishingGroundRate;
             }
             return c;
         }

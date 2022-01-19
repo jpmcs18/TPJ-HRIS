@@ -4,7 +4,7 @@ namespace ReportLayer.Helpers
 {
     public sealed class PrintMedicardHelper : ReportHelperBase
     {
-        public static readonly Lazy<PrintMedicardHelper> Instance = new Lazy<PrintMedicardHelper>(() => new PrintMedicardHelper());
+        public static readonly PrintMedicardHelper Instance = new PrintMedicardHelper();
         private PrintMedicardHelper() : base("Medicard")
         {
             NameCell = Get(nameof(NameCell)).ToString();

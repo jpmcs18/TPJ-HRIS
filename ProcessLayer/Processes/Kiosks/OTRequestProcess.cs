@@ -11,7 +11,7 @@ namespace ProcessLayer.Processes.Kiosk
 {
     public sealed class OTRequestProcess
     {
-        public static readonly Lazy<OTRequestProcess> Instance = new Lazy<OTRequestProcess>(() => new OTRequestProcess());
+        public static readonly OTRequestProcess Instance = new OTRequestProcess();
         private OTRequestProcess() { }
         internal bool IsOTRequestOnly = false;
         internal OTRequest Converter(DataRow dr)

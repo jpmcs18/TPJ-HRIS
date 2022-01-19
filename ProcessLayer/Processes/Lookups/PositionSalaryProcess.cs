@@ -43,8 +43,6 @@ namespace ProcessLayer.Processes
                 var dt = db.ExecuteReader(LookupProcedures.GetLookup, Parameters).Tables[0];
                 if (dt.Rows.Count > 0)
                     PositionSalary = Converter(dt.Rows[0]);
-                //else
-                //    throw new Exception();
             }
 
             return PositionSalary;
@@ -130,24 +128,5 @@ namespace ProcessLayer.Processes
 
             return PositionSalaryList;
         }
-
-        //public static List<PositionSalary> GetPositionSalaryWithPosition(int? id = null)
-        //{
-        //    List<PositionSalary> PositionSalaryList = new List<PositionSalary>();
-        //    Dictionary<string, object> Parameters = new Dictionary<string, object>()
-        //    {
-        //        { "@id", id }
-        //    };
-
-        //    using (DBTools db = new DBTools())
-        //    {
-        //        using (var ds = db.ExecuteReader("lookup.GetPositionSalaryWithPosition", Parameters))
-        //        {
-        //            PositionSalaryList = ds.Tables[0].AsEnumerable().Select(r => Converter(r, true)).ToList();
-        //        }
-        //    }
-
-        //    return PositionSalaryList;
-        //}
     }
 }

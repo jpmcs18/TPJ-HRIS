@@ -11,7 +11,7 @@ namespace ProcessLayer.Processes
 {
     public sealed class LeaveTypeProcess : ILookupProcess<LeaveType>, ILookupSourceProcess<LeaveType>
     {
-        public static readonly Lazy<LeaveTypeProcess> Instance = new Lazy<LeaveTypeProcess>(() => new LeaveTypeProcess());
+        public static readonly LeaveTypeProcess Instance = new LeaveTypeProcess();
         private LeaveTypeProcess() { }
         internal LeaveType Converter(DataRow dr)
         {

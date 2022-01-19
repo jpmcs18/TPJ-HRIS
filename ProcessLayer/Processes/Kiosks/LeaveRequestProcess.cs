@@ -21,7 +21,7 @@ namespace ProcessLayer.Processes.Kiosk
 {
     public sealed class LeaveRequestProcess
     {
-        public static readonly Lazy<LeaveRequestProcess> Instance = new Lazy<LeaveRequestProcess>(() => new LeaveRequestProcess());
+        public static readonly LeaveRequestProcess Instance = new LeaveRequestProcess();
         private LeaveRequestProcess() { }
         
         internal bool IsLeaveRequestOnly = false;
@@ -35,7 +35,7 @@ namespace ProcessLayer.Processes.Kiosk
                 ID = dr[LeaveRequestFields.ID].ToLong(),
                 PersonnelID = dr[LeaveRequestFields.PersonnelID].ToNullableLong(),
                 LeaveTypeID = dr[LeaveRequestFields.LeaveTypeID].ToNullableInt(),
-                _LeaveType = LeaveTypeProcess.Instance.Value.Get(dr[LeaveRequestFields.LeaveTypeID].ToNullableInt()),
+                _LeaveType = LeaveTypeProcess.Instance.Get(dr[LeaveRequestFields.LeaveTypeID].ToNullableInt()),
                 RequestedDate = dr[LeaveRequestFields.RequestedDate].ToNullableDateTime(),
                 Hospital = dr[LeaveRequestFields.Hospital].ToString(),
                 Location = dr[LeaveRequestFields.Location].ToString(),
@@ -65,7 +65,7 @@ namespace ProcessLayer.Processes.Kiosk
                 Noted = dr[LeaveRequestFields.Noted].ToNullableBoolean()
             };
 
-            o._LeaveType = LeaveTypeProcess.Instance.Value.Get(o.LeaveTypeID);
+            o._LeaveType = LeaveTypeProcess.Instance.Get(o.LeaveTypeID);
             
             if (!IsLeaveRequestOnly)
             {
@@ -84,7 +84,7 @@ namespace ProcessLayer.Processes.Kiosk
 
             if(WithComputedLeaveCredits)
             {
-                o._ComputedLeaveCredits = ComputedLeaveCreditsProcess.Instance.Value.GetList(o.ID, Start, End);
+                o._ComputedLeaveCredits = ComputedLeaveCreditsProcess.Instance.GetList(o.ID, Start, End);
             }
             return o;
         }
@@ -427,7 +427,7 @@ namespace ProcessLayer.Processes.Kiosk
         private void Approve(long id, int userid, DBTools db)
         {
             LeaveRequest leave = Get(db, id);
-            PersonnelLeaveCredit leaveCredits = PersonnelLeaveCreditProcess.Instance.Value.GetRemainingCredits(db, leave.PersonnelID ?? 0, leave.LeaveTypeID ?? 0, leave.RequestedDate);
+            PersonnelLeaveCredit leaveCredits = PersonnelLeaveCreditProcess.Instance.GetRemainingCredits(db, leave.PersonnelID ?? 0, leave.LeaveTypeID ?? 0, leave.RequestedDate);
 
             float leaveCreditsToUse = leave.NoofDays ?? 0;
 
@@ -445,7 +445,7 @@ namespace ProcessLayer.Processes.Kiosk
             if ((leave.Approved ?? false) && (((leave._LeaveType.CNBNoteFirst ?? false) && (leave.Noted ?? false)) || !(leave._LeaveType.CNBNoteFirst ?? false)))
             {
                 UpdateApproveCredits(db, id, leaveCreditsToUse, userid);
-                PersonnelLeaveCreditProcess.Instance.Value.UpdateCredits(db, leaveCredits.ID, leaveCreditsToUse, userid);
+                PersonnelLeaveCreditProcess.Instance.UpdateCredits(db, leaveCredits.ID, leaveCreditsToUse, userid);
             }
 
         }
@@ -477,7 +477,6 @@ namespace ProcessLayer.Processes.Kiosk
         {
             var parameters = new Dictionary<string, object> {
                 { LeaveRequestParameters.ID, id },
-                //{ CredentialParameters.LogBy, userid }
             };
 
             using (var db = new DBTools())
@@ -503,7 +502,7 @@ namespace ProcessLayer.Processes.Kiosk
         public bool ValidateLeaveRequest(LeaveRequest leave)
         {
             StringBuilder sb = new StringBuilder();
-            leave._LeaveType = LeaveTypeProcess.Instance.Value.Get(leave.LeaveTypeID);
+            leave._LeaveType = LeaveTypeProcess.Instance.Get(leave.LeaveTypeID);
             if ((leave?.LeaveTypeID ?? 0) == 0)
             {
                 sb.AppendLine("<br/>");
@@ -527,7 +526,7 @@ namespace ProcessLayer.Processes.Kiosk
                 sb.AppendLine("- No of days cannot be null.");
             }
 
-            PersonnelLeaveCredit leaveCredits = PersonnelLeaveCreditProcess.Instance.Value.GetRemainingCredits(leave.PersonnelID ?? 0, leave.LeaveTypeID ?? 0, leave.RequestedDate);
+            PersonnelLeaveCredit leaveCredits = PersonnelLeaveCreditProcess.Instance.GetRemainingCredits(leave.PersonnelID ?? 0, leave.LeaveTypeID ?? 0, leave.RequestedDate);
             
             float leaveCreditsToUse = leave.NoofDays ?? 0;
 

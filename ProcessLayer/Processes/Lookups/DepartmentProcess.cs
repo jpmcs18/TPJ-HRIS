@@ -9,7 +9,7 @@ namespace ProcessLayer.Processes.Lookups
 {
     public sealed class DepartmentProcess : ILookupSourceProcess<Department>
     {
-        public static readonly Lazy<DepartmentProcess> Instance = new Lazy<DepartmentProcess>(() => new DepartmentProcess());
+        public static readonly DepartmentProcess Instance = new DepartmentProcess();
         private DepartmentProcess() { }
         internal Department Converter(DataRow dr)
         {

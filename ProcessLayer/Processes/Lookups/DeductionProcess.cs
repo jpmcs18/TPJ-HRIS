@@ -12,7 +12,7 @@ namespace ProcessLayer.Processes
 {
     public sealed class DeductionProcess : ILookupProcess<Deduction>
     {
-        public static readonly Lazy<DeductionProcess> Instance = new Lazy<DeductionProcess>(() => new DeductionProcess());
+        public static readonly DeductionProcess Instance = new DeductionProcess();
         private DeductionProcess() { }
 
         public Deduction Converter(DataRow dr)
@@ -25,7 +25,7 @@ namespace ProcessLayer.Processes
                 AutoCompute = dr["Auto Compute"].ToNullableBoolean(),
                 ComputedThruSalary = dr["Computed thru Salary"].ToNullableBoolean()
             };
-            r.Deduct = WhenToDeductProcess.Instance.Value.Get(r.WhenToDeduct ?? 0);
+            r.Deduct = WhenToDeductProcess.Instance.Get(r.WhenToDeduct ?? 0);
             return r;
         }
 

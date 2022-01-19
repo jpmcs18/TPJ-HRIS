@@ -85,9 +85,4 @@ namespace ProcessLayer.Helpers
             return NetworkInterface.GetIsNetworkAvailable();
         }
     }
-    //public class InternetConnectionHelper
-    //{
-    //    [DllImport("wininet.dll", CharSet = CharSet.Auto)]
-
-    //}
 }

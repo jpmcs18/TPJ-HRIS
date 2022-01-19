@@ -8,7 +8,7 @@ namespace ReportLayer.Helpers
 {
     public class PrintCrewMovementFormHelper : ReportHelperBase
     {
-        public static readonly Lazy<PrintCrewMovementFormHelper> Instance = new Lazy<PrintCrewMovementFormHelper>(() => new PrintCrewMovementFormHelper());
+        public static readonly PrintCrewMovementFormHelper Instance = new PrintCrewMovementFormHelper();
         private PrintCrewMovementFormHelper() : base("CrewMovementForm")
         {
             TransactionNoCell = Get(nameof(TransactionNoCell)).ToString();

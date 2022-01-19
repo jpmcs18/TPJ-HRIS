@@ -7,7 +7,7 @@ namespace ProcessLayer.Processes.Lookups
 {
     public sealed class NonWorkingTypeProcess : ILookupSourceProcess<Lookup>
     {
-        public static readonly Lazy<NonWorkingTypeProcess> Instance = new Lazy<NonWorkingTypeProcess>(() => new NonWorkingTypeProcess());
+        public static readonly NonWorkingTypeProcess Instance = new NonWorkingTypeProcess();
         private NonWorkingTypeProcess() { }
         private List<Lookup> List { get; } = new List<Lookup>() {
             new Lookup() {ID = 1, Description = "Regular Holiday"},

@@ -28,7 +28,6 @@ namespace WebTemplate.Helpers
                     foreach (var email in emails)
                     {
 
-                        //emailhelper.EmailCredential = credential;
                         emailhelper.ReceiverEmail = email;
                         emailhelper.Category = category;
                         emailhelper.ItemId = itemid;
@@ -105,17 +104,15 @@ namespace WebTemplate.Helpers
         public bool IsMultiFile { get; set; }
         public List<string> Files { get; set; }
         public string Ids { get; set; }
-        //public EmailCredential EmailCredential { get; set; }
-
+        
         private SmtpClient Client { get; }
         private NetworkCredential Credential { get; }
         private MailMessage MailMessage { get; set; }
 
         private MailAddress EmailTo { get { return new MailAddress(ReceiverEmail); } }
         private MailAddress EmailFrom { get { return new MailAddress("legaltpj21@gmail.com"); } }
-        //private string Password { get { return ConfigurationManager.AppSettings["Password"]; } }
         private int Port { get { return Int32.TryParse(ConfigurationManager.AppSettings["Port"], out int port) ? port : 587; } }
-        private string Host { get { return ConfigurationManager.AppSettings["Host"]; /*smtp.gmail.com*/} }
+        private string Host { get { return ConfigurationManager.AppSettings["Host"]; } }
 
 
         private void InitializeCredential()

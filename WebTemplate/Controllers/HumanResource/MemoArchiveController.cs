@@ -284,11 +284,6 @@ namespace WebTemplate.Controllers.HumanResource
             model.ParentMemo.InReplyTo = MemoId;
             model.ParentMemo.IsForward = IsForward;
 
-            //if (personnelId != null && personnelId > 0)
-            //    model.ParentMemo._Persons.Add(PersonnelProcess.Get(personnelId ?? 0, true));
-            //else if (personnelGroupId != null && personnelGroupId > 0)
-            //    model.ParentMemo._Groups.Add(PersonnelGroupProcess.Get(personnelGroupId ?? 0, true));
-
             if (personnelId != null && personnelId > 0)
                 model.ParentMemo._Person = PersonnelProcess.Get(personnelId ?? 0, true);
             else if (personnelGroupId != null && personnelGroupId > 0)

@@ -12,29 +12,19 @@ namespace WebTemplate.Controllers.RequestsApproval
         // GET: OTRequests
         public ActionResult Index(Models.RequestsApproval.OT_Request.Index model)
         {
-            //try
-            //{
-                model.Page = model.Page > 1 ? model.Page : 1;
-                model.OTRequests = OTRequestProcess.Instance.Value.GetApprovingList(model.Personnel, model.IsExpired, model.IsPending, model.IsApproved, model.IsCancelled, model.StartDateTime, model.EndingDateTime, model.Page, model.GridCount, out int PageCount, User.UserID);
-                model.PageCount = PageCount;
+            model.Page = model.Page > 1 ? model.Page : 1;
+            model.OTRequests = OTRequestProcess.Instance.GetApprovingList(model.Personnel, model.IsExpired, model.IsPending, model.IsApproved, model.IsCancelled, model.StartDateTime, model.EndingDateTime, model.Page, model.GridCount, out int PageCount, User.UserID);
+            model.PageCount = PageCount;
 
-                if (Request.IsAjaxRequest())
-                {
-                    ModelState.Clear();
-                    return PartialViewCustom("_OTRequests", model);
-                }
-                else
-                {
-                    return ViewCustom("_OTRequestsIndex", model);
-                }
-            //}
-            //catch (Exception ex)
-            //{
-            //    string msg = ex.Message.ToString();
-            //    ViewBag.Message = msg ?? "You don't have the right to access this page.";
-            //    return View("~/Views/Security/Unauthorized.cshtml");
-            //    //return View("ServerError.cshtml", ex.GetActualMessage());
-            //}
+            if (Request.IsAjaxRequest())
+            {
+                ModelState.Clear();
+                return PartialViewCustom("_OTRequests", model);
+            }
+            else
+            {
+                return ViewCustom("_OTRequestsIndex", model);
+            }
         }
 
         [HttpPost]
@@ -46,11 +36,10 @@ namespace WebTemplate.Controllers.RequestsApproval
             {
                 try
                 {
-                    OTRequestProcess.Instance.Value.Approve(ot, User.UserID);
-                    OTRequest model = OTRequestProcess.Instance.Value.Get(ot.ID);
+                    OTRequestProcess.Instance.Approve(ot, User.UserID);
+                    OTRequest model = OTRequestProcess.Instance.Get(ot.ID);
                     ModelState.Clear();
 
-                    //return PartialViewCustom("_OTRequests", model);
                     return Json(new { msg = true, res = "" });
                 }
                 catch (Exception ex)
@@ -70,11 +59,10 @@ namespace WebTemplate.Controllers.RequestsApproval
             {
                 try
                 {
-                    OTRequestProcess.Instance.Value.Cancel(ot, User.UserID);
-                    OTRequest model = OTRequestProcess.Instance.Value.Get(ot.ID);
+                    OTRequestProcess.Instance.Cancel(ot, User.UserID);
+                    OTRequest model = OTRequestProcess.Instance.Get(ot.ID);
                     ModelState.Clear();
 
-                    //return PartialViewCustom("_OTRequests", model);
                     return Json(new { msg = true, res = "" });
                 }
                 catch (Exception ex)

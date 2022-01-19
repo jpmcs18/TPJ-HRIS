@@ -18,7 +18,7 @@ namespace WebTemplate.Controllers.Movement
         public ActionResult Index(Index model)
         {
             model.Page = model.Page > 1 ? model.Page : 1;
-            model.VesselList = VesselProcess.Instance.Value.Filter(null, model.Code, model.Description, model.Page, model.GridCount,
+            model.VesselList = VesselProcess.Instance.Filter(null, model.Code, model.Description, model.Page, model.GridCount,
                 out int PageCount).ToList();
             model.PageCount = PageCount;
 
@@ -39,7 +39,7 @@ namespace WebTemplate.Controllers.Movement
         {
             try
             {
-                model.Vessel = VesselProcess.Instance.Value.Get(model.VesselID);
+                model.Vessel = VesselProcess.Instance.Get(model.VesselID);
                 model.VesselMovements =
                     VesselMovementProcess.GetList(model.VesselID, model.StartinDate, model.EndingDate);
 
@@ -164,7 +164,7 @@ namespace WebTemplate.Controllers.Movement
         {
             try
             {   
-                model.Vessel = VesselProcess.Instance.Value.Get(model.VesselID);
+                model.Vessel = VesselProcess.Instance.Get(model.VesselID);
                 model.Crews = VesselMovementProcess.GetCrewDetailList(model.VesselID, model.StartingDate, model.EndingDate);
                 ModelState.Clear();
                 return PartialViewCustom("_VesselCrewSearch", model);
@@ -178,47 +178,31 @@ namespace WebTemplate.Controllers.Movement
         [HttpPost]
         public ActionResult PrintVesselMovement(VesselMovement model)
         {
-            //try
-            //{
-                using (var report = new PrintVesselMovement(Server.MapPath(PrintVesselMovementHelper.Instance.Value.Template)))
+                using (var report = new PrintVesselMovement(Server.MapPath(PrintVesselMovementHelper.Instance.Template)))
                 {
                     report.StartDate = model.StartinDate;
                     report.EndDate = model.EndingDate;
-                    report.Vessel = VesselProcess.Instance.Value.Get(model.VesselID);
+                    report.Vessel = VesselProcess.Instance.Get(model.VesselID);
                     report.VesselMovements = VesselMovementProcess.GetList(model.VesselID, model.StartinDate, model.EndingDate);
                     report.GenerateReport();
                     ViewBag.Content = report.SaveToPDF();
                 }
                 return View("~/Views/PrintingView.cshtml");
-            //}
-            //catch (Exception ex)
-            //{
-            //    //return Json(new { msg = false, res = ex.GetActualMessage() });
-            //    return View("~/Views/Security/ServerError.cshtml", ex.GetActualMessage());
-            //}
         }
         [HttpPost]
         public ActionResult PrintCrewList(CrewList model)
         {
-            //try
-            //{
-                using (var report = new PrintCrewlist(Server.MapPath(PrintCrewListHelper.Instance.Value.Template)))
+                using (var report = new PrintCrewlist(Server.MapPath(PrintCrewListHelper.Instance.Template)))
                 {
                     report.Crews = new System.Collections.Generic.List<CrewDetails>();
                     report.StartingDate = model.StartingDate;
                     report.EndingDate = model.EndingDate;
-                    report.Vessel = VesselProcess.Instance.Value.Get(model.VesselID);
+                    report.Vessel = VesselProcess.Instance.Get(model.VesselID);
                     report.Crews = VesselMovementProcess.GetCrewDetailList(model.VesselID, model.StartingDate, model.EndingDate);
                     report.GenerateReport();
                     ViewBag.Content = report.SaveToPDF();
                 }
                 return View("~/Views/PrintingView.cshtml");
-            //}
-            //catch (Exception ex)
-            //{
-            //    //return Json(new { msg = false, res = ex.GetActualMessage() });
-            //    return View("~/Views/Security/ServerError.cshtml", ex.GetActualMessage());
-            //}
         }
         
     }

@@ -19,9 +19,9 @@ namespace WebTemplate.Controllers.RequestsApproval
         public ActionResult Index(Index model)
         {
             model.Page = model.Page > 1 ? model.Page : 1;
-            model.LeaveRequests = LeaveRequestProcess.Instance.Value.GetRequestThatNeedDocument(model.Personnel, model.LeaveTypeID, model.IsExpired, model.IsPending, model.IsApproved, model.IsCancelled, model.StartDateTime, model.EndingDateTime, model.Page, model.GridCount, out int PageCount);
-            model._LeaveType = LeaveTypeProcess.Instance.Value.Get(model.LeaveTypeID);
-            model.LeaveTypes = LeaveTypeProcess.Instance.Value.GetList();
+            model.LeaveRequests = LeaveRequestProcess.Instance.GetRequestThatNeedDocument(model.Personnel, model.LeaveTypeID, model.IsExpired, model.IsPending, model.IsApproved, model.IsCancelled, model.StartDateTime, model.EndingDateTime, model.Page, model.GridCount, out int PageCount);
+            model._LeaveType = LeaveTypeProcess.Instance.Get(model.LeaveTypeID);
+            model.LeaveTypes = LeaveTypeProcess.Instance.GetList();
             model.PageCount = PageCount;
 
             if (Request.IsAjaxRequest())
@@ -57,7 +57,7 @@ namespace WebTemplate.Controllers.RequestsApproval
 
                     fileBase.SaveAs(path);
 
-                    LeaveRequestProcess.Instance.Value.UploadDocument(leaveRequestId, file, User.UserID);
+                    LeaveRequestProcess.Instance.UploadDocument(leaveRequestId, file, User.UserID);
                 }
                 else
                     return Json(new { msg = false, res = "Nothing to upload" });

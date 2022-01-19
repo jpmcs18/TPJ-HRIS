@@ -10,7 +10,7 @@ namespace ProcessLayer.Processes.Lookups
 {
     public sealed class DynamicLookupProcess : ILookupProcess
     {
-        public static readonly Lazy<DynamicLookupProcess> Instance = new Lazy<DynamicLookupProcess>(() => new DynamicLookupProcess());
+        public static readonly DynamicLookupProcess Instance = new DynamicLookupProcess();
         private DynamicLookupProcess() { }
         internal Lookup Converter(DataRow dr)
         {

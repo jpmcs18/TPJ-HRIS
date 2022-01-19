@@ -189,7 +189,6 @@ namespace ProcessLayer.Helpers
         }
         public static decimal ToDecimalPlaces(this decimal obj, int places)
         {
-            //return Math.Truncate(obj * (decimal)Math.Pow(10, places)) / (decimal)Math.Pow(10, places);
             return Math.Round(obj, places, MidpointRounding.AwayFromZero);
             
         }

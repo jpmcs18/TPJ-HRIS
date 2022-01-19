@@ -16,7 +16,7 @@ namespace ProcessLayer.Processes.CnB
 {
     public sealed class PayrollProcess
     {
-        public static readonly Lazy<PayrollProcess> Instance = new Lazy<PayrollProcess>(() => new PayrollProcess());
+        public static readonly PayrollProcess Instance = new PayrollProcess();
         private PayrollProcess() { }
         public bool BaseOnly { get; set; } = false;
         internal PayrollPeriod BaseConverter(DataRow dr)
@@ -108,7 +108,7 @@ namespace ProcessLayer.Processes.CnB
             {
                 ID = dr["ID"].ToLong(),
                 Amount = dr["Amount"].ToNullableDecimal() ?? 0,
-                PersonnelLoan = PersonnelLoanProcess.Instance.Value.Get(dr["Personnel Loan ID"].ToLong())
+                PersonnelLoan = PersonnelLoanProcess.Instance.Get(dr["Personnel Loan ID"].ToLong())
             };
 
             try
@@ -140,7 +140,7 @@ namespace ProcessLayer.Processes.CnB
                 LoggedDate = dr["Logged Date"].ToDateTime(),
                 TotalRegularMinutes = dr["Total Regular Minutes"].ToNullableShort() ?? 0,
                 TotalLeaveMinutes = dr["Total Leave Minutes"].ToNullableShort() ?? 0,
-                Location = LocationProcess.Instance.Value.Get(dr["Location ID"].ToNullableInt()),
+                Location = LocationProcess.Instance.Get(dr["Location ID"].ToNullableInt()),
                 IsHoliday = dr["Is Holiday"].ToBoolean(),
                 IsSunday = dr["Is Sunday"].ToBoolean(),
                 RegularOTMinutes = dr["Regular OT Minutes"].ToInt(),
@@ -489,11 +489,11 @@ namespace ProcessLayer.Processes.CnB
         {
             foreach(LeaveRequest leaveRequest in leaveRequests)
             {
-                LeaveRequestProcess.Instance.Value.UpdateComputedLeaveCredits(db, leaveRequest, userId);
+                LeaveRequestProcess.Instance.UpdateComputedLeaveCredits(db, leaveRequest, userId);
             }
             foreach (ComputedLeaveCredits computedLeaveCredit in computedLeaveCredits)
             {
-                ComputedLeaveCreditsProcess.Instance.Value.CreateOrUpdate(db, computedLeaveCredit, userId);
+                ComputedLeaveCreditsProcess.Instance.CreateOrUpdate(db, computedLeaveCredit, userId);
             }
         }
 
@@ -548,7 +548,7 @@ namespace ProcessLayer.Processes.CnB
                 else
                 {
                     SaveLoanDeductions(userid, db, payroll.ID, loan);
-                    if(type == PayrollSheet.B) PersonnelLoanProcess.Instance.Value.UpdateAmount(db, loan.PersonnelLoan?.ID ?? 0, loan.Amount, userid);
+                    if(type == PayrollSheet.B) PersonnelLoanProcess.Instance.UpdateAmount(db, loan.PersonnelLoan?.ID ?? 0, loan.Amount, userid);
                     SaveLoanPaymentMethod(userid, db, loan);
                 }
             }
@@ -770,7 +770,7 @@ namespace ProcessLayer.Processes.CnB
 
             if (ValidatePayrollGeneration(payrollBase.PayPeriod, payrollSheet))
             {
-                return CreateOrUpdate(PayrollComputation.Instance.Value.GeneratePayroll(payrollBase), userid);
+                return CreateOrUpdate(PayrollComputation.Instance.GeneratePayroll(payrollBase), userid);
             }
             else
             {
@@ -834,7 +834,7 @@ namespace ProcessLayer.Processes.CnB
 
             if (ValidatePayrollGeneration(payrollBase.PayPeriod, payrollBase.Type))
             {
-                return CreateOrUpdate(PayrollComputation.Instance.Value.GeneratePayroll(payrollBase), userid);
+                return CreateOrUpdate(PayrollComputation.Instance.GeneratePayroll(payrollBase), userid);
             }
             else
             {
@@ -850,20 +850,20 @@ namespace ProcessLayer.Processes.CnB
 
             if (payrollSheet == PayrollSheet.A)
             {
-                s = PayrollParameters.CNBInstance.Value.FirstCutoffStart;
-                e = PayrollParameters.CNBInstance.Value.SecondCutoffEnd;
+                s = PayrollParameters.Instance.FirstCutoffStart;
+                e = PayrollParameters.Instance.SecondCutoffEnd;
             }
             else
             {
                 switch (cutoff)
                 {
                     case 1:
-                        s = PayrollParameters.CNBInstance.Value.FirstCutoffStart;
-                        e = PayrollParameters.CNBInstance.Value.FirstCutoffEnd;
+                        s = PayrollParameters.Instance.FirstCutoffStart;
+                        e = PayrollParameters.Instance.FirstCutoffEnd;
                         break;
                     case 2:
-                        s = PayrollParameters.CNBInstance.Value.SecondCutoffStart;
-                        e = PayrollParameters.CNBInstance.Value.SecondCutoffEnd;
+                        s = PayrollParameters.Instance.SecondCutoffStart;
+                        e = PayrollParameters.Instance.SecondCutoffEnd;
                         break;
                 }
             }
@@ -884,7 +884,7 @@ namespace ProcessLayer.Processes.CnB
                     foreach (var loan in payroll.LoanDeductions)
                     {
                         if (payrollBase.Type == PayrollSheet.B)
-                            PersonnelLoanProcess.Instance.Value.RevertAmount(db, loan.PersonnelLoan?.ID ?? 0, loan.ID, userid);
+                            PersonnelLoanProcess.Instance.RevertAmount(db, loan.PersonnelLoan?.ID ?? 0, loan.ID, userid);
                     }
                     RevertAnyOutstandingVale(db, payroll.ID, userid);
                     db.CommitTransaction();
@@ -893,7 +893,7 @@ namespace ProcessLayer.Processes.CnB
 
             }
 
-            PayrollComputation.Instance.Value.Recompute(payroll, payrollBase);
+            PayrollComputation.Instance.Recompute(payroll, payrollBase);
 
             using (var db = new DBTools())
             {

@@ -9,7 +9,7 @@ namespace ProcessLayer.Processes.Lookups
 {
     public sealed class InfractionStatusProcess
     {
-        public static readonly Lazy<InfractionStatusProcess> Instance = new Lazy<InfractionStatusProcess>(() => new InfractionStatusProcess());
+        public static readonly InfractionStatusProcess Instance = new InfractionStatusProcess();
         private InfractionStatusProcess() { }
         internal InfractionStatus Converter(DataRow dr)
         {

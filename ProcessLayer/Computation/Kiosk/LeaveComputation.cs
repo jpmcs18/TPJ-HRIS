@@ -11,13 +11,13 @@ namespace ProcessLayer.Computation.Kiosk
 {
     public sealed class LeaveComputation
     {
-        public static readonly Lazy<LeaveComputation> Instance = new Lazy<LeaveComputation>(() => new LeaveComputation());
+        public static readonly LeaveComputation Instance = new LeaveComputation();
         private LeaveComputation() { }
 
         public int ComputeTotalLeaveToUse(DateTime startdate, DateTime enddate, Personnel personnel)
         {
             int total = 0;
-            var nonworking = NonWorkingDaysProcess.Instance.Value.GetNonWorkingDays(startdate, enddate);
+            var nonworking = NonWorkingDaysProcess.Instance.GetNonWorkingDays(startdate, enddate);
 
             if((enddate - startdate).TotalHours <= 9)
             {

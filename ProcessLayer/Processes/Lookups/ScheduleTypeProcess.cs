@@ -15,7 +15,7 @@ namespace ProcessLayer.Processes.Lookups
 {
     public sealed class ScheduleTypeProcess : ILookupProcess<ScheduleType>, ILookupSourceProcess<ScheduleType>
     {
-        public static readonly Lazy<ScheduleTypeProcess> Instance = new Lazy<ScheduleTypeProcess>(() => new ScheduleTypeProcess());
+        public static readonly ScheduleTypeProcess Instance = new ScheduleTypeProcess();
         private ScheduleTypeProcess() { }
 
         internal ScheduleType Converter(DataRow dr)

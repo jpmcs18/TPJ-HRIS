@@ -9,7 +9,7 @@ namespace ProcessLayer.Processes.Kiosk
 {
     public sealed class ComputedLeaveCreditsProcess
     {
-        public static readonly Lazy<ComputedLeaveCreditsProcess> Instance = new Lazy<ComputedLeaveCreditsProcess>(() => new ComputedLeaveCreditsProcess());
+        public static readonly ComputedLeaveCreditsProcess Instance = new ComputedLeaveCreditsProcess();
         private ComputedLeaveCreditsProcess() { }
 
         internal ComputedLeaveCredits Converter(DataRow dr)

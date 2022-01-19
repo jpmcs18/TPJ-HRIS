@@ -9,7 +9,7 @@ namespace ProcessLayer.Processes.Lookups
 {
     public sealed class TaxScheduleProcess : ILookupSourceProcess<TaxSchedule>
     {
-        public static readonly Lazy<TaxScheduleProcess> Instance = new Lazy<TaxScheduleProcess>(() => new TaxScheduleProcess());
+        public static readonly TaxScheduleProcess Instance = new TaxScheduleProcess();
         private TaxScheduleProcess() { }
 
         internal TaxSchedule Converter(DataRow dr)

@@ -11,7 +11,7 @@ namespace ProcessLayer.Processes.Lookups
 {
     public sealed class SSSProcess : ILookupProcess<SSS>
     {
-        public static readonly Lazy<SSSProcess> Instance = new Lazy<SSSProcess>(() => new SSSProcess());
+        public static readonly SSSProcess Instance = new SSSProcess();
         private SSSProcess() { }
 
         internal SSS Converter(DataRow dr)

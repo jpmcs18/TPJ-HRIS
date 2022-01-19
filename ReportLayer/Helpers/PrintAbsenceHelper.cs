@@ -4,7 +4,7 @@ namespace ReportLayer.Helpers
 {
     public sealed class PrintAbsenceHelper : ReportHelperBase
     {
-        public static readonly Lazy<PrintAbsenceHelper> Instance = new Lazy<PrintAbsenceHelper>(() => new PrintAbsenceHelper());
+        public static readonly PrintAbsenceHelper Instance = new PrintAbsenceHelper();
         private PrintAbsenceHelper() : base("Absence")
         {
             NameCell = Get(nameof(NameCell)).ToString();

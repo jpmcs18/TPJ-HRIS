@@ -13,7 +13,7 @@ namespace ProcessLayer.Processes
 {
     public sealed class DepartmentPositionProcess : ILookupProcess<DepartmentPosition>
     {
-        public static readonly Lazy<DepartmentPositionProcess> Instance = new Lazy<DepartmentPositionProcess>(() => new DepartmentPositionProcess());
+        public static readonly DepartmentPositionProcess Instance = new DepartmentPositionProcess();
         private DepartmentPositionProcess() { }
         internal DepartmentPosition Converter(DataRow dr)
         {
@@ -24,8 +24,8 @@ namespace ProcessLayer.Processes
                 DepartmentID = dr["Department ID"].ToInt()
             };
 
-            dept.Department = DepartmentProcess.Instance.Value.Get(dept.DepartmentID ?? 0);
-            dept.Position = PositionProcess.Instance.Value.Get(dept.PositionID);
+            dept.Department = DepartmentProcess.Instance.Get(dept.DepartmentID ?? 0);
+            dept.Position = PositionProcess.Instance.Get(dept.PositionID);
             
             return dept;
         }

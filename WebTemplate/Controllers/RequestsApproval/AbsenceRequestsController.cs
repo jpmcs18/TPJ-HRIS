@@ -12,7 +12,7 @@ namespace WebTemplate.Controllers.RequestsApproval
         public ActionResult Index(Index model)
         {
             model.Page = model.Page > 1 ? model.Page : 1;
-            model.AbsenceRequests = AbsenceRequestProcess.Instance.Value.GetApprovingList(model.Personnel, model.IsExpired, model.IsPending, model.IsApproved, model.IsCancelled, model.StartDateTime, model.EndingDateTime, model.Page, model.GridCount, out int PageCount, User.UserID);
+            model.AbsenceRequests = AbsenceRequestProcess.Instance.GetApprovingList(model.Personnel, model.IsExpired, model.IsPending, model.IsApproved, model.IsCancelled, model.StartDateTime, model.EndingDateTime, model.Page, model.GridCount, out int PageCount, User.UserID);
             model.PageCount = PageCount;
 
             if (Request.IsAjaxRequest())
@@ -34,7 +34,7 @@ namespace WebTemplate.Controllers.RequestsApproval
             {
                 try
                 {
-                    AbsenceRequestProcess.Instance.Value.Approved(id ?? 0, User.UserID);
+                    AbsenceRequestProcess.Instance.Approved(id ?? 0, User.UserID);
                     return Json(new { msg = true, res = "Request Approved!" });
 
                 }
@@ -55,7 +55,7 @@ namespace WebTemplate.Controllers.RequestsApproval
             {
                 try
                 {
-                    AbsenceRequestProcess.Instance.Value.Cancel(absence, User.UserID);
+                    AbsenceRequestProcess.Instance.Cancel(absence, User.UserID);
                     return Json(new { msg = true, res = "Request Cancelled!" });
 
                 }

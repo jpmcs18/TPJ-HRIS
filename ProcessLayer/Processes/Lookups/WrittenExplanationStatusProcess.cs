@@ -9,7 +9,7 @@ namespace ProcessLayer.Processes.Lookups
 {
     public sealed class WrittenExplanationStatusProcess
     {
-        public static readonly Lazy<WrittenExplanationStatusProcess> Instance = new Lazy<WrittenExplanationStatusProcess>(() => new WrittenExplanationStatusProcess());
+        public static readonly WrittenExplanationStatusProcess Instance = new WrittenExplanationStatusProcess();
         private WrittenExplanationStatusProcess() { }
         internal WrittenExplanationStatus Converter(DataRow dr)
         {

@@ -14,7 +14,7 @@ namespace WebTemplate.Controllers.Maintenance.Lookup
         public ActionResult Index(i.Index model)
         {
             model.Page = model.Page > 1 ? model.Page : 1;
-            model.Positions = PositionProcess.Instance.Value.GetList(model.Filter, model.Page, model.GridCount, out int PageCount).ToList();
+            model.Positions = PositionProcess.Instance.GetList(model.Filter, model.Page, model.GridCount, out int PageCount).ToList();
             model.PageCount = PageCount;
             if (Request.IsAjaxRequest())
             {
@@ -35,7 +35,7 @@ namespace WebTemplate.Controllers.Maintenance.Lookup
             {
                 if (id.HasValue)
                 {
-                    var model = PositionProcess.Instance.Value.Get(id);
+                    var model = PositionProcess.Instance.Get(id);
 
                     ModelState.Clear();
                     return PartialViewCustom("_Position", model);
@@ -57,7 +57,7 @@ namespace WebTemplate.Controllers.Maintenance.Lookup
             {
                 if (ModelState.IsValid)
                 {
-                    position = PositionProcess.Instance.Value.SavePosition(position, User.UserID);
+                    position = PositionProcess.Instance.SavePosition(position, User.UserID);
 
                     ModelState.Clear();
                     return PartialViewCustom("_Position", position);
@@ -79,7 +79,7 @@ namespace WebTemplate.Controllers.Maintenance.Lookup
             {
                 if (id.HasValue)
                 {
-                    PositionProcess.Instance.Value.Delete(id.Value, User.UserID);
+                    PositionProcess.Instance.Delete(id.Value, User.UserID);
 
                     ModelState.Clear(); 
                     return Json(new { msg = true });

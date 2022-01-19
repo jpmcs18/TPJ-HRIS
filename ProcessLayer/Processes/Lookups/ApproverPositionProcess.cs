@@ -43,8 +43,6 @@ namespace ProcessLayer.Processes
                 var dt = db.ExecuteReader(LookupProcedures.GetLookup, Parameters).Tables[0];
                 if (dt.Rows.Count > 0)
                     ApproverPosition = Converter(dt.Rows[0]);
-                //else
-                //    throw new Exception();
             }
 
             return ApproverPosition;

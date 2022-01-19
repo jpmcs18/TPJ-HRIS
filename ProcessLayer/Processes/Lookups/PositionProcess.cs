@@ -13,7 +13,7 @@ namespace ProcessLayer.Processes
 {
     public sealed class PositionProcess : ILookupProcess<Position>, ILookupSourceProcess<Position> 
     {
-        public static readonly Lazy<PositionProcess> Instance = new Lazy<PositionProcess>(() => new PositionProcess());
+        public static readonly PositionProcess Instance = new PositionProcess();
         private PositionProcess() { }
         internal Position Converter(DataRow dr)
         {
@@ -26,7 +26,7 @@ namespace ProcessLayer.Processes
                 AllowApprove = dr["Allow Approve"].ToNullableBoolean()
             };
 
-            p.PersonnelType = PersonnelTypeProcess.Instance.Value.Get(p.PersonnelTypeID);
+            p.PersonnelType = PersonnelTypeProcess.Instance.Get(p.PersonnelTypeID);
             return p;
         }
 

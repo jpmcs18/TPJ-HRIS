@@ -11,7 +11,7 @@ namespace ProcessLayer.Processes
 {
     public sealed class PersonnelCompensationProcess
     {
-        public static readonly Lazy<PersonnelCompensationProcess> Instance = new Lazy<PersonnelCompensationProcess>(() => new PersonnelCompensationProcess());
+        public static readonly PersonnelCompensationProcess Instance = new PersonnelCompensationProcess();
         private PersonnelCompensationProcess() { }
         internal PersonnelCompensation Converter(DataRow dr)
         {

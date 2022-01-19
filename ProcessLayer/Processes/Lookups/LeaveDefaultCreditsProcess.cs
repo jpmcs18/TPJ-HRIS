@@ -11,7 +11,7 @@ namespace ProcessLayer.Processes
 {
     public sealed class LeaveDefaultCreditsProcess : ILookupProcess<LeaveDefaultCredits>
     {
-        public static readonly Lazy<LeaveDefaultCreditsProcess> Instance = new Lazy<LeaveDefaultCreditsProcess>(() => new LeaveDefaultCreditsProcess());
+        public static readonly LeaveDefaultCreditsProcess Instance = new LeaveDefaultCreditsProcess();
         private LeaveDefaultCreditsProcess() { }
         internal LeaveDefaultCredits Converter(DataRow dr)
         {
@@ -23,7 +23,7 @@ namespace ProcessLayer.Processes
                 MaxYearsInService = dr["Max Years In Service"].ToNullableFloat(),
                 Credits = dr["Credits"].ToFloat()
             };
-            leave.LeaveType = LeaveTypeProcess.Instance.Value.Get(leave.LeaveTypeID);
+            leave.LeaveType = LeaveTypeProcess.Instance.Get(leave.LeaveTypeID);
             return leave;
         }
 

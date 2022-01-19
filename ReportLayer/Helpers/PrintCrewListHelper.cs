@@ -5,7 +5,7 @@ namespace ReportLayer.Helpers
 {
     public sealed class PrintCrewListHelper : ReportHelperBase
     {
-        public static readonly Lazy<PrintCrewListHelper> Instance = new Lazy<PrintCrewListHelper>(() => new PrintCrewListHelper());
+        public static readonly PrintCrewListHelper Instance = new PrintCrewListHelper();
 
         private PrintCrewListHelper() : base("Crewlist")
         {

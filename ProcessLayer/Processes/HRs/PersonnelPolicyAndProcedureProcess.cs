@@ -10,7 +10,7 @@ namespace ProcessLayer.Processes.HR
 {
     public sealed class PersonnelPolicyAndProcedureProcess
     {
-        public static readonly Lazy<PersonnelPolicyAndProcedureProcess> Instance = new Lazy<PersonnelPolicyAndProcedureProcess>(() => new PersonnelPolicyAndProcedureProcess());
+        public static readonly PersonnelPolicyAndProcedureProcess Instance = new PersonnelPolicyAndProcedureProcess();
         private PersonnelPolicyAndProcedureProcess() { }
 
         internal PersonnelPolicyAndProcedure Converter(DataRow dr)
@@ -25,7 +25,7 @@ namespace ProcessLayer.Processes.HR
             };
 
             pap.Personnel = PersonnelProcess.Get(pap.PersonnelID ?? 0, true);
-            pap.Vessel = VesselProcess.Instance.Value.Get(pap.VesselID ?? 0);
+            pap.Vessel = VesselProcess.Instance.Get(pap.VesselID ?? 0);
 
             return pap;
         }

@@ -42,7 +42,6 @@ namespace SecurityLib
         {
             byte[] keyArray;
             byte[] iv;
-            //byte[] toEncryptArray = UTF8Encoding.UTF8.GetBytes(toEncrypt);
             byte[] toEncryptArray = UTF8Encoding.UTF8.GetBytes(toEncrypt);
 
             TripleDESCryptoServiceProvider tdes = new TripleDESCryptoServiceProvider();

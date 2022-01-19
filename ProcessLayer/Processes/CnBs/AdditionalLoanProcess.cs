@@ -12,7 +12,7 @@ namespace ProcessLayer.Processes.CnB
 {
     public sealed class AdditionalLoanProcess
     {
-        public static readonly Lazy<AdditionalLoanProcess> Instance = new Lazy<AdditionalLoanProcess>(() => new AdditionalLoanProcess());
+        public static readonly AdditionalLoanProcess Instance = new AdditionalLoanProcess();
         private AdditionalLoanProcess() { }
         internal  AdditionalLoanForApproval Converter(DataRow dr)
         {

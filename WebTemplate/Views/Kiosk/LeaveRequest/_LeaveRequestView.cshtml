@@ -9,7 +9,7 @@
     var leaveSubTypes = new Dictionary<int, string> { { 1, "Absent" }, { 2, "Half-day" } };
     var timeofday = new Dictionary<int, string> { { 1, "Morning" }, { 2, "Afternoon" } };
 
-    var leaveTypes = ProcessLayer.Processes.LeaveTypeProcess.Instance.Value.GetList();
+    var leaveTypes = ProcessLayer.Processes.LeaveTypeProcess.Instance.GetList();
     var IsBulkUse = Model._LeaveType.BulkUse ?? false;
 }
 @functions{

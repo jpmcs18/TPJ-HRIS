@@ -10,11 +10,11 @@ namespace ProcessLayer.Helpers.ObjectParameter.Payroll
 {
     public sealed class PayrollParameters
     {
-        public static readonly Lazy<PayrollParameters> CNBInstance = new Lazy<PayrollParameters>(() => new PayrollParameters(ParametersTag.Payroll));
+        public static readonly PayrollParameters Instance = new PayrollParameters(ParametersTag.Payroll);
         private IEnumerable<Parameters> Parameters { get; set; }
         private PayrollParameters(string key)
         {
-            Parameters = ParametersProcess.Instance.Value.GetParameters(key);
+            Parameters = ParametersProcess.Instance.GetParameters(key);
 
             TotalMinutesPerDay = GetParameters(nameof(TotalMinutesPerDay)).ToShort();
             TotalMinutesPerDayWithBreak = GetParameters(nameof(TotalMinutesPerDayWithBreak)).ToShort();

@@ -13,7 +13,7 @@ namespace ProcessLayer.Processes.Kiosks
 {
     public sealed class OuterPortRequestProcess
 	{
-		public static readonly Lazy<OuterPortRequestProcess> Instance = new Lazy<OuterPortRequestProcess>(() => new OuterPortRequestProcess());
+		public static readonly OuterPortRequestProcess Instance = new OuterPortRequestProcess();
 		private OuterPortRequestProcess() { }
 		internal bool IsOuterPortRequestOnly { get; set; } = true;
 		internal OuterPortRequest Converter(DataRow dr)
@@ -40,7 +40,7 @@ namespace ProcessLayer.Processes.Kiosks
 			};
 
 			o._Personnel = PersonnelProcess.Get(o.PersonnelID??0, true);
-			o._Location = LocationProcess.Instance.Value.Get(o.LocationID);
+			o._Location = LocationProcess.Instance.Get(o.LocationID);
 			if(!IsOuterPortRequestOnly)
 			{
 				o._Cancel = LookupProcess.GetUser(o.CancelledBy);

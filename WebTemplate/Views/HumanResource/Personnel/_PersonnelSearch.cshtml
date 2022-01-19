@@ -7,9 +7,9 @@
     var SearchPageAccess = credential.GetPage("Search") ?? new DataAccessLayer.System.Page();
 
     var employmentStatuses = ProcessLayer.Processes.LookupProcess.GetEmployementStatus();
-    var personnelTypes = ProcessLayer.Processes.Lookups.PersonnelTypeProcess.Instance.Value.GetList();
-    var departments = ProcessLayer.Processes.Lookups.DepartmentProcess.Instance.Value.GetList();
-    var personnelLocations = ProcessLayer.Processes.LocationProcess.Instance.Value.GetList();
+    var personnelTypes = ProcessLayer.Processes.Lookups.PersonnelTypeProcess.Instance.GetList();
+    var departments = ProcessLayer.Processes.Lookups.DepartmentProcess.Instance.GetList();
+    var personnelLocations = ProcessLayer.Processes.LocationProcess.Instance.GetList();
 }
 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
     @if (SearchPageAccess.View)

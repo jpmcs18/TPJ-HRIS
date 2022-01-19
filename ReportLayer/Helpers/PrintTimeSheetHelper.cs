@@ -5,7 +5,7 @@ namespace ReportLayer.Helpers
 {
     public sealed class PrintTimeSheetHelper : ReportHelperBase
     {
-        public static readonly Lazy<PrintTimeSheetHelper> Instance = new Lazy<PrintTimeSheetHelper>(() => new PrintTimeSheetHelper());
+        public static readonly PrintTimeSheetHelper Instance = new PrintTimeSheetHelper();
         private PrintTimeSheetHelper() : base("TimeSheet") {
             CutoffCell = Get(nameof(CutoffCell)).ToString();
             NameCell = Get(nameof(NameCell)).ToString();

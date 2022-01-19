@@ -25,16 +25,6 @@ namespace ProcessLayer.Entities.Kiosk
         {
             get
             {
-                //if ((_LeaveType?.HasDocumentNeeded ?? false) && !Noted)
-                //    return "Must be noted first.";
-
-                //if ((_LeaveType?.HasDocumentNeeded ?? false) && Noted && !(Approved ?? false))
-                //    return "Noted, Waiting for approval.";
-
-                //if ((_LeaveType?.HasDocumentNeeded ?? false) && Noted && (Approved ?? false) && string.IsNullOrEmpty(File))
-                //    return "Partialy approved, Waiting for document upload";
-
-
                 if (!(Approved ?? false))
                     return "Waiting for approval.";
 

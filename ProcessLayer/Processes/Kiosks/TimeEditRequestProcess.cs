@@ -11,7 +11,7 @@ namespace ProcessLayer.Processes.Kiosk
 {
     public sealed class TimeEditRequestProcess
     {
-        public static readonly Lazy<TimeEditRequestProcess> Instance = new Lazy<TimeEditRequestProcess>(() => new TimeEditRequestProcess());
+        public static readonly TimeEditRequestProcess Instance = new TimeEditRequestProcess();
         private TimeEditRequestProcess() { }
         internal bool IsTimeEditRequestOnly = false;
         internal TimeEditRequest Converter(DataRow dr)

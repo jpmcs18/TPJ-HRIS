@@ -14,7 +14,7 @@ namespace ProcessLayer.Processes.Lookups
 {
     public sealed class PhilHealthProcess : ILookupProcess<PhilHealth>
     {
-        public static readonly Lazy<PhilHealthProcess> Instance = new Lazy<PhilHealthProcess>(() => new PhilHealthProcess());
+        public static readonly PhilHealthProcess Instance = new PhilHealthProcess();
         private PhilHealthProcess() { }
         internal PhilHealth Converter(DataRow dr)
         {

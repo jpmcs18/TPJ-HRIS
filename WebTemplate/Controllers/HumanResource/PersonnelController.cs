@@ -182,7 +182,7 @@ namespace WebTemplate.Controllers.HumanResource
             {
                 var response = new PositionResponse
                 {
-                    Positions = PositionProcess.Instance.Value.GetByDepartmentAndPersonnelType(departmentId, personnelTypeId).ToList()
+                    Positions = PositionProcess.Instance.GetByDepartmentAndPersonnelType(departmentId, personnelTypeId).ToList()
                 };
 
                 return Json(new { msg = true, res = response });
@@ -208,18 +208,6 @@ namespace WebTemplate.Controllers.HumanResource
                 System.IO.File.Delete(path);
         }
 
-        //public ActionResult SearchForResignedPersonnel(string key)
-        //{
-        //    var model = new P.ResignedPersonnels()
-        //    {
-        //        Key = key,
-        //        ResignedPersonnel = PersonnelProcess.SearchResignedList(key, true)
-        //    };
-
-        //    ModelState.Clear();
-        //    return PartialViewCustom("_PersonnelProfile", model);
-
-        //}
         #endregion
 
         #region Contact Number...
@@ -524,9 +512,8 @@ namespace WebTemplate.Controllers.HumanResource
                 CompensationsAndDeductions model = new CompensationsAndDeductions
                 {
                     PersonnelID = PersonnelID,
-                    Compensation = PersonnelCompensationProcess.Instance.Value.GetByPersonnelID(PersonnelID),
+                    Compensation = PersonnelCompensationProcess.Instance.GetByPersonnelID(PersonnelID),
                     AssumedDeductions = PersonnelDeductionProcess.GetAssumed(PersonnelID)
-                    //Deduction = PersonnelDeductionProcess.GetByPersonnelID(PersonnelID)
                 };
 
                 ModelState.Clear();
@@ -561,7 +548,7 @@ namespace WebTemplate.Controllers.HumanResource
         {
             try
             {
-                PersonnelCompensation model = PersonnelCompensationProcess.Instance.Value.Get(ID);
+                PersonnelCompensation model = PersonnelCompensationProcess.Instance.Get(ID);
                 ModelState.Clear();
                 return PartialViewCustom("_PersonnelCompensation", model);
             }
@@ -577,7 +564,7 @@ namespace WebTemplate.Controllers.HumanResource
         {
             try
             {
-                model = PersonnelCompensationProcess.Instance.Value.CreateOrUpdate(model, User.UserID);
+                model = PersonnelCompensationProcess.Instance.CreateOrUpdate(model, User.UserID);
 
                 ModelState.Clear();
                 return PartialViewCustom("_PersonnelCompensation", model);
@@ -596,7 +583,7 @@ namespace WebTemplate.Controllers.HumanResource
             {
                 try
                 {
-                    PersonnelCompensationProcess.Instance.Value.Delete(id.Value, User.UserID);
+                    PersonnelCompensationProcess.Instance.Delete(id.Value, User.UserID);
                 }
                 catch
                 {
@@ -968,7 +955,7 @@ namespace WebTemplate.Controllers.HumanResource
             try
             {
                 PolicyAndProcedures paps = new();
-                paps.PolicyAndProcedureList = PolicyAndProcedureProcess.Instance.Value.GetListByPersonnel(personnelId);
+                paps.PolicyAndProcedureList = PolicyAndProcedureProcess.Instance.GetListByPersonnel(personnelId);
                 ModelState.Clear();
                 return PartialViewCustom("_PersonnelPolicyAndProcedure", paps);
             }
@@ -985,8 +972,8 @@ namespace WebTemplate.Controllers.HumanResource
             try
             {
                 PolicyAndProcedureContent model = new();
-                model.Acknowledgement = PersonnelPolicyAndProcedureProcess.Instance.Value.Get(id);
-                model.PolicyAndProcedure = PolicyAndProcedureProcess.Instance.Value.Get(model.Acknowledgement.PolicyAndProcedureID, true);
+                model.Acknowledgement = PersonnelPolicyAndProcedureProcess.Instance.Get(id);
+                model.PolicyAndProcedure = PolicyAndProcedureProcess.Instance.Get(model.Acknowledgement.PolicyAndProcedureID, true);
 
                 if (model != null)
                 {
@@ -1009,10 +996,10 @@ namespace WebTemplate.Controllers.HumanResource
         {
             try
             {
-                PersonnelPolicyAndProcedureProcess.Instance.Value.Acknowledge(id, User.UserID);
+                PersonnelPolicyAndProcedureProcess.Instance.Acknowledge(id, User.UserID);
                 PolicyAndProcedureContent model = new();
-                model.Acknowledgement = PersonnelPolicyAndProcedureProcess.Instance.Value.Get(id);
-                model.PolicyAndProcedure = PolicyAndProcedureProcess.Instance.Value.Get(model.Acknowledgement.PolicyAndProcedureID, true);
+                model.Acknowledgement = PersonnelPolicyAndProcedureProcess.Instance.Get(id);
+                model.PolicyAndProcedure = PolicyAndProcedureProcess.Instance.Get(model.Acknowledgement.PolicyAndProcedureID, true);
 
 
                 ModelState.Clear();
@@ -1031,7 +1018,7 @@ namespace WebTemplate.Controllers.HumanResource
             try
             {
                 Infractions infractions = new();
-                infractions.InfractionList = InfractionProcess.Instance.Value.GetList(personnelId, true);
+                infractions.InfractionList = InfractionProcess.Instance.GetList(personnelId, true);
                 ModelState.Clear();
                 return PartialViewCustom("_PersonnelInfractions", infractions);
             }
@@ -1047,7 +1034,7 @@ namespace WebTemplate.Controllers.HumanResource
         {
             try
             {
-                Infraction model = InfractionProcess.Instance.Value.Get(id);
+                Infraction model = InfractionProcess.Instance.Get(id);
 
                 if (model != null)
                 {
@@ -1072,12 +1059,12 @@ namespace WebTemplate.Controllers.HumanResource
             {
                 var appSettingPath = ConfigurationManager.AppSettings[SAVE_LOCATION];
                 var directory = appSettingPath.Contains("~") ? Server.MapPath(appSettingPath) : appSettingPath;
-                var infraction = InfractionProcess.Instance.Value.Get(content.InfractionID, true);
+                var infraction = InfractionProcess.Instance.Get(content.InfractionID, true);
                 content.FromPersonnel = true;
                 content.File = fileBase.SaveFile(directory, $"{infraction.MemoNo}{DateTime.Now:MMddyyyyHHmmss}{Path.GetExtension(fileBase.FileName)}");
 
-                content = InfractionContentProcess.Instance.Value.Create(content, User.UserID);
-                infraction = InfractionProcess.Instance.Value.Get(content.InfractionID);
+                content = InfractionContentProcess.Instance.Create(content, User.UserID);
+                infraction = InfractionProcess.Instance.Get(content.InfractionID);
 
                 ModelState.Clear();
                 ViewBag.ContentId = infraction.Content.LastOrDefault()?.ID;
@@ -1096,7 +1083,7 @@ namespace WebTemplate.Controllers.HumanResource
             try
             {
                 WrittenExplanations writtenExplanations = new();
-                writtenExplanations.WrittenExplanationList = WrittenExplanationProcess.Instance.Value.GetList(personnelId, true);
+                writtenExplanations.WrittenExplanationList = WrittenExplanationProcess.Instance.GetList(personnelId, true);
                 ModelState.Clear();
                 return PartialViewCustom("_PersonnelWrittenExplanations", writtenExplanations);
             }
@@ -1112,7 +1099,7 @@ namespace WebTemplate.Controllers.HumanResource
         {
             try
             {
-                WrittenExplanation model = WrittenExplanationProcess.Instance.Value.Get(id);
+                WrittenExplanation model = WrittenExplanationProcess.Instance.Get(id);
 
                 if (model != null)
                 {
@@ -1137,12 +1124,12 @@ namespace WebTemplate.Controllers.HumanResource
             {
                 var appSettingPath = ConfigurationManager.AppSettings[SAVE_LOCATION];
                 var directory = appSettingPath.Contains("~") ? Server.MapPath(appSettingPath) : appSettingPath;
-                var writtenExplanation = WrittenExplanationProcess.Instance.Value.Get(content.WrittenExplanationID, true);
+                var writtenExplanation = WrittenExplanationProcess.Instance.Get(content.WrittenExplanationID, true);
                 content.FromPersonnel = true;
                 content.File = fileBase.SaveFile(directory, $"{writtenExplanation.MemoNo}{DateTime.Now:MMddyyyyHHmmss}{Path.GetExtension(fileBase.FileName)}");
 
-                content = WrittenExplanationContentProcess.Instance.Value.Create(content, User.UserID);
-                writtenExplanation = WrittenExplanationProcess.Instance.Value.Get(content.WrittenExplanationID);
+                content = WrittenExplanationContentProcess.Instance.Create(content, User.UserID);
+                writtenExplanation = WrittenExplanationProcess.Instance.Get(content.WrittenExplanationID);
 
                 ModelState.Clear();
                 ViewBag.ContentId = writtenExplanation.Content.LastOrDefault()?.ID;
@@ -1711,7 +1698,7 @@ namespace WebTemplate.Controllers.HumanResource
         {
             try
             {
-                List<PersonnelLeaveCredit> leaveCredits = PersonnelLeaveCreditProcess.Instance.Value.GetByPersonnelID(PersonnelID);
+                List<PersonnelLeaveCredit> leaveCredits = PersonnelLeaveCreditProcess.Instance.GetByPersonnelID(PersonnelID);
                 PersonnelLeaveCredits model = new PersonnelLeaveCredits
                 {
                     PersonnelID = PersonnelID,
@@ -1750,7 +1737,7 @@ namespace WebTemplate.Controllers.HumanResource
         {
             try
             {
-                PersonnelLeaveCredit model = PersonnelLeaveCreditProcess.Instance.Value.Get(ID);
+                PersonnelLeaveCredit model = PersonnelLeaveCreditProcess.Instance.Get(ID);
                 ModelState.Clear();
 
                 if (model._LeaveType.IsMidYear ?? false)
@@ -1770,7 +1757,7 @@ namespace WebTemplate.Controllers.HumanResource
         {
             try
             {
-                model = PersonnelLeaveCreditProcess.Instance.Value.CreateOrUpdate(model, User.UserID);
+                model = PersonnelLeaveCreditProcess.Instance.CreateOrUpdate(model, User.UserID);
                 ModelState.Clear();
 
                 if (model._LeaveType.IsMidYear ?? false)
@@ -1790,7 +1777,7 @@ namespace WebTemplate.Controllers.HumanResource
         {
             try
             {
-                PersonnelLeaveCreditProcess.Instance.Value.Delete(model.ID, User.UserID);
+                PersonnelLeaveCreditProcess.Instance.Delete(model.ID, User.UserID);
                 return Json(new { msg = true });
             }
             catch (Exception ex)
@@ -1808,7 +1795,7 @@ namespace WebTemplate.Controllers.HumanResource
                 PersonnelLoans model = new PersonnelLoans
                 {
                     PersonnelID = PersonnelID,
-                    PersonnelLoan = PersonnelLoanProcess.Instance.Value.GetList(PersonnelID)
+                    PersonnelLoan = PersonnelLoanProcess.Instance.GetList(PersonnelID)
                 };
 
                 return PartialViewCustom("_PersonnelLoans", model);
@@ -1826,7 +1813,7 @@ namespace WebTemplate.Controllers.HumanResource
                 PersonnelLoanDeductions model = new PersonnelLoanDeductions
                 {
                     PersonnelLoanId = PersonnelLoanID,
-                    LoanDeductions = PayrollProcess.Instance.Value.GetPersonnelLoanDeductions(PersonnelLoanID)
+                    LoanDeductions = PayrollProcess.Instance.GetPersonnelLoanDeductions(PersonnelLoanID)
                 };
 
                 return PartialViewCustom("_PersonnelLoanDetails", model);
@@ -1861,7 +1848,7 @@ namespace WebTemplate.Controllers.HumanResource
         {
             try
             {
-                PersonnelLoan model = PersonnelLoanProcess.Instance.Value.Get(ID);
+                PersonnelLoan model = PersonnelLoanProcess.Instance.Get(ID);
                 ModelState.Clear();
                 return PartialViewCustom("_PersonnelLoan", model);
             }
@@ -1878,7 +1865,7 @@ namespace WebTemplate.Controllers.HumanResource
         {
             try
             {
-                model = PersonnelLoanProcess.Instance.Value.CreateOrUpdate(model, User.UserID);
+                model = PersonnelLoanProcess.Instance.CreateOrUpdate(model, User.UserID);
 
                 ModelState.Clear();
                 return PartialViewCustom("_PersonnelLoan", model);
@@ -1896,7 +1883,7 @@ namespace WebTemplate.Controllers.HumanResource
         {
             try
             {
-                PersonnelLoanProcess.Instance.Value.Delete(model, User.UserID);
+                PersonnelLoanProcess.Instance.Delete(model, User.UserID);
                 return Json(new { msg = true });
             }
             catch (Exception ex)
@@ -1916,8 +1903,8 @@ namespace WebTemplate.Controllers.HumanResource
             {
                 AdditionalLoans model = new AdditionalLoans
                 {
-                    PersonnelLoans = PersonnelLoanProcess.Instance.Value.GetList(PersonnelID),
-                    AdditionalLoanForApproval = AdditionalLoanProcess.Instance.Value.GetList(PersonnelID)
+                    PersonnelLoans = PersonnelLoanProcess.Instance.GetList(PersonnelID),
+                    AdditionalLoanForApproval = AdditionalLoanProcess.Instance.GetList(PersonnelID)
                 };
 
                 return PartialViewCustom("_AdditionalLoans", model);
@@ -1935,11 +1922,11 @@ namespace WebTemplate.Controllers.HumanResource
         {
             try
             {
-                PersonnelLoanProcess.Instance.Value.MergeAdditionalToExistingLoan(merge.PersonnelLoanID, merge.AdditionalLoanID, merge.Amount, User.UserID);
+                PersonnelLoanProcess.Instance.MergeAdditionalToExistingLoan(merge.PersonnelLoanID, merge.AdditionalLoanID, merge.Amount, User.UserID);
                 AdditionalLoans model = new AdditionalLoans
                 {
-                    PersonnelLoans = PersonnelLoanProcess.Instance.Value.GetList(merge.PersonnelID),
-                    AdditionalLoanForApproval = AdditionalLoanProcess.Instance.Value.GetList(merge.PersonnelID)
+                    PersonnelLoans = PersonnelLoanProcess.Instance.GetList(merge.PersonnelID),
+                    AdditionalLoanForApproval = AdditionalLoanProcess.Instance.GetList(merge.PersonnelID)
                 };
 
                 return PartialViewCustom("_AdditionalLoans", model);
@@ -1957,7 +1944,7 @@ namespace WebTemplate.Controllers.HumanResource
         {
             try
             {
-                var al = AdditionalLoanProcess.Instance.Value.Get(AdditionalLoanID);
+                var al = AdditionalLoanProcess.Instance.Get(AdditionalLoanID);
                 if (al != null)
                 {
 
@@ -1992,11 +1979,11 @@ namespace WebTemplate.Controllers.HumanResource
         {
             try
             {
-                PersonnelLoanProcess.Instance.Value.InsertAdditionalLoanToPersonnelLoan(loan.AdditionalLoanID ?? 0, loan.PersonnelLoan, User.UserID);
+                PersonnelLoanProcess.Instance.InsertAdditionalLoanToPersonnelLoan(loan.AdditionalLoanID ?? 0, loan.PersonnelLoan, User.UserID);
                 AdditionalLoans model = new AdditionalLoans
                 {
-                    PersonnelLoans = PersonnelLoanProcess.Instance.Value.GetList(loan.PersonnelLoan.PersonnelID ?? 0),
-                    AdditionalLoanForApproval = AdditionalLoanProcess.Instance.Value.GetList(loan.PersonnelLoan.PersonnelID ?? 0)
+                    PersonnelLoans = PersonnelLoanProcess.Instance.GetList(loan.PersonnelLoan.PersonnelID ?? 0),
+                    AdditionalLoanForApproval = AdditionalLoanProcess.Instance.GetList(loan.PersonnelLoan.PersonnelID ?? 0)
                 };
 
                 return PartialViewCustom("_AdditionalLoans", model);
@@ -2032,7 +2019,7 @@ namespace WebTemplate.Controllers.HumanResource
         {
             try
             {
-                PersonnelSchedule model = PersonnelScheduleProcess.Instance.Value.Get(ID);
+                PersonnelSchedule model = PersonnelScheduleProcess.Instance.Get(ID);
                 ModelState.Clear();
                 return PartialViewCustom("_PersonnelSchedule", model);
             }
@@ -2054,7 +2041,7 @@ namespace WebTemplate.Controllers.HumanResource
                 if (model.EffectivityDate == null)
                     return Json(new { msg = false, res = "Effectivity Date is required." });
 
-                model = PersonnelScheduleProcess.Instance.Value.CreateOrUpdate(model, User.UserID);
+                model = PersonnelScheduleProcess.Instance.CreateOrUpdate(model, User.UserID);
                 ModelState.Clear();
                 return PartialViewCustom("_PersonnelSchedule", model);
             }
@@ -2072,7 +2059,7 @@ namespace WebTemplate.Controllers.HumanResource
             {
                 try
                 {
-                    PersonnelScheduleProcess.Instance.Value.Delete(id.Value, User.UserID);
+                    PersonnelScheduleProcess.Instance.Delete(id.Value, User.UserID);
                 }
                 catch
                 {

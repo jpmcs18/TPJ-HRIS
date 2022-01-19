@@ -12,7 +12,7 @@ namespace ProcessLayer.Processes.Lookups
 {
     public sealed class PersonnelTypeProcess : ILookupProcess<PersonnelType>, ILookupSourceProcess<PersonnelType>
     {
-        public static readonly Lazy<PersonnelTypeProcess> Instance = new Lazy<PersonnelTypeProcess>(() => new PersonnelTypeProcess());
+        public static readonly PersonnelTypeProcess Instance = new PersonnelTypeProcess();
         private PersonnelTypeProcess() { }
         internal PersonnelType Converter(DataRow dr)
         {
