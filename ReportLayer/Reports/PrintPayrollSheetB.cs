@@ -63,7 +63,6 @@ namespace ReportLayer.Reports
             {
                 WriteGrandTotal();
             }
-            WriteFooter();
         }
 
         private void WriteClosing()
