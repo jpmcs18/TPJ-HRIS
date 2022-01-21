@@ -10,7 +10,7 @@ namespace ProcessLayer.Processes.HR
 {
     public sealed class InfractionProcess
     {
-        public static readonly Lazy<InfractionProcess> Instance = new Lazy<InfractionProcess>(() => new InfractionProcess());
+        public static readonly InfractionProcess Instance = new InfractionProcess();
         private InfractionProcess() { }
 
         private bool InfractionOnly = false;
@@ -32,14 +32,14 @@ namespace ProcessLayer.Processes.HR
                 Subject = dr["Subject"].ToString()
             };
 
-            infraction.Status = InfractionStatusProcess.Instance.Value.Get(infraction.StatusID);
-            infraction.HearingStatus = HearingStatusProcess.Instance.Value.Get(infraction.HearingStatusID ?? 0);
-            infraction.Sanction = SanctionProcess.Instance.Value.Get(infraction.SanctionID ?? 0);
+            infraction.Status = InfractionStatusProcess.Instance.Get(infraction.StatusID);
+            infraction.HearingStatus = HearingStatusProcess.Instance.Get(infraction.HearingStatusID ?? 0);
+            infraction.Sanction = SanctionProcess.Instance.Get(infraction.SanctionID ?? 0);
             infraction.Personnel = PersonnelProcess.Get(infraction.PersonnelID, true);
 
             if (!InfractionOnly)
             {
-                infraction.Content = InfractionContentProcess.Instance.Value.GetList(infraction.ID);
+                infraction.Content = InfractionContentProcess.Instance.GetList(infraction.ID);
             }
 
             try { infraction.IsNew = dr["Is New"].ToNullableBoolean() ?? false; } catch { }
@@ -194,9 +194,9 @@ namespace ProcessLayer.Processes.HR
                 {
                     infraction.Content?.ForEach((content) => { 
                         content.InfractionID = infraction.ID; 
-                        InfractionContentProcess.Instance.Value.Create(db, content, userId); 
+                        InfractionContentProcess.Instance.Create(db, content, userId); 
                     });
-                    infraction.Content = InfractionContentProcess.Instance.Value.GetList(infraction.ID);
+                    infraction.Content = InfractionContentProcess.Instance.GetList(infraction.ID);
                 }
 
                 return infraction;

@@ -13,7 +13,7 @@ namespace ProcessLayer.Processes.Lookups
 {
     public sealed class DefaultLookupProcess
     {
-        public static readonly Lazy<DefaultLookupProcess> Instance = new Lazy<DefaultLookupProcess>(() => new DefaultLookupProcess());
+        public static readonly DefaultLookupProcess Instance = new DefaultLookupProcess();
         private DefaultLookupProcess() { }
         internal Lookup Converter(DataRow dr)
         {

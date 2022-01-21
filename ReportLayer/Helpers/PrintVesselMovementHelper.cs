@@ -5,7 +5,7 @@ namespace ReportLayer.Helpers
 {
     public sealed class PrintVesselMovementHelper : ReportHelperBase
     {
-        public static readonly Lazy<PrintVesselMovementHelper> Instance = new Lazy<PrintVesselMovementHelper>(() => new PrintVesselMovementHelper());
+        public static readonly PrintVesselMovementHelper Instance = new PrintVesselMovementHelper();
 
         private PrintVesselMovementHelper() : base("VesselMovement")
         {

@@ -10,7 +10,7 @@ namespace ProcessLayer.Processes.HR
 {
     public sealed class WrittenExplanationProcess
     {
-        public static readonly Lazy<WrittenExplanationProcess> Instance = new Lazy<WrittenExplanationProcess>(() => new WrittenExplanationProcess());
+        public static readonly WrittenExplanationProcess Instance = new WrittenExplanationProcess();
         private WrittenExplanationProcess() { }
 
         private bool WrittenExplanationOnly = false;
@@ -30,14 +30,14 @@ namespace ProcessLayer.Processes.HR
                 Subject = dr["Subject"].ToString()
             };
 
-            WrittenExplanation.Status = WrittenExplanationStatusProcess.Instance.Value.Get(WrittenExplanation.StatusID);
-            WrittenExplanation.ConsultationStatus = ConsultationStatusProcess.Instance.Value.Get(WrittenExplanation.ConsultationStatusID ?? 0);
-            WrittenExplanation.Recommendation = RecommendationProcess.Instance.Value.Get(WrittenExplanation.RecommendationID ?? 0);
+            WrittenExplanation.Status = WrittenExplanationStatusProcess.Instance.Get(WrittenExplanation.StatusID);
+            WrittenExplanation.ConsultationStatus = ConsultationStatusProcess.Instance.Get(WrittenExplanation.ConsultationStatusID ?? 0);
+            WrittenExplanation.Recommendation = RecommendationProcess.Instance.Get(WrittenExplanation.RecommendationID ?? 0);
             WrittenExplanation.Personnel = PersonnelProcess.Get(WrittenExplanation.PersonnelID, true);
 
             if (!WrittenExplanationOnly)
             {
-                WrittenExplanation.Content = WrittenExplanationContentProcess.Instance.Value.GetList(WrittenExplanation.ID);
+                WrittenExplanation.Content = WrittenExplanationContentProcess.Instance.GetList(WrittenExplanation.ID);
             }
 
             try
@@ -195,9 +195,9 @@ namespace ProcessLayer.Processes.HR
                 {
                     writtenExplanation.Content?.ForEach((content) => {
                         content.WrittenExplanationID = writtenExplanation.ID;
-                        WrittenExplanationContentProcess.Instance.Value.Create(db, content, userId);
+                        WrittenExplanationContentProcess.Instance.Create(db, content, userId);
                     });
-                    writtenExplanation.Content = WrittenExplanationContentProcess.Instance.Value.GetList(writtenExplanation.ID);
+                    writtenExplanation.Content = WrittenExplanationContentProcess.Instance.GetList(writtenExplanation.ID);
                 }
 
                 return writtenExplanation;

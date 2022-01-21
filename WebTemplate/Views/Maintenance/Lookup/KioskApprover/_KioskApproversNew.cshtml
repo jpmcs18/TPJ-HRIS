@@ -6,7 +6,7 @@
     var KioskApproverPageAccess = credential.GetPage("Maintenance/Lookup/KioskApprover") ?? new DataAccessLayer.System.Page();
     var KioskApproverApprover = credential.GetPage("Approver Leave Request") ?? new DataAccessLayer.System.Page();
     var KioskApproverCreator = credential.GetPage("Creator Leave Request") ?? new DataAccessLayer.System.Page();
-    var departments = ProcessLayer.Processes.Lookups.DepartmentProcess.Instance.Value.GetList();
+    var departments = ProcessLayer.Processes.Lookups.DepartmentProcess.Instance.GetList();
 }
 
 <input hidden name="PersonnelID" value="@c.UserID" />

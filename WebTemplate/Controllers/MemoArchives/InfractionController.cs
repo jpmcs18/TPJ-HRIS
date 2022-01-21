@@ -24,7 +24,7 @@ namespace WebTemplate.Controllers.MemoArchives
         public ActionResult Index(Index model)
         {
             model.Page = model.Page > 1 ? model.Page : 1;
-            model.Infractions = InfractionProcess.Instance.Value.Filter(model.Personnel, model.Date, model.StatusID, model.Page, model.GridCount, out int PageCount).ToList();
+            model.Infractions = InfractionProcess.Instance.Filter(model.Personnel, model.Date, model.StatusID, model.Page, model.GridCount, out int PageCount).ToList();
             model.PageCount = PageCount;
 
             if (Request.IsAjaxRequest())
@@ -84,7 +84,7 @@ namespace WebTemplate.Controllers.MemoArchives
         {
             try
             {
-                Infraction model = InfractionProcess.Instance.Value.Get(id);
+                Infraction model = InfractionProcess.Instance.Get(id);
 
                 if (model != null)
                 {
@@ -128,8 +128,8 @@ namespace WebTemplate.Controllers.MemoArchives
                         incidentReport,
                         content
                     };
-                    infraction = InfractionProcess.Instance.Value.CreateOrUpdate(infraction, User.UserID);
-                    infraction = InfractionProcess.Instance.Value.Get(infraction.ID);
+                    infraction = InfractionProcess.Instance.CreateOrUpdate(infraction, User.UserID);
+                    infraction = InfractionProcess.Instance.Get(infraction.ID);
                 }
                 else
                 {
@@ -153,10 +153,10 @@ namespace WebTemplate.Controllers.MemoArchives
             {
                 var appSettingPath = ConfigurationManager.AppSettings[SAVE_LOCATION];
                 var directory = appSettingPath.Contains("~") ? Server.MapPath(appSettingPath) : appSettingPath;
-                var infraction = InfractionProcess.Instance.Value.Get(infractionId, true);
+                var infraction = InfractionProcess.Instance.Get(infractionId, true);
                 string filePath = file.SaveFile(directory, $"{infraction.Subject.Replace(" ", "_")}{DateTime.Now:MMddyyyyHHmmss}{Path.GetExtension(file.FileName)}");
-                InfractionContentProcess.Instance.Value.UpdateFile(id, filePath, User.UserID);
-                infraction = InfractionProcess.Instance.Value.Get(infractionId);
+                InfractionContentProcess.Instance.UpdateFile(id, filePath, User.UserID);
+                infraction = InfractionProcess.Instance.Get(infractionId);
                 ModelState.Clear();
                 return PartialViewCustom("_Replies", infraction);
             }
@@ -174,8 +174,8 @@ namespace WebTemplate.Controllers.MemoArchives
             {
                 if (infraction.ID > 0)
                 {
-                    infraction = InfractionProcess.Instance.Value.CreateOrUpdate(infraction, User.UserID);
-                    infraction = InfractionProcess.Instance.Value.Get(infraction.ID);
+                    infraction = InfractionProcess.Instance.CreateOrUpdate(infraction, User.UserID);
+                    infraction = InfractionProcess.Instance.Get(infraction.ID);
                 }
                 else
                 {
@@ -199,11 +199,11 @@ namespace WebTemplate.Controllers.MemoArchives
             {
                 var appSettingPath = ConfigurationManager.AppSettings[SAVE_LOCATION];
                 var directory = appSettingPath.Contains("~") ? Server.MapPath(appSettingPath) : appSettingPath;
-                var infraction = InfractionProcess.Instance.Value.Get(content.InfractionID, true);
+                var infraction = InfractionProcess.Instance.Get(content.InfractionID, true);
                 content.File = fileBase.SaveFile(directory, $"{infraction.Subject.Replace(" ", "_")}{DateTime.Now:MMddyyyyHHmmss}{Path.GetExtension(fileBase.FileName)}");
                 content.SaveOnly = !sendEmail;
-                content = InfractionContentProcess.Instance.Value.Create(content, User.UserID);
-                infraction = InfractionProcess.Instance.Value.Get(content.InfractionID);
+                content = InfractionContentProcess.Instance.Create(content, User.UserID);
+                infraction = InfractionProcess.Instance.Get(content.InfractionID);
 
                 ModelState.Clear();
                 ViewBag.ContentId = infraction.Content.LastOrDefault()?.ID;
@@ -223,9 +223,9 @@ namespace WebTemplate.Controllers.MemoArchives
             {
 
                 if(resched)
-                    InfractionProcess.Instance.Value.SetHearingStatus(id, 2, User.UserID, hearingSchedule);
+                    InfractionProcess.Instance.SetHearingStatus(id, 2, User.UserID, hearingSchedule);
                 else
-                    InfractionProcess.Instance.Value.ScheduleHearing(id, hearingSchedule, User.UserID);
+                    InfractionProcess.Instance.ScheduleHearing(id, hearingSchedule, User.UserID);
                 var content = new InfractionContent
                 {
                     Message = $"Hearing {(resched ? "Reschedule" : "Schedule")} : {hearingSchedule:MMMM dd, yyyy}",
@@ -233,9 +233,9 @@ namespace WebTemplate.Controllers.MemoArchives
                     SaveOnly = !sendEmail
                 };
 
-                content = InfractionContentProcess.Instance.Value.Create(content, User.UserID);
+                content = InfractionContentProcess.Instance.Create(content, User.UserID);
 
-                var infraction = InfractionProcess.Instance.Value.Get(id);
+                var infraction = InfractionProcess.Instance.Get(id);
 
                 ModelState.Clear();
                 ViewBag.ContentId = infraction.Content.LastOrDefault()?.ID;
@@ -253,8 +253,8 @@ namespace WebTemplate.Controllers.MemoArchives
         {
             try
             {
-                InfractionProcess.Instance.Value.SetHearingStatus(id, 1, User.UserID);
-                var infraction = InfractionProcess.Instance.Value.Get(id);
+                InfractionProcess.Instance.SetHearingStatus(id, 1, User.UserID);
+                var infraction = InfractionProcess.Instance.Get(id);
 
                 ModelState.Clear();
                 return PartialViewCustom("_Replies", infraction);
@@ -271,8 +271,8 @@ namespace WebTemplate.Controllers.MemoArchives
         {
             try
             {
-                InfractionProcess.Instance.Value.Close(id, sanction, date, days, User.UserID);
-                var infraction = InfractionProcess.Instance.Value.Get(id);
+                InfractionProcess.Instance.Close(id, sanction, date, days, User.UserID);
+                var infraction = InfractionProcess.Instance.Get(id);
                 
 
                 ModelState.Clear();
@@ -290,7 +290,7 @@ namespace WebTemplate.Controllers.MemoArchives
         {
             try
             {
-                InfractionProcess.Instance.Value.Delete(id, User.UserID);
+                InfractionProcess.Instance.Delete(id, User.UserID);
                 return Json(new { msg = true, res = "Deleted" });
 
             }
@@ -308,8 +308,8 @@ namespace WebTemplate.Controllers.MemoArchives
             try
             {
 
-                InfractionContentProcess.Instance.Value.Delete(id, User.UserID);
-                var infraction = InfractionProcess.Instance.Value.Get(infractionId);
+                InfractionContentProcess.Instance.Delete(id, User.UserID);
+                var infraction = InfractionProcess.Instance.Get(infractionId);
 
 
                 ModelState.Clear();
@@ -335,8 +335,8 @@ namespace WebTemplate.Controllers.MemoArchives
                 if (!Web.HasInternetConnection())
                     return Json(new { msg = false, res = "No Internet Connection." });
 
-                List<InfractionContent> infractionContents = InfractionContentProcess.Instance.Value.GetList(contentId);
-                Infraction infraction = InfractionProcess.Instance.Value.Get(infractionContents.FirstOrDefault()?.InfractionID ?? 0, true);
+                List<InfractionContent> infractionContents = InfractionContentProcess.Instance.GetList(contentId);
+                Infraction infraction = InfractionProcess.Instance.Get(infractionContents.FirstOrDefault()?.InfractionID ?? 0, true);
 
                 if (string.IsNullOrEmpty(infraction.Personnel.Email))
                     return Json(new { msg = false, res = infraction.Personnel.FullName + " has no email." });

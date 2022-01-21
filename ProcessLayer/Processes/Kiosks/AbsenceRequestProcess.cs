@@ -9,7 +9,7 @@ namespace ProcessLayer.Processes.Kiosk
 {
     public sealed class AbsenceRequestProcess
     {
-        public static readonly Lazy<AbsenceRequestProcess> Instance = new Lazy<AbsenceRequestProcess>(() => new AbsenceRequestProcess());
+        public static readonly AbsenceRequestProcess Instance = new AbsenceRequestProcess();
         private AbsenceRequestProcess() { }
 
         private bool IsRequestOnly { get; set; }

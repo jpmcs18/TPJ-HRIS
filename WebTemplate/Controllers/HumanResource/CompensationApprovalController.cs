@@ -12,7 +12,7 @@ namespace WebTemplate.Controllers.HumanResource
         public ActionResult Index(C.Index model)
         {            
             model.Page = model.Page > 1 ? model.Page : 1;
-            model.PersonnelCompensations = PersonnelCompensationProcess.Instance.Value.FilterCompensationToApprove(model.Filter, model.Page, model.GridCount, out int PageCount).ToList();
+            model.PersonnelCompensations = PersonnelCompensationProcess.Instance.FilterCompensationToApprove(model.Filter, model.Page, model.GridCount, out int PageCount).ToList();
             model.PageCount = PageCount;
 
             if (Request.IsAjaxRequest())
@@ -33,7 +33,7 @@ namespace WebTemplate.Controllers.HumanResource
             if(id.HasValue)
             {
                 try {
-                    PersonnelCompensationProcess.Instance.Value.Approve(id ?? 0, User.UserID);
+                    PersonnelCompensationProcess.Instance.Approve(id ?? 0, User.UserID);
                     return Json(new { msg = true });
                 }
                 catch(Exception ex) {
@@ -52,7 +52,7 @@ namespace WebTemplate.Controllers.HumanResource
             {
                 try
                 {
-                    PersonnelCompensationProcess.Instance.Value.Disapprove(id ?? 0, remarks, User.UserID);
+                    PersonnelCompensationProcess.Instance.Disapprove(id ?? 0, remarks, User.UserID);
                     return Json(new { msg = true });
                 }
                 catch (Exception ex)

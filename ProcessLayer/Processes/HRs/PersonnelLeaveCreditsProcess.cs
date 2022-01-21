@@ -13,7 +13,7 @@ namespace ProcessLayer.Processes.HR
 {
     public sealed class PersonnelLeaveCreditProcess
     {
-        public static readonly Lazy<PersonnelLeaveCreditProcess> Instance = new Lazy<PersonnelLeaveCreditProcess>(() => new PersonnelLeaveCreditProcess());
+        public static readonly PersonnelLeaveCreditProcess Instance = new PersonnelLeaveCreditProcess();
         private PersonnelLeaveCreditProcess() { }
         internal PersonnelLeaveCredit Converter(DataRow dr)
         {
@@ -28,7 +28,7 @@ namespace ProcessLayer.Processes.HR
                 ValidTo = dr[PersonnelLeaveCreditsFields.ValidTo].ToNullableDateTime()
             };
 
-            l._LeaveType = LeaveTypeProcess.Instance.Value.Get(l.LeaveTypeID);
+            l._LeaveType = LeaveTypeProcess.Instance.Get(l.LeaveTypeID);
             return l;
         }
 
@@ -103,7 +103,7 @@ namespace ProcessLayer.Processes.HR
 
                 using (var ds = db.ExecuteReader(PersonnelLeaveCreditsProcedures.GetLeavesWithCredits, parameters))
                 {
-                    return ds.GetList(LeaveTypeProcess.Instance.Value.Converter);
+                    return ds.GetList(LeaveTypeProcess.Instance.Converter);
                 }
             }
         }
@@ -118,7 +118,7 @@ namespace ProcessLayer.Processes.HR
 
         private PersonnelLeaveCredit CreateOrUpdate(DBTools db, PersonnelLeaveCredit leaveCredit, int userid)
         {
-            leaveCredit._LeaveType = LeaveTypeProcess.Instance.Value.Get(leaveCredit.LeaveTypeID);
+            leaveCredit._LeaveType = LeaveTypeProcess.Instance.Get(leaveCredit.LeaveTypeID);
 
             if (!(leaveCredit._LeaveType.IsMidYear ?? false))
             {
@@ -196,7 +196,7 @@ namespace ProcessLayer.Processes.HR
 
             float yearsInService = personnel.Years + (personnel.Months / (float)12);
 
-            List<LeaveDefaultCredits> defaultCredits = LeaveDefaultCreditsProcess.Instance.Value.GetList(yearsInService);
+            List<LeaveDefaultCredits> defaultCredits = LeaveDefaultCreditsProcess.Instance.GetList(yearsInService);
             List<PersonnelLeaveCredit> leaveCredits = new List<PersonnelLeaveCredit>();
 
             if (!(defaultCredits?.Any() ?? false))

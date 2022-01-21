@@ -269,14 +269,6 @@ namespace WebTemplate.Controllers.HumanResource
                     PersonnelGroupMembers = PersonnelGroupMemberProcess.CreateOrUpdate(model, User.UserID)
                 };
 
-                //model.OrderByDescending(m => m.Deleted);
-
-                //foreach (var m in models.PersonnelGroupMembers)
-                //{
-                //    if (m.Deleted)
-                //        models.PersonnelGroupMembers.Remove(m);
-                //}
-
                 models.PersonnelGroupMembers = models.PersonnelGroupMembers.Where(r => r.Deleted == false).ToList();
 
                 ModelState.Clear();

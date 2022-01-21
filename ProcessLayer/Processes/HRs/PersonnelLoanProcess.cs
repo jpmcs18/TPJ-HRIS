@@ -9,7 +9,7 @@ namespace ProcessLayer.Processes.HR
 {
     public sealed class PersonnelLoanProcess
     {
-        public static readonly Lazy<PersonnelLoanProcess> Instance = new Lazy<PersonnelLoanProcess>(() => new PersonnelLoanProcess());
+        public static readonly PersonnelLoanProcess Instance = new PersonnelLoanProcess();
         private PersonnelLoanProcess() { }
         internal bool IsPersonnelLoanOnly = false;
 

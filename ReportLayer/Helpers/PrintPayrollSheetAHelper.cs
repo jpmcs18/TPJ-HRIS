@@ -5,7 +5,7 @@ namespace ReportLayer.Helpers
 {
     public sealed class PrintPayrollSheetAHelper : ReportHelperBase
     {
-        public static readonly Lazy<PrintPayrollSheetAHelper> Instance = new Lazy<PrintPayrollSheetAHelper>(() => new PrintPayrollSheetAHelper());
+        public static readonly PrintPayrollSheetAHelper Instance = new PrintPayrollSheetAHelper();
         private PrintPayrollSheetAHelper() : base("PayrollSheetA")
         {
             MaxItem = Get(nameof(MaxItem)).ToInt();

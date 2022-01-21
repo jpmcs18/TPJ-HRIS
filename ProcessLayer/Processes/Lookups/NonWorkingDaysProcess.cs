@@ -13,7 +13,7 @@ namespace ProcessLayer.Processes.Lookups
 {
     public sealed class NonWorkingDaysProcess : ILookupProcess<NonWorkingDays>
     {
-        public static readonly Lazy<NonWorkingDaysProcess> Instance = new Lazy<NonWorkingDaysProcess>(() => new NonWorkingDaysProcess());
+        public static readonly NonWorkingDaysProcess Instance = new NonWorkingDaysProcess();
         private NonWorkingDaysProcess() { }
         internal NonWorkingDays Converter(DataRow dr)
         {
@@ -30,8 +30,8 @@ namespace ProcessLayer.Processes.Lookups
                 Yearly = dr["Yearly"].ToNullableBoolean(),
                 IsGlobal = dr["Is Global"].ToNullableBoolean(),
             };
-            r.Type = NonWorkingTypeProcess.Instance.Value.Get(r.NonWorkingType ?? 0);
-            r.Location = LocationProcess.Instance.Value.Get(r.LocationID);
+            r.Type = NonWorkingTypeProcess.Instance.Get(r.NonWorkingType ?? 0);
+            r.Location = LocationProcess.Instance.Get(r.LocationID);
             return r;
         }
 

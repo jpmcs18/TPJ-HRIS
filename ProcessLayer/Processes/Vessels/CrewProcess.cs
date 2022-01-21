@@ -33,10 +33,10 @@ namespace ProcessLayer.Processes
 
             if (!IsCrewOnly)
             {
-                c._Vessel = VesselProcess.Instance.Value.Get(c.VesselID);
+                c._Vessel = VesselProcess.Instance.Get(c.VesselID);
                 c._Personnel = PersonnelProcess.Get(c.PersonnelID??0, true);
-                c._Position = PositionProcess.Instance.Value.Get(c.PositionID);
-                c._Department = DepartmentProcess.Instance.Value.Get(c.DepartmentID ?? 0);
+                c._Position = PositionProcess.Instance.Get(c.PositionID);
+                c._Department = DepartmentProcess.Instance.Get(c.DepartmentID ?? 0);
             }
             return c;
         }

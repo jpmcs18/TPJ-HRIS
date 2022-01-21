@@ -10,7 +10,7 @@ namespace ProcessLayer.Processes.Kiosk
 {
     public sealed class HighRiskRequestProcess
     {
-        public static readonly Lazy<HighRiskRequestProcess> Instance = new Lazy<HighRiskRequestProcess>(() => new HighRiskRequestProcess());
+        public static readonly HighRiskRequestProcess Instance = new HighRiskRequestProcess();
         private HighRiskRequestProcess() { }
         internal bool IsHighRiskRequestOnly = false;
 

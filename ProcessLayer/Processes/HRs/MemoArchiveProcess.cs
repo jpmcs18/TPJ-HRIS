@@ -35,11 +35,8 @@ namespace ProcessLayer.Processes
 
             m._MemoType = LookupProcess.GetMemoType(m.MemoTypeID);
 
-            //if (m.InReplyTo != null)
-            //{
-                m._Persons = PersonnelProcess.GetMemoArchivesPerson(m.ID, true);
-                m._Groups = PersonnelGroupProcess.GetMemoArchivesGroup(m.ID, true);
-            //}
+            m._Persons = PersonnelProcess.GetMemoArchivesPerson(m.ID, true);
+            m._Groups = PersonnelGroupProcess.GetMemoArchivesGroup(m.ID, true);
 
             if (!String.IsNullOrEmpty(m.File))
                 m.File = Path.Combine(ConfigurationManager.AppSettings["MemoFolder"], m.File);

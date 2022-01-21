@@ -10,7 +10,7 @@ namespace ProcessLayer.Processes
 {
     public sealed class KioskApproverProcess 
     {
-        public static readonly Lazy<KioskApproverProcess> Instance = new Lazy<KioskApproverProcess>(() => new KioskApproverProcess());
+        public static readonly KioskApproverProcess Instance = new KioskApproverProcess();
         private KioskApproverProcess() { }
         internal bool IsKioskApproverOnly = false;
         internal KioskApprovers Converter(DataRow dr)
@@ -42,21 +42,13 @@ namespace ProcessLayer.Processes
             var parameters = new Dictionary<string, object> {
                 { "@Name", name },
                 { "@DepartmentID", departmentid },
-                //{ FilterParameters.PageNumber, page },
-                //{ FilterParameters.GridCount, gridCount }
             };
-
-            //var outParameters = new List<OutParameters>
-            //{
-            //    { FilterParameters.PageCount, SqlDbType.Int }
-            //};
 
             using (var db = new DBTools())
             {
                 using (var ds = db.ExecuteReader("lookup.FilterKioskApprovers", parameters))
                 {
                     k = ds.GetList(Converter);
-                    //PageCount = outParameters.Get(FilterParameters.PageCount).ToInt();
                 }
             }
             return k;

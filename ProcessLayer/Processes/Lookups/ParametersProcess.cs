@@ -12,7 +12,7 @@ namespace ProcessLayer.Processes
 {
     public sealed class ParametersProcess : ILookupProcess<Parameters> 
     {
-        public static readonly Lazy<ParametersProcess> Instance = new Lazy<ParametersProcess>(() => new ParametersProcess());
+        public static readonly ParametersProcess Instance = new ParametersProcess();
         private ParametersProcess() { }
         internal Parameters Converter(DataRow dr)
         {

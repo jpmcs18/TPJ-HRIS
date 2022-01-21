@@ -24,7 +24,7 @@ namespace WebTemplate.Controllers.MemoArchives
         public ActionResult Index(Index model)
         {
             model.Page = model.Page > 1 ? model.Page : 1;
-            model.WrittenExplanations = WrittenExplanationProcess.Instance.Value.Filter(model.Personnel, model.Date, model.StatusID, model.Page, model.GridCount, out int PageCount).ToList();
+            model.WrittenExplanations = WrittenExplanationProcess.Instance.Filter(model.Personnel, model.Date, model.StatusID, model.Page, model.GridCount, out int PageCount).ToList();
             model.PageCount = PageCount;
 
             if (Request.IsAjaxRequest())
@@ -84,7 +84,7 @@ namespace WebTemplate.Controllers.MemoArchives
         {
             try
             {
-                WrittenExplanation model = WrittenExplanationProcess.Instance.Value.Get(id);
+                WrittenExplanation model = WrittenExplanationProcess.Instance.Get(id);
 
                 if (model != null)
                 {
@@ -128,8 +128,8 @@ namespace WebTemplate.Controllers.MemoArchives
                         incidentReport,
                         content
                     };
-                    writtenExplanation = WrittenExplanationProcess.Instance.Value.CreateOrUpdate(writtenExplanation, User.UserID);
-                    writtenExplanation = WrittenExplanationProcess.Instance.Value.Get(writtenExplanation.ID);
+                    writtenExplanation = WrittenExplanationProcess.Instance.CreateOrUpdate(writtenExplanation, User.UserID);
+                    writtenExplanation = WrittenExplanationProcess.Instance.Get(writtenExplanation.ID);
                 }
                 else
                 {
@@ -154,12 +154,12 @@ namespace WebTemplate.Controllers.MemoArchives
             {
                 var appSettingPath = ConfigurationManager.AppSettings[SAVE_LOCATION];
                 var directory = appSettingPath.Contains("~") ? Server.MapPath(appSettingPath) : appSettingPath;
-                var writtenExplanation = WrittenExplanationProcess.Instance.Value.Get(content.WrittenExplanationID, true);
+                var writtenExplanation = WrittenExplanationProcess.Instance.Get(content.WrittenExplanationID, true);
 
                 content.File = fileBase.SaveFile(directory, $"{writtenExplanation.MemoNo}{DateTime.Now:MMddyyyyHHmmss}{Path.GetExtension(fileBase.FileName)}");
                 content.SaveOnly = !sendEmail;
-                content = WrittenExplanationContentProcess.Instance.Value.Create(content, User.UserID);
-                writtenExplanation = WrittenExplanationProcess.Instance.Value.Get(content.WrittenExplanationID);
+                content = WrittenExplanationContentProcess.Instance.Create(content, User.UserID);
+                writtenExplanation = WrittenExplanationProcess.Instance.Get(content.WrittenExplanationID);
 
                 ModelState.Clear();
                 ViewBag.ContentId = writtenExplanation.Content.LastOrDefault()?.ID;
@@ -179,9 +179,9 @@ namespace WebTemplate.Controllers.MemoArchives
             {
 
                 if(resched)
-                    WrittenExplanationProcess.Instance.Value.SetConsultationStatus(id, 2, User.UserID, consultationSchedule);
+                    WrittenExplanationProcess.Instance.SetConsultationStatus(id, 2, User.UserID, consultationSchedule);
                 else
-                    WrittenExplanationProcess.Instance.Value.ScheduleConsultation(id, consultationSchedule, User.UserID);
+                    WrittenExplanationProcess.Instance.ScheduleConsultation(id, consultationSchedule, User.UserID);
                 var content = new WrittenExplanationContent
                 {
                     Message = $"Consultation {(resched ? "Reschedule" : "Schedule")} : {consultationSchedule:MMMM dd, yyyy}",
@@ -189,9 +189,9 @@ namespace WebTemplate.Controllers.MemoArchives
                     SaveOnly = !sendEmail
                 };
 
-                content = WrittenExplanationContentProcess.Instance.Value.Create(content, User.UserID);
+                content = WrittenExplanationContentProcess.Instance.Create(content, User.UserID);
 
-                var WrittenExplanation = WrittenExplanationProcess.Instance.Value.Get(id);
+                var WrittenExplanation = WrittenExplanationProcess.Instance.Get(id);
 
                 ModelState.Clear();
                 ViewBag.ContentId = WrittenExplanation.Content.LastOrDefault()?.ID;
@@ -210,8 +210,8 @@ namespace WebTemplate.Controllers.MemoArchives
         {
             try
             {
-                WrittenExplanationProcess.Instance.Value.SetConsultationStatus(id, 1, User.UserID);
-                var WrittenExplanation = WrittenExplanationProcess.Instance.Value.Get(id);
+                WrittenExplanationProcess.Instance.SetConsultationStatus(id, 1, User.UserID);
+                var WrittenExplanation = WrittenExplanationProcess.Instance.Get(id);
 
                 ModelState.Clear();
                 return PartialViewCustom("_Replies", WrittenExplanation);
@@ -228,8 +228,8 @@ namespace WebTemplate.Controllers.MemoArchives
         {
             try
             {
-                WrittenExplanationProcess.Instance.Value.Close(id, recommendation, User.UserID);
-                var WrittenExplanation = WrittenExplanationProcess.Instance.Value.Get(id);
+                WrittenExplanationProcess.Instance.Close(id, recommendation, User.UserID);
+                var WrittenExplanation = WrittenExplanationProcess.Instance.Get(id);
                 
 
                 ModelState.Clear();
@@ -250,10 +250,10 @@ namespace WebTemplate.Controllers.MemoArchives
             {
                 var appSettingPath = ConfigurationManager.AppSettings[SAVE_LOCATION];
                 var directory = appSettingPath.Contains("~") ? Server.MapPath(appSettingPath) : appSettingPath;
-                var writtenExplanation = WrittenExplanationProcess.Instance.Value.Get(writtenExplanationId, true);
+                var writtenExplanation = WrittenExplanationProcess.Instance.Get(writtenExplanationId, true);
                 string filePath = file.SaveFile(directory, $"{writtenExplanation.MemoNo}{DateTime.Now:MMddyyyyHHmmss}{Path.GetExtension(file.FileName)}");
-                WrittenExplanationContentProcess.Instance.Value.UpdateFile(id, filePath, User.UserID);
-                writtenExplanation = WrittenExplanationProcess.Instance.Value.Get(writtenExplanationId);
+                WrittenExplanationContentProcess.Instance.UpdateFile(id, filePath, User.UserID);
+                writtenExplanation = WrittenExplanationProcess.Instance.Get(writtenExplanationId);
                 ModelState.Clear();
                 return PartialViewCustom("_Replies", writtenExplanation);
             }
@@ -271,8 +271,8 @@ namespace WebTemplate.Controllers.MemoArchives
             {
                 if (writtenExplanation.ID > 0)
                 {
-                    writtenExplanation = WrittenExplanationProcess.Instance.Value.CreateOrUpdate(writtenExplanation, User.UserID);
-                    writtenExplanation = WrittenExplanationProcess.Instance.Value.Get(writtenExplanation.ID);
+                    writtenExplanation = WrittenExplanationProcess.Instance.CreateOrUpdate(writtenExplanation, User.UserID);
+                    writtenExplanation = WrittenExplanationProcess.Instance.Get(writtenExplanation.ID);
                 }
                 else
                 {
@@ -295,7 +295,7 @@ namespace WebTemplate.Controllers.MemoArchives
         {
             try
             {
-                WrittenExplanationProcess.Instance.Value.Delete(id, User.UserID);
+                WrittenExplanationProcess.Instance.Delete(id, User.UserID);
                 return Json(new { msg = true, res = "Deleted" });
 
             }
@@ -313,8 +313,8 @@ namespace WebTemplate.Controllers.MemoArchives
             try
             {
 
-                WrittenExplanationContentProcess.Instance.Value.Delete(id, User.UserID);
-                var writtenExplanation = WrittenExplanationProcess.Instance.Value.Get(writtenExplanationId);
+                WrittenExplanationContentProcess.Instance.Delete(id, User.UserID);
+                var writtenExplanation = WrittenExplanationProcess.Instance.Get(writtenExplanationId);
 
 
                 ModelState.Clear();
@@ -342,8 +342,8 @@ namespace WebTemplate.Controllers.MemoArchives
                 if (!Web.HasInternetConnection())
                     return Json(new { msg = false, res = "No Internet Connection." });
 
-                List<WrittenExplanationContent> writtenExplanationContents = WrittenExplanationContentProcess.Instance.Value.GetList(contentId);
-                WrittenExplanation writtenExplanation = WrittenExplanationProcess.Instance.Value.Get(writtenExplanationContents.FirstOrDefault()?.WrittenExplanationID ?? 0, true);
+                List<WrittenExplanationContent> writtenExplanationContents = WrittenExplanationContentProcess.Instance.GetList(contentId);
+                WrittenExplanation writtenExplanation = WrittenExplanationProcess.Instance.Get(writtenExplanationContents.FirstOrDefault()?.WrittenExplanationID ?? 0, true);
 
                 if (string.IsNullOrEmpty(writtenExplanation.Personnel.Email))
                     return Json(new { msg = false, res = writtenExplanation.Personnel.FullName + " has no email." });

@@ -9,7 +9,7 @@ namespace ProcessLayer.Processes.Lookups
 {
     public sealed class HearingStatusProcess
     {
-        public static readonly Lazy<HearingStatusProcess> Instance = new Lazy<HearingStatusProcess>(() => new HearingStatusProcess());
+        public static readonly HearingStatusProcess Instance = new HearingStatusProcess();
         private HearingStatusProcess() { }
         internal HearingStatus Converter(DataRow dr)
         {

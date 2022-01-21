@@ -13,9 +13,9 @@
     var CrewPrintAccess = credential.GetPage("Crew Movement Print") ?? new DataAccessLayer.System.Page();
     var CrewEditPostedAccess = credential.GetPage("Crew Edit Posted") ?? new DataAccessLayer.System.Page();
 
-    var departments = ProcessLayer.Processes.Lookups.DepartmentProcess.Instance.Value.GetList();
-    var positions = ProcessLayer.Processes.PositionProcess.Instance.Value.GetList();
-    var vessels = ProcessLayer.Processes.VesselProcess.Instance.Value.GetList();
+    var departments = ProcessLayer.Processes.Lookups.DepartmentProcess.Instance.GetList();
+    var positions = ProcessLayer.Processes.PositionProcess.Instance.GetList();
+    var vessels = ProcessLayer.Processes.VesselProcess.Instance.GetList();
 
     string Description = "", Label = "", HiddenID = "", Name = "";
 

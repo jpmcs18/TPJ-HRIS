@@ -20,7 +20,7 @@ namespace WebTemplate.Controllers.CnB
             model.Page = model.Page > 1 ? model.Page : 1;
             model.StartDate ??= DateTime.Now.AddMonths(-1);
             model.EndDate ??= DateTime.Now;
-            model.Payrolls = PayrollProcess.Instance.Value.GetPayrollBases(model.StartDate, model.EndDate, PayrollSheet.A, model.Page, model.GridCount, out int PageCount);
+            model.Payrolls = PayrollProcess.Instance.GetPayrollBases(model.StartDate, model.EndDate, PayrollSheet.A, model.Page, model.GridCount, out int PageCount);
             model.PageCount = PageCount;
             if (Request.IsAjaxRequest())
             {
@@ -33,35 +33,13 @@ namespace WebTemplate.Controllers.CnB
             }
         }
 
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult GeneratePayroll(PayrollPeriod model)
-        //{
-        //    try
-        //    {
-        //        model = PayrollProcess.Instance.Value.GeneratePayroll(model, PayrollSheet.A, User.UserID);
-
-        //        ModelState.Clear();
-
-        //        if (model.Payrolls.Count() > 0)
-        //            return PartialViewCustom("_PayrollSheetA", model);
-        //        else
-        //            return Json(new { msg = false, res = "No payrolls generated!" });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Json(new { msg = false, res = ex.GetActualMessage() });
-        //    }
-        //}
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult RecomputePersonnelPayroll(long payrollId)
         {
             try
             {
-                Payroll model = PayrollProcess.Instance.Value.RecomputePayroll(payrollId, User.UserID);
+                Payroll model = PayrollProcess.Instance.RecomputePayroll(payrollId, User.UserID);
 
                 ModelState.Clear();
 
@@ -80,7 +58,7 @@ namespace WebTemplate.Controllers.CnB
         {
             try
             {
-                PayrollPeriod model = PayrollProcess.Instance.Value.GeneratePayroll(month, year, 0, PayrollSheet.A, User.UserID);
+                PayrollPeriod model = PayrollProcess.Instance.GeneratePayroll(month, year, 0, PayrollSheet.A, User.UserID);
 
                 ModelState.Clear();
 
@@ -101,7 +79,7 @@ namespace WebTemplate.Controllers.CnB
         {
             try
             {
-                model.Payrolls = PayrollProcess.Instance.Value.GetPayrollList(model.PayrollBase.ID);
+                model.Payrolls = PayrollProcess.Instance.GetPayrollList(model.PayrollBase.ID);
 
                 ModelState.Clear();
                 return PartialViewCustom("_PayrollSheetAs", model);
@@ -122,9 +100,9 @@ namespace WebTemplate.Controllers.CnB
                 {
                     return Json(new { msg = false, res = "Payroll not found." });
                 }
-                model.PayrollDetails = PayrollProcess.Instance.Value.GetPayrollDetails(model.Payroll?.ID ?? 0);
-                model.PayrollDeductions = PayrollProcess.Instance.Value.GetPayrollDeductions(model.Payroll?.ID ?? 0);
-                model.LoanDeductions = PayrollProcess.Instance.Value.GetLoanDeductions(model.Payroll?.ID ?? 0);
+                model.PayrollDetails = PayrollProcess.Instance.GetPayrollDetails(model.Payroll?.ID ?? 0);
+                model.PayrollDeductions = PayrollProcess.Instance.GetPayrollDeductions(model.Payroll?.ID ?? 0);
+                model.LoanDeductions = PayrollProcess.Instance.GetLoanDeductions(model.Payroll?.ID ?? 0);
                 model.Payroll.Personnel = PersonnelProcess.Get(model.Payroll.Personnel.ID, true);
 
                 if (model.PayrollDetails.Any())
@@ -151,7 +129,7 @@ namespace WebTemplate.Controllers.CnB
         {
             try
             {
-                model = PayrollProcess.Instance.Value.UpdatePayrollStatus(model, User.UserID);
+                model = PayrollProcess.Instance.UpdatePayrollStatus(model, User.UserID);
 
                 ModelState.Clear();
                 return PartialViewCustom("_PayrollSheetA", model);
@@ -165,22 +143,14 @@ namespace WebTemplate.Controllers.CnB
         [HttpPost]
         public ActionResult PrintPayroll(long id)
         {
-            //try
-            //{
-                using (var report = new PrintPayrollSheetA(Server.MapPath(PrintPayrollSheetAHelper.Instance.Value.Template)))
-                {
-                    report.PayrollPeriod = PayrollProcess.Instance.Value.GetPayrollBase(id);
-                    report.GenerateReport();
-                    ViewBag.Content = report.SaveToPDF();
-                    ViewBag.Title = $"Payroll Sheet - A | {report.PayrollPeriod.StartDate:MMMM dd yyyy} - {report.PayrollPeriod.EndDate:MMMM dd yyyy}";
-                }
-                return View("~/Views/PrintingView.cshtml");
-            //}
-            //catch (Exception ex)
-            //{
-            //    //return Json(new { msg = false, res = ex.GetActualMessage() });
-            //    return View("~/Views/Security/ServerError.cshtml", ex.GetActualMessage());
-            //}
+            using (var report = new PrintPayrollSheetA(Server.MapPath(PrintPayrollSheetAHelper.Instance.Template)))
+            {
+                report.PayrollPeriod = PayrollProcess.Instance.GetPayrollBase(id);
+                report.GenerateReport();
+                ViewBag.Content = report.SaveToPDF();
+                ViewBag.Title = $"Payroll Sheet - A | {report.PayrollPeriod.StartDate:MMMM dd yyyy} - {report.PayrollPeriod.EndDate:MMMM dd yyyy}";
+            }
+            return View("~/Views/PrintingView.cshtml");
         }
     }
 }

@@ -22,22 +22,22 @@ namespace ReportLayer.Reports
         {
             base.GenerateReport();
 
-            WriteToCell(PrintCrewMovementFormHelper.Instance.Value.TransactionNoCell, CrewMovement.TransactionNo);
-            WriteToCell(PrintCrewMovementFormHelper.Instance.Value.CrewNameCell, CrewMovement._Personnel?.FullName);
-            WriteToCell(PrintCrewMovementFormHelper.Instance.Value.DateTimeCell, CrewMovement.OnboardDate?.ToString("MM-dd-yyyy @ hh:mm tt"));
-            WriteToCell(PrintCrewMovementFormHelper.Instance.Value.CurrentDepartmentCell, CrewMovement._Department?.Description);
-            WriteToCell(PrintCrewMovementFormHelper.Instance.Value.CurrentPositionCell, CrewMovement._Position?.Description);
-            WriteToCell(PrintCrewMovementFormHelper.Instance.Value.CurrentVesselCell, CrewMovement._Vessel?.Description);
-            WriteToCell(PrintCrewMovementFormHelper.Instance.Value.CurrentSNPositionCell, CrewMovement._SNPosition?.Description);
-            WriteToCell(PrintCrewMovementFormHelper.Instance.Value.CurrentSNVesselCell, CrewMovement._SNVessel?.Description);
-            WriteToCell(PrintCrewMovementFormHelper.Instance.Value.PreviousDepartmentCell, CrewMovement._PreviousCrewMovement?._Department.Description);
-            WriteToCell(PrintCrewMovementFormHelper.Instance.Value.PreviousPositionCell, CrewMovement._PreviousCrewMovement?._Position?.Description);
-            WriteToCell(PrintCrewMovementFormHelper.Instance.Value.PreviousVesselCell, CrewMovement._PreviousCrewMovement?._Vessel?.Description);
-            WriteToCell(PrintCrewMovementFormHelper.Instance.Value.PreviousSNPositionCell, CrewMovement._PreviousCrewMovement?._SNPosition?.Description);
-            WriteToCell(PrintCrewMovementFormHelper.Instance.Value.PreviousSNVesselCell, CrewMovement._PreviousCrewMovement?._SNVessel?.Description);
-            WriteToCell(PrintCrewMovementFormHelper.Instance.Value.RemarksCell, CrewMovement.Remarks);
-            WriteToCell(PrintCrewMovementFormHelper.Instance.Value.PreparedByCell, CrewMovement._Creator);
-            WriteToCell(PrintCrewMovementFormHelper.Instance.Value.CheckedByCell, CrewMovement._Check);
+            WriteToCell(PrintCrewMovementFormHelper.Instance.TransactionNoCell, CrewMovement.TransactionNo);
+            WriteToCell(PrintCrewMovementFormHelper.Instance.CrewNameCell, CrewMovement._Personnel?.FullName);
+            WriteToCell(PrintCrewMovementFormHelper.Instance.DateTimeCell, CrewMovement.OnboardDate?.ToString("MM-dd-yyyy @ hh:mm tt"));
+            WriteToCell(PrintCrewMovementFormHelper.Instance.CurrentDepartmentCell, CrewMovement._Department?.Description);
+            WriteToCell(PrintCrewMovementFormHelper.Instance.CurrentPositionCell, CrewMovement._Position?.Description);
+            WriteToCell(PrintCrewMovementFormHelper.Instance.CurrentVesselCell, CrewMovement._Vessel?.Description);
+            WriteToCell(PrintCrewMovementFormHelper.Instance.CurrentSNPositionCell, CrewMovement._SNPosition?.Description);
+            WriteToCell(PrintCrewMovementFormHelper.Instance.CurrentSNVesselCell, CrewMovement._SNVessel?.Description);
+            WriteToCell(PrintCrewMovementFormHelper.Instance.PreviousDepartmentCell, CrewMovement._PreviousCrewMovement?._Department.Description);
+            WriteToCell(PrintCrewMovementFormHelper.Instance.PreviousPositionCell, CrewMovement._PreviousCrewMovement?._Position?.Description);
+            WriteToCell(PrintCrewMovementFormHelper.Instance.PreviousVesselCell, CrewMovement._PreviousCrewMovement?._Vessel?.Description);
+            WriteToCell(PrintCrewMovementFormHelper.Instance.PreviousSNPositionCell, CrewMovement._PreviousCrewMovement?._SNPosition?.Description);
+            WriteToCell(PrintCrewMovementFormHelper.Instance.PreviousSNVesselCell, CrewMovement._PreviousCrewMovement?._SNVessel?.Description);
+            WriteToCell(PrintCrewMovementFormHelper.Instance.RemarksCell, CrewMovement.Remarks);
+            WriteToCell(PrintCrewMovementFormHelper.Instance.PreparedByCell, CrewMovement._Creator);
+            WriteToCell(PrintCrewMovementFormHelper.Instance.CheckedByCell, CrewMovement._Check);
         }
 
         public override void Dispose()

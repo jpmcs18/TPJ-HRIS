@@ -24,11 +24,6 @@ namespace WebTemplate.Controllers.Maintenance.Systems
         {
             try
             {
-                //if (String.IsNullOrWhiteSpace(model.CurrentPassword))
-                //{
-                //    throw new Exception("Please enter your current password.");
-                //}
-
                 if (String.IsNullOrWhiteSpace(model.NewPassword))
                 {
                     throw new Exception("Please enter your new password.");

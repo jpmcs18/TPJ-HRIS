@@ -26,7 +26,7 @@ namespace WebTemplate.Controllers.MemoArchives
         public ActionResult Index(Index model)
         {
             model.Page = model.Page > 1 ? model.Page : 1;
-            model.Years = PolicyAndProcedureProcess.Instance.Value.FilterYears(model.Page, model.GridCount, out int PageCount).ToList();
+            model.Years = PolicyAndProcedureProcess.Instance.FilterYears(model.Page, model.GridCount, out int PageCount).ToList();
             model.PageCount = PageCount;
 
             if (Request.IsAjaxRequest())
@@ -47,7 +47,7 @@ namespace WebTemplate.Controllers.MemoArchives
             try
             {
                 model.Page = model.Page > 1 ? model.Page : 1;
-                model.PolicyAndProcedureList = PolicyAndProcedureProcess.Instance.Value.Filter(model.Year, model.Page, model.GridCount, out int PageCount).ToList();
+                model.PolicyAndProcedureList = PolicyAndProcedureProcess.Instance.Filter(model.Year, model.Page, model.GridCount, out int PageCount).ToList();
                 model.PageCount = PageCount;
                 ModelState.Clear();
                 return PartialViewCustom("_PolicyAndProcedures", model);
@@ -64,7 +64,7 @@ namespace WebTemplate.Controllers.MemoArchives
         {
             try
             {
-                var PolicyAndProcedure = PolicyAndProcedureProcess.Instance.Value.Get(papId);
+                var PolicyAndProcedure = PolicyAndProcedureProcess.Instance.Get(papId);
                 ModelState.Clear();
                 return PartialViewCustom("_PersonnelPolicyAndProcedures", PolicyAndProcedure);
             }
@@ -80,7 +80,7 @@ namespace WebTemplate.Controllers.MemoArchives
         {
             try
             {
-                var PolicyAndProcedure = PolicyAndProcedureProcess.Instance.Value.Get(papId);
+                var PolicyAndProcedure = PolicyAndProcedureProcess.Instance.Get(papId);
                 ModelState.Clear();
                 return PartialViewCustom("_PolicyAndProceduresContent", PolicyAndProcedure);
             }
@@ -159,7 +159,7 @@ namespace WebTemplate.Controllers.MemoArchives
             {
                 Management model = new()
                 {
-                    Vessels = VesselProcess.Instance.Value.Search(filter),
+                    Vessels = VesselProcess.Instance.Search(filter),
                     VesselSearchKey = filter
                 };
 
@@ -183,8 +183,8 @@ namespace WebTemplate.Controllers.MemoArchives
                 policyAndProcedure.SaveOnly = !sendEmail;
                 policyAndProcedure.File = fileBase.SaveFile(directory, $"{policyAndProcedure.Subject.Replace(" ", "_")}{DateTime.Now:MMddyyyyHHmmss}{Path.GetExtension(fileBase.FileName)}");
 
-                policyAndProcedure = PolicyAndProcedureProcess.Instance.Value.Create(policyAndProcedure, personnelId, groupId, newVesselIds, User.UserID);
-                policyAndProcedure = PolicyAndProcedureProcess.Instance.Value.Get(policyAndProcedure.ID);
+                policyAndProcedure = PolicyAndProcedureProcess.Instance.Create(policyAndProcedure, personnelId, groupId, newVesselIds, User.UserID);
+                policyAndProcedure = PolicyAndProcedureProcess.Instance.Get(policyAndProcedure.ID);
              
                 ModelState.Clear();
                 ViewBag.ContentId = policyAndProcedure.ID;
@@ -208,7 +208,7 @@ namespace WebTemplate.Controllers.MemoArchives
                 if (!Web.HasInternetConnection())
                     return Json(new { msg = false, res = "No Internet Connection." });
 
-                PolicyAndProcedure policyAndProcedure = PolicyAndProcedureProcess.Instance.Value.Get(contentId ?? 0);
+                PolicyAndProcedure policyAndProcedure = PolicyAndProcedureProcess.Instance.Get(contentId ?? 0);
                 
                 List<string> files = new();
                 string appSettingPath = ConfigurationManager.AppSettings[SAVE_LOCATION];
@@ -259,10 +259,10 @@ namespace WebTemplate.Controllers.MemoArchives
             {
                 var appSettingPath = ConfigurationManager.AppSettings[SAVE_LOCATION];
                 var directory = appSettingPath.Contains("~") ? Server.MapPath(appSettingPath) : appSettingPath;
-                var policyAndProcedure = PolicyAndProcedureProcess.Instance.Value.Get(id, true);
+                var policyAndProcedure = PolicyAndProcedureProcess.Instance.Get(id, true);
                 string filePath = file.SaveFile(directory, $"{policyAndProcedure.MemoNo}{DateTime.Now:MMddyyyyHHmmss}{Path.GetExtension(file.FileName)}");
-                PolicyAndProcedureProcess.Instance.Value.UpdateFile(id, filePath, User.UserID);
-                policyAndProcedure = PolicyAndProcedureProcess.Instance.Value.Get(id);
+                PolicyAndProcedureProcess.Instance.UpdateFile(id, filePath, User.UserID);
+                policyAndProcedure = PolicyAndProcedureProcess.Instance.Get(id);
                 ModelState.Clear();
                 return PartialViewCustom("_PersonnelPolicyAndProcedures", policyAndProcedure);
             }
@@ -280,8 +280,8 @@ namespace WebTemplate.Controllers.MemoArchives
             {
                 if (policyAndProcedure.ID > 0)
                 {
-                    PolicyAndProcedureProcess.Instance.Value.Update(policyAndProcedure, User.UserID);
-                    policyAndProcedure = PolicyAndProcedureProcess.Instance.Value.Get(policyAndProcedure.ID);
+                    PolicyAndProcedureProcess.Instance.Update(policyAndProcedure, User.UserID);
+                    policyAndProcedure = PolicyAndProcedureProcess.Instance.Get(policyAndProcedure.ID);
                 }
                 else
                 {
@@ -302,7 +302,7 @@ namespace WebTemplate.Controllers.MemoArchives
         {
             try
             {
-                PolicyAndProcedureProcess.Instance.Value.Delete(id, User.UserID);
+                PolicyAndProcedureProcess.Instance.Delete(id, User.UserID);
 
                 return Json(new { msg = true, res = "Deleted" });
 

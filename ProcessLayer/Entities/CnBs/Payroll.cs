@@ -71,7 +71,6 @@ namespace ProcessLayer.Entities.CnB
         public decimal PagibigCalamityLoan { get { return LoanDeductions.Where(x => x.PersonnelLoan._Loan.Description.Replace("-", "").Replace(" ", "").ToLower().Contains("pagibigcalamity")).Sum(x => x.Amount); } }
         public decimal PagibigLoan { get { return LoanDeductions.Where(x => x.PersonnelLoan._Loan.Description.Replace("-", "").Replace(" ", "").ToLower().Contains("pagibigloan")).Sum(x => x.Amount); } }
         public decimal SSS { get { return PayrollDeductions.Where(x => x.Deduction.Description.Replace("-", "").Replace(" ", "").ToLower().Contains("sss")).Sum(x => x.Amount) ?? 0; } }
-        //public decimal SSSLoan { get { return LoanDeductions.Where(x => x.PersonnelLoan._Loan.Description.Replace("-", "").Replace(" ", "").ToLower().Contains("sss")).Sum(x => x.Amount); } }
         public decimal ProvidentFund { get { return PayrollDeductions.Where(x => x.Deduction.Description.Replace("-", "").Replace(" ", "").ToLower().Contains("provident")).Sum(x => x.Amount) ?? 0; } }
         public decimal PhilHealth { get { return PayrollDeductions.Where(x => x.Deduction.Description.Replace("-", "").Replace(" ", "").ToLower().Contains("philhealth")).Sum(x => x.Amount) ?? 0; } }
         public decimal Vale { get { return LoanDeductions.Where(x => x.PersonnelLoan._Loan.isPersonal ?? false).Sum(x => x.Amount); } }

@@ -124,7 +124,6 @@ namespace WebTemplate.Controllers
                                             model.LoginUpdate(model.UserID, Session.SessionID, Request.UserHostAddress, null, null);
                                             Session["Username"] = null;
                                             Session["Password"] = null;
-                                            //returnUrl = returnUrl ?? "/";
                                             return RedirectToLocal(returnUrl);
                                         }
                                         else
@@ -193,7 +192,6 @@ namespace WebTemplate.Controllers
                             {
                                 SetCredentials(model.UserID);
                                 model.LoginUpdate(model.UserID, Session.SessionID, Request.UserHostAddress, null, null);
-                                //returnUrl = returnUrl ?? "/";
                                 return RedirectToLocal(returnUrl);
                             }
                             else

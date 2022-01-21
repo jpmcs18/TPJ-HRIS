@@ -9,7 +9,7 @@ namespace ProcessLayer.Processes.Lookups
 {
     public sealed class RecommendationProcess
     {
-        public static readonly Lazy<RecommendationProcess> Instance = new Lazy<RecommendationProcess>(() => new RecommendationProcess());
+        public static readonly RecommendationProcess Instance = new RecommendationProcess();
         private RecommendationProcess() { }
         internal Recommendation Converter(DataRow dr)
         {

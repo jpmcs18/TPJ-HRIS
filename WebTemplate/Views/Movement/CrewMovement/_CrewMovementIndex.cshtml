@@ -9,7 +9,7 @@
     var CrewPostAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("Crew Movement Post");
 
     ViewBag.title = CrewPageAccess.PageName;
-    var positionDepartments = ProcessLayer.Processes.DepartmentPositionProcess.Instance.Value.GetList();
+    var positionDepartments = ProcessLayer.Processes.DepartmentPositionProcess.Instance.GetList();
 }
 
 <div class="wrapper wrapper-content">

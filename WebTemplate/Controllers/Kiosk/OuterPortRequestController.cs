@@ -20,7 +20,7 @@ namespace WebTemplate.Controllers.Kiosk
         public ActionResult Index(Index model)
         {
             model.Page = model.Page > 1 ? model.Page : 1;
-            model.OuterPortRequests = OuterPortRequestProcess.Instance.Value.GetList(model.Key, model.LocationID, model.IsCancelled, model.StartDateTime, model.EndingDateTime, model.Page, model.GridCount, out int PageCount);
+            model.OuterPortRequests = OuterPortRequestProcess.Instance.GetList(model.Key, model.LocationID, model.IsCancelled, model.StartDateTime, model.EndingDateTime, model.Page, model.GridCount, out int PageCount);
             model.Approver = PersonnelProcess.GetByUserId(User.UserID);
             model.PageCount = PageCount;
 
@@ -87,7 +87,7 @@ namespace WebTemplate.Controllers.Kiosk
                 model.PersonnelID = model._Personnel?.ID;
 
                 if ((id ?? 0) > 0)
-                    model = OuterPortRequestProcess.Instance.Value.Get(id ?? 0);
+                    model = OuterPortRequestProcess.Instance.Get(id ?? 0);
 
                 if (model.Cancelled == true)
                     return PartialViewCustom("_OuterPortRequestView", model);
@@ -106,20 +106,7 @@ namespace WebTemplate.Controllers.Kiosk
         {
             try
             {
-                //StringBuilder errors = new StringBuilder();
-                //if (string.IsNullOrEmpty(model.Purpose))
-                //    errors.Append("- <b>Purpose</b> is required<br>");
-                //if (model.LocationID == null)
-                //    errors.Append("- <b>Location</b> is required<br>");
-                //if (model.PersonnelID == null)
-                //    errors.Append("- <b>Personnel</b> is required<br>");
-                //if (model.StartDate == null)
-                //    errors.Append("- <b>StartDate</b> is required<br>");
-
-
-                //if (errors.Length > 0)
-                //    return Json(new { msg = false, res = errors.ToString() });
-                model = OuterPortRequestProcess.Instance.Value.CreateOrUpdate(model, User.UserID);
+                model = OuterPortRequestProcess.Instance.CreateOrUpdate(model, User.UserID);
                 ModelState.Clear();
                 return PartialViewCustom("_OuterPortRequestEdit", model);
             }
@@ -135,7 +122,7 @@ namespace WebTemplate.Controllers.Kiosk
         {
             try
             {
-                OuterPortRequest model = OuterPortRequestProcess.Instance.Value.Get(id ?? 0);
+                OuterPortRequest model = OuterPortRequestProcess.Instance.Get(id ?? 0);
                 ModelState.Clear();
                 return PartialViewCustom("_OuterPortRequest", model);
             }
@@ -195,7 +182,7 @@ namespace WebTemplate.Controllers.Kiosk
 
         public void DeleteRequestSingle(long? id)
         {
-            OuterPortRequestProcess.Instance.Value.Delete(id ?? 0);
+            OuterPortRequestProcess.Instance.Delete(id ?? 0);
         }
     }
 }

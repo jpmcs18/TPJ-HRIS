@@ -5,7 +5,7 @@
     var CreatorAccess = credential.GetPage("Creator Leave Request") ?? new DataAccessLayer.System.Page();
 
     var c = User as WebTemplate.Models.CustomPrincipal;
-    var leaveTypes = ProcessLayer.Processes.HR.PersonnelLeaveCreditProcess.Instance.Value.GetLeaveWithCredits(Model.PersonnelID ?? 0, DateTime.Now);
+    var leaveTypes = ProcessLayer.Processes.HR.PersonnelLeaveCreditProcess.Instance.GetLeaveWithCredits(Model.PersonnelID ?? 0, DateTime.Now);
     //var IsBulkUse = Model._LeaveType.BulkUse ?? false;
     var leaveSubTypes = new Dictionary<int, string> { { 1, "Absent" }, { 2, "Half-day" } };
     var timeofday = new Dictionary<int, string> { { 1, "Morning" }, { 2, "Afternoon" } };

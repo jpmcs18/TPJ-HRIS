@@ -104,7 +104,6 @@ namespace ProcessLayer.Entities
         public List<EducationalBackground> _EducationalBackground { get; set; } = new List<EducationalBackground>();
         public List<WorkExperience> _WorkExperience { get; set; } = new List<WorkExperience>();
         public List<PersonnelCompensation> _Compensations { get; set; } = new List<PersonnelCompensation>();
-        //public List<PersonnelDeduction> _Deductions { get; set; } = new List<PersonnelDeduction>();
         public List<AssumedPersonnelDeduction> _AssumedDeductions { get; set; } = new List<AssumedPersonnelDeduction>();
         public List<PersonnelDependent> _Dependents { get; set; } = new List<PersonnelDependent>();
         public List<PersonnelLegislation> _Legislations { get; set; } = new List<PersonnelLegislation>();

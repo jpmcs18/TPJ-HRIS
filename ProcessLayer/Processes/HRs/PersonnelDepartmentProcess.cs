@@ -24,7 +24,7 @@ namespace ProcessLayer.Processes
                 EndDate = dr[PersonnelDepartmentFields.EndDate].ToNullableDateTime()
             };
 
-            obj._Department = DepartmentProcess.Instance.Value.Get(obj.DepartmentID ?? 0);
+            obj._Department = DepartmentProcess.Instance.Get(obj.DepartmentID ?? 0);
 
             return obj;
         }
@@ -77,7 +77,7 @@ namespace ProcessLayer.Processes
             {
                 db.ExecuteNonQuery(PersonnelDepartmentProcedures.CreateOrUpdate, ref outParameters, parameters);
                 obj.ID = outParameters.Get(PersonnelDepartmentParameters.ID).ToLong();
-                obj._Department = DepartmentProcess.Instance.Value.Get(obj.DepartmentID ?? 0);
+                obj._Department = DepartmentProcess.Instance.Get(obj.DepartmentID ?? 0);
             }
             return obj;
         }

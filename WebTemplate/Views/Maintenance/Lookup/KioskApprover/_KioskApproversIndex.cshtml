@@ -4,7 +4,7 @@
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
     var c = User as WebTemplate.Models.CustomPrincipal;
     var KioskApproverPageAccess = credential.GetPage("Maintenance/Lookup/KioskApprover") ?? new DataAccessLayer.System.Page();
-    var departments = ProcessLayer.Processes.Lookups.DepartmentProcess.Instance.Value.GetList();
+    var departments = ProcessLayer.Processes.Lookups.DepartmentProcess.Instance.GetList();
 
     ViewBag.title = KioskApproverPageAccess.PageName;
 }

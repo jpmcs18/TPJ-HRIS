@@ -8,7 +8,7 @@ namespace ProcessLayer.Processes
 {
     public sealed class WhenToDeductProcess : ILookupSourceProcess<WhenToDeduct>
     {
-        public static readonly Lazy<WhenToDeductProcess> Instance = new Lazy<WhenToDeductProcess>(() => new WhenToDeductProcess());
+        public static readonly WhenToDeductProcess Instance = new WhenToDeductProcess();
         private WhenToDeductProcess() { }
 
         public List<WhenToDeduct> WhenToDeducts { get; } = new List<WhenToDeduct> {   

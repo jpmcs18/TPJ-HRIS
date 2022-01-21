@@ -20,38 +20,38 @@ namespace ReportLayer.Reports
 
             PersonnelDepartment department = PersonnelDepartmentProcess.GetCurrentDepartment(AbsenceRequest._Personnel.ID, AbsenceRequest.CreatedOn ?? AbsenceRequest.RequestDate ?? DateTime.Now);
             PersonnelPosition position = PersonnelPositionProcess.GetCurrentPosition(AbsenceRequest._Personnel.ID, AbsenceRequest.CreatedOn ?? AbsenceRequest.RequestDate ?? DateTime.Now);
-            WriteToCell(PrintAbsenceHelper.Instance.Value.NameCell, AbsenceRequest._Personnel.FullName);
-            WriteToCell(PrintAbsenceHelper.Instance.Value.DateCell, AbsenceRequest.CreatedOn);
-            WriteToCell(PrintAbsenceHelper.Instance.Value.DepartmentCell, department._Department.Description);
-            WriteToCell(PrintAbsenceHelper.Instance.Value.PositionCell, position._Position.Description);
+            WriteToCell(PrintAbsenceHelper.Instance.NameCell, AbsenceRequest._Personnel.FullName);
+            WriteToCell(PrintAbsenceHelper.Instance.DateCell, AbsenceRequest.CreatedOn);
+            WriteToCell(PrintAbsenceHelper.Instance.DepartmentCell, department._Department.Description);
+            WriteToCell(PrintAbsenceHelper.Instance.PositionCell, position._Position.Description);
 
             if (AbsenceRequest.IsAbsent ?? false)
             {
-                WriteToCell(PrintAbsenceHelper.Instance.Value.IsAbsentCell, "X");
-                WriteToCell(PrintAbsenceHelper.Instance.Value.AbsentDateCell, AbsenceRequest.RequestDate?.ToString("MM/dd/yyyy"));
-                WriteToCell(PrintAbsenceHelper.Instance.Value.AbsentNoofDaysCell, AbsenceRequest.NoofDays?.ToString("0.##"));
+                WriteToCell(PrintAbsenceHelper.Instance.IsAbsentCell, "X");
+                WriteToCell(PrintAbsenceHelper.Instance.AbsentDateCell, AbsenceRequest.RequestDate?.ToString("MM/dd/yyyy"));
+                WriteToCell(PrintAbsenceHelper.Instance.AbsentNoofDaysCell, AbsenceRequest.NoofDays?.ToString("0.##"));
             }
 
             if (AbsenceRequest.IsHalfDay ?? false)
             {
-                WriteToCell(PrintAbsenceHelper.Instance.Value.IsHalfdayCell, "X");
-                WriteToCell(PrintAbsenceHelper.Instance.Value.HalfdayDateCell, AbsenceRequest.RequestDate?.ToString("MM/dd/yyyy"));
-                WriteToCell(PrintAbsenceHelper.Instance.Value.HalfdayMorningCell, (AbsenceRequest.IsMorning ?? false) ? "X" : "");
-                WriteToCell(PrintAbsenceHelper.Instance.Value.HalfdayAfternoonCell, (AbsenceRequest.IsAfternoon ?? false) ? "X" : "");
+                WriteToCell(PrintAbsenceHelper.Instance.IsHalfdayCell, "X");
+                WriteToCell(PrintAbsenceHelper.Instance.HalfdayDateCell, AbsenceRequest.RequestDate?.ToString("MM/dd/yyyy"));
+                WriteToCell(PrintAbsenceHelper.Instance.HalfdayMorningCell, (AbsenceRequest.IsMorning ?? false) ? "X" : "");
+                WriteToCell(PrintAbsenceHelper.Instance.HalfdayAfternoonCell, (AbsenceRequest.IsAfternoon ?? false) ? "X" : "");
             }
 
             if (AbsenceRequest.IsUndertime ?? false)
             {
-                WriteToCell(PrintAbsenceHelper.Instance.Value.IsUndertimeCell, "X");
-                WriteToCell(PrintAbsenceHelper.Instance.Value.UndertimeDateCell, AbsenceRequest.RequestDate?.ToString("MM/dd/yyyy"));
-                WriteToCell(PrintAbsenceHelper.Instance.Value.UndertimeTimeCell, AbsenceRequest.Time?.ToString("hh:mm tt"));
+                WriteToCell(PrintAbsenceHelper.Instance.IsUndertimeCell, "X");
+                WriteToCell(PrintAbsenceHelper.Instance.UndertimeDateCell, AbsenceRequest.RequestDate?.ToString("MM/dd/yyyy"));
+                WriteToCell(PrintAbsenceHelper.Instance.UndertimeTimeCell, AbsenceRequest.Time?.ToString("hh:mm tt"));
             }
 
             string reason1 = AbsenceRequest.Reasons.Length > 120 ? AbsenceRequest.Reasons.Substring(0, 120) : AbsenceRequest.Reasons;
             string reason2 = AbsenceRequest.Reasons.Replace(reason1, "");
 
-            WriteToCell(PrintAbsenceHelper.Instance.Value.ReasonsCell, reason1);
-            WriteToCell(PrintAbsenceHelper.Instance.Value.Reasons2Cell, reason2);
+            WriteToCell(PrintAbsenceHelper.Instance.ReasonsCell, reason1);
+            WriteToCell(PrintAbsenceHelper.Instance.Reasons2Cell, reason2);
         }
     }
 }

@@ -2,7 +2,7 @@
 @{
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
     var LeaveCreditsTabAccess = credential.GetPage("Leave Credits") ?? new DataAccessLayer.System.Page();
-    var leaveList = ProcessLayer.Processes.LeaveTypeProcess.Instance.Value.GetList().Where(x => x.IsMidYear ?? false).ToList();
+    var leaveList = ProcessLayer.Processes.LeaveTypeProcess.Instance.GetList().Where(x => x.IsMidYear ?? false).ToList();
 }
 
     <tr id="Row-Display-DateLeaveCredit-@Model.ID" class="Row-Display clickable" tpjattr="PersonnelDateLeaveCredits" style="cursor: pointer" title="">

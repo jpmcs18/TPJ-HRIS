@@ -11,7 +11,7 @@ namespace ProcessLayer.Processes.HR
 {
     public sealed class WrittenExplanationContentProcess
     {
-        public static readonly Lazy<WrittenExplanationContentProcess> Instance = new Lazy<WrittenExplanationContentProcess>(() => new WrittenExplanationContentProcess());
+        public static readonly WrittenExplanationContentProcess Instance = new WrittenExplanationContentProcess();
         private WrittenExplanationContentProcess() { }
         internal WrittenExplanationContent Converter(DataRow dr)
         {

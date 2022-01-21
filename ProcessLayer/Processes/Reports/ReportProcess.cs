@@ -13,7 +13,7 @@ namespace ProcessLayer.Processes.Reports
 {
     public sealed class ReportProcess
     {
-        public static readonly Lazy<ReportProcess> Instance = new Lazy<ReportProcess>(() => new ReportProcess());
+        public static readonly ReportProcess Instance = new ReportProcess();
         private ReportProcess() { }
 
         internal PersonnelReport Converter(DataRow dr)

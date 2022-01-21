@@ -20,14 +20,14 @@ namespace ReportLayer.Reports
         {
             base.GenerateReport();
 
-            WriteToCell(PrintVesselMovementHelper.Instance.Value.DateCell, StartDate.ToString("MMMM dd, yyyy") + " - " + EndDate.ToString("MMMM dd, yyyy"));
-            WriteToCell(PrintVesselMovementHelper.Instance.Value.VesselNameCell, Vessel.Description);
-            var startRow = PrintVesselMovementHelper.Instance.Value.StartRow;
+            WriteToCell(PrintVesselMovementHelper.Instance.DateCell, StartDate.ToString("MMMM dd, yyyy") + " - " + EndDate.ToString("MMMM dd, yyyy"));
+            WriteToCell(PrintVesselMovementHelper.Instance.VesselNameCell, Vessel.Description);
+            var startRow = PrintVesselMovementHelper.Instance.StartRow;
             foreach(var movement in VesselMovements)
             {
-                WriteToCell(startRow, PrintVesselMovementHelper.Instance.Value.DateColumn, movement.MovementDate.ToString("MMMM dd, yyyy"));
-                WriteToCell(startRow, PrintVesselMovementHelper.Instance.Value.MovementColumn, movement._VesselMovementType.Description);
-                WriteToCell(startRow, PrintVesselMovementHelper.Instance.Value.PlaceColumn, movement.Place);
+                WriteToCell(startRow, PrintVesselMovementHelper.Instance.DateColumn, movement.MovementDate.ToString("MMMM dd, yyyy"));
+                WriteToCell(startRow, PrintVesselMovementHelper.Instance.MovementColumn, movement._VesselMovementType.Description);
+                WriteToCell(startRow, PrintVesselMovementHelper.Instance.PlaceColumn, movement.Place);
                 startRow++;
             }
         }

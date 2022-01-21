@@ -11,7 +11,7 @@ namespace ProcessLayer.Processes.HR
 {
     public sealed class InfractionContentProcess
     {
-        public static readonly Lazy<InfractionContentProcess> Instance = new Lazy<InfractionContentProcess>(() => new InfractionContentProcess());
+        public static readonly InfractionContentProcess Instance = new InfractionContentProcess();
         private InfractionContentProcess() { }
         internal InfractionContent Converter(DataRow dr)
         {

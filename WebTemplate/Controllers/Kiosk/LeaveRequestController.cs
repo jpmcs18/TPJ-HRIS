@@ -29,8 +29,8 @@ namespace WebTemplate.Controllers.Kiosk
             {
                 model.Page = model.Page > 1 ? model.Page : 1;
                 model.Personnel = PersonnelProcess.GetByUserId(User.UserID, true);
-                model.LeaveRequests = LeaveRequestProcess.Instance.Value.GetList(model.Personnel?.ID ?? 0, model.LeaveTypeID, model.IsExpired, model.IsPending, model.IsApproved, model.IsCancelled, model.StartDateTime, model.EndingDateTime, model.Page, model.GridCount, out int PageCount);
-                model.LeaveTypes = LeaveTypeProcess.Instance.Value.GetList();
+                model.LeaveRequests = LeaveRequestProcess.Instance.GetList(model.Personnel?.ID ?? 0, model.LeaveTypeID, model.IsExpired, model.IsPending, model.IsApproved, model.IsCancelled, model.StartDateTime, model.EndingDateTime, model.Page, model.GridCount, out int PageCount);
+                model.LeaveTypes = LeaveTypeProcess.Instance.GetList();
                 model.PageCount = PageCount;
 
                 if (Request.IsAjaxRequest())
@@ -73,7 +73,7 @@ namespace WebTemplate.Controllers.Kiosk
 
                     fileBase.SaveAs(path);
 
-                    LeaveRequestProcess.Instance.Value.UploadDocument(leaveRequestId, file, User.UserID);
+                    LeaveRequestProcess.Instance.UploadDocument(leaveRequestId, file, User.UserID);
                 }
                 else
                     return Json(new { msg = false, res = "Nothing to upload" });
@@ -98,7 +98,7 @@ namespace WebTemplate.Controllers.Kiosk
                     LeaveRequest = new LeaveRequest(),
                 };
 
-                model.LeaveTypes = PersonnelLeaveCreditProcess.Instance.Value.GetLeaveWithCredits(model.Personnel?.ID ?? 0, DateTime.Now);
+                model.LeaveTypes = PersonnelLeaveCreditProcess.Instance.GetLeaveWithCredits(model.Personnel?.ID ?? 0, DateTime.Now);
 
                 return PartialViewCustom("_LeaveRequestNew", model);
             }
@@ -120,7 +120,7 @@ namespace WebTemplate.Controllers.Kiosk
                 };
 
                  if ((id ?? 0) > 0)
-                    model = LeaveRequestProcess.Instance.Value.Get(id ?? 0);
+                    model = LeaveRequestProcess.Instance.Get(id ?? 0);
 
                 if (model.Approved == true || model.Cancelled == true)
                     return PartialViewCustom("_LeaveRequestView", model);
@@ -144,7 +144,7 @@ namespace WebTemplate.Controllers.Kiosk
                     return Json(new { msg = false, res = errors.ToString() });
 
                 model._Personnel = PersonnelProcess.Get(model.PersonnelID ?? 0, true);
-                model = LeaveRequestProcess.Instance.Value.CreateOrUpdate(model, User.UserID);
+                model = LeaveRequestProcess.Instance.CreateOrUpdate(model, User.UserID);
                 ModelState.Clear();
                 return PartialViewCustom("_LeaveRequestEdit", model);
             }
@@ -160,7 +160,7 @@ namespace WebTemplate.Controllers.Kiosk
         {
             try
             {
-                LeaveRequest model = LeaveRequestProcess.Instance.Value.Get(id ?? 0);
+                LeaveRequest model = LeaveRequestProcess.Instance.Get(id ?? 0);
                 ModelState.Clear();
                 return PartialViewCustom("_LeaveRequest", model);
             }
@@ -219,16 +219,16 @@ namespace WebTemplate.Controllers.Kiosk
 
         public void DeleteRequestSingle(long? id)
         {
-            LeaveRequestProcess.Instance.Value.Delete(id ?? 0, User.UserID);
+            LeaveRequestProcess.Instance.Delete(id ?? 0, User.UserID);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]  
         public ActionResult PrintMedicard(long requestId)
         {
-            using (var report = new PrintMedicard(Server.MapPath(PrintMedicardHelper.Instance.Value.Template)))
+            using (var report = new PrintMedicard(Server.MapPath(PrintMedicardHelper.Instance.Template)))
             {
-                report.LeaveRequest = LeaveRequestProcess.Instance.Value.Get(requestId);
+                report.LeaveRequest = LeaveRequestProcess.Instance.Get(requestId);
 
                 report.GenerateReport();
                 ViewBag.Content = report.SaveToPDF();

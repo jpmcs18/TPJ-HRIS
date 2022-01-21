@@ -13,7 +13,7 @@ namespace ProcessLayer.Processes.HR
 {
     public sealed class PolicyAndProcedureProcess
     {
-        public static readonly Lazy<PolicyAndProcedureProcess> Instance = new Lazy<PolicyAndProcedureProcess>(() => new PolicyAndProcedureProcess());
+        public static readonly PolicyAndProcedureProcess Instance = new PolicyAndProcedureProcess();
         private PolicyAndProcedureProcess() { }
 
         private bool PolicyAndProcedureOnly = false;
@@ -46,7 +46,7 @@ namespace ProcessLayer.Processes.HR
 
             if (!PolicyAndProcedureOnly)
             {
-                pap.Content = PersonnelPolicyAndProcedureProcess.Instance.Value.GetListOfPersonnel(pap.ID);
+                pap.Content = PersonnelPolicyAndProcedureProcess.Instance.GetListOfPersonnel(pap.ID);
             }
 
             return pap;
@@ -186,7 +186,7 @@ namespace ProcessLayer.Processes.HR
                             PolicyAndProcedureID = policyAndProcedure.ID,
                             VesselID = id
                         };
-                        PersonnelPolicyAndProcedureProcess.Instance.Value.Create(db, content, userId);
+                        PersonnelPolicyAndProcedureProcess.Instance.Create(db, content, userId);
                     });
 
                     personnelIds?.ForEach((id) => {
@@ -195,7 +195,7 @@ namespace ProcessLayer.Processes.HR
                             PolicyAndProcedureID = policyAndProcedure.ID,
                             PersonnelID = id
                         };
-                        PersonnelPolicyAndProcedureProcess.Instance.Value.Create(db, content, userId);
+                        PersonnelPolicyAndProcedureProcess.Instance.Create(db, content, userId);
                     });
                 }
 

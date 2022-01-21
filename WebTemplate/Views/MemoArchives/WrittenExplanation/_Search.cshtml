@@ -5,7 +5,7 @@
     var memoTypes = ProcessLayer.Processes.LookupProcess.GetMemoType();
 
     ViewBag.title = PageAccess.PageName;
-    var status = ProcessLayer.Processes.Lookups.WrittenExplanationStatusProcess.Instance.Value.GetList();
+    var status = ProcessLayer.Processes.Lookups.WrittenExplanationStatusProcess.Instance.GetList();
 }
 
 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">

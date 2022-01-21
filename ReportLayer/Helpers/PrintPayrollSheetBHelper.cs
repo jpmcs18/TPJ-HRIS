@@ -5,7 +5,7 @@ namespace ReportLayer.Helpers
 {
     public sealed class PrintPayrollSheetBHelper : ReportHelperBase
     {
-        public static readonly Lazy<PrintPayrollSheetBHelper> Instance = new Lazy<PrintPayrollSheetBHelper>(() => new PrintPayrollSheetBHelper());
+        public static readonly PrintPayrollSheetBHelper Instance = new PrintPayrollSheetBHelper();
         private  PrintPayrollSheetBHelper() : base("PayrollSheetB")
         {
             EndPageRow = Get(nameof(EndPageRow)).ToInt();

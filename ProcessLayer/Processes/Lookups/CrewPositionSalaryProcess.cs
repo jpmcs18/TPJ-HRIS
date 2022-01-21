@@ -10,7 +10,7 @@ namespace ProcessLayer.Processes.Lookups
 {
     public sealed class CrewPositionSalaryProcess : ILookupProcess<CrewPositionSalary>
     {
-        public static readonly Lazy<CrewPositionSalaryProcess> Instance = new Lazy<CrewPositionSalaryProcess>(() => new CrewPositionSalaryProcess());
+        public static readonly CrewPositionSalaryProcess Instance = new CrewPositionSalaryProcess();
         private CrewPositionSalaryProcess() { }
         internal CrewPositionSalary Converter(DataRow dr)
         {
@@ -22,7 +22,7 @@ namespace ProcessLayer.Processes.Lookups
                 StandbyGroundRate = dr["Standby Ground Rate"].ToNullableDecimal()
             };
 
-            p.Position = PositionProcess.Instance.Value.Get(p.PositionID);
+            p.Position = PositionProcess.Instance.Get(p.PositionID);
             return p;
         }
 

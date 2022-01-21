@@ -23,7 +23,7 @@ namespace WebTemplate.Controllers.Kiosk
             {
                 model.Page = model.Page > 1 ? model.Page : 1;
                 model.Personnel = PersonnelProcess.GetByUserId(User.UserID, true);
-                model.AbsenceRequests = AbsenceRequestProcess.Instance.Value.GetList(model.Personnel?.ID ?? 0, model.IsExpired, model.IsPending, model.IsApproved, model.IsCancelled, model.StartDateTime, model.EndingDateTime, model.Page, model.GridCount, out int PageCount);
+                model.AbsenceRequests = AbsenceRequestProcess.Instance.GetList(model.Personnel?.ID ?? 0, model.IsExpired, model.IsPending, model.IsApproved, model.IsCancelled, model.StartDateTime, model.EndingDateTime, model.Page, model.GridCount, out int PageCount);
                 model.PageCount = PageCount;
 
                 if (Request.IsAjaxRequest())
@@ -72,7 +72,7 @@ namespace WebTemplate.Controllers.Kiosk
                 AbsenceRequest model = new();
 
                 if ((id ?? 0) > 0)
-                    model = AbsenceRequestProcess.Instance.Value.Get(id ?? 0);
+                    model = AbsenceRequestProcess.Instance.Get(id ?? 0);
 
                 if (model.Approved == true || model.Cancelled == true)
                     return PartialViewCustom("_View", model);
@@ -91,14 +91,8 @@ namespace WebTemplate.Controllers.Kiosk
         {
             try
             {
-                //StringBuilder errors = new();
-                //if (string.IsNullOrEmpty(model.Reasons))
-                //    errors.Append("- <b>Reasons</b> is required<br>");
-
-                //if (errors.Length > 0)
-                //    return Json(new { msg = false, res = errors.ToString() });
                 model._Personnel = PersonnelProcess.Get(model.PersonnelID ?? 0, true);
-                model = AbsenceRequestProcess.Instance.Value.CreateOrUpdate(model);
+                model = AbsenceRequestProcess.Instance.CreateOrUpdate(model);
                 ModelState.Clear();
                 return PartialViewCustom("_Edit", model);
             }
@@ -114,7 +108,7 @@ namespace WebTemplate.Controllers.Kiosk
         {
             try
             {
-                AbsenceRequest model = AbsenceRequestProcess.Instance.Value.Get(id ?? 0);
+                AbsenceRequest model = AbsenceRequestProcess.Instance.Get(id ?? 0);
                 ModelState.Clear();
                 return PartialViewCustom("_AbsenceRequest", model);
             }
@@ -173,16 +167,16 @@ namespace WebTemplate.Controllers.Kiosk
 
         public void DeleteRequestSingle(long? id)
         {
-            AbsenceRequestProcess.Instance.Value.Delete(id ?? 0);
+            AbsenceRequestProcess.Instance.Delete(id ?? 0);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Print(long requestId)
         {
-            using (var report = new PrintAbsence(Server.MapPath(PrintAbsenceHelper.Instance.Value.Template)))
+            using (var report = new PrintAbsence(Server.MapPath(PrintAbsenceHelper.Instance.Template)))
             {
-                report.AbsenceRequest = AbsenceRequestProcess.Instance.Value.Get(requestId);
+                report.AbsenceRequest = AbsenceRequestProcess.Instance.Get(requestId);
 
                 report.GenerateReport();
                 ViewBag.Content = report.SaveToPDF();

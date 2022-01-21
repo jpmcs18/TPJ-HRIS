@@ -13,7 +13,7 @@ namespace ProcessLayer.Processes.Lookups
 {
     public sealed class LateDeductionProcess : ILookupProcess<LateDeduction>
     {
-        public static readonly Lazy<LateDeductionProcess> Instance = new Lazy<LateDeductionProcess>(() => new LateDeductionProcess());
+        public static readonly LateDeductionProcess Instance = new LateDeductionProcess();
         private LateDeductionProcess() { }
         internal LateDeduction Converter(DataRow dr)
         {
@@ -51,16 +51,7 @@ namespace ProcessLayer.Processes.Lookups
 
         public void Delete(dynamic id, int user)
         {
-            //using (var db = new DBTools())
-            //{
-            //    var parameters = new Dictionary<string, object>
-            //    {
-            //        { "@ID", id },
-            //        { "@Delete", true },
-            //        { "@LogBy", user }
-            //    };
-            //    db.ExecuteNonQuery("lookup.CreateOrUpdateLateDeduction", parameters);
-            //}
+            
         }
 
         public List<LateDeduction> Filter(string key, int page, int gridCount, out int pageCount)

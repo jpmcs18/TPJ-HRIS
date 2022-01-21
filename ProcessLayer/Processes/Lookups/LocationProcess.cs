@@ -13,7 +13,7 @@ namespace ProcessLayer.Processes
 {
     public sealed class LocationProcess : ILookupProcess<Location>, ILookupSourceProcess<Location>
     {
-        public static readonly Lazy<LocationProcess> Instance = new Lazy<LocationProcess>(() => new LocationProcess());
+        public static readonly LocationProcess Instance = new LocationProcess();
         private LocationProcess() { }
         internal Location Converter(DataRow dr)
         {

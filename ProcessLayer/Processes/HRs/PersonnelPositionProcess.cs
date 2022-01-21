@@ -23,7 +23,7 @@ namespace ProcessLayer.Processes
                 EndDate = dr[PersonnelPositionFields.EndDate].ToNullableDateTime()
             };
 
-            obj._Position = PositionProcess.Instance.Value.Get(obj.PositionID);
+            obj._Position = PositionProcess.Instance.Get(obj.PositionID);
             
             return obj;
         }
@@ -77,7 +77,7 @@ namespace ProcessLayer.Processes
             {
                 db.ExecuteNonQuery(PersonnelPositionProcedures.CreateOrUpdate, ref outParameters, parameters);
                 obj.ID = outParameters.Get(PersonnelPositionParameters.ID).ToLong();
-                obj._Position = PositionProcess.Instance.Value.Get(obj.PositionID);
+                obj._Position = PositionProcess.Instance.Get(obj.PositionID);
             }
             return obj;
         }

@@ -6,7 +6,7 @@
     var KioskApproverPageAccess = credential.GetPage("Maintenance/Lookup/KioskApprover") ?? new DataAccessLayer.System.Page();
     var LeaveRequestApprover = credential.GetPage("Approver Leave Request ") ?? new DataAccessLayer.System.Page();
     var LeaveRequestCreator = credential.GetPage("Creator Leave Request") ?? new DataAccessLayer.System.Page();
-    var departments = ProcessLayer.Processes.Lookups.DepartmentProcess.Instance.Value.GetList();
+    var departments = ProcessLayer.Processes.Lookups.DepartmentProcess.Instance.GetList();
 }
 
 <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">

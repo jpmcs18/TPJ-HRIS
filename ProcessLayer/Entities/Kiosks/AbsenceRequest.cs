@@ -5,7 +5,6 @@ namespace ProcessLayer.Entities.Kiosk
 {
     public class AbsenceRequest : KioskBase
     {
-        public long ID { get; set; }
         public float? NoofDays { get; set; }
         public DateTime? RequestDate { get; set; }
         public bool? Noted { get; set; }
