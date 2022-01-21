@@ -23,9 +23,9 @@
     bool editPosted = ViewBag.EditPosted ?? false;
 }
 
-<div id="NewCrewMovementParameters" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-offset-2 col-lg-8" style="padding: 0; margin-bottom: 0px;">
+<div id="NewCrewMovementParameters" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0; margin-bottom: 0px;">
     <input type="hidden" value="@Model.ID" name="ID" />
-    <input type="hidden" value="@Model.PersonnelID" name="PersonnelID" />Crew Edit
+    <input type="hidden" value="@Model.PersonnelID" name="PersonnelID" />
 
     <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3 m-b-md">
         <button id="BackCrewMovement" type="button" class="btn SaveCrewMovement" title="Back"><i class="fa fa-reply"></i> Back</button>
@@ -101,7 +101,7 @@
             }
             else
             {
-                @Html.TextBoxFor(m => m.OnboardDate, String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.OnboardDate), new { @class = "form-control js-datetimepicker", @placeholder = "", @readonly = "readonly", @data_format = "MM/dd/yyyy HH:mm:ss PP" })
+                @Html.TextBoxFor(m => m.OnboardDate, String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.OnboardDate), new { @class = "form-control js-datetimepicker", @placeholder = "", @readonly = "readonly", @data_format = "MM/dd/yyyy hh:mm:ss PP" })
             }
         }
     </div>
@@ -161,27 +161,27 @@
     </div>
 </div>
 
-<div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-offset-2 col-lg-8">
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-offset-2 col-lg-8">
     @if (Model.Status < 5)
     {
         <div class="md-stepper-horizontal green">
-            <div class="md-step @(Model.Status >= 1 ? "active" : "") done1">
+            <div class="md-step @(Model.Status >= 1 ? "active " : "")done1">
                 <div class="md-step-circle"></div>
                 <div class="md-step-title">Created</div>
-                <div class='md-step-optional'>@Html.Raw(Model.Status >= 1 ? Model._Creator : "&nbsp;")</div>
-                <div class='md-step-optional'>@Html.Raw(Model.Status >= 1 ? String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.CreatedDate) + "" : "&nbsp;")</div>
+                <div class='md-step-optional'>@Html.Raw(Model.Status >= 1 ? Model._Creator : "&nbsp;"), @Html.Raw(Model.Status >= 1 ? String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.CreatedDate) + "" : "&nbsp;")</div>
+                @*<div class='md-step-optional'>@Html.Raw(Model.Status >= 1 ? String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.CreatedDate) + "" : "&nbsp;")</div>*@
                 <div class="md-step-bar-left"></div>
                 <div class="md-step-bar-right"></div>
             </div>
-            <div class="md-step @(Model.Status >= 2 ? "active" : "")  done2">
+            <div class="md-step @(Model.Status >= 2 ? "active " : "")done2">
                 <div class="md-step-circle"></div>
                 <div class="md-step-title">Checked</div>
-                <div class='md-step-optional'>@Html.Raw(Model.Status >= 2 ? Model._Check : "&nbsp;")</div>
-                <div class='md-step-optional'>@Html.Raw(Model.Status >= 2 ? String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.CheckedDate) + "" : "&nbsp;")</div>
+                <div class='md-step-optional'>@Html.Raw(Model.Status >= 2 ? Model._Check : "&nbsp;"), @Html.Raw(Model.Status >= 2 ? String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.CheckedDate) + "" : "&nbsp;")</div>
+                @*<div class='md-step-optional'>@Html.Raw(Model.Status >= 2 ? String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.CheckedDate) + "" : "&nbsp;")</div>*@
                 <div class="md-step-bar-left"></div>
                 <div class="md-step-bar-right"></div>
             </div>
-            @*<div class="md-step @(Model.Status >= 3 ? "active" : "")  done3">
+            @*<div class="md-step @(Model.Status >= 3 ? "active " : "")done3">
                     <div class="md-step-circle"></div>
                     <div class="md-step-title">Noted</div>
                     <div class='md-step-optional'>@Html.Raw(Model.Status >= 3 ? Model._Note : "&nbsp;")</div>
@@ -189,11 +189,11 @@
                     <div class="md-step-bar-left"></div>
                     <div class="md-step-bar-right"></div>
                 </div>*@
-            <div class="md-step @(Model.Status >= 4 ? "active" : "")  done4">
+            <div class="md-step @(Model.Status >= 4 ? "active " : "")done4">
                 <div class="md-step-circle"></div>
                 <div class="md-step-title">Posted</div>
-                <div class='md-step-optional'>@Html.Raw(Model.Status >= 4 ? Model._Post : "&nbsp;")</div>
-                <div class='md-step-optional'>@Html.Raw(Model.Status >= 4 ? String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.PostedDate) + "" : "&nbsp;")</div>
+                <div class='md-step-optional'>@Html.Raw(Model.Status >= 4 ? Model._Post : "&nbsp;"), @Html.Raw(Model.Status >= 4 ? String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.PostedDate) + "" : "&nbsp;")</div>
+                @*<div class='md-step-optional'>@Html.Raw(Model.Status >= 4 ? String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.PostedDate) + "" : "&nbsp;")</div>*@
                 <div class="md-step-bar-left"></div>
                 <div class="md-step-bar-right"></div>
             </div>
@@ -206,8 +206,8 @@
                 <div class="md-step-circle">
                 </div>
                 <div class="md-step-title">Cancelled</div>
-                <div class='md-step-optional'>@Model._Cancelled</div>
-                <div class='md-step-optional'>@String.Format("{0:MM/dd/yyyy HH:mm tt}", Model.CancelledDate)</div>
+                <div class='md-step-optional'>@Model._Cancelled, @String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.CancelledDate)</div>
+                @*<div class='md-step-optional'>@String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.CancelledDate)</div>*@
                 <div class="md-step-bar-left"></div>
                 @*<div class="md-step-bar-right"></div>*@
             </div>
@@ -215,11 +215,11 @@
     }
 </div>
 
-@* Previous *@
-<div id="PreviousMovementDiv" class="form-group col-xs-12 col-sm-6 col-md-offset-2 col-md-4 col-lg-4" style="padding: 0; margin-bottom: 0px;">
+@*Vessel*@
+<div id="VesselsDiv" style="min-height: 252.45px; display: flex; float: left; width: 100%; ">
     <input type="hidden" name="PreviousCrewMovementID" value="@Model.PreviousCrewMovementID" />
 
-    <div style="border: 1px solid #ccc; padding: 5px 0; min-height: 215px;">
+    <div style="border: 1px solid #ccc; padding: 5px 0; width: 50%;">
         <h3 style="margin: 0 0 10px; text-align: center; text-transform: uppercase;">Previous</h3>
 
         @for (int i = 0; i < 3; i++)
@@ -249,13 +249,81 @@
             <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="float: none;">
                 <label class="control-label">@Label</label>
                 <input type="hidden" id="@HiddenID" value="@ID" name="@Name" />
-                <h2 title="@(Description ?? "")">@Html.Raw(Description ?? "&nbsp;")</h2>
+                <h3 style="margin: 0;" title="@(Description ?? "")">@Html.Raw(Description ?? "&nbsp;")</h3>
+            </div>
+        }
+
+        @if (Model._PreviousCrewMovement?.VesselID != null)
+        {
+            <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="float: none;">
+                <label class="control-label">Daily Rate</label>
+                <h3 class="autonumeric">@(Model._PreviousCrewMovement?.DailyRate ?? 0)</h3>
             </div>
         }
     </div>
 
+    <div style="border: 1px solid #ccc; padding: 5px 0; width: 50%;">
+        <h3 style="margin: 0 0 10px; text-align: center; text-transform: uppercase;">Current</h3>
+
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="float: none;">
+            <label class="control-label">
+                @Html.CheckBoxFor(m => m.DryDock, new { @class = "i-checks chkRow" }) Dry Dock
+            </label>
+        </div>
+
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="float: none;">
+            <label class="control-label">Department</label>
+            @if (((Model.Status <= 1 && (CrewPageAccess.Insert || CrewPageAccess.Update)) || editPosted) && (Model._PreviousCrewMovement == null || Model._PreviousCrewMovement.SNVesselID == null))
+            {
+                @Html.DropDownListFor(m => m.DepartmentID, new SelectList(departments, "ID", "Description"), "N/A", new { @class = "form-control " })
+            }
+            else
+            {
+                <input type="hidden" id="HiddenDepartmentID" value="@Model.DepartmentID" name="DepartmentID" crew-department-action="New" />
+                <h3 style="margin: 0;" title="@Html.Raw(Model._Department.CheckIfNull<ProcessLayer.Entities.Department>().Description ?? "")">@Html.Raw(Model._Department.CheckIfNull<ProcessLayer.Entities.Department>().Description ?? "&nbsp;")</h3>
+            }
+        </div>
+
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="float: none;">
+            <label class="control-label">Position</label>
+            @if (((Model.Status <= 1 && (CrewPageAccess.Insert || CrewPageAccess.Update)) || editPosted) && (Model._PreviousCrewMovement == null || Model._PreviousCrewMovement.SNVesselID == null))
+            {
+                @Html.DropDownListFor(m => m.PositionID, new SelectList(positions, "ID", "FullDisplay"), "N/A", new { @class = "form-control" })
+            }
+            else
+            {
+                <input type="hidden" id="HiddenPositionID" value="@Model.PositionID" name="PositionID" crew-position-action="New" />
+                <h3 style="margin: 0;" title="@Html.Raw(Model._Position.CheckIfNull<ProcessLayer.Entities.Position>().Description ?? "")">@Html.Raw(Model._Position.CheckIfNull<ProcessLayer.Entities.Position>().Description ?? "&nbsp;")</h3>
+            }
+        </div>
+
+        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="float: none;">
+            <label class="control-label">Vessel</label>
+            @if (((Model.Status <= 1 && (CrewPageAccess.Insert || CrewPageAccess.Update))) && (Model._PreviousCrewMovement == null || Model._PreviousCrewMovement.SNVesselID == null) && Model.PostedBy == null)
+            {
+                @Html.DropDownListFor(m => m.VesselID, new SelectList(vessels, "ID", "Description"), "N/A", new { @class = "form-control text-transform-none" })
+            }
+            else
+            {
+                <input type="hidden" id="HiddenVesselID" value="@Model.VesselID" name="VesselID" crew-position-action="New" />
+                <h3 style="margin: 0;" title="@Html.Raw(Model._Vessel.CheckIfNull<ProcessLayer.Entities.Vessel>().Description ?? "")">@Html.Raw(Model._Vessel.CheckIfNull<ProcessLayer.Entities.Vessel>().Description ?? "&nbsp;")</h3>
+            }
+        </div>
+
+        @if (Model.Status == 2 && Model.VesselID != null)
+        {
+            <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="float: none;">
+                <label class="control-label">Daily Rate</label>
+                @Html.TextBoxFor(m => m.DailyRate, new { @class = "form-control autonumeric", @placeholder = "Daily Rate..." })
+            </div>
+        }
+    </div>
+</div>
+
+@*SN*@
+<div id="SNVesselsDiv" style="min-height: 183.47px; display: flex; float: left; width: 100%; ">
     @* SN *@
-    <div style="border: 1px solid #ccc;padding: 5px 0; min-height: 156px;">
+    <div style="border: 1px solid #ccc; padding: 5px 0; width: 50%;">
         <h3 style="margin: 0 0 10px; text-align: center; text-transform: uppercase;">SN</h3>
 
         @for (int i = 0; i < 2; i++)
@@ -280,58 +348,21 @@
             <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="float: none;">
                 <label class="control-label">@Label</label>
                 <input type="hidden" id="@HiddenID" value="@ID" name="@Name" />
-                <h2 title="@(Description ?? "")">@Html.Raw(Description ?? "&nbsp;")</h2>
+                <h3 style="margin: 0;" title="@(Description ?? "")">@Html.Raw(Description ?? "&nbsp;")</h3>
+            </div>
+        }
+        
+        @if (Model._PreviousCrewMovement?.SNVesselID != null)
+        {
+            <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="float: none;">
+                <label class="control-label">SN Daily Rate</label>
+                <h3 class="autonumeric">@(Model._PreviousCrewMovement?.SNDailyRate ?? 0)</h3>
             </div>
         }
     </div>
-</div>
-
-@* Current *@
-<div id="CurrentMovementDiv" class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-4" style="padding: 0; margin-bottom: 0px;">
-    <div style="border: 1px solid #ccc;padding: 5px 0;">
-        <h3 style="margin: 0 0 10px; text-align: center; text-transform: uppercase;">Current</h3>
-        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="float: none;">
-            <label class="control-label">Department</label>
-            @if (((Model.Status <= 1 && (CrewPageAccess.Insert || CrewPageAccess.Update)) || editPosted) && (Model._PreviousCrewMovement == null || Model._PreviousCrewMovement.SNVesselID == null))
-            {
-                @Html.DropDownListFor(m => m.DepartmentID, new SelectList(departments, "ID", "Description"), "N/A", new { @class = "form-control " })
-            }
-            else
-            {
-                <input type="hidden" id="HiddenDepartmentID" value="@Model.DepartmentID" name="DepartmentID" crew-department-action="New" />
-                <h2 title="@Html.Raw(Model._Department.CheckIfNull<ProcessLayer.Entities.Department>().Description ?? "")">@Html.Raw(Model._Department.CheckIfNull<ProcessLayer.Entities.Department>().Description ?? "&nbsp;")</h2>
-            }
-        </div>
-
-        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="float: none;">
-            <label class="control-label">Position</label>
-            @if (((Model.Status <= 1 && (CrewPageAccess.Insert || CrewPageAccess.Update)) || editPosted) && (Model._PreviousCrewMovement == null || Model._PreviousCrewMovement.SNVesselID == null))
-            {
-                @Html.DropDownListFor(m => m.PositionID, new SelectList(positions, "ID", "FullDisplay"), "N/A", new { @class = "form-control" })
-            }
-            else
-            {
-                <input type="hidden" id="HiddenPositionID" value="@Model.PositionID" name="PositionID" crew-position-action="New" />
-                <h2 title="@Html.Raw(Model._Position.CheckIfNull<ProcessLayer.Entities.Position>().Description ?? "")">@Html.Raw(Model._Position.CheckIfNull<ProcessLayer.Entities.Position>().Description ?? "&nbsp;")</h2>
-            }
-        </div>
-
-        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="float: none;">
-            <label class="control-label">Vessel</label>
-            @if (((Model.Status <= 1 && (CrewPageAccess.Insert || CrewPageAccess.Update))) && (Model._PreviousCrewMovement == null || Model._PreviousCrewMovement.SNVesselID == null) && Model.PostedBy == null)
-            {
-                @Html.DropDownListFor(m => m.VesselID, new SelectList(vessels, "ID", "Description"), "N/A", new { @class = "form-control text-transform-none" })
-            }
-            else
-            {
-                <input type="hidden" id="HiddenVesselID" value="@Model.VesselID" name="VesselID" crew-position-action="New" />
-                <h2 title="@Html.Raw(Model._Vessel.CheckIfNull<ProcessLayer.Entities.Vessel>().Description ?? "")">@Html.Raw(Model._Vessel.CheckIfNull<ProcessLayer.Entities.Vessel>().Description ?? "&nbsp;")</h2>
-            }
-        </div>
-    </div>
 
     @* SN *@
-    <div style="border: 1px solid #ccc;padding: 5px 0;">
+    <div style="border: 1px solid #ccc; padding: 5px 0; width: 50%;">
         <h3 style="margin: 0 0 10px; text-align: center; text-transform: uppercase;">SN</h3>
         <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="float: none;">
             <label class="control-label">Position</label>
@@ -342,7 +373,7 @@
             else
             {
                 <input type="hidden" id="HiddenSNPositionID" value="@Model.SNPositionID" name="SNPositionID" crew-position-action="New" />
-                <h2 title="@Html.Raw(Model._SNPosition.CheckIfNull<ProcessLayer.Entities.Position>().Description ?? "")">@Html.Raw(Model._SNPosition.CheckIfNull<ProcessLayer.Entities.Position>().Description ?? "&nbsp;")</h2>
+                <h3 style="margin: 0;" title="@Html.Raw(Model._SNPosition.CheckIfNull<ProcessLayer.Entities.Position>().Description ?? "")">@Html.Raw(Model._SNPosition.CheckIfNull<ProcessLayer.Entities.Position>().Description ?? "&nbsp;")</h3>
             }
         </div>
 
@@ -355,11 +386,29 @@
             else
             {
                 <input type="hidden" id="HiddenSNVesselID" value="@Model.SNVesselID" name="SNVesselID" crew-position-action="New" />
-                <h2 title="@Html.Raw(Model._SNVessel.CheckIfNull<ProcessLayer.Entities.Vessel>().Description ?? "")">@Html.Raw(Model._SNVessel.CheckIfNull<ProcessLayer.Entities.Vessel>().Description ?? "&nbsp;")</h2>
+                <h3 style="margin: 0;" title="@Html.Raw(Model._SNVessel.CheckIfNull<ProcessLayer.Entities.Vessel>().Description ?? "")">@Html.Raw(Model._SNVessel.CheckIfNull<ProcessLayer.Entities.Vessel>().Description ?? "&nbsp;")</h3>
             }
         </div>
+
+        @if (Model.Status == 2 && Model.SNVesselID != null)
+        {
+            <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="float: none;">
+                <label class="control-label">SN Daily Rate</label>
+                @Html.TextBoxFor(m => m.SNDailyRate, new { @class = "form-control autonumeric", @placeholder = "SN Daily Rate..." })
+            </div>
+        }
     </div>
 </div>
+
+@* Previous *@
+<!--<div id="PreviousMovementDiv" class="form-group col-xs-12 col-sm-6 col-md-offset-2 col-md-4 col-lg-4" style="padding: 0; margin-bottom: 0px;">
+    
+
+</div>-->
+
+@* Current *@
+<!--<div id="CurrentMovementDiv" class="col-xs-12 col-sm-6 col-md-4 col-lg-4" style="padding: 0; margin-bottom: 0px;">
+</div>-->
 
 @* Remarks *@
 <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-offset-2 col-lg-8" style="border: 1px solid #ccc; padding: 10px;">

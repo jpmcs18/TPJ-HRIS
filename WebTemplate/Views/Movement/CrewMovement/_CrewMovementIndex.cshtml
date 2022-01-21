@@ -27,7 +27,7 @@
             </ol>
         </div>
     </div>
-    <div class="" style="margin-top: 85px;">
+    <div class="" style="margin-top: 80px;">
         <div id="CrewList" class="col-xs-12 col-sm-12 col-md-push-2 col-md-8 col-lg-push-3 col-lg-6 animated fadeInLef">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 m-b-sm" style="padding: 0px;">
                 <div class="tabs-container" style="border: 1px solid #009688;">
@@ -45,7 +45,7 @@
             </div>
         </div>
 
-        <div id="CrewMovement" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 animated fadeInRigh" style="display: none;">
+        <div id="CrewMovement" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 animated fadeInRigh" style="display: none; background: #fff;">
         </div>
     </div>
 </div>
@@ -121,9 +121,9 @@
 
         function ResizePanel() {
             var h = ($('body').height() - $('body').height() / 2 + 200);
-            $('#CrewMovement .tabs-container .panel-body').css('height', h + 'px');
+            //$('#CrewMovement .tabs-container .panel-body').css('height', h + 'px');
             var h1 = $('#CrewMovement .tabs-container .panel-body').outerHeight() - 100;
-            $('#CrewMovement .tab-content #tab-2 .panel-body .vertical-timeline').css('height', h1 + 'px');
+            //$('#CrewMovement .tab-content #tab-2 .panel-body .vertical-timeline').css('height', h1 + 'px');
         }
 
         $(document).ready(function() {
@@ -131,11 +131,6 @@
         });
 
     function Events() {
-            $('.i-checks').iCheck({
-                checkboxClass: 'icheckbox_square-green',
-                radioClass: 'iradio_square-green',
-            });
-
         //$('#btnadd').off('click').on('click', NewMemo);
 
         $('.pages').off('click').on('click', function () {
@@ -166,7 +161,7 @@
 
         function CrewManagementEvents() {
             var h = $('body').height() - $('body').height() / 2;
-            $('.vertical-timeline').css('height', h + 'px');
+            //$('.vertical-timeline').css('height', h + 'px');
 
             $('#CrewMovement span.select2').css('width', '100%');
             $('#CrewMovement #SaveCrewMovement').off('click').on('click', SaveCrewMovement);
@@ -179,6 +174,11 @@
             //$('tr.Row-Display').off('click').on('click', TriggerRowButton);
 
             $('select#DepartmentID').off('change').on('change', SelectChange);
+
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
 
             Select2Override();
             InitDateTimePicker();
@@ -441,6 +441,7 @@
                             $('#CrewMovement #EditMovementButton').off('click').on('click', EditMovementButton);
                             //$('#CrewMovement #EditOrNewCrewMovement').off('click').on('click', EditOrNewCrewMovement);
                             $('#CrewMovement #CancelMovementButton').off('click').on('click', CancelStatusCrewMovement);
+                            InitializeAutoNumeric('.autonumeric');
 
                             CrewManagementEvents();
                         } else {
