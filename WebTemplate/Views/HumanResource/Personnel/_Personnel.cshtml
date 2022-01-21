@@ -21,7 +21,7 @@
             <input type="checkbox" class="i-checks" title="" value="">
         }
     </td>
-    <td style="text-align: left; text-transform: uppercase; max-width: 300px;">
+    <td style="text-align: left; text-transform: uppercase; max-width: 300px; white-space: normal;">
         <div class="clickable-text">
             <img class="personnel-pic" src="@(String.IsNullOrEmpty(Model.ImagePath) ? "\\Images\\default.jpg": Model.ImagePath)" style="height: 30px; width: 45px; min-height: 45px; min-width: 30px; border: 3px solid #eaeaea; margin-right: 10px; border-radius: 50px;" title="" />
             @String.Format("{0}, {1} {2}", Model.LastName, Model.FirstName, Model.MiddleName)
@@ -46,10 +46,10 @@
         @*<span class="label label-primary">@Model._EmploymentStatus.Description</span>*@
     </td>
     @*<td style="text-align: center;" class="client-status">
-        @Html.Raw((Model._Creator ?? "N/A") + "<br/>" + String.Format("{0:MMM dd, yyyy HH:mm tt}", Model.CreatedOn))
+        @Html.Raw((Model._Creator ?? "N/A") + "<br/>" + String.Format("{0:MMM dd, yyyy hh:mm tt}", Model.CreatedOn))
     </td>
     <td style="text-align: center;" class="client-status">
-        @Html.Raw((Model._Modifier ?? "N/A") + "<br/>" + String.Format("{0:MMM dd, yyyy HH:mm tt}", Model.ModifiedOn))
+        @Html.Raw((Model._Modifier ?? "N/A") + "<br/>" + String.Format("{0:MMM dd, yyyy hh:mm tt}", Model.ModifiedOn))
     </td>*@
     @if (SearchPageAccess.Update || SearchPageAccess.Delete || SearchPageAccess.View)
     {

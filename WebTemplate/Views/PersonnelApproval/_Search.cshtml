@@ -163,7 +163,7 @@
                                         @switch (absenceType)
                                         {
                                             case 3:
-                                                @Html.Raw(String.Format("{0:HH:mm tt}", Model.Personnel[i].Time))
+                                                @Html.Raw(String.Format("{0:hh:mm tt}", Model.Personnel[i].Time))
                                                 break;
                                             case 2:
                                                 @Html.Raw(", " + timeofday.Where(m => m.Key == timeOfDay).Select(m => m.Value).FirstOrDefault())

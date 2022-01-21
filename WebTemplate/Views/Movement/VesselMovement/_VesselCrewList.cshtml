@@ -30,11 +30,11 @@
         </td>
     }
     <td style="text-align: center;">
-        @Html.Raw(String.Format("{0}{1}", Model.OnboardDate == DateTime.Now ? "Today" : String.Format("<b>{0:MMM dd, yyyy}</b>", Model.OnboardDate), " @ " + String.Format("<b>{0:HH:mm tt}</b>", Model.OnboardDate)))
+        @Html.Raw(String.Format("{0}{1}", Model.OnboardDate == DateTime.Now ? "Today" : String.Format("<b>{0:MMM dd, yyyy}</b>", Model.OnboardDate), " @ " + String.Format("<b>{0:hh:mm tt}</b>", Model.OnboardDate)))
         @if (Model.OffboardDate != null)
         {
             <h1>TO</h1>
-            @Html.Raw(String.Format("{0}{1}", Model.OffboardDate == DateTime.Now ? "Today" : String.Format("<b>{0:MMM dd, yyyy}</b>", Model.OffboardDate), " @ " + String.Format("<b>{0:HH:mm tt}</b>", Model.OffboardDate)))
+            @Html.Raw(String.Format("{0}{1}", Model.OffboardDate == DateTime.Now ? "Today" : String.Format("<b>{0:MMM dd, yyyy}</b>", Model.OffboardDate), " @ " + String.Format("<b>{0:hh:mm tt}</b>", Model.OffboardDate)))
         }
     </td>
     <td style="text-align: left;">

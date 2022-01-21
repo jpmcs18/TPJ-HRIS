@@ -28,7 +28,7 @@
             </div>
         </div>
     </div>
-    <div class="" style="margin-top: 85px;">
+    <div class="" style="margin-top: 80px;">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 animated fadeInLef">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 m-b-sm" style="padding: 0px;">
                 <div class="tabs-container" style="border: 1px solid #009688;">
@@ -269,6 +269,7 @@
 
     function SaveTable() {
         var formdata = new FormData()
+        var save = true;
 
         $('#MemoFields *').each(function () {
             var name = $(this).attr('name');
@@ -280,59 +281,83 @@
         if ($('#MemoFields').find(".browsefile")[0].files.length > 0)
             formdata.append("fileBase", $('#MemoFields').find(".browsefile")[0].files[0]);
 
-        if ($('#NewMemo .radio-group').is(':checked')) {
-            formdata.append('groupId',
-                $('#GroupTable input[type="checkbox"]:checked').closest('tr').find('.GroupID').val());
-        } else if ($('#NewMemo .radio-personnel').is(':checked')) {
-            formdata.append('personnelId',
-                $('#PersonnelsTable input[type="checkbox"]:checked').closest('tr').find('.PersonnelID').val());
-        } else {
-            var vesselIds = [];
+        var selectedIds = [];
+        var name, val;
+        var isGroupSelected = $('#NewMemo .radio-group').is(':checked');
+        var hasGroupSelected = $('#GroupTable input[type="checkbox"]:checked').length > 0;
+        var isPersonnelSelected = $('#NewMemo .radio-personnel').is(':checked');
+        var hasPersonnelSelected = $('#PersonnelsTable input[type="checkbox"]:checked').length > 0;
+        var isVesselSelected = $('#NewMemo .radio-vessel').is(':checked');
+        var hasVesselSelected = $('#VesselsTable input[type="checkbox"]:checked').length > 0;
+
+        if (isGroupSelected) {
+            name = 'groupId';
+            val = $('#GroupTable input[type="checkbox"]:checked').closest('tr').find('.GroupID').val();
+            selectedIds.push(parseInt(val));
+            selectedIds.push();
+        } else if (isPersonnelSelected) {
+            name = 'personnelId';
+            val = $('#PersonnelsTable input[type="checkbox"]:checked').closest('tr').find('.PersonnelID').val();
+            selectedIds.push(parseInt(val));
+        } else if (isVesselSelected) {
+            name = 'vesselIds'
             $('#VesselsTable input[type="checkbox"]:checked').closest('tr').find('.VesselID').each(function (e) {
-                vesselIds.push(parseInt($(this).val()));
+                val = $(this).val()
+                selectedIds.push(parseInt(val));
             });
-            formdata.append('vesselIds', JSON.stringify(vesselIds));
+        }
+        //console.log(isGroupSelected, hasGroupSelected, isPersonnelSelected, hasPersonnelSelected, isVesselSelected, hasVesselSelected);
+
+        if ((isGroupSelected && hasGroupSelected) || (isPersonnelSelected && hasPersonnelSelected) || (isVesselSelected && hasVesselSelected)) {
+            formdata.append(name, name == "vesselIds" ? JSON.stringify(selectedIds) : selectedIds[0]);
+        }
+        else {
+            toastr.warning("Please select at least one recipient.", "Warning");
+            save = false;
+            return false;
         }
 
         formdata.append('sendEmail', $('#SendModalMemo').is(':checked'))
         formdata.append("__RequestVerificationToken", $('@Html.AntiForgeryToken()').val());
 
-        $.ajax({
-            data: formdata,
-            traditional: true, // add this
-            type: 'POST',
-            datatype: 'JSON',
-            url: '@Url.Action("Save", "PolicyAndProcedure")',
-            cache: false,
-            contentType: false,
-            processData: false,
-            beforeSend: function() {
-                ShowLoadingScreen()
-            },
-            complete: function() {
-                RemoveLoadingScreen()
-            },
-            success: function (response) {
-                if (response.msg == false) {
-                    toastr.error('Error', response.res);
-                }
-                else {
-                    if ($('#SendModalMemo').is(':checked')) {
-                        showPersonnelPolicyAndProcedure(response);
-                        const date = new Date($('#MemoDate').val());
-                        $('#hid_modal_year').val(date.getFullYear());
-                        $('#hid_modal_page').val(1),
-                        SendEmail()
+        if (save) {
+            $.ajax({
+                data: formdata,
+                traditional: true, // add this
+                type: 'POST',
+                datatype: 'JSON',
+                url: '@Url.Action("Save", "PolicyAndProcedure")',
+                cache: false,
+                contentType: false,
+                processData: false,
+                beforeSend: function() {
+                    ShowLoadingScreen()
+                },
+                complete: function() {
+                    RemoveLoadingScreen()
+                },
+                success: function (response) {
+                    if (response.msg == false) {
+                        toastr.error('Error', response.res);
                     }
                     else {
-                        showPersonnelPolicyAndProcedure(response);
-                    }
+                        if ($('#SendModalMemo').is(':checked')) {
+                            showPersonnelPolicyAndProcedure(response);
+                            const date = new Date($('#MemoDate').val());
+                            $('#hid_modal_year').val(date.getFullYear());
+                            $('#hid_modal_page').val(1),
+                            SendEmail()
+                        }
+                        else {
+                            showPersonnelPolicyAndProcedure(response);
+                        }
 
+                    }
+                },
+                error: function(x) {
                 }
-            },
-            error: function(x) {
-            }
-        });
+            });
+        }
     }
 
     function ViewPolicyAndProcedure() {
@@ -1062,7 +1087,7 @@
 
         if (!isMultiSelect) {
             $tableName.find('button').removeClass('btn-primary').addClass('btn-white');
-            $tableName.find('input[type="checkbox"]').iCheck('uncheck');            
+            $tableName.find('input[type="checkbox"]').iCheck('uncheck');
         }
 
         if ($cb.is(':checked')) {

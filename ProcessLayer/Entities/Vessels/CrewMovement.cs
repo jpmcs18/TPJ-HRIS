@@ -11,10 +11,10 @@ namespace ProcessLayer.Entities
         public int? DepartmentID { get; set; }
         public int? PositionID { get; set; }
         public int? VesselID { get; set; }
-        public decimal? DailyRate { get; set; }
+        public decimal? DailyRate { get; set; } = 0;
         public int? SNPositionID { get; set; }
         public int? SNVesselID { get; set; }
-        public decimal? SNDailyRate { get; set; }
+        public decimal? SNDailyRate { get; set; } = 0;
         public DateTime? OnboardDate { get; set; }
         public DateTime? OffboardDate { get; set; }
         public string Remarks { get; set; }
