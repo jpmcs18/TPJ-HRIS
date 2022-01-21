@@ -16,6 +16,7 @@ namespace WebTemplate
                 ,"~/Scripts/bootstrap.min.js"
                 ,"~/Scripts/app/inspinia.js"
                 ,"~/Scripts/custom/datetimepicker-custom.js"
+                ,"~/Scripts/plugins/autoNumeric/autoNumeric.js"
                 ,"~/Scripts/custom/custom-autonumeric.js"
                 ,"~/Scripts/custom/jquery_global_custom.js"
                 ,"~/Scripts/custom/calendar.min.js"
@@ -112,7 +113,6 @@ namespace WebTemplate
                 ,"~/Scripts/plugins/pwstrength/zxcvbn.js"
                 //,"~/Scripts/plugins/jQuery-webcam-master/jquery.webcam.js"
                 ,"~/Scripts/plugins/jQuery-webcam-master/jquery.webcam.min.js"
-                ,"~/Scripts/plugins/autoNumeric/autoNumeric.js"
                 ,"~/Scripts/plugins/maskPlugin/jquery.mask.js"
                 ,"~/Scripts/plugins/sweetalert2/src/sweetalert2.js"
                 ));

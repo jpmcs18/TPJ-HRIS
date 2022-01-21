@@ -1,8 +1,9 @@
 ﻿body {
 }
-.license-container, .birthday-container {
-    height: 32vh;
-    overflow: hidden;
+
+.license-container, .birthday-container, .kiosk-container {
+    //height: 32vh;
+    //overflow: hidden;
 }
 
 #page-wrapper {
@@ -11,15 +12,37 @@
 
 .index-container {
     display: flex;
+
+    .nav-tabs {
+        li a {
+            width: 100%;
+        }
+
+        a[target="_blank"] {
+            padding: 0;
+        }
+
+        .tab-content {
+            width: 100%;
+            //height: 68vh;
+            //height: unset !important;
+            overflow-y: auto;
+            overflow-x: hidden;
+
+            .ibox {
+                border: none;
+                margin: 0;
+
+                .panel-body {
+                    padding: 20px !important;
+                }
+            }
+        }
+    }
 }
 
-.tab-content {
-    height: 68vh;
-    overflow-y: auto;
-
-    .panel-body {
-        padding: 20px !important;
-    }
+.modal-center .tab-content .panel-body {
+    padding: 0px !important;
 }
 
 a {

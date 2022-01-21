@@ -14,18 +14,17 @@
 @if (Model.Any() && (LeaveRequestsApprover.Approve == true || OtRequestApprover.Approve == true || TimeEditRequestApprover.Approve == true || OuterPortRequestApprover.Approve == true))
 {
     var TotalCount = 0;
+    var links = "";
 
     foreach (var k in Model)
     {
         TotalCount += k.Count;
     }
 
-    <div class="ibox" style="margin-bottom: 10px;">
-        <div class="ibox-title bg-info" style="padding: 8px 15px 0px;">
-            <h3 class="" style="text-align: center; margin: 0px -15px"><i class="fa fa-bell" style="font-size: 20px;"></i>&nbsp;&nbsp;&nbsp;Kiosk Notifications</h3>
-        </div>
-        <div class="ibox-content" style="border: 1px solid #009688;">
-            <div class="row">
+
+    <table style="width: 100%;">
+        <tr>
+            <td class="text-center">
                 @if (TotalCount > 0)
                 {
                     for (int i = 0; i < Model.Count(); i++)
@@ -45,37 +44,48 @@
                             {
                                 if (Model[i - 1].Type != k.Type)
                                 {
-                                    @Html.Raw("<a href='/RequestsApproval/" + (k.Type.ToString().Replace("_", "")) + "s" + "' style='width: 100%;' target='_blank'>")
-                                    @Html.Raw(k.Type.ToString().Replace("_", " "))@(k.Count > 1 ? "s" : "")
+                                    @*@Html.Raw("<a href='/RequestsApproval/" + (k.Type.ToString().Replace("_", "")) + "s" + "' style='width: 100%;' target='_blank'>")
+                                        @Html.Raw(k.Type.ToString().Replace("_", " "))@(k.Count > 1 ? "s" : "")*@
+
+                                    links += "<a href='/RequestsApproval/" + (k.Type.ToString().Replace("_", "")) + "s" + "' style='width: 100%;' target='_blank'>";
+                                    links += k.Type.ToString().Replace("_", " ") + (k.Count > 1 ? "s" : "");
                                 }
 
                                 if (i < Model.Count() - 1 && k.Type != Model[i + 1].Type)
                                 {
-                                    @Html.Raw($" (<b>{k.Count}</b> {Type})</br>")
-                                    @Html.Raw("</a></br>")
+                                    @*@Html.Raw($" (<b>{k.Count}</b> {Type})</br></a></br>")*@
+
+                                    links += $" (<b>{k.Count}</b> {Type})</br></a></br>";
                                 }
                                 else
                                 {
-                                    @Html.Raw($" (<b>{k.Count}</b> {Type})")
-                                    @Html.Raw("</a></br>")
+                                    @*@Html.Raw($" (<b>{k.Count}</b> {Type})</a></br>")*@
+
+                                    links += $" (<b>{k.Count}</b> {Type})</br></a></br>";
                                 }
                             }
                             else
                             {
-                                @Html.Raw("<a href='/RequestsApproval/" + (k.Type.ToString().Replace("_", "")) + "s" + "' style='width: 100%;' target='_blank'>")
-                                @Html.Raw(k.Type.ToString().Replace("_", " "))@(k.Count > 1 ? "s" : "")
-                                @Html.Raw($" (<b>{k.Count}</b> {Type})</br>")
+                                @*@Html.Raw("<a class='btn btn-default' href='/RequestsApproval/" + (k.Type.ToString().Replace("_", "")) + "s" + "' style='width: 100%;' target='_blank'>")
+                                    @Html.Raw(k.Type.ToString().Replace("_", " "))@(k.Count > 1 ? "s" : "")
+                                    @Html.Raw($" (<b>{k.Count}</b> {Type})</br>")*@
+
+                                links += "<a class='btn btn-default' href='/RequestsApproval/" + (k.Type.ToString().Replace("_", "")) + "s" + "' style='width: 100%;' target='_blank'>";
+                                links += k.Type.ToString().Replace("_", " ") + (k.Count > 1 ? "s" : "");
+                                links += $" (<b>{k.Count}</b> {Type})</br></a></br>";
                             }
                         }
                     }
                 }
                 else
                 {
-                    @Html.Raw("No Pending Requests...")
+                    @*@Html.Raw("No Pending Requests...")*@
+                    links += "No Pending Requests...";
                 }
-            </div>
-        </div>
-    </div>
+                @Html.Raw(links)
+            </td>
+        </tr>
+    </table>
 
     if (TotalCount > 0)
     {
@@ -88,43 +98,45 @@
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
                         </div>
                         <div class="modal-body">
-                            @for (int i = 0; i < Model.Count(); i++)
-                            {
-                                var k = Model[i];
-
-                                if (k.Count > 0 && (
-                                    (k.Type.ToString() == "Leave_Request" && LeaveRequestsApprover.Approve == true) ||
-                                    (k.Type.ToString() == "OT_Request" && OtRequestApprover.Approve == true) ||
-                                    (k.Type.ToString() == "Time_Edit_Request" && OtRequestApprover.Approve == true) ||
-                                    (k.Type.ToString() == "High_Risk_Request" && OtRequestApprover.Approve == true)
-                                    ))
+                            @*@for (int i = 0; i < Model.Count(); i++)
                                 {
-                                    var Type = k.Filter.ToString();
+                                    var k = Model[i];
 
-                                    if (i > 0)
+                                    if (k.Count > 0 && (
+                                        (k.Type.ToString() == "Leave_Request" && LeaveRequestsApprover.Approve == true) ||
+                                        (k.Type.ToString() == "OT_Request" && OtRequestApprover.Approve == true) ||
+                                        (k.Type.ToString() == "Time_Edit_Request" && OtRequestApprover.Approve == true) ||
+                                        (k.Type.ToString() == "High_Risk_Request" && OtRequestApprover.Approve == true)
+                                        ))
                                     {
-                                        if (Model[i - 1].Type.ToString() != k.Type.ToString())
-                                        {
-                                            @Html.Raw(k.Type.ToString().Replace("_", " "))@(k.Count > 1 ? "s" : "")
-                                        }
+                                        var Type = k.Filter.ToString();
 
-                                        if (i < Model.Count() - 1 && k.Type.ToString() != Model[i + 1].Type.ToString())
+                                        if (i > 0)
                                         {
-                                            @Html.Raw($" (<b>{k.Count}</b> {Type})</br>")
-                                            @Html.Raw("</br>")
+                                            if (Model[i - 1].Type.ToString() != k.Type.ToString())
+                                            {
+                                                @Html.Raw(k.Type.ToString().Replace("_", " "))@(k.Count > 1 ? "s" : "")
+                                            }
+
+                                            if (i < Model.Count() - 1 && k.Type.ToString() != Model[i + 1].Type.ToString())
+                                            {
+                                                @Html.Raw($" (<b>{k.Count}</b> {Type})</br>")
+                                                @Html.Raw("</br>")
+                                            }
+                                            else
+                                            {
+                                                @Html.Raw($" (<b>{k.Count}</b> {Type})")
+                                            }
                                         }
                                         else
                                         {
-                                            @Html.Raw($" (<b>{k.Count}</b> {Type})")
+                                            @Html.Raw(k.Type.ToString().Replace("_", " "))@(k.Count > 1 ? "s" : "")
+                                            @Html.Raw($" (<b>{k.Count}</b> {Type})</br>")
                                         }
                                     }
-                                    else
-                                    {
-                                        @Html.Raw(k.Type.ToString().Replace("_", " "))@(k.Count > 1 ? "s" : "")
-                                        @Html.Raw($" (<b>{k.Count}</b> {Type})</br>")
-                                    }
-                                }
-                            }
+                                }*@
+
+                            @Html.Raw(links)
                         </div>
                     </div>
                 </div>
@@ -134,6 +146,12 @@
         <script>
             $(document).ready(function () {
                 $('#KioskNotificationsModal').appendTo('body').modal('show');
+
+                $(document).off("keydown").on("keydown", function (e) {
+                    if (e.keyCode == 27) {
+                        $("#KioskNotificationsModal .close").trigger("click");
+                    }
+                });
             });
         </script>
     }

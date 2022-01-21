@@ -2914,16 +2914,19 @@ a.forum-item-title:hover {
 .dark-timeline .vertical-timeline-content:before {
   border-color: transparent #f5f5f5 transparent transparent;
 }
-.dark-timeline.center-orientation .vertical-timeline-content:before {
-  border-color: transparent transparent transparent #aaa;
+.dark-timeline.center-orientation .vertical-timeline-content.navy-bg:before {
+  border-color: transparent transparent transparent #009688;
 }
-.dark-timeline .vertical-timeline-block:nth-child(2n) .vertical-timeline-content:before,
-.dark-timeline.center-orientation .vertical-timeline-block:nth-child(2n) .vertical-timeline-content:before {
-  border-color: transparent #aaa transparent transparent;
+.dark-timeline.center-orientation .vertical-timeline-content.blue-bg:before {
+  border-color: transparent transparent transparent #2196F3;
 }
-.dark-timeline .vertical-timeline-content,
-.dark-timeline.center-orientation .vertical-timeline-content {
-  background: #f5f5f5;
+.dark-timeline .vertical-timeline-block:nth-child(2n) .vertical-timeline-content.navy-bg:before,
+.dark-timeline.center-orientation .vertical-timeline-block:nth-child(2n) .vertical-timeline-content.navy-bg:before {
+  border-color: transparent #009688 transparent transparent;
+}
+.dark-timeline .vertical-timeline-block:nth-child(2n) .vertical-timeline-content.blue-bg:before,
+.dark-timeline.center-orientation .vertical-timeline-block:nth-child(2n) .vertical-timeline-content.blue-bg:before {
+  border-color: transparent #2196F3 transparent transparent;
 }
 @media only screen and (min-width: 1170px) {
   #vertical-timeline.center-orientation {
@@ -2992,18 +2995,18 @@ a.forum-item-title:hover {
 }
 @media only screen and (min-width: 1170px) {
   .center-orientation .vertical-timeline-icon {
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
     left: 50%;
-    margin-left: -25px;
+    margin-left: -30px;
     -webkit-transform: translateZ(0);
     -webkit-backface-visibility: hidden;
     font-size: 19px;
   }
   .vertical-timeline-icon.passenger {
-    width: 40px;
-    height: 40px;
-    margin-left: -20px;
+    width: 50px;
+    height: 50px;
+    margin-left: -25px;
     top: 3px;
   }
   .center-orientation .vertical-timeline-icon i {
@@ -3018,8 +3021,9 @@ a.forum-item-title:hover {
   position: relative;
   margin-left: 60px;
   background: white;
-  border-radius: 0.25em;
+  border-radius: 1em;
   padding: 1em;
+  color: #000;
 }
 .vertical-timeline-content:after {
   content: "";
@@ -3076,7 +3080,6 @@ a.forum-item-title:hover {
     float: left;
   }
   .center-orientation .vertical-timeline-content .vertical-date {
-    position: absolute;
     width: 100%;
     left: 122%;
     top: 2px;
@@ -3098,7 +3101,6 @@ a.forum-item-title:hover {
   .center-orientation .vertical-timeline-block:nth-child(even) .vertical-timeline-content .vertical-date {
     left: auto;
     right: 122%;
-    text-align: right;
   }
   .center-orientation .cssanimations .vertical-timeline-content.is-hidden {
     visibility: hidden;
@@ -3126,9 +3128,6 @@ a.forum-item-title:hover {
 .tabs-container .nav-tabs > li:hover {
   background-color: #f5f5f5;
 }
-.tabs-container .tab-pane .panel-body {
-  border-top: none;
-}
 .tabs-container .nav-tabs > li.active > a,
 .tabs-container .nav-tabs > li.active > a:hover,
 .tabs-container .nav-tabs > li.active > a:focus {
@@ -3141,6 +3140,7 @@ a.forum-item-title:hover {
 }
 .tabs-container .tab-pane .panel-body {
   border-top: none;
+  padding: 0;
 }
 .tabs-container .tabs-left .tab-pane .panel-body,
 .tabs-container .tabs-right .tab-pane .panel-body {
@@ -3172,6 +3172,7 @@ a.forum-item-title:hover {
 }
 .tabs-container .tab-content {
   margin-top: -6px;
+  height: unset;
 }
 .tabs-container .tab-content > .tab-pane,
 .tabs-container .pill-content > .pill-pane {
@@ -8541,7 +8542,6 @@ body.skin-3 {
 @media (min-width: 768px) {
   #page-wrapper {
     position: inherit;
-    min-height: 115vh;
   }
   .navbar-static-side {
     z-index: 2001;
@@ -8557,7 +8557,6 @@ body.skin-3 {
 @media (max-width: 768px) {
   #page-wrapper {
     position: inherit;
-    min-height: 90vh;
   }
   .body-small .navbar-static-side {
     display: none;
@@ -8673,16 +8672,28 @@ input.input-incomplete {
 .text-transform-none {
   text-transform: none !important;
 }
+#modal_management .modal-body .tabs-container .tab-content {
+  width: 100%;
+}
 .text-right {
   text-align: right;
 }
 .text-left {
   text-align: left;
 }
-#PreviousMovementDiv h2,
-#CurrentMovementDiv h2 {
+#PreviousMovementDiv #VesselsDiv h2,
+#CurrentMovementDiv #VesselsDiv h2,
+#CrewMovement #VesselsDiv h2,
+#PreviousMovementDiv #SNVesselsDiv h2,
+#CurrentMovementDiv #SNVesselsDiv h2,
+#CrewMovement #SNVesselsDiv h2,
+#PreviousMovementDiv #VesselsDiv h3,
+#CurrentMovementDiv #VesselsDiv h3,
+#CrewMovement #VesselsDiv h3,
+#PreviousMovementDiv #SNVesselsDiv h3,
+#CurrentMovementDiv #SNVesselsDiv h3,
+#CrewMovement #SNVesselsDiv h3 {
   border-bottom: 1px solid #ccc;
-  margin: 0 0 10px;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -8747,9 +8758,6 @@ h3 {
 .vertical-timeline-block .vertical-timeline-content::before {
   border-color: transparent #aaa transparent transparent;
 }
-.vertical-timeline-block .vertical-timeline-content {
-  border: 1px solid #ccc;
-}
 .vertical-timeline-block .vertical-timeline-content:hover,
 .vertical-timeline-block .vertical-timeline-content:focus {
   box-shadow: 0px 2px 6px 3px rgba(0, 0, 0, 0.16078431);
@@ -8761,15 +8769,11 @@ h3 {
 .vertical-timeline-block .vertical-timeline-content button {
   display: none;
 }
-.vertical-timeline-block .vertical-timeline-content button.btn-primary {
-  margin-right: 15px;
-  margin-top: -8px;
-}
-.vertical-timeline-block .vertical-timeline-content button.btn-danger {
-  margin: -8px;
-}
-.vertical-timeline-block:hover button {
+.vertical-timeline-block .vertical-timeline-content:hover button {
   display: inline-block;
+}
+.vertical-timeline-block .vertical-timeline-content button.btn-primary {
+  margin-right: 0.5em;
 }
 .vertical-timeline-block#NewMovementDiv:before {
   width: 0px;
@@ -8784,10 +8788,6 @@ h3 {
     top: unset;
     left: unset;
   }
-}
-.vertical-timeline {
-  border: 1px solid #ccc;
-  padding: 15px;
 }
 .vertical-timeline button.vertical-timeline-icon i.fa {
   margin-top: 4px;
@@ -8838,7 +8838,11 @@ h3 {
 }
 .tab-content .panel-body {
   padding: 10px;
-  max-height: 400px;
+}
+.tab-content .panel-body tbody td,
+.tab-content .panel-body thead th {
+  white-space: nowrap;
+  overflow: hidden;
 }
 .font-bold-500 {
   font-weight: 500;
