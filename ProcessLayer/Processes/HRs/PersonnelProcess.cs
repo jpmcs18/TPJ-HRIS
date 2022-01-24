@@ -245,6 +245,26 @@ namespace ProcessLayer.Processes
                 }
             }
         }
+        public static List<Personnel> GetVesselCrewForPayroll(int vesselId, DateTime cutoffstartdate, DateTime cutoffenddate)
+        {
+            var Parameters = new Dictionary<string, object>
+            {
+                { "@VesselID", vesselId },
+                { "@StartingDate", cutoffstartdate },
+                { "@EndingDate", cutoffenddate },
+            };
+
+            using (var db = new DBTools())
+            {
+                using (var ds = db.ExecuteReader("hr.GetVesselCrewForPayroll", Parameters))
+                {
+                    PersonnelOnly = true;
+                    var emp = ds.GetList(Converter);
+                    PersonnelOnly = false;
+                    return emp;
+                }
+            }
+        }
         public static List<Personnel> GetForPayroll(DateTime cutoffstartdate, DateTime cutoffenddate, PayrollSheet payrollSheet)
         {
             var emp = new List<Personnel>();

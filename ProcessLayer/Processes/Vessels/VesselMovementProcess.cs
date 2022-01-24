@@ -38,7 +38,7 @@ namespace ProcessLayer.Processes
         }
 
 
-        public static List<CrewDetails> GetCrewDetailList(short vesselid, DateTime? startingdate, DateTime? endingdate)
+        public static List<CrewDetails> GetCrewDetailList(int vesselid, DateTime? startingdate, DateTime? endingdate)
         {
             var crewlist = new List<CrewDetails>();
             var crews = GetCrewList(vesselid, startingdate, endingdate);
@@ -89,12 +89,37 @@ namespace ProcessLayer.Processes
             return crewlist;
         }
 
-        public static List<CrewMovement> GetCrewList(short vesselid, DateTime? startingdate, DateTime? endingdate)
+        public static List<CrewMovement> GetCrewList(int vesselid, DateTime? startingdate, DateTime? endingdate)
         {
             var crews = new List<CrewMovement>();
             var Parameters = new Dictionary<string, object>
             {
                 { CrewParameters.VesselID, vesselid },
+                { CrewMovementParameters.StartingDate, startingdate },
+                { CrewMovementParameters.EndingDate, endingdate }
+            };
+
+            using (var db = new DBTools())
+            {
+                using (var ds = db.ExecuteReader(CrewMovementProcedures.GetVesselCrews, Parameters))
+                {
+                    CrewMovementProcess.WithPreviousCrewMovement = false;
+                    crews = ds.GetList(CrewMovementProcess.Converter);
+                    CrewMovementProcess.WithPreviousCrewMovement = true;
+                }
+            }
+
+            return crews;
+        }
+
+
+        public static List<CrewMovement> GetCrewList(int vesselid, long personnelId, DateTime? startingdate, DateTime? endingdate)
+        {
+            var crews = new List<CrewMovement>();
+            var Parameters = new Dictionary<string, object>
+            {
+                { CrewParameters.VesselID, vesselid },
+                { CrewParameters.PersonnelID, personnelId },
                 { CrewMovementParameters.StartingDate, startingdate },
                 { CrewMovementParameters.EndingDate, endingdate }
             };

@@ -48,14 +48,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Computation\CnB\CrewPayrollComputation.cs" />
     <Compile Include="Computation\CnB\PayrollComputation.cs" />
     <Compile Include="Computation\CnB\TimelogComputation.cs" />
     <Compile Include="Computation\Kiosk\LeaveComputation.cs" />
     <Compile Include="Entities\CnBs\AdditionalLoanForApproval.cs" />
+    <Compile Include="Entities\CnBs\CrewLoanDeductions.cs" />
+    <Compile Include="Entities\CnBs\CrewPayroll.cs" />
+    <Compile Include="Entities\CnBs\CrewPayrollAdjustments.cs" />
+    <Compile Include="Entities\CnBs\CrewPayrollDeductions.cs" />
+    <Compile Include="Entities\CnBs\CrewPayrollPeriod.cs" />
+    <Compile Include="Entities\CnBs\CrewVessel.cs" />
+    <Compile Include="Entities\CnBs\IPayrollDeductions.cs" />
     <Compile Include="Entities\CnBs\LoanDeductions.cs" />
     <Compile Include="Entities\CnBs\Payroll.cs" />
     <Compile Include="Entities\CnBs\PayrollDeductions.cs" />
     <Compile Include="Entities\CnBs\PayrollDetails.cs" />
+    <Compile Include="Entities\CnBs\CrewPayrollDetails.cs" />
     <Compile Include="Entities\CnBs\PayrollPeriod.cs" />
     <Compile Include="Entities\CnBs\PersonnelTimesheet.cs" />
     <Compile Include="Entities\CnBs\ComputedTimelog.cs" />
@@ -177,6 +186,7 @@
     <Compile Include="Helpers\ObjectParameter\Kiosk\Time Edit Request\TimeEditRequestParameters.cs" />
     <Compile Include="Helpers\ObjectParameter\Kiosk\Time Edit Request\TimeEditRequestProcedures.cs" />
     <Compile Include="Helpers\ObjectParameter\Lookup\LookupParameters.cs" />
+    <Compile Include="Helpers\ObjectParameter\Payroll\CrewPayrollParameters.cs" />
     <Compile Include="Helpers\ObjectParameter\Payroll\ParametersTag.cs" />
     <Compile Include="Helpers\ObjectParameter\Payroll\PayrollParameters.cs" />
     <Compile Include="Helpers\ObjectParameter\Security\EmailLogs\EmailCredentialFields.cs" />
@@ -265,6 +275,7 @@
     <Compile Include="Helpers\OutParameterListExtension.cs" />
     <Compile Include="Helpers\Web.cs" />
     <Compile Include="Processes\CnBs\AdditionalLoanProcess.cs" />
+    <Compile Include="Processes\CnBs\CrewPayrollProcess.cs" />
     <Compile Include="Processes\HRs\InfractionContentProcess.cs" />
     <Compile Include="Processes\HRs\InfractionProcess.cs" />
     <Compile Include="Processes\HRs\PersonnelLoanProcess.cs" />
