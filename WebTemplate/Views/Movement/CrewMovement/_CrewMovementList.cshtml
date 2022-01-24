@@ -22,7 +22,7 @@
             DateTime? MovementDate = Model.OnboardDate;
             DateTime DateTimeNow = DateTime.Now;
         }
-        @Html.Raw(String.Format("{0}{1}", MovementDate.ToString() == DateTime.Now.ToString() ? "Today" : String.Format("<b>{0:MMM dd, yyyy}</b>", MovementDate), (MovementDate.ToString() == "" ? "" : " @ ") + String.Format("<b>{0:HH:mm tt}</b>", MovementDate)))
+        @Html.Raw(String.Format("{0}{1}", MovementDate.ToString() == DateTime.Now.ToString() ? "Today" : String.Format("<b>{0:MMM dd, yyyy}</b>", MovementDate), (MovementDate.ToString() == "" ? "" : " @ ") + String.Format("<b>{0:hh:mm tt}</b>", MovementDate)))
     </td>
     <td>
         @Model.Remarks

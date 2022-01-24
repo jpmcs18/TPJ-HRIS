@@ -1884,20 +1884,33 @@ a.forum-item-title:hover {
   border-color: transparent #f5f5f5 transparent transparent;
 }
 
-.dark-timeline.center-orientation .vertical-timeline-content:before {
+.dark-timeline.center-orientation {
     //border-color: transparent transparent transparent #f5f5f5;
-    border-color: transparent transparent transparent #aaa;
+
+    .vertical-timeline-content.navy-bg:before {
+        border-color: transparent transparent transparent @primary-color;
+    }
+
+    .vertical-timeline-content.blue-bg:before {
+        border-color: transparent transparent transparent @blue;
+    }
 }
 
-.dark-timeline .vertical-timeline-block:nth-child(2n) .vertical-timeline-content:before,
-.dark-timeline.center-orientation .vertical-timeline-block:nth-child(2n) .vertical-timeline-content:before {
+.dark-timeline .vertical-timeline-block:nth-child(2n),
+.dark-timeline.center-orientation .vertical-timeline-block:nth-child(2n) {
     //border-color: transparent #f5f5f5 transparent transparent;
-    border-color: transparent #aaa transparent transparent;
+    .vertical-timeline-content.navy-bg:before {
+        border-color: transparent @primary-color transparent transparent;
+    }
+
+    .vertical-timeline-content.blue-bg:before {
+        border-color: transparent @blue transparent transparent;
+    }
 }
 
 .dark-timeline .vertical-timeline-content,
 .dark-timeline.center-orientation .vertical-timeline-content {
-  background: #f5f5f5;
+  //background: #f5f5f5;
 }
 
 @media only screen and (min-width: 1170px) {
@@ -1980,19 +1993,19 @@ a.forum-item-title:hover {
 
 @media only screen and (min-width: 1170px) {
     .center-orientation .vertical-timeline-icon {
-        width: 50px;
-        height: 50px;
+        width: 60px;
+        height: 60px;
         left: 50%;
-        margin-left: -25px;
+        margin-left: -30px;
         -webkit-transform: translateZ(0);
         -webkit-backface-visibility: hidden;
         font-size: 19px;
     }
 
     .vertical-timeline-icon.passenger {
-        width: 40px;
-        height: 40px;
-        margin-left: -20px;
+        width: 50px;
+        height: 50px;
+        margin-left: -25px;
         top: 3px;
     }
 
@@ -2007,11 +2020,13 @@ a.forum-item-title:hover {
 }
 
 .vertical-timeline-content {
-  position: relative;
-  margin-left: 60px;
-  background: white;
-  border-radius: 0.25em;
-  padding: 1em;
+    //text-align: center !important;
+    position: relative;
+    margin-left: 60px;
+    background: white;
+    border-radius: 1em;
+    padding: 1em;
+    color: #000;
 }
 
 .vertical-timeline-content:after {
@@ -2081,7 +2096,7 @@ a.forum-item-title:hover {
   }
 
   .center-orientation .vertical-timeline-content .vertical-date {
-    position: absolute;
+    //position: absolute;
     width: 100%;
     left: 122%;
     top: 2px;
@@ -2107,7 +2122,7 @@ a.forum-item-title:hover {
   .center-orientation .vertical-timeline-block:nth-child(even) .vertical-timeline-content .vertical-date {
     left: auto;
     right: 122%;
-    text-align: right;
+    //text-align: right;
   }
 
   .center-orientation .cssanimations .vertical-timeline-content.is-hidden {
@@ -2144,10 +2159,6 @@ a.forum-item-title:hover {
         }
     }
 
-    .tab-pane .panel-body {
-        border-top: none;
-    }
-
     .nav-tabs > li.active > a,
     .nav-tabs > li.active > a:hover,
     .nav-tabs > li.active > a:focus {
@@ -2162,6 +2173,7 @@ a.forum-item-title:hover {
 
     .tab-pane .panel-body {
         border-top: none;
+        padding: 0;
     }
 
     .tabs-left .tab-pane .panel-body, .tabs-right .tab-pane .panel-body {
@@ -2199,6 +2211,7 @@ a.forum-item-title:hover {
 
     .tab-content {
         margin-top: -6px;
+        height: unset;
     }
 
     .tab-content > .tab-pane,

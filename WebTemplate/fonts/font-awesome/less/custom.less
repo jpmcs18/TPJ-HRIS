@@ -45,6 +45,16 @@ input.input-incomplete {
     }
 }
 
+#modal_management {
+    .modal-body {
+        .tabs-container {
+            .tab-content {
+                width: 100%;
+            }
+        }
+    }
+}
+
 .text-right {
     text-align: right;
 }
@@ -54,23 +64,26 @@ input.input-incomplete {
 }
 
 #PreviousMovementDiv,
-#CurrentMovementDiv {
-    @media only screen and (min-width: 992px) {
-    }
+#CurrentMovementDiv, #CrewMovement {
 
-    @media only screen and (max-width: 991px) {
-    }
+    #VesselsDiv, #SNVesselsDiv {
+        @media only screen and (min-width: 992px) {
+        }
 
-    @media only screen and (min-width: 1170px) {
-    }
+        @media only screen and (max-width: 991px) {
+        }
 
-    h2 {
-        border-bottom: 1px solid #ccc;
-        margin: 0 0 10px;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        line-height: 1.25;
+        @media only screen and (min-width: 1170px) {
+        }
+
+        h2, h3 {
+            border-bottom: 1px solid #ccc;
+            //margin: 0 0 10px;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            line-height: 1.25;
+        }
     }
 }
 
@@ -141,37 +154,38 @@ input.input-incomplete {
         //z-index: -1;
     }
 
-    .vertical-timeline-block {
-        .vertical-timeline-content::before {
-            border-color: transparent #aaa transparent transparent;
+.vertical-timeline-block {
+    .vertical-timeline-content::before {
+        border-color: transparent #aaa transparent transparent;
+    }
+
+    .vertical-timeline-content {
+        //border: 1px solid #ccc;
+
+        &:hover, &:focus {
+            box-shadow: 0px 2px 6px 3px rgba(0, 0, 0, 0.1607843137254902);
+            .transition-3s();
         }
 
-        .vertical-timeline-content {
-            border: 1px solid #ccc;
-
-            &:hover, &:focus {
-                box-shadow: 0px 2px 6px 3px rgba(0, 0, 0, 0.1607843137254902);
-                .transition-3s();
-            }
-
-            button {
-                display: none;
-            }
-
-            button.btn-primary {
-                margin-right: 15px;
-                margin-top: -8px;
-            }
-
-            button.btn-danger {
-                margin: -8px;
-            }
+        button {
+            display: none;
         }
 
         &:hover button {
             display: inline-block;
         }
+
+        button.btn-primary {
+            //margin-right: 15px;
+            //margin-top: -8px;
+            margin-right: .5em;
+        }
+
+        button.btn-danger {
+            //margin: -8px;
+        }
     }
+}
 
     .vertical-timeline-block#NewMovementDiv {
         &:before {
@@ -193,8 +207,8 @@ input.input-incomplete {
     }
 
 .vertical-timeline {
-    border: 1px solid #ccc;
-    padding: 15px;
+    //border: 1px solid #ccc;
+    //padding: 15px;
 
     button.vertical-timeline-icon i.fa {
         margin-top: 4px;
@@ -263,13 +277,18 @@ input.input-incomplete {
     }*/
     }
 
-    .tab-content {
-        .panel-body {
-            padding: 10px;
-            max-height: 400px;
-            //overflow-x: hidden;
+.tab-content {
+    .panel-body {
+        padding: 10px;
+        //max-height: 400px;
+        //overflow-x: hidden;
+
+        tbody td, thead th {
+            white-space: nowrap;
+            overflow: hidden;
         }
     }
+}
 
     .font-bold-500 {
         font-weight: 500;

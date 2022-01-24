@@ -34,10 +34,10 @@
     <div class="wrapper wrapper-content">
         <div class="col-lg-9">
             <div class="row">
-                <div class="ibox" style="margin-bottom: 10px;">
+                <div class="ibox">
                     <div class="ibox-title bg-primary" style="padding: 8px 15px 0px;">
                     </div>
-                    <div class="ibox-content" style="border: 1px solid #009688;">
+                    <div class="ibox-content">
                         <div class="row">
                         </div>
                     </div>
@@ -48,8 +48,8 @@
             <div class="row">
                 @* Date *@
                 <div class="col-lg-12">
-                    <div class="ibox" style="margin-bottom: 10px;">
-                        <div class="ibox-title" style="padding: 8px 15px 0px; border: 1px solid #009688;">
+                    <div class="ibox">
+                        <div class="ibox-title" style="padding: 8px 15px 0px; ">
                             <h1 class="text-primary" style="margin: 0px; text-align: center; font-weight: 600; font-size: 40px;">@year</h1>
                             <h3 class="bg-primary" style="text-align: center; padding: 5px; margin: 5px -15px 0px -15px; color: #fff;">@todaysDate</h3>
                         </div>
@@ -58,17 +58,17 @@
 
                 @* Birthday Celebrants *@
                 @*<div class="col-lg-12">
-                        <div class="ibox" style="margin-bottom: 10px;">
+                        <div class="ibox">
                             <div class="ibox-title bg-danger ">
                                 <a href="" target="_blank" style="color: #fff;" title="Go to Birthdays Celebrants"><h3 class="" style="text-align: center; margin: 0px -15px 5px -15px;"><i class="fa fa-birthday-cake" style="font-size: 20px;"></i>&nbsp;&nbsp;&nbsp;Birthday Celebrants</h3></a>
                             </div>
                             <div class="tabs-container" style="border: 1px solid #f44336;">
                                 <ul class="nav nav-tabs">
-                                    <li class="" style="width: 33.33%;"><a data-toggle="tab" href="#bday-tab-1" style="text-align: center; padding: 10px 5px;">Recent   </a></li>
-                                    <li class="active" style="width: 33.33%;"><a data-toggle="tab" href="#bday-tab-2" style="text-align: center; padding: 10px 5px;">Today</a></li>
-                                    <li class="" style="width: 33.33%;"><a data-toggle="tab" href="#bday-tab-3" style="text-align: center; padding: 10px 5px;">Upcoming</a></li>
+                                    <li class=""><a data-toggle="tab" href="#bday-tab-1">Recent   </a></li>
+                                    <li class="active"><a data-toggle="tab" href="#bday-tab-2">Today</a></li>
+                                    <li class=""><a data-toggle="tab" href="#bday-tab-3">Upcoming</a></li>
                                 </ul>
-                                <div class="tab-content" style="margin-top: 0px; height: 250px; overflow-y: auto; overflow-x: hidden;">
+                                <div class="tab-content">
                                     <div id="bday-tab-1" class="tab-pane">
                                         <div class="panel-body" style="padding: 0px; ">
                                             <table class="table table-stripped table-bordered" style="margin-bottom: 0px;">
@@ -81,12 +81,12 @@
                                                             {
                                                                 if (Model.BirthdayCelebrantsRecent[i - 1].BirthDate.Value.Day != Model.BirthdayCelebrantsRecent[i].BirthDate.Value.Day)
                                                                 {
-                                                                    <tr><td style="padding: 4px; background: #ccc; font-weight: 700;">@(new DateTime(DateTime.Now.Year, Model.BirthdayCelebrantsRecent[i].BirthDate.Value.Month, Model.BirthdayCelebrantsRecent[i].BirthDate.Value.Day).ToString("dddd, MMMM dd"))</td></tr>
+                                                                    <tr><td>@(new DateTime(DateTime.Now.Year, Model.BirthdayCelebrantsRecent[i].BirthDate.Value.Month, Model.BirthdayCelebrantsRecent[i].BirthDate.Value.Day).ToString("dddd, MMMM dd"))</td></tr>
                                                                 }
                                                             }
                                                             else
                                                             {
-                                                                <tr><td style="padding: 4px; background: #ccc; font-weight: 700;">@(new DateTime(DateTime.Now.Year, Model.BirthdayCelebrantsRecent[i].BirthDate.Value.Month, Model.BirthdayCelebrantsRecent[i].BirthDate.Value.Day).ToString("dddd, MMMM dd"))</td></tr>
+                                                                <tr><td>@(new DateTime(DateTime.Now.Year, Model.BirthdayCelebrantsRecent[i].BirthDate.Value.Month, Model.BirthdayCelebrantsRecent[i].BirthDate.Value.Day).ToString("dddd, MMMM dd"))</td></tr>
                                                             }
                                                             <tr title="@String.Format("{0}, {1} {2}", Model.BirthdayCelebrantsRecent[i].LastName, Model.BirthdayCelebrantsRecent[i].FirstName, Model.BirthdayCelebrantsRecent[i].MiddleName)">
                                                                 <td style="text-align: left; padding: 5px; border: 1px solid #eee; text-transform: uppercase;">
@@ -120,12 +120,12 @@
                                                             {
                                                                 if (Model.BirthdayCelebrantsToday[i - 1].BirthDate.Value.Day != Model.BirthdayCelebrantsToday[i].BirthDate.Value.Day)
                                                                 {
-                                                                    <tr><td style="padding: 4px; background: #ccc; font-weight: 700;">@(new DateTime(DateTime.Now.Year, Model.BirthdayCelebrantsToday[i].BirthDate.Value.Month, Model.BirthdayCelebrantsToday[i].BirthDate.Value.Day).ToString("dddd, MMMM dd"))</td></tr>
+                                                                    <tr><td>@(new DateTime(DateTime.Now.Year, Model.BirthdayCelebrantsToday[i].BirthDate.Value.Month, Model.BirthdayCelebrantsToday[i].BirthDate.Value.Day).ToString("dddd, MMMM dd"))</td></tr>
                                                                 }
                                                             }
                                                             else
                                                             {
-                                                                <tr><td style="padding: 4px; background: #ccc; font-weight: 700;">@(new DateTime(DateTime.Now.Year, Model.BirthdayCelebrantsToday[i].BirthDate.Value.Month, Model.BirthdayCelebrantsToday[i].BirthDate.Value.Day).ToString("dddd, MMMM dd"))</td></tr>
+                                                                <tr><td>@(new DateTime(DateTime.Now.Year, Model.BirthdayCelebrantsToday[i].BirthDate.Value.Month, Model.BirthdayCelebrantsToday[i].BirthDate.Value.Day).ToString("dddd, MMMM dd"))</td></tr>
                                                             }
 
                                                             <tr title="@String.Format("{0}, {1} {2}", Model.BirthdayCelebrantsToday[i].LastName, Model.BirthdayCelebrantsToday[i].FirstName, Model.BirthdayCelebrantsToday[i].MiddleName)">
@@ -161,12 +161,12 @@
                                                             {
                                                                 if (Model.BirthdayCelebrantsUpcoming[i - 1].BirthDate.Value.Day != Model.BirthdayCelebrantsUpcoming[i].BirthDate.Value.Day)
                                                                 {
-                                                                    <tr><td style="padding: 4px; background: #ccc; font-weight: 700;">@(new DateTime(DateTime.Now.Year, Model.BirthdayCelebrantsUpcoming[i].BirthDate.Value.Month, Model.BirthdayCelebrantsUpcoming[i].BirthDate.Value.Day).ToString("dddd, MMMM dd"))</td></tr>
+                                                                    <tr><td>@(new DateTime(DateTime.Now.Year, Model.BirthdayCelebrantsUpcoming[i].BirthDate.Value.Month, Model.BirthdayCelebrantsUpcoming[i].BirthDate.Value.Day).ToString("dddd, MMMM dd"))</td></tr>
                                                                 }
                                                             }
                                                             else
                                                             {
-                                                                <tr><td style="padding: 4px; background: #ccc; font-weight: 700;">@(new DateTime(DateTime.Now.Year, Model.BirthdayCelebrantsUpcoming[i].BirthDate.Value.Month, Model.BirthdayCelebrantsUpcoming[i].BirthDate.Value.Day).ToString("dddd, MMMM dd"))</td></tr>
+                                                                <tr><td>@(new DateTime(DateTime.Now.Year, Model.BirthdayCelebrantsUpcoming[i].BirthDate.Value.Month, Model.BirthdayCelebrantsUpcoming[i].BirthDate.Value.Day).ToString("dddd, MMMM dd"))</td></tr>
                                                             }
                                                             <tr title="@String.Format("{0}, {1} {2}", Model.BirthdayCelebrantsUpcoming[i].LastName, Model.BirthdayCelebrantsUpcoming[i].FirstName, Model.BirthdayCelebrantsUpcoming[i].MiddleName)">
                                                                 <td style="text-align: left; padding: 5px; border: 1px solid #eee; text-transform: uppercase;">
@@ -195,16 +195,16 @@
 
                 @* License Expiration *@
                 @*<div class="col-lg-12">
-                        <div class="ibox" style="margin-bottom: 10px;">
+                        <div class="ibox">
                             <div class="ibox-title bg-primary ">
                                 <a href="" target="_blank" style="color: #fff;" title="Go to License Expiration"><h3 class="" style="text-align: center; margin: 0px -15px 5px -15px;"><i class="fa fa-id-card" style="font-size: 20px;"></i>&nbsp;&nbsp;&nbsp;License Expiration</h3></a>
                             </div>
-                            <div class="tabs-container" style="border: 1px solid #009688;">
+                            <div class="tabs-container">
                                 <ul class="nav nav-tabs">
-                                    <li class="active" style="width: 50%;"><a data-toggle="tab" href="#license-tab-2" style="text-align: center; padding: 10px 5px;">This Year</a></li>
-                                    <li class="" style="width: 50%;"><a data-toggle="tab" href="#license-tab-3" style="text-align: center; padding: 10px 5px;">Upcoming Year</a></li>
+                                    <li class="active"><a data-toggle="tab" href="#license-tab-2">This Year</a></li>
+                                    <li class=""><a data-toggle="tab" href="#license-tab-3">Upcoming Year</a></li>
                                 </ul>
-                                <div class="tab-content" style="margin-top: 0px; height: 250px; overflow-y: auto; overflow-x: hidden;">
+                                <div class="tab-content">
                                     <div id="license-tab-2" class="tab-pane active">
                                         <div class="panel-body" style="padding: 0px; ">
                                             <table class="table table-stripped table-bordered" style="margin-bottom: 0px;">
@@ -217,12 +217,12 @@
                                                             {
                                                                 if (Model.ExpiringLicensesToday[i - 1].ExpirationDate.ToString() != Model.ExpiringLicensesToday[i].ExpirationDate.ToString())
                                                                 {
-                                                                    <tr><td style="padding: 4px; background: #ccc; font-weight: 700;">@Model.ExpiringLicensesToday[i].ExpirationDate.Value.ToString("dddd, MMMM dd")</td></tr>
+                                                                    <tr><td>@Model.ExpiringLicensesToday[i].ExpirationDate.Value.ToString("dddd, MMMM dd")</td></tr>
                                                                 }
                                                             }
                                                             else
                                                             {
-                                                                <tr><td style="padding: 4px; background: #ccc; font-weight: 700;">@Model.ExpiringLicensesToday[i].ExpirationDate.Value.ToString("dddd, MMMM dd")</td></tr>
+                                                                <tr><td>@Model.ExpiringLicensesToday[i].ExpirationDate.Value.ToString("dddd, MMMM dd")</td></tr>
                                                             }
 
                                                             <tr title="@String.Format("{0}, {1} {2}", Model.ExpiringLicensesToday[i]._Personnel.LastName, Model.ExpiringLicensesToday[i]._Personnel.FirstName, Model.ExpiringLicensesToday[i]._Personnel.MiddleName)">
@@ -259,12 +259,12 @@
                                                             {
                                                                 if (Model.ExpiringLicensesUpcoming[i - 1].ExpirationDate.ToString() != Model.ExpiringLicensesUpcoming[i].ExpirationDate.ToString())
                                                                 {
-                                                                    <tr><td style="padding: 4px; background: #ccc; font-weight: 700;">@Model.ExpiringLicensesUpcoming[i].ExpirationDate.Value.ToString("dddd, MMMM dd")</td></tr>
+                                                                    <tr><td>@Model.ExpiringLicensesUpcoming[i].ExpirationDate.Value.ToString("dddd, MMMM dd")</td></tr>
                                                                 }
                                                             }
                                                             else
                                                             {
-                                                                <tr><td style="padding: 4px; background: #ccc; font-weight: 700;">@Model.ExpiringLicensesUpcoming[i].ExpirationDate.Value.ToString("dddd, MMMM dd")</td></tr>
+                                                                <tr><td>@Model.ExpiringLicensesUpcoming[i].ExpirationDate.Value.ToString("dddd, MMMM dd")</td></tr>
                                                             }
 
                                                             <tr title="@String.Format("{0}, {1} {2}", Model.ExpiringLicensesUpcoming[i]._Personnel.LastName, Model.ExpiringLicensesUpcoming[i]._Personnel.FirstName, Model.ExpiringLicensesUpcoming[i]._Personnel.MiddleName)">
@@ -313,34 +313,49 @@ else
                 </ol>
             </div>
         </div>
-        <div class="index-container" style="margin-top: 85px;">
-            <div class="col-xs-12 col-sm- 12 col-md-8 col-lg-9 animated fadeInDown">
-                <div class="ibox" style="margin-bottom: 10px;">
+        <div class="index-container" style="margin-top: 80px; padding: 1em 0em;">
+            <div class="col-xs-12 col-sm- 12 col-md-8 col-lg-8 animated fadeInDown">
+                <div class="ibox">
                     <div class="ibox-title bg-primary" style="padding: 8px 15px 0px;">
                     </div>
-                    <div class="ibox-content" style="border: 1px solid #009688;">
+                    <div class="ibox-content">
                         <div class="row">
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-sm- 12 col-md-4 col-lg-3 animated fadeInDown">
+            <div class="col-xs-12 col-sm- 12 col-md-4 col-lg-4 animated fadeInDown">
                 @* Date *@
-                <div class="ibox" style="margin-bottom: 10px;">
-                    <div class="ibox-title" style="padding: 4px 15px 0px; border: 1px solid #009688;">
-                        <h1 class="text-primary" style="margin: 0px; text-align: center; font-weight: 600; font-size: 40px;">@year</h1>
-                        <h3 class="bg-primary" style="text-align: center; padding: 5px; margin: 5px -15px 0px -15px; color: #fff;">@todaysDate</h3>
+                <div class="ibox" style="margin-bottom: 0;">
+                    <div class="ibox-title" style="min-height: unset; padding: 0px; ">
+                        @*<h1 class="text-primary" style="margin: 0px; text-align: center; font-weight: 600; font-size: 40px;">@year</h1>*@
+                        <h3 class="bg-primary" style="text-align: center; padding: 8px; color: #fff;">@todaysDate, @year</h3>
+                    </div>
+                    <div class="tabs-container" style="">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#home-tab-1">Birthdays</a></li>
+                            @if (HomePageAccess.Approve)
+                            {
+                                <li class=""><a data-toggle="tab" href="#home-tab-2">Kiosk Notifications</a></li>
+                                <li class=""><a data-toggle="tab" href="#home-tab-3">Licenses Exp</a></li>
+                            }
+                        </ul>
+                        <div class="tab-content" style="margin-top: 0; padding: 1em; background-color: #fff;">
+                            <div id="home-tab-1" class="tab-pane active">
+                                @Html.Partial("~/Views/Home/_BirthdayCelebrants.cshtml", Model)
+                            </div>
+                            @if (HomePageAccess.Approve)
+                            {
+                                <div id="home-tab-2" class="tab-pane">
+                                    @Html.Partial("~/Views/Home/_KioskNotifications.cshtml", Model.KioskNotifications)
+                                </div>
+                                <div id="home-tab-3" class="tab-pane">
+                                    @Html.Partial("~/Views/Home/_ExpiringLicenses.cshtml", Model)
+                                </div>
+                            }
+                        </div>
                     </div>
                 </div>
-
-                @* Kiosk Notification *@
-                @Html.Partial("~/Views/Home/_KioskNotifications.cshtml", Model.KioskNotifications)
-
-                @* Birthday Celebrants *@
-                @Html.Partial("~/Views/Home/_BirthdayCelebrants.cshtml", Model)
-
-                @* License Expiration *@
-                @Html.Partial("~/Views/Home/_ExpiringLicenses.cshtml", Model)
             </div>
         </div>
     </div>

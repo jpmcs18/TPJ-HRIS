@@ -13,13 +13,15 @@
 
 <div class="table-responsive" style="margin-bottom: 0;">
     <div class="mail-box">
-        <table id="CrewTable" class="table table-hover table-mail" style="margin-bottom: 10px;">
+        <table id="CrewTable" class="table table-hover table-mail" style="">
             <thead>
                 <tr>
                     <th class="text-left">Transaction No.</th>
                     <th class="text-left">Position</th>
                     <th class="text-left">Previous</th>
                     <th class="text-left">Current</th>
+                    <th class="text-left">Daily Rate</th>
+                    <th class="text-left">Dry Docked</th>
                     <th class="text-left">Movement Date</th>
                     <th class="text-left">Remarks</th>
                     <th class="text-left">Created</th>
@@ -78,8 +80,12 @@
                                     Model.CrewMovements[i].VesselID != null ? "<br />" : "", Model.CrewMovements[i].SNVesselID != null ? "<b>SN: </b>" : "",
                                     Model.CrewMovements[i].SNVesselID != null ? vessels.Where(x => x.ID == Model.CrewMovements[i].SNVesselID).Select(y => y.Description).FirstOrDefault() : ""))
                             </td>
+                            <td class="text-left" style="white-space: nowrap; overflow: hidden;">
+                                @Html.Raw(String.Format("{0}{1}", Model.CrewMovements[i].VesselID != null ? (Model.CrewMovements[i].DailyRate ?? 0).ToString("#,##0.00") + "<br/>" : null, Model.CrewMovements[i].SNVesselID != null ? "<b>SN:</b> " + (Model.CrewMovements[i].SNDailyRate ?? 0).ToString("#,##0.00") : null))
+                            </td>
+                            <td class="text-left">@(Model.CrewMovements[i].DryDock ? "Yes" : "No")</td>
                             <td class="text-left">
-                                @Html.Raw(String.Format("{0}{1}", MovementDate.ToString() == DateTime.Now.ToString() ? "Today" : String.Format("<b>{0:MMM dd, yyyy}</b>", MovementDate), (MovementDate.ToString() == "" ? "" : " @ ") + String.Format("<b>{0:HH:mm tt}</b>", MovementDate)))
+                                @Html.Raw(String.Format("{0}{1}", MovementDate.ToString() == DateTime.Now.ToString() ? "Today" : String.Format("<b>{0:MMM dd, yyyy}</b>", MovementDate), (MovementDate.ToString() == "" ? "" : " @ ") + String.Format("<b>{0:hh:mm tt}</b>", MovementDate)))
                             </td>
                             <td class="text-left">@Model.CrewMovements[i].Remarks</td>
                             <td class="text-left">

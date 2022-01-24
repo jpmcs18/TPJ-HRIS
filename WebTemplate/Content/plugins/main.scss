@@ -1,6 +1,52 @@
-﻿.license-container, .birthday-container {
-    height: 32vh;
-    overflow: hidden;
+﻿.license-container, .birthday-container, .kiosk-container {
+    //height: 32vh;
+    //overflow: hidden;
+}
+
+.tabs-container {
+    border: 0;
+
+    .nav-tabs {
+        display: flex;
+        white-space: nowrap;
+
+        li {
+            width: 33.33%;
+
+            a {
+                text-align: center;
+                padding: 6px 5px;
+            }
+        }
+
+        a[target="_blank"] {
+            padding: 0;
+        }
+    }
+
+    .tab-content {
+        width: 100%;
+        margin-top: 0px;
+        //height: 250px;
+        overflow-y: auto;
+        overflow-x: hidden;
+
+        table {
+            tbody {
+                tr {
+                    &.list-title {
+                        background-color: #ddd;
+                    }
+
+                    td {
+                        padding: 4px;
+                        background: #ccc;
+                        font-weight: 700;
+                    }
+                }
+            }
+        }
+    }
 }
 
 #page-wrapper {
@@ -12,8 +58,8 @@
 }
 
 .tab-content {
-    height: 68vh;
-    overflow-y: auto;
+    //height: 68vh;
+    //overflow-y: auto;
 }
 
 .nav {

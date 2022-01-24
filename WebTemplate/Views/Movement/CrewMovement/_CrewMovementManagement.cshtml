@@ -2,7 +2,7 @@
 
 <div id="CrewMovementParameters" class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="text-align: left;">
-        <h1 style="margin-bottom: 10px; margin-top: 0;">
+        <h3 style="margin-bottom: 10px; margin-top: 0;">
             <text id="BackToCrewListDiv">
                 @*<i id="BackToCrewList" class="fa fa-arrow-left m-r-sm" style="cursor: pointer" title="Back"></i>*@
             </text>
@@ -11,7 +11,7 @@
             <img src="@(String.IsNullOrEmpty(Model.Personnel.ImagePath) ? "\\Images\\default.jpg": Model.Personnel.ImagePath)" style="height: 30px; width: 30px; min-height: 40px; min-width: 40px; border: 3px solid #eaeaea; margin-right: 10px; border-radius: 50px;" title="" />
 
             @Html.Raw(String.Format("<b>{0}</b>, {1} {2}<br/>", Model.Personnel.LastName, Model.Personnel.FirstName, Model.Personnel.MiddleName))
-        </h1>
+        </h3>
     </div>
 
     <input type="hidden" id="PersonnelID" value="@Model.PersonnelID" name="PersonnelID" />
@@ -47,7 +47,7 @@
         </ul>
         <div class="tab-content" style="margin-top: 0px; max-height: unset; overflow-x: auto; overflow-y: hidden;">
             <div id="tab-1" class="tab-pane active">
-                <div class="panel-body" style="padding: 10px; border: 1px solid #e5e6e7; overflow-y: auto; height: 644.523px;">
+                <div class="panel-body" style="padding: 10px; border: 1px solid #e5e6e7; overflow-y: auto;">
                     @Html.Partial("~/Views/Movement/CrewMovement/_CrewMovementListSearch.cshtml")
                 </div>
             </div>

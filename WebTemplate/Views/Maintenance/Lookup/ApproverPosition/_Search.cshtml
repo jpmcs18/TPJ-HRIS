@@ -83,7 +83,7 @@
                     @(Model.ItemList[i].AllowApprove == true ? "Yes" : "No")
                 </td>
                 <td style="text-align: center;" class="client-status">
-                    @Html.Raw((Model.ItemList[i]._Modifier ?? Model.ItemList[i]._Creator ?? "N/A") + "<br/>" + String.Format("{0:MMM dd, yyyy HH:mm tt}", Model.ItemList[i].ModifiedOn ?? Model.ItemList[i].CreatedOn))
+                    @Html.Raw((Model.ItemList[i]._Modifier ?? Model.ItemList[i]._Creator ?? "N/A") + "<br/>" + String.Format("{0:MMM dd, yyyy hh:mm tt}", Model.ItemList[i].ModifiedOn ?? Model.ItemList[i].CreatedOn))
                 </td>
                 <td style="" class="row-actions">
                     <div class="btn-group">

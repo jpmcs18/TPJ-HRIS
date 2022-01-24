@@ -2,19 +2,14 @@
 
 @{
 }
-<div class="ibox license-container" style="margin-bottom: 10px;">
-    <div class="ibox-title bg-danger" style="padding: 8px 15px 0px;">
-        <a href="" target="_blank" style="color: #fff;" title="Go to License Expiration">
-            <h3 class="" style="text-align: center; margin: 0px -15px"><i class="fa fa-id-card" style="font-size: 20px;"></i>&nbsp;&nbsp;&nbsp;License Expiration</h3>
-        </a>
-    </div>
-    <div class="tabs-container" style="border: 1px solid #f44336;">
+<div class="license-container">
+    <div class="tabs-container">
         <ul class="nav nav-tabs">
-            @*<li class="" style="width: 33.33%;"><a data-toggle="tab" href="#license-tab-1" style="text-align: center; padding: 10px 5px;">Recent</a></li>*@
-            <li class="active" style="width: 50%;"><a data-toggle="tab" href="#license-tab-2" style="text-align: center; padding: 6px 5px;">This Year</a></li>
-            <li class="" style="width: 50%;"><a data-toggle="tab" href="#license-tab-3" style="text-align: center; padding: 6px 5px;">Upcoming Year</a></li>
+            @*<li class=""><a data-toggle="tab" href="#license-tab-1">Recent</a></li>*@
+            <li class="active"><a data-toggle="tab" href="#license-tab-2">This Year</a></li>
+            <li class=""><a data-toggle="tab" href="#license-tab-3">Upcoming Year</a></li>
         </ul>
-        <div class="tab-content" style="margin-top: 0px; height: 250px; overflow-y: auto; overflow-x: hidden;">
+        <div class="tab-content">
             @*<div id="license-tab-1" class="tab-pane">
                     <div class="panel-body" style="padding: 0px; ">
                         <table class="table table-stripped table-bordered" style="margin-bottom: 0px;">
@@ -25,7 +20,7 @@
                                     {
                                         if (lastbdate != String.Format("{0:mm/dd/yyyy}", ExpiringLicencesThisMonthRecent[i].ExpirationDate.ToString()))
                                         {
-                                            <tr><td style="padding: 4px; background: #ccc; font-weight: 700;">@String.Format("{0:dddd}, {1:MMMM dd}", new DateTime(DateTime.Now.Year, DateTime.Now.Month, ExpiringLicencesThisMonthRecent[i].ExpirationDate.Value.Day), ExpiringLicencesThisMonthRecent[i].ExpirationDate)</td></tr>
+                                            <tr><td>@String.Format("{0:dddd}, {1:MMMM dd}", new DateTime(DateTime.Now.Year, DateTime.Now.Month, ExpiringLicencesThisMonthRecent[i].ExpirationDate.Value.Day), ExpiringLicencesThisMonthRecent[i].ExpirationDate)</td></tr>
                                         }
                                         <tr title="@String.Format("{0}, {1} {2}", ExpiringLicencesThisMonthRecent[i]._Personnel.LastName, ExpiringLicencesThisMonthRecent[i]._Personnel.FirstName, ExpiringLicencesThisMonthRecent[i]._Personnel.MiddleName)">
                                             <td style="text-align: left; padding: 5px; border: 1px solid #eee; text-transform: uppercase;">
@@ -62,12 +57,12 @@
                                     {
                                         if (Model.ExpiringLicensesToday[i - 1].ExpirationDate.ToString() != Model.ExpiringLicensesToday[i].ExpirationDate.ToString())
                                         {
-                                            <tr><td style="padding: 4px; background: #ccc; font-weight: 700;">@Model.ExpiringLicensesToday[i].ExpirationDate.Value.ToString("dddd, MMMM dd")</td></tr>
+                                            <tr class="list-title" style=" background-color: #ddd;"><td>@Model.ExpiringLicensesToday[i].ExpirationDate.Value.ToString("dddd, MMMM dd")</td></tr>
                                         }
                                     }
                                     else
                                     {
-                                        <tr><td style="padding: 4px; background: #ccc; font-weight: 700;">@Model.ExpiringLicensesToday[i].ExpirationDate.Value.ToString("dddd, MMMM dd")</td></tr>
+                                        <tr class="list-title" style=" background-color: #ddd;"><td>@Model.ExpiringLicensesToday[i].ExpirationDate.Value.ToString("dddd, MMMM dd")</td></tr>
                                     }
 
                                     <tr title="@String.Format("{0}, {1} {2}", Model.ExpiringLicensesToday[i]._Personnel.LastName, Model.ExpiringLicensesToday[i]._Personnel.FirstName, Model.ExpiringLicensesToday[i]._Personnel.MiddleName)">
@@ -104,12 +99,12 @@
                                     {
                                         if (Model.ExpiringLicensesUpcoming[i - 1].ExpirationDate.ToString() != Model.ExpiringLicensesUpcoming[i].ExpirationDate.ToString())
                                         {
-                                            <tr><td style="padding: 4px; background: #ccc; font-weight: 700;">@Model.ExpiringLicensesUpcoming[i].ExpirationDate.Value.ToString("dddd, MMMM dd")</td></tr>
+                                            <tr class="list-title" style=" background-color: #ddd;"><td>@Model.ExpiringLicensesUpcoming[i].ExpirationDate.Value.ToString("dddd, MMMM dd")</td></tr>
                                         }
                                     }
                                     else
                                     {
-                                        <tr><td style="padding: 4px; background: #ccc; font-weight: 700;">@Model.ExpiringLicensesUpcoming[i].ExpirationDate.Value.ToString("dddd, MMMM dd")</td></tr>
+                                        <tr class="list-title" style=" background-color: #ddd;"><td>@Model.ExpiringLicensesUpcoming[i].ExpirationDate.Value.ToString("dddd, MMMM dd")</td></tr>
                                     }
 
                                     <tr title="@String.Format("{0}, {1} {2}", Model.ExpiringLicensesUpcoming[i]._Personnel.LastName, Model.ExpiringLicensesUpcoming[i]._Personnel.FirstName, Model.ExpiringLicensesUpcoming[i]._Personnel.MiddleName)">

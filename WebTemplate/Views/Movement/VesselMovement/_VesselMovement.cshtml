@@ -14,7 +14,7 @@
         <button type="button" value="@Model.ID" id="EditVesselMovement" class="btn btn-outline btn-primary pull-right" title="Edit"><i class="fa fa-pencil"></i></button>
         <h2>@(String.IsNullOrEmpty(Model._VesselMovementType.ToString()) ? "" : Model._VesselMovementType.Description): <b>@(Model.Place ?? "")</b></h2>
         <span class="vertical-date">
-            @Html.Raw(String.Format("{0}{1}", Model.MovementDate.ToShortDateString() == DateTime.Now.ToShortDateString() ? "Today" : String.Format("<b>{0:MMM dd, yyyy}</b>", Model.MovementDate), " @ " + String.Format("<b>{0:HH:mm tt}</b>", Model.MovementDate)))
+            @Html.Raw(String.Format("{0}{1}", Model.MovementDate.ToShortDateString() == DateTime.Now.ToShortDateString() ? "Today" : String.Format("<b>{0:MMM dd, yyyy}</b>", Model.MovementDate), " @ " + String.Format("<b>{0:hh:mm tt}</b>", Model.MovementDate)))
         </span>
     </div>
 </div> 
