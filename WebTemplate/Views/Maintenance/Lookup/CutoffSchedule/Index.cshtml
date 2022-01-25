@@ -1,5 +1,7 @@
 ﻿@model WebTemplate.Models.Maintenance.Lookup.CutoffSchedule.Index
 @{
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var PageAccess = credential.GetPage("Maintenance/Lookup/CutoffSchedule") ?? new DataAccessLayer.System.Page();
     List<Tuple<int, string>> MonthList = new List<Tuple<int, string>>() {
         new Tuple<int, string>(1, "January"), new Tuple<int, string>(2, "February"),
         new Tuple<int, string>(3, "March"), new Tuple<int, string>(4, "April"),
@@ -13,20 +15,15 @@
 <div class="wrapper wrapper-content">
     <div class="page-heading">
         <div class="col-lg-8">
-            <h1>@ViewBag.Page.PageName</h1>
-            <ol class="breadcrumb">
-                <li>
-                    <a href='@Url.Action("Index", "Home")'>Home</a>
-                </li>
-                <li>Maintenance</li>
-                <li>Lookup</li>
-                <li class="active"><strong>@Html.Raw(ViewBag.Page.PageName ?? "&nbsp;")</strong></li>
-            </ol>
+            @Html.Partial("~/Views/Shared/_Breadcrumbs.cshtml", PageAccess)
         </div>
         <div class="col-lg-4">
-            <div class="title-action">
-                <a class="btn btn-primary compose-mail" href="#" id="btnadd" onclick="manage_item()">Add @ViewBag.Page.PageName</a>
-            </div>
+            @if (PageAccess.Insert)
+            {
+                <div class="title-action">
+                    <a class="btn btn-primary compose-mail" href="#" id="btnadd" onclick="manage_item()">Add @PageAccess.PageName</a>
+                </div>
+            }
         </div>
     </div>
     <div class="" style="margin-top: 80px;">

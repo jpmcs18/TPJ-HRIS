@@ -1,6 +1,53 @@
 ﻿@model WebTemplate.Models.Personnel.Index
+@using ProcessLayer.Entities;
 
-@{
+@functions{
+    public static Int32 GetAge(DateTime birthdate)
+    {
+        // Save today's date.
+        var today = DateTime.Today;
+        // Calculate the age.
+        var age = today.Year - birthdate.Year;
+        // Go back to the year in which the person was born in case of a leap year
+        if (birthdate.Date > today.AddYears(-age)) age--;
+        return age;
+    }
+
+    string getTab(int tabNo, List<Personnel> licenseList, bool isActive = false)
+    {
+        string element = $"<div id='bday-tab-{tabNo}' class='tab-pane{(isActive ? " active" : "")}'><div class='panel-body' style='padding: 0px; '><table class='table table-stripped table-bordered' style='margin-bottom: 0px;'><tbody>";
+
+        if (licenseList.Count() > 0)
+        {
+            var counter = 0;
+            var prevBdayDay = 0;
+            foreach (var person in licenseList)
+            {
+                String fullname = String.Format("{0}, {1} {2}", person.LastName, person.FirstName, person.MiddleName);
+                String searchName = String.Format("{0}{1}{2}", person.FirstName, person.MiddleName, person.LastName);
+                String birthday = $"<tr class='list-title' style='background-color: #ddd;'><td>{person.BirthDate.Value.ToString("dddd MMMM dd")}</td></tr>";
+                int age = person.BirthDate.Value != null ? GetAge(person.BirthDate.Value) : 0;
+
+                element += counter > 0 ? (prevBdayDay != person.BirthDate.Value.Day ? birthday : "") : birthday;
+
+                element += $"<tr title='{fullname}, {age}' onclick='";
+                //element += "window.open(" + '"' + ""{Url.Action("Personnel", "Index", new { Filter = searchName })}', '_blank');";
+                element += $"'><td style='text-align: left; padding: 5px; border: 1px solid #eee;'><a href='/HumanResource/Personnel/Index?Filter={searchName}' target='_blank'><div style='float: left; text-transform: uppercase;'>";
+                element += $"<img src='{(String.IsNullOrEmpty(person.ImagePath) ? "\\Images\\default.jpg" : person.ImagePath)}' style='height: 35px; width: 35px; min-height: 35px; min-width: 35px; border: 3px solid #eaeaea; margin-right: 10px; border-radius: 50px;' />";
+                element += $"</div><div style='white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'><b>{fullname}</b><br />{age}</div></a></td></tr>";
+
+                prevBdayDay = person.BirthDate.Value.Day;
+                counter++;
+            }
+        }
+        else
+        {
+            element += "<tr><td style='text-align: center;'>No records...</td></tr>";
+        }
+
+        element += "</tbody></table></div></div>";
+        return element;
+    }
 }
 
 @*<div class="ibox-title bg-primary">
@@ -15,7 +62,10 @@
         <li class=""><a data-toggle="tab" href="#bday-tab-3">Upcoming</a></li>
     </ul>
     <div class="tab-content">
-        <div id="bday-tab-1" class="tab-pane active">
+        @Html.Raw(getTab(1, Model.BirthdayCelebrantsToday, true))
+        @Html.Raw(getTab(2, Model.BirthdayCelebrantsRecent))
+        @Html.Raw(getTab(3, Model.BirthdayCelebrantsUpcoming))
+        @*<div id="bday-tab-1" class="tab-pane active">
             <div class="panel-body" style="padding: 0px !important ">
                 <table class="table table-stripped table-bordered" style="margin-bottom: 0px;">
                     <tbody>
@@ -23,6 +73,9 @@
                         {
                             for (int i = 0; i < Model.BirthdayCelebrantsToday.Count(); i++)
                             {
+                                String fullname = String.Format("{0}, {1} {2}", Model.BirthdayCelebrantsToday[i].LastName, Model.BirthdayCelebrantsToday[i].FirstName, Model.BirthdayCelebrantsToday[i].MiddleName);
+                                String searchName = String.Format("{0}{1}{2}", Model.BirthdayCelebrantsToday[i].FirstName, Model.BirthdayCelebrantsToday[i].MiddleName, Model.BirthdayCelebrantsToday[i].LastName);
+
                                 if (i > 0)
                                 {
                                     if (Model.BirthdayCelebrantsToday[i - 1].BirthDate.Value.Day != Model.BirthdayCelebrantsToday[i].BirthDate.Value.Day)
@@ -35,14 +88,14 @@
                                     <tr class="list-title" style=" background-color: #ddd;"><td>@(new DateTime(DateTime.Now.Year, Model.BirthdayCelebrantsToday[i].BirthDate.Value.Month, Model.BirthdayCelebrantsToday[i].BirthDate.Value.Day).ToString("dddd, MMMM dd"))</td></tr>
                                 }
 
-                                <tr title="@String.Format("{0}, {1} {2}", Model.BirthdayCelebrantsToday[i].LastName, Model.BirthdayCelebrantsToday[i].FirstName, Model.BirthdayCelebrantsToday[i].MiddleName)">
+                                <tr title="@fullname" onclick="window.open('/HumanResource/Personnel/Index?Filter=@searchName', '_blank')" style="">
                                     <td style="text-align: left; padding: 5px; border: 1px solid #eee;">
                                         <input type="hidden" name="PersonnelID" value="@Model.BirthdayCelebrantsToday[i].ID" />
                                         <div style="float: left; text-transform: uppercase;">
                                             <img src="@(String.IsNullOrEmpty(Model.BirthdayCelebrantsToday[i].ImagePath) ? "\\Images\\default.jpg" : Model.BirthdayCelebrantsToday[i].ImagePath)" style="height: 35px; width: 35px; min-height: 35px; min-width: 35px; border: 3px solid #eaeaea; margin-right: 10px; border-radius: 50px;" />
                                         </div>
                                         <div style="line-height: 35px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                            @String.Format("{0}, {1} {2}", Model.BirthdayCelebrantsToday[i].LastName, Model.BirthdayCelebrantsToday[i].FirstName, Model.BirthdayCelebrantsToday[i].MiddleName)
+                                            @fullname
                                         </div>
                                     </td>
                                 </tr>
@@ -64,6 +117,9 @@
                         {
                             for (int i = 0; i < Model.BirthdayCelebrantsRecent.Count(); i++)
                             {
+                                String fullname = String.Format("{0}, {1} {2}", Model.BirthdayCelebrantsRecent[i].LastName, Model.BirthdayCelebrantsRecent[i].FirstName, Model.BirthdayCelebrantsRecent[i].MiddleName);
+                                String searchName = String.Format("{0}{1}{2}", Model.BirthdayCelebrantsRecent[i].FirstName, Model.BirthdayCelebrantsRecent[i].MiddleName, Model.BirthdayCelebrantsRecent[i].LastName);
+
                                 if (i > 0)
                                 {
                                     if (Model.BirthdayCelebrantsRecent[i - 1].BirthDate.Value.Day != Model.BirthdayCelebrantsRecent[i].BirthDate.Value.Day)
@@ -75,13 +131,13 @@
                                 {
                                     <tr style=" background-color: #ddd;"><td>@(new DateTime(DateTime.Now.Year, Model.BirthdayCelebrantsRecent[i].BirthDate.Value.Month, Model.BirthdayCelebrantsRecent[i].BirthDate.Value.Day).ToString("dddd, MMMM dd"))</td></tr>
                                 }
-                                <tr title="@String.Format("{0}, {1} {2}", Model.BirthdayCelebrantsRecent[i].LastName, Model.BirthdayCelebrantsRecent[i].FirstName, Model.BirthdayCelebrantsRecent[i].MiddleName)">
+                                <tr title="@fullname" onclick="window.open('/HumanResource/Personnel/Index?Filter=@searchName', '_blank')">
                                     <td style="text-align: left; padding: 5px; border: 1px solid #eee; text-transform: uppercase;">
                                         <div style="float: left;">
                                             <img src="@(String.IsNullOrEmpty(Model.BirthdayCelebrantsRecent[i].ImagePath) ? "\\Images\\default.jpg" : Model.BirthdayCelebrantsRecent[i].ImagePath)" style="height: 35px; width: 35px; min-height: 35px; min-width: 35px; border: 3px solid #eaeaea; margin-right: 10px; border-radius: 50px;" />
                                         </div>
                                         <div style="line-height: 35px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                            @String.Format("{0}, {1} {2}", Model.BirthdayCelebrantsRecent[i].LastName, Model.BirthdayCelebrantsRecent[i].FirstName, Model.BirthdayCelebrantsRecent[i].MiddleName)
+                                            @fullname
                                         </div>
                                     </td>
                                 </tr>
@@ -104,6 +160,7 @@
                             for (int i = 0; i < Model.BirthdayCelebrantsUpcoming.Count(); i++)
                             {
                                 String fullname = String.Format("{0}, {1} {2}", Model.BirthdayCelebrantsUpcoming[i].LastName, Model.BirthdayCelebrantsUpcoming[i].FirstName, Model.BirthdayCelebrantsUpcoming[i].MiddleName);
+                                String searchName = String.Format("{0}{1}{2}", Model.BirthdayCelebrantsUpcoming[i].FirstName, Model.BirthdayCelebrantsUpcoming[i].MiddleName, Model.BirthdayCelebrantsUpcoming[i].LastName);
 
                                 if (i > 0)
                                 {
@@ -116,13 +173,13 @@
                                 {
                                     <tr style=" background-color: #ddd;"><td>@(new DateTime(DateTime.Now.Year, Model.BirthdayCelebrantsUpcoming[i].BirthDate.Value.Month, Model.BirthdayCelebrantsUpcoming[i].BirthDate.Value.Day).ToString("dddd, MMMM dd"))</td></tr>
                                 }
-                                <tr title="@fullname">
+                                <tr title="@fullname" onclick="window.open('/HumanResource/Personnel/Index?Filter=@searchName', '_blank')">
                                     <td style="text-align: left; padding: 5px; border: 1px solid #eee; text-transform: uppercase;">
                                         <div style="float: left;">
                                             <img src="@(String.IsNullOrEmpty(Model.BirthdayCelebrantsUpcoming[i].ImagePath) ? "\\Images\\default.jpg" : Model.BirthdayCelebrantsUpcoming[i].ImagePath)" style="height: 35px; width: 35px; min-height: 35px; min-width: 35px; border: 3px solid #eaeaea; margin-right: 10px; border-radius: 50px;" />
                                         </div>
                                         <div style="line-height: 35px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                            <a href="/HumanResource/Personnel/Index?Filter=@fullname" target="_blank">@fullname</a>
+                                            @fullname
                                         </div>
                                     </td>
                                 </tr>
@@ -135,6 +192,6 @@
                     </tbody>
                 </table>
             </div>
-        </div>
+        </div>*@
     </div>
 </div>

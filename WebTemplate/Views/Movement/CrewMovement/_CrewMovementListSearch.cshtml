@@ -1,5 +1,6 @@
 ﻿@model WebTemplate.Models.CrewMovement.CrewMovement
 @using WebTemplate.Extension
+
 @{
     var CrewPageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("Movement/CrewMovement");
 
@@ -11,9 +12,9 @@
     DateTime? MovementDate = null;
 }
 
-<div class="table-responsive" style="margin-bottom: 0;">
+<div class="" style="margin-bottom: 0;">
     <div class="mail-box">
-        <table id="CrewTable" class="table table-hover table-mail" style="">
+        <table id="CrewTable" class="table table-hover table-striped" style="">
             <thead>
                 <tr>
                     <th class="text-left">Transaction No.</th>

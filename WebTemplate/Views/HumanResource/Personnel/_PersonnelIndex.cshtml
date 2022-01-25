@@ -50,7 +50,7 @@
                     <div class="tab-content" style="margin-top: 0px; max-height: unset; overflow-y: auto; overflow-x: hidden;">
                         @if (SearchPageAccess.View)
                         {
-                            <div id="tab-2" class="tab-pane active" style="height: 800px;">
+                            <div id="tab-2" class="tab-pane active" style="">
                                 <div id="PersonnelsForm" class="panel-body" style="padding: 10px; max-height: 100%; border: 1px solid #e5e6e7; overflow-y: hidden;">
                                     @Html.Partial("~/Views/HumanResource/Personnel/_PersonnelSearch.cshtml")
                                 </div>
@@ -98,6 +98,20 @@
         <span id="" class="clearInput" title="Clear"><i class="fa fa-times"></i></span>
     </div>
 </div>
+
+@*<div class="personnel toast toast-bootstrap show" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header">
+        <i class="fa fa-newspaper-o"> </i>
+        <strong class="mr-auto m-l-sm">Notification</strong>
+        <small>2 seconds ago</small>
+        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="toast-body">
+        Hello, you can push notifications to your visitors with this toast feature.
+    </div>
+</div>*@
 
 <style>
     .image-crop {
@@ -212,6 +226,8 @@
                         SelectedDaysEvents();
 
                         CheckRequiredFields();
+                        toastr.info("Click X button on top-left corner to close, or press Escape.", "What's new?", { tapToDismiss: true, timeOut: 300000 });
+                        toastr.info("Click check button on top-right corner to save (Personal/Employment Info), or press Enter.", "What's new?", { tapToDismiss: true, timeOut: 300000 });
                     } else {
                         toastr.error(response.res);
                     }
@@ -258,7 +274,7 @@
             var rowCount = $(this).closest('table').find('tbody tr.Row-Display .chkRow').length;
             $('#SelectAll').iCheck(($_SelectedRows.length == rowCount ? '' : 'un') + 'check');
             $('#MultipleDelete').attr('disabled', $_SelectedRows.length > 0 ? false : true);
-        }
+    }
 
         function MultipleDelete() {
             var pagetitle = $('.page-heading h2').text().trim().toLowerCase();
@@ -328,48 +344,79 @@
             }
 
             $('#MultipleDelete').attr('disabled', $_SelectedRows.length > 0 ? false : true);
+    }
+
+    function showHideModalCheck(tabNo) {
+        if (tabNo > 2) {
+            $(".modal .modal-header .ok").hide();
         }
+        else {
+            $(".modal .modal-header .ok").show();
+            $(".modal .modal-header .ok").attr("tpj-modal-ok-button", "tab-" + tabNo);
+        }
+    }
+
+    function GetPersonalInfos() {
+        showHideModalCheck(1);
+    }
 
         function GetEmploymentInfos() {
             $('#form_personelprofile .tab-pane').removeClass('active');
             $('#form_personelprofile #tab-2').addClass('active');
+            showHideModalCheck(2);
         }
 
-        function GetEducationalBackgrounds() { GetDatas(1) }
-
-        function GetWorkExperiences() { GetDatas(2) }
-
-        function GetTrainingsAndSeminars() { GetDatas(3) }
-
-        function GetCompensationsAndDeductions() { GetDatas(4) }
-
-    function GetLoans() {
-        GetDatas(5);
+    function GetEducationalBackgrounds() {
+        GetDatas(3);
+        showHideModalCheck(3);
     }
 
-        function GetLeaveCredits() { GetDatas(6) }
+    function GetWorkExperiences() {
+        GetDatas(4);
+        showHideModalCheck(4);
+    }
+
+    function GetTrainingsAndSeminars() {
+        GetDatas(5);
+        showHideModalCheck(5);
+    }
+
+    function GetCompensationsAndDeductions() {
+        GetDatas(6);
+        showHideModalCheck(6);
+    }
+
+    function GetLoans() {
+        GetDatas(7);
+        showHideModalCheck(7);
+    }
+
+    function GetLeaveCredits() {
+        GetDatas(8);
+        showHideModalCheck(8);
+    }
 
         function GetDatas(key) {
             var personnelID = $('#tab-1 input.PersonnelID').val();
             var url = '';
 
             switch (key) {
-            case 1:
+            case 3:
                 url = '@Url.Action("GetEducationalBackgrounds", "Personnel")';
                 break;
-            case 2:
+            case 4:
                 url = '@Url.Action("GetWorkExperiences", "Personnel")';
                 break;
-            case 3:
+            case 5:
                 url = '@Url.Action("GetTrainings", "Personnel")';
                 break;
-            case 4:
+            case 6:
                 url = '@Url.Action("GetCompensationsAndDeductions", "Personnel")';
                 break;
-            case 5:
+            case 7:
                 url = '@Url.Action("GetLoans", "Personnel")';
                 break;
-            case 6:
+            case 8:
                 url = '@Url.Action("GetLeaveCredits", "Personnel")';
                 break;
             }
@@ -387,23 +434,23 @@
                 success: function(response) {
                     if (typeof response.msg == 'undefined') {
                         switch (key) {
-                        case 1:
+                        case 3:
                             $('#form-educbgs').html(response);
                             //$('a[href="#tab-3"]').off('click');
                             break;
-                        case 2:
+                        case 4:
                             $('#form-workexps').html(response);
                             //$('a[href="#tab-4"]').off('click');
                             break;
-                        case 3:
+                        case 5:
                             $('#form-trainings').html(response);
                             //$('a[href="#tab-5"]').off('click');
                             break;
-                        case 4:
+                        case 6:
                             $('#form-compded').html(response);
                             //$('a[href="#tab-8"]').off('click');
                             //$(".tpj-money").tpjmoneymask();
-                        case 5:
+                        case 7:
                             $('#form-loans').html(response)
                             //$('a[href="#tab-9"]').off('click');
                             //$('.Row-Display').off('click').on('click', ViewRowDetails);
@@ -411,7 +458,7 @@
 
                             //$('#form-compded input[name="Amount"]').maskMoney();
                             break;
-                        case 6:
+                        case 8:
                             $('#form-leavecredits').html(response);
                             //$('a[href="#tab-8"]').off('click');
                             $(".tpj-money").tpjmoneymask();
@@ -538,9 +585,9 @@
             });
         }
 
-        function SaveProfileInfo() {
-            var formdata = new FormData();
-            var tabID = $(this).closest('.tab-pane').attr('id');
+    function SaveProfileInfo(tabID) {
+        var formdata = new FormData();
+            //var tabID = $(this).closest('.tab-pane').attr('id');
             var urlAction = "",
                 tabName = $('ul.nav-tabs').find('li a[href="' + tabID + '"]').text().trim();
 
@@ -674,7 +721,7 @@
     }
 
     function TabEvents() {
-
+        $('a[href="#tab-1"]').off('click').on('click', GetPersonalInfos);
         $('a[href="#tab-2"]').off('click').on('click', GetEmploymentInfos);
         $('a[href="#tab-3"]').off('click').on('click', GetEducationalBackgrounds);
         $('a[href="#tab-4"]').off('click').on('click', GetWorkExperiences);
@@ -2334,8 +2381,14 @@
                 radioClass: 'iradio_square-green',
             });
             $('#PersonnelProfile').appendTo("body").modal('show');
-            $('#btnSavePersonalInfo').off('click').on('click', SaveProfileInfo);
-            $('#btnSaveEmploymentInfo').off('click').on('click', SaveProfileInfo);
+            $('#btnSavePersonalInfo').off('click').on('click', function (e) {
+                var tabID = $(this).closest('.tab-pane').attr('id');
+                SaveProfileInfo(tabID);
+            });
+            $('#btnSaveEmploymentInfo').off('click').on('click', function (e) {
+                var tabID = $(this).closest('.tab-pane').attr('id');
+                SaveProfileInfo(tabID);
+            });
             //$('#btnSaveEducationalBg').off('click').on('click', SaveProfileInfo);
             //$('#btnSaveWorkExperience').off('click').on('click', SaveProfileInfo);
 
@@ -2354,6 +2407,10 @@
 
             $('.clearInput').off('click').on('click', ClearField);
 
+            $('.ok').off('click').on('click', function (e) {
+                var tabID = $(this).attr('tpj-modal-ok-button');
+                SaveProfileInfo(tabID);
+            });
             $('#form_personelprofile select.form-control').each(SelectChange);
             $('#form_personelprofile select.form-control').off('change').on('change', SelectChange);
 
@@ -2384,7 +2441,35 @@
             if (departmentId > 0) {
                 SelectPositions(0);
             }
+    }
+
+    $(document).off("keydown").on("keydown", function (e) {
+        if (e.keyCode == 27) {
+            $("#form_personelprofile .close").trigger("click");
         }
+        if (e.keyCode == 13) {
+            $(".modal.in").find("#form_personelprofile .ok").trigger("click");
+        }
+    });
+
+    $(document).resize(function () {
+        ResizeTabContent();
+    })
+
+    function ResizeTabContent() {
+        var minHeight = 650;
+        var minWindowHeight = $(window).height();
+        //var h4 = h1 + h2 + h3 + minHeight;
+        //var h5 = minWindowHeight - h4;
+        //var h6 = h5 - minHeight;
+        if (minWindowHeight > 768) {
+            var toAdd = (minWindowHeight - minHeight) / 2;
+            minHeight += toAdd;
+        }
+        console.log(minHeight);
+
+        $('#form_personelprofile .tab-content').height(minHeight + 'px');
+    }
 
         function BrowseImage() {
             document.getElementById('browseImage').onchange = function(e) {

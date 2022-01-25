@@ -14,7 +14,7 @@
                 <li>
                     <a href='@Url.Action("Index", "Home")'>Home</a>
                 </li>
-                <li>Movement</li>
+                <li>Requests Approval</li>
                 <li class="active">
                     <strong>@Html.Raw(PageAccess.PageName ?? "&nbsp;")</strong>
                 </li>
@@ -25,19 +25,26 @@
             </div>
         </div>
     </div>
-    <div class="" style="margin-top: 80px;">
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 animated fadeInLef">
-            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 m-b-sm" style="padding: 0px;">
-                <div class="tabs-container" style="border: 1px solid #009688;">
-                    <div class="tab-content" style="margin-top: 0px; max-height: unset; overflow-y: auto; overflow-x: hidden;">
-                        <div id="tab-2" class="tab-pane active" style="height: 850px;">
-                            <div id="LeaveRequestsForm" class="panel-body" style="padding: 10px; max-height: 100%; border: 1px solid #e5e6e7; overflow-y: hidden;">
-                                @Html.Partial("~/Views/RequestsApproval/LeaveRequestsForNote/_Search.cshtml")
-                            </div>
-                        </div>
+    <div class="tabs-container" style="margin-top: 80px;">
+        <div class="tab-content" style="margin-top: 0px; max-height: unset; overflow-y: auto; overflow-x: hidden;">
+            @if (PageAccess.View)
+            {
+                <div id="tab-2" class="tab-pane active" style="">
+                    <div id="LeaveRequestsForm" class="panel-body" style="padding: 10px; max-height: 100%; border: 1px solid #e5e6e7; overflow-y: hidden;">
+                        @Html.Partial("~/Views/RequestsApproval/LeaveRequestsForNote/_Search.cshtml")
                     </div>
                 </div>
-            </div>
+            }
+            else
+            {
+                <style>
+                    .tab-content {
+                        height: 100vh !important;
+                    }
+                </style>
+                ViewBag.Message = "You do not have acces on this page.";
+                @Html.Partial("~/Views/Security/Error.cshtml");
+            }
         </div>
     </div>
 </div>

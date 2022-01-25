@@ -42,6 +42,7 @@
     <script type="text/javascript" src="~/Scripts/plugins/select2/select2.full.min.js"></script>
     <script type="text/javascript" src="~/Scripts/plugins/ladda/spin.min.js"></script>
     <script type="text/javascript" src="~/Scripts/plugins/pdfjs/pdf.js"></script>
+    <script type="text/javascript" src="~/Scripts/plugins/toastr/toastr.min.js"></script>
     <script type="text/javascript" src="~/Scripts/plugins/metisMenu/metisMenu.min.js"></script>
     <script type="text/javascript" src="~/Scripts/plugins/touchspin/jquery.bootstrap-touchspin.min.js"></script>
     <script type="text/javascript" src="~/Scripts/custom/moneymask-custom.js"></script>
@@ -458,6 +459,7 @@
             $skSpinner = $('div.sk-spinner').css('top', top);
             setSkLoadingHeight();
         });
+
     </script>
 </head>
 <body style="height: 100vh; overflow: auto;">
@@ -466,14 +468,14 @@
 
         @if (Request.Browser.IsMobileDevice)
         {
-            <div id="page-wrapper" class="gray-bg @ViewBag.SpecialClass" style="width: 100%; margin: 0px; padding: 0px; background-color: #ddd;">
+            <div id="page-wrapper" class="gray-bg @ViewBag.SpecialClass" style="width: 100%; margin: 0px; padding: 0px;">
                 @Html.Partial("_TopAndLeftNavbar_Mobile")
                 @RenderBody()
             </div> }
         else
         {
             @Html.Partial("_TopAndLeftNavbar")
-            <div id="page-wrapper" class="gray-bg @ViewBag.SpecialClass" style="width: 100%; float: right; border: 1px solid #ddd; background-color: #ddd;">
+            <div id="page-wrapper" class="gray-bg @ViewBag.SpecialClass" style="width: 100%; float: right; border: 1px solid #ddd">
                 @RenderBody()
                 @*@Html.Partial("_Footer")*@
             </div>}

@@ -6,14 +6,12 @@
 }
 @if (CompensationsPageAccess.View)
 {
-    <div class="row">
-        <div id="CompensationDiv" class="panel panel-primary" style="margin: 0px 15px 5px 15px;">
-            <div class="panel-heading" style="padding: 5px 10px;">Compensations</div>
-            <div class="panel-body" style="padding: 0px;">
-                <div class="row" style="padding: 0px 13px 0px 14px;">
-                    <div id="form-Compensation">
-                        @Html.Partial("~/Views/HumanResource/Personnel/_PersonnelCompensations.cshtml")
-                    </div>
+    <div id="CompensationDiv" class="panel panel-primary" style="margin: 0px 0px 10px 0px;">
+        <div class="panel-heading" style="padding: 5px 10px;">Compensations</div>
+        <div class="panel-body" style="padding: 0px;">
+            <div class="row" style="padding: 0px 13px 0px 14px;">
+                <div id="form-Compensation">
+                    @Html.Partial("~/Views/HumanResource/Personnel/_PersonnelCompensations.cshtml")
                 </div>
             </div>
         </div>
@@ -22,14 +20,12 @@
 
 @if (DeductionsPageAccess.View)
 {
-    <div class="row">
-        <div id="DeductionDiv" class="panel panel-primary" style="margin: 0px 15px 5px 15px;">
-            <div class="panel-heading" style="padding: 5px 10px;">Assumed Government Deductions</div>
-            <div class="panel-body" style="padding: 0px;">
-                <div class="row" style="padding: 0px 13px 0px 14px;">
-                    <div id="form-Deduction">
-                        @Html.Partial("~/Views/HumanResource/Personnel/_PersonnelAssumedDeductions.cshtml")
-                    </div>
+    <div id="DeductionDiv" class="panel panel-primary" style="margin: 0px 0px 10px 0px;">
+        <div class="panel-heading" style="padding: 5px 10px;">Assumed Government Deductions</div>
+        <div class="panel-body" style="padding: 0px;">
+            <div class="row" style="padding: 0px 13px 0px 14px;">
+                <div id="form-Deduction">
+                    @Html.Partial("~/Views/HumanResource/Personnel/_PersonnelAssumedDeductions.cshtml")
                 </div>
             </div>
         </div>

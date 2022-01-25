@@ -8,8 +8,8 @@
     //string key = LookupHelper.Keys.Where(x => x.Key == Model.LookupName).Select(x => x.Value).FirstOrDefault();
 }
 
-<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 animated fadeInLef" style="padding: 0px;">
-    <div class="tabs-container" style="border: 1px solid #009688;">
+<div class="" style="padding: 0px;">
+    <div class="tabs-container" style="">
         <div class="tab-content" style="margin-top: 0px; overflow-y: hidden; overflow-x: hidden;">
             <div class="panel-body" style="padding: 10px; border: 1px solid #e5e6e7; overflow-y: hidden; max-height: 100%;">
                 <div id="form_search_params" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
@@ -27,7 +27,7 @@
                         {@Html.TextBoxFor(m => m.Key, Model.Key, new { @class = "form-control search_key", @placeHolder = "Search..." })   }
                     </div>
 
-                    <div class="form-group col-xs-12 col-sm-3 col-md-2 col-lg-1">
+                    <div class="form-group col-xs-12 col-sm-3 col-md-2 col-lg-2">
                         @if (lookupActions.Search)
                         {<button type="button" id="btn_search" class="btn btn-primary font-bold"><i class="fa fa-search"></i> Search</button>}
                     </div>
@@ -39,8 +39,8 @@
                         </div>
                     }
                 </div>
-                <div class="table-responsive" style=" height: 600px;">
-                    <table id="PayrollBaseTable" class="table table-hover table-mail">
+                <div class="" style=" height: 600px;">
+                    <table id="PayrollBaseTable" class="table table-hover table-striped">
                         <thead>
                             @if (Model.DynamicList != null && Model.DynamicList.Count > 0)
                             {

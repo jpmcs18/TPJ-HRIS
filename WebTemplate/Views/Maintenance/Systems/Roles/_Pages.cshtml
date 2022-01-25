@@ -10,103 +10,96 @@
     }
 }
 
-<div class="ibox" id="divitems">
-    <div class="ibox-title white-bg">
-        <h5>Page Access</h5>
+<div id="divitems">
+    <div class="form-group">
+        <div class="ol-xs-12 col-sm-12 col-md-3 col-lg-3">
+            @Html.DropDownList("selectitem", new SelectList(selectpages, "ID", "PageName"), "N/A", new { @class = "form-control m-b" })
+        </div>
+        <div class="col-xs-12 col-sm-10 col-md-7 col-lg-7">
+            <label class="col-lg-2 control-label">@Html.CheckBoxFor(m => m.SelectedPageAccess.EnableView, new { @class = "i-checks" }) View</label>
+            <label class="col-lg-2 control-label">@Html.CheckBoxFor(m => m.SelectedPageAccess.EnableInsert, new { @class = "i-checks" }) Insert</label>
+            <label class="col-lg-2 control-label">@Html.CheckBoxFor(m => m.SelectedPageAccess.EnableUpdate, new { @class = "i-checks" }) Update</label>
+            <label class="col-lg-2 control-label">@Html.CheckBoxFor(m => m.SelectedPageAccess.EnableDelete, new { @class = "i-checks" }) Delete</label>
+            <label class="col-lg-2 control-label">@Html.CheckBoxFor(m => m.SelectedPageAccess.AllAccess, new { @class = "i-checks" }) Approve</label>
+        </div>
+        <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+            <button type="button" id="btnadditem" class="btn btn-w-m btn-primary-red pull-right" @(selectpages.Count < 1 ? "disabled" : "")>Add Page</button>
+        </div>
     </div>
-    <div class="">
-        <div class="">
-            <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-3">
-                @Html.DropDownList("selectitem", new SelectList(selectpages, "ID", "PageName"), "N/A", new { @class = "form-control m-b" })
-            </div>
-            <div class="form-group col-xs-12 col-sm-10 col-md-7 col-lg-7">
-                <label class="col-lg-2 control-label">@Html.CheckBoxFor(m => m.SelectedPageAccess.EnableView, new { @class = "i-checks" }) View</label>
-                <label class="col-lg-2 control-label">@Html.CheckBoxFor(m => m.SelectedPageAccess.EnableInsert, new { @class = "i-checks" }) Insert</label>
-                <label class="col-lg-2 control-label">@Html.CheckBoxFor(m => m.SelectedPageAccess.EnableUpdate, new { @class = "i-checks" }) Update</label>
-                <label class="col-lg-2 control-label">@Html.CheckBoxFor(m => m.SelectedPageAccess.EnableDelete, new { @class = "i-checks" }) Delete</label>
-                <label class="col-lg-2 control-label">@Html.CheckBoxFor(m => m.SelectedPageAccess.AllAccess, new { @class = "i-checks" }) Approve</label>
-            </div>
-            <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
-                <button type="button" id="btnadditem" class="btn btn-w-m btn-primary-red pull-right" @(selectpages.Count < 1 ? "disabled" : "")>Add Page</button>
+    @if (Model.Role.Pages != null && Model.Role.Pages.Count > 0)
+    {
+        <div class="form-group">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="input-group">
+                    <input type="text" id="txtfilter" class="form-control" placeholder="Search in table...">
+                    <span class="input-group-btn" style="cursor: default;">
+                        <span class="btn btn-default"><i class="fa fa-search"></i></span>
+                    </span>
+                </div>
             </div>
         </div>
-        <div class="">
-            @if (Model.Role.Pages != null && Model.Role.Pages.Count > 0)
-            {
-                <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <div class="input-group">
-                        <input type="text" id="txtfilter" class="form-control" placeholder="Search in table...">
-                        <span class="input-group-btn" style="cursor: default;">
-                            <span class="btn btn-default"><i class="fa fa-search"></i></span>
-                        </span>
-                    </div>
-                </div>
-                <div class="table-responsive" style="height: 500px;">
-                    <div class="mail-box">
-                        <table class="table table-hover table-mail" data-page-size="8" data-filter=#txtfilter>
-                            <thead>
-                            @if (Model.Role.Pages.Any())
-                            {
-                                <tr>
-                                    <td class="text-right" colspan="10" style="background-color: white;">
-                                        <ul class="pagination pull-right"></ul>
-                                    </td>
-                                </tr>
-                            }
-                            @*<tr>
-            <th class="text-center">Page Name</th>
-            <th class="text-center">Page URL</th>
-            <th class="text-center" data-sort-ignore="true">View</th>
-            <th class="text-center" data-sort-ignore="true">Insert</th>
-            <th class="text-center" data-sort-ignore="true">Update</th>
-            <th class="text-center" data-sort-ignore="true">Delete</th>
-            <th class="text-center" data-sort-ignore="true">Approve</th>
-            <th class="text-center" data-sort-ignore="true">Action</th>        </tr>*@
+        <div class="" style="height: 500px; overflow-y: auto; float: left; width: 100%; ">
+            <table class="table table-hover table-striped" data-page-size="8" data-filter=#txtfilter>
+                <thead>
+                    @if (Model.Role.Pages.Any())
+                    {
+                        <tr>
+                            <td class="text-right" colspan="10" style="background-color: white;">
+                                <ul class="pagination pull-right"></ul>
+                            </td>
+                        </tr>
+                    }
+                    @*<tr>
+                        <th class="text-center">Page Name</th>
+                        <th class="text-center">Page URL</th>
+                        <th class="text-center" data-sort-ignore="true">View</th>
+                        <th class="text-center" data-sort-ignore="true">Insert</th>
+                        <th class="text-center" data-sort-ignore="true">Update</th>
+                        <th class="text-center" data-sort-ignore="true">Delete</th>
+                        <th class="text-center" data-sort-ignore="true">Approve</th>
+                        <th class="text-center" data-sort-ignore="true">Action</th>        </tr>*@
 
-                            </thead>
-                            <tbody>
-                            <tr id="Row-Loading-Display" class="hidden">
-                                <td style="text-align: center;" colspan="6">
-                                    <i id="" class="fa fa-rotate-left rotate" style="padding: 8px; font-size: 20px; text-align: right;"></i>
+                </thead>
+                <tbody>
+                    <tr id="Row-Loading-Display" class="hidden">
+                        <td style="text-align: center;" colspan="6">
+                            <i id="" class="fa fa-rotate-left rotate" style="padding: 8px; font-size: 20px; text-align: right;"></i>
+                        </td>
+                    </tr>
+                    @if (Model.Role.Pages.Any())
+                    {
+                        for (int i = 0; i < Model.Role.Pages.Count; i++)
+                        {
+                            var page = pages.Where(p => p.ID == Model.Role.Pages[i].PageID);
+
+                            <tr class="read" style="cursor: pointer;">
+                                <td class="text-center">@page.Select(p => p.PageName).FirstOrDefault()</td>
+                                <td class="text-center">@page.Select(p => p.URL).FirstOrDefault()</td>
+                                <td class="text-center">@Html.CheckBoxFor(m => m.Role.Pages[i].EnableView, new { @class = "i-checks" })</td>
+                                <td class="text-center">@Html.CheckBoxFor(m => m.Role.Pages[i].EnableInsert, new { @class = "i-checks" })</td>
+                                <td class="text-center">@Html.CheckBoxFor(m => m.Role.Pages[i].EnableUpdate, new { @class = "i-checks" })</td>
+                                <td class="text-center">@Html.CheckBoxFor(m => m.Role.Pages[i].EnableDelete, new { @class = "i-checks" })</td>
+                                <td class="text-center">@Html.CheckBoxFor(m => m.Role.Pages[i].AllAccess, new { @class = "i-checks" })</td>
+                                <td class="text-center">
+                                    <input type="hidden" name="@Html.NameFor(m => m.Role.Pages[i].PageID)" value="@Model.Role.Pages[i].PageID" />
+                                    <a class="btn btn-outline btn-primary btn-sm btn-rounded" title="Edit" target="_blank" href="@Url.Action("Index", "Maintenance/Systems/Page", new { uid = Model.Role.Pages[i].PageID })"><i class="fa fa-pencil"></i></a>
+                                    <button type="button" value="@Model.Role.Pages[i].PageID" title="Delete" class="btnremoveitem btn btn-outline btn-primary btn-sm btn-rounded"><i class="fa fa-times"></i></button>
                                 </td>
                             </tr>
-                                @if (Model.Role.Pages.Any())
-                                {
-                                    for (int i = 0; i < Model.Role.Pages.Count; i++)
-                                    {
-                                        var page = pages.Where(p => p.ID == Model.Role.Pages[i].PageID);
-
-                                        <tr class="read" style="cursor: pointer;">
-                                            <td class="text-center">@page.Select(p => p.PageName).FirstOrDefault()</td>
-                                            <td class="text-center">@page.Select(p => p.URL).FirstOrDefault()</td>
-                                            <td class="text-center">@Html.CheckBoxFor(m => m.Role.Pages[i].EnableView, new { @class = "i-checks" })</td>
-                                            <td class="text-center">@Html.CheckBoxFor(m => m.Role.Pages[i].EnableInsert, new { @class = "i-checks" })</td>
-                                            <td class="text-center">@Html.CheckBoxFor(m => m.Role.Pages[i].EnableUpdate, new { @class = "i-checks" })</td>
-                                            <td class="text-center">@Html.CheckBoxFor(m => m.Role.Pages[i].EnableDelete, new { @class = "i-checks" })</td>
-                                            <td class="text-center">@Html.CheckBoxFor(m => m.Role.Pages[i].AllAccess, new { @class = "i-checks" })</td>
-                                            <td class="text-center">
-                                                <input type="hidden" name="@Html.NameFor(m => m.Role.Pages[i].PageID)" value="@Model.Role.Pages[i].PageID" />
-                                                <a class="btn btn-outline btn-primary btn-sm btn-rounded" title="Edit" target="_blank" href="@Url.Action("Index", "Maintenance/Systems/Page", new { uid = Model.Role.Pages[i].PageID })"><i class="fa fa-pencil"></i></a>
-                                                <button type="button" value="@Model.Role.Pages[i].PageID" title="Delete" class="btnremoveitem btn btn-outline btn-primary btn-sm btn-rounded"><i class="fa fa-times"></i></button>
-                                            </td>
-                                        </tr>
-                                    }
-                                }
-                                else
-                                {
-                                    <tr id="No-Row-Display"><td style="text-align: center;" colspan="6">No Pages found...</td></tr>
-                                }
-                                </tbody>
-                            <tfoot>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-                }
-                else
-                {
-                <h3 class="text-center">No Page Access.</h3>
-                }
-            </div>
-    </div>
+                        }
+                    }
+                    else
+                    {
+                        <tr id="No-Row-Display"><td style="text-align: center;" colspan="6">No Pages found...</td></tr>
+                    }
+                </tbody>
+                <tfoot>
+                </tfoot>
+            </table>
+        </div>
+    }
+    else
+    {
+        <h3 class="text-center">No Page Access.</h3>
+    }
 </div>

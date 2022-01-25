@@ -1,6 +1,42 @@
 ﻿@model WebTemplate.Models.Personnel.Index
+@using ProcessLayer.Entities;
 
-@{
+@functions{
+    string getTab(int tabNo, List<PersonnelLicense> licenseList, bool isActive = false)
+    {
+        string element = $"<div id='license-tab-{tabNo}' class='tab-pane{(isActive ? " active" : "")}'><div class='panel-body' style='padding: 0px; '><table class='table table-stripped table-bordered' style='margin-bottom: 0px;'><tbody>";
+
+        if (licenseList.Count() > 0)
+        {
+            var counter = 0;
+            var prevExp = new DateTime();
+            foreach (var item in licenseList)
+            {
+                var person = item._Personnel;
+                String fullname = String.Format("{0}, {1} {2}", person.LastName, person.FirstName, person.MiddleName);
+                String searchName = String.Format("{0}{1}{2}", person.FirstName, person.MiddleName, person.LastName);
+                String expiration = $"<tr class='list-title' style='background-color: #ddd;'><td>{item.ExpirationDate.Value.ToString("MMMM dd")}</td></tr>";
+
+                element += counter > 0 ? (prevExp.ToString() != item.ExpirationDate.ToString() ? expiration : "") : expiration;
+
+                element += $"<tr title='{fullname}' onclick='";
+                //element += "window.open(" + '"' + ""{Url.Action("Personnel", "Index", new { Filter = searchName })}', '_blank');";
+                element += $"'><td style='text-align: left; padding: 5px; border: 1px solid #eee;'><a href='/HumanResource/Personnel/Index?Filter={searchName}' target='_blank'><div style='float: left; text-transform: uppercase;'>";
+                element += $"<img src='{(String.IsNullOrEmpty(person.ImagePath) ? "\\Images\\default.jpg" : person.ImagePath)}' style='height: 35px; width: 35px; min-height: 35px; min-width: 35px; border: 3px solid #eaeaea; margin-right: 10px; border-radius: 50px;' />";
+                element += $"</div><div style='white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'><b>{fullname}</b><br />{(!String.IsNullOrEmpty(item.LicenseNo) ? item._LicenseType.Description + ": " + item.LicenseNo : "")}</div></a></td></tr>";
+
+                prevExp = item.ExpirationDate.Value;
+                counter++;
+            }
+        }
+        else
+        {
+            element += "<tr><td style='text-align: center;'>No records...</td></tr>";
+        }
+
+        element += "</tbody></table></div></div>";
+        return element;
+    }
 }
 <div class="license-container">
     <div class="tabs-container">
@@ -10,42 +46,10 @@
             <li class=""><a data-toggle="tab" href="#license-tab-3">Upcoming Year</a></li>
         </ul>
         <div class="tab-content">
-            @*<div id="license-tab-1" class="tab-pane">
-                    <div class="panel-body" style="padding: 0px; ">
-                        <table class="table table-stripped table-bordered" style="margin-bottom: 0px;">
-                            <tbody>
-                                @if (ExpiringLicencesThisMonthRecent.Count() > 0)
-                                {
-                                    for (int i = 0; i < ExpiringLicencesThisMonthRecent.Count(); i++)
-                                    {
-                                        if (lastbdate != String.Format("{0:mm/dd/yyyy}", ExpiringLicencesThisMonthRecent[i].ExpirationDate.ToString()))
-                                        {
-                                            <tr><td>@String.Format("{0:dddd}, {1:MMMM dd}", new DateTime(DateTime.Now.Year, DateTime.Now.Month, ExpiringLicencesThisMonthRecent[i].ExpirationDate.Value.Day), ExpiringLicencesThisMonthRecent[i].ExpirationDate)</td></tr>
-                                        }
-                                        <tr title="@String.Format("{0}, {1} {2}", ExpiringLicencesThisMonthRecent[i]._Personnel.LastName, ExpiringLicencesThisMonthRecent[i]._Personnel.FirstName, ExpiringLicencesThisMonthRecent[i]._Personnel.MiddleName)">
-                                            <td style="text-align: left; padding: 5px; border: 1px solid #eee; text-transform: uppercase;">
-                                                <div style="float: left;">
-                                                    <img src="@(String.IsNullOrEmpty(ExpiringLicencesThisMonthRecent[i]._Personnel.ImagePath) ? "\\Images\\default.jpg" : ExpiringLicencesThisMonthRecent[i]._Personnel.ImagePath)" style="height: 35px; width: 35px; min-height: 35px; min-width: 35px; border: 3px solid #eaeaea; margin-right: 10px; border-radius: 50px;" />
-                                                </div>
-                                                <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                                    <b>@String.Format("{0}, {1} {2}", ExpiringLicencesThisMonthRecent[i]._Personnel.LastName, ExpiringLicencesThisMonthRecent[i]._Personnel.FirstName, ExpiringLicencesThisMonthRecent[i]._Personnel.MiddleName)</b>
-                                                    <br />
-                                                    @(!String.IsNullOrEmpty(ExpiringLicencesThisMonthRecent[i].LicenseNo) ? ExpiringLicencesThisMonthRecent[i]._LicenseType.Description + ": " + ExpiringLicencesThisMonthRecent[i].LicenseNo : "")
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        lastbdate = String.Format("{0:mm/dd/yyyy}", ExpiringLicencesThisMonthRecent[i].ExpirationDate.ToString());
-                                    }
-                                }
-                                else
-                                {
-                                    <tr><td style="text-align: center;">No recent expiring licenses...</td></tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>*@
-            <div id="license-tab-2" class="tab-pane active">
+            @Html.Raw(getTab(2, Model.ExpiringLicensesToday, true))
+            @Html.Raw(getTab(3, Model.ExpiringLicensesUpcoming))
+
+            @*<div id="license-tab-2" class="tab-pane active">
                 <div class="panel-body" style="padding: 0px; ">
                     <table class="table table-stripped table-bordered" style="margin-bottom: 0px;">
                         <tbody>
@@ -53,6 +57,9 @@
                             {
                                 for (int i = 0; i < Model.ExpiringLicensesToday.Count(); i++)
                                 {
+                                    String fullname = String.Format("{0}, {1} {2}", Model.ExpiringLicensesToday[i]._Personnel.LastName, Model.ExpiringLicensesToday[i]._Personnel.FirstName, Model.ExpiringLicensesToday[i]._Personnel.MiddleName);
+                                    String searchName = String.Format("{0}{1}{2}", Model.ExpiringLicensesToday[i]._Personnel.FirstName, Model.ExpiringLicensesToday[i]._Personnel.MiddleName, Model.ExpiringLicensesToday[i]._Personnel.LastName);
+
                                     if (i > 0)
                                     {
                                         if (Model.ExpiringLicensesToday[i - 1].ExpirationDate.ToString() != Model.ExpiringLicensesToday[i].ExpirationDate.ToString())
@@ -65,13 +72,13 @@
                                         <tr class="list-title" style=" background-color: #ddd;"><td>@Model.ExpiringLicensesToday[i].ExpirationDate.Value.ToString("dddd, MMMM dd")</td></tr>
                                     }
 
-                                    <tr title="@String.Format("{0}, {1} {2}", Model.ExpiringLicensesToday[i]._Personnel.LastName, Model.ExpiringLicensesToday[i]._Personnel.FirstName, Model.ExpiringLicensesToday[i]._Personnel.MiddleName)">
+                                    <tr title="@fullname" onclick="window.open('/HumanResource/Personnel/Index?Filter=@searchName', '_blank')" style="">
                                         <td style="text-align: left; padding: 5px; border: 1px solid #eee;">
                                             <div style="float: left; text-transform: uppercase;">
                                                 <img src="@(String.IsNullOrEmpty(Model.ExpiringLicensesToday[i]._Personnel.ImagePath) ? "\\Images\\default.jpg" : Model.ExpiringLicensesToday[i]._Personnel.ImagePath)" style="height: 35px; width: 35px; min-height: 35px; min-width: 35px; border: 3px solid #eaeaea; margin-right: 10px; border-radius: 50px;" />
                                             </div>
                                             <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                                <b>@String.Format("{0}, {1} {2}", Model.ExpiringLicensesToday[i]._Personnel.LastName, Model.ExpiringLicensesToday[i]._Personnel.FirstName, Model.ExpiringLicensesToday[i]._Personnel.MiddleName)</b>
+                                                <b>@fullname</b>
                                                 <br />
                                                 @(!String.IsNullOrEmpty(Model.ExpiringLicensesToday[i].LicenseNo) ? Model.ExpiringLicensesToday[i]._LicenseType.Description + ": " + Model.ExpiringLicensesToday[i].LicenseNo : "")
                                             </div>
@@ -95,6 +102,9 @@
                             {
                                 for (int i = 0; i < Model.ExpiringLicensesUpcoming.Count(); i++)
                                 {
+                                    String fullname = String.Format("{0}, {1} {2}", Model.ExpiringLicensesToday[i]._Personnel.LastName, Model.ExpiringLicensesToday[i]._Personnel.FirstName, Model.ExpiringLicensesToday[i]._Personnel.MiddleName);
+                                    String searchName = String.Format("{0}{1}{2}", Model.ExpiringLicensesToday[i]._Personnel.FirstName, Model.ExpiringLicensesToday[i]._Personnel.MiddleName, Model.ExpiringLicensesToday[i]._Personnel.LastName);
+
                                     if (i > 0)
                                     {
                                         if (Model.ExpiringLicensesUpcoming[i - 1].ExpirationDate.ToString() != Model.ExpiringLicensesUpcoming[i].ExpirationDate.ToString())
@@ -107,13 +117,13 @@
                                         <tr class="list-title" style=" background-color: #ddd;"><td>@Model.ExpiringLicensesUpcoming[i].ExpirationDate.Value.ToString("dddd, MMMM dd")</td></tr>
                                     }
 
-                                    <tr title="@String.Format("{0}, {1} {2}", Model.ExpiringLicensesUpcoming[i]._Personnel.LastName, Model.ExpiringLicensesUpcoming[i]._Personnel.FirstName, Model.ExpiringLicensesUpcoming[i]._Personnel.MiddleName)">
+                                    <tr title="@fullname" onclick="window.open('/HumanResource/Personnel/Index?Filter=@searchName', '_blank')" style="">
                                         <td style="text-align: left; padding: 5px; border: 1px solid #eee; text-transform: uppercase;">
                                             <div style="float: left;">
                                                 <img src="@(String.IsNullOrEmpty(Model.ExpiringLicensesUpcoming[i]._Personnel.ImagePath) ? "\\Images\\default.jpg" : Model.ExpiringLicensesUpcoming[i]._Personnel.ImagePath)" style="height: 35px; width: 35px; min-height: 35px; min-width: 35px; border: 3px solid #eaeaea; margin-right: 10px; border-radius: 50px;" />
                                             </div>
                                             <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                                <b>@String.Format("{0}, {1} {2}", Model.ExpiringLicensesUpcoming[i]._Personnel.LastName, Model.ExpiringLicensesUpcoming[i]._Personnel.FirstName, Model.ExpiringLicensesUpcoming[i]._Personnel.MiddleName)</b>
+                                                <b>@fullname</b>
                                                 <br />
                                                 @(!String.IsNullOrEmpty(Model.ExpiringLicensesUpcoming[i].LicenseNo) ? Model.ExpiringLicensesUpcoming[i]._LicenseType.Description + ": " + Model.ExpiringLicensesUpcoming[i].LicenseNo : "")
                                             </div>
@@ -128,7 +138,7 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
+            </div>*@
         </div>
     </div>
 </div>

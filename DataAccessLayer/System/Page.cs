@@ -32,7 +32,7 @@ namespace DataAccessLayer.System
 
         public string Remarks { get; set; }
 
-        public bool? Deleted { get; set; }
+        public bool? Deleted { get; set; } = false;
 
         public int? CreatedBy { get; set; }
 

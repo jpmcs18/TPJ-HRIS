@@ -217,8 +217,9 @@ namespace WebTemplate.Controllers
             {
                 return PartialViewCustom(model);
             }
-            
-            return ViewCustom(Request.Browser.IsMobileDevice ? "Login_Mobile" : "Login", model);
+
+            string view = Request.Browser.IsMobileDevice ? "Login_Mobile" : "Login";
+            return ViewCustom("Login", model);
         }
         
         public ActionResult Logout()
