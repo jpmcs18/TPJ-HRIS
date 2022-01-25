@@ -185,4 +185,5 @@ namespace WebTemplate.Controllers.CnB
             return View("~/Views/PrintingView.cshtml");
         }
     }
+
 }

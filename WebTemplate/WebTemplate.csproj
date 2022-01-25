@@ -182,6 +182,7 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\CnB\CrewPayrollSheetBController.cs" />
     <Compile Include="Controllers\CnB\PayrollSheetAController.cs" />
     <Compile Include="Controllers\CnB\PayrollSheetBController.cs" />
     <Compile Include="Controllers\CnB\TimesheetController.cs" />
@@ -243,6 +244,12 @@
     <Compile Include="Models\CrewMovement\ActualMovement.cs" />
     <Compile Include="Models\CrewMovement\CrewMovement.cs" />
     <Compile Include="Models\CrewMovement\Index.cs" />
+    <Compile Include="Models\CrewPayroll\AdditionalLoans.cs" />
+    <Compile Include="Models\CrewPayroll\CrewVesselPayroll.cs" />
+    <Compile Include="Models\CrewPayroll\Index.cs" />
+    <Compile Include="Models\CrewPayroll\PayrollDetailsManagement.cs" />
+    <Compile Include="Models\CrewPayroll\PayrollManagement.cs" />
+    <Compile Include="Models\CrewPayroll\PersonnelLoanModel.cs" />
     <Compile Include="Models\CustomAuthorizationAttribute.cs" />
     <Compile Include="Models\CustomPrincipal.cs" />
     <Compile Include="Models\CustomPrincipalSerialize.cs" />
@@ -1683,6 +1690,7 @@
     <Content Include="Resources\Template\Timesheet.xlsx" />
     <Content Include="Resources\Template\Medicard.xlsx" />
     <Content Include="Resources\Template\Absence.xlsx" />
+    <Content Include="Resources\Template\CrewPayrollSheetB.xlsx" />
     <None Include="Scripts\jquery-3.5.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.5.1.js" />
     <Content Include="Scripts\jquery-3.5.1.min.js" />

@@ -10,11 +10,11 @@ namespace ProcessLayer.Helpers.ObjectParameter.Payroll
 {
     public sealed class PayrollParameters
     {
-        public static readonly PayrollParameters Instance = new PayrollParameters(ParametersTag.Payroll);
+        public static readonly PayrollParameters Instance = new Lazy<PayrollParameters>(() => new PayrollParameters()).Value;
         private IEnumerable<Parameters> Parameters { get; set; }
-        private PayrollParameters(string key)
+        private PayrollParameters()
         {
-            Parameters = ParametersProcess.Instance.GetParameters(key);
+            Parameters = ParametersProcess.Instance.GetParameters(ParametersTag.Payroll);
 
             TotalMinutesPerDay = GetParameters(nameof(TotalMinutesPerDay)).ToShort();
             TotalMinutesPerDayWithBreak = GetParameters(nameof(TotalMinutesPerDayWithBreak)).ToShort();
@@ -41,7 +41,6 @@ namespace ProcessLayer.Helpers.ObjectParameter.Payroll
             SecondCutoffEnd = GetParameters(nameof(SecondCutoffEnd)).ToInt();
             ExtendedMonths = GetParameters(nameof(ExtendedMonths)).ToInt();
         }
-        public PayrollParameters() { }
         private object GetParameters(string desc)
         {
             return Parameters?.Where(x => x.Description == desc).Select(x => x.Value).FirstOrDefault();

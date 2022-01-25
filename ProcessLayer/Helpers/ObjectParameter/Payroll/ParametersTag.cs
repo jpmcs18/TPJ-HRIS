@@ -3,5 +3,6 @@
     public struct ParametersTag
     {
         public const string Payroll = "cnb";
+        public const string CrewPayroll = "crew";
     }
 }

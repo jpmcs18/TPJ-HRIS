@@ -3,33 +3,28 @@ using System;
 
 namespace ReportLayer.Helpers
 {
-    public sealed class PrintPayrollSheetBHelper : ReportHelperBase
+    public sealed class PrintCrewPayrollSheetBHelper : ReportHelperBase
     {
-        public static readonly PrintPayrollSheetBHelper Instance = new Lazy<PrintPayrollSheetBHelper>(() => new PrintPayrollSheetBHelper()).Value;
-        private  PrintPayrollSheetBHelper() : base("PayrollSheetB")
+        public static readonly PrintCrewPayrollSheetBHelper Instance = new Lazy<PrintCrewPayrollSheetBHelper>(() => new PrintCrewPayrollSheetBHelper()).Value;
+        private PrintCrewPayrollSheetBHelper() : base("CrewPayrollSheetB")
         {
             EndPageRow = Get(nameof(EndPageRow)).ToInt();
             MaxItem = Get(nameof(MaxItem)).ToInt();
             ColumnMaxLength = Get(nameof(ColumnMaxLength)).ToInt();
-            ColumnMiddle = Get(nameof(ColumnMiddle)).ToInt();
             ColumnNo = Get(nameof(ColumnNo)).ToInt();
             ColumnEmployeeName = Get(nameof(ColumnEmployeeName)).ToInt();
-            ColumnDesignation = Get(nameof(ColumnDesignation)).ToInt();
+            ColumnPosition = Get(nameof(ColumnPosition)).ToInt();
             ColumnNoOfDays = Get(nameof(ColumnNoOfDays)).ToInt();
             ColumnRate = Get(nameof(ColumnRate)).ToInt();
             ColumnSalary = Get(nameof(ColumnSalary)).ToInt();
-            ColumnAllowance = Get(nameof(ColumnAllowance)).ToInt();
-            ColumnOT = Get(nameof(ColumnOT)).ToInt();
-            ColumnAdditionalPay = Get(nameof(ColumnAdditionalPay)).ToInt();
             ColumnPagibigFund = Get(nameof(ColumnPagibigFund)).ToInt();
             ColumnPagibigLoan = Get(nameof(ColumnPagibigLoan)).ToInt();
             ColumnSSS = Get(nameof(ColumnSSS)).ToInt();
-            ColumnSSSLoan = Get(nameof(ColumnSSSLoan)).ToInt();
             ColumnProvidentFund = Get(nameof(ColumnProvidentFund)).ToInt();
-            ColumnPhilHealth = Get(nameof(ColumnPhilHealth)).ToInt();
+            ColumnSSSLoan = Get(nameof(ColumnSSSLoan)).ToInt();
             ColumnWithholdingTax = Get(nameof(ColumnWithholdingTax)).ToInt();
+            ColumnPhilHealth = Get(nameof(ColumnPhilHealth)).ToInt();
             ColumnVale = Get(nameof(ColumnVale)).ToInt();
-            ColumnOutstandingVale = Get(nameof(ColumnOutstandingVale)).ToInt();
             ColumnNetAmount = Get(nameof(ColumnNetAmount)).ToInt();
             ColumnPreparedByStart = Get(nameof(ColumnPreparedByStart)).ToInt();
             ColumnPreparedByEnd = Get(nameof(ColumnPreparedByEnd)).ToInt();
@@ -45,13 +40,10 @@ namespace ReportLayer.Helpers
         public int ColumnMiddle { get; }
         public int ColumnNo { get; }
         public int ColumnEmployeeName { get; }
-        public int ColumnDesignation { get; }
+        public int ColumnPosition { get; }
         public int ColumnNoOfDays { get; }
         public int ColumnRate { get; }
         public int ColumnSalary { get; }
-        public int ColumnAllowance { get; }
-        public int ColumnOT { get; }
-        public int ColumnAdditionalPay { get; }
         public int ColumnPagibigFund { get; }
         public int ColumnPagibigLoan { get; }
         public int ColumnSSS { get; }
@@ -60,7 +52,6 @@ namespace ReportLayer.Helpers
         public int ColumnPhilHealth { get; }
         public int ColumnWithholdingTax { get; }
         public int ColumnVale { get; }
-        public int ColumnOutstandingVale { get; }
         public int ColumnNetAmount { get; }
         public int ColumnPreparedByStart { get; }
         public int ColumnPreparedByEnd { get; }

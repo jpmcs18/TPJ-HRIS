@@ -206,9 +206,8 @@ namespace ProcessLayer.Processes.CnB
                 return pbase;
             }
         }
-        public PayrollDeductions GetPhilHealth(long? personnelID, decimal gross, int cutoff, DateTime date)
+        public IPayrollDeductions GetPhilHealth(long? personnelID, decimal gross, int cutoff, DateTime date)
         {
-            var pd = new PayrollDeductions();
             using (var db = new DBTools())
             {
                 using (var ds = db.ExecuteReader("cnb.GetPhilHealth", new Dictionary<string, object> {
@@ -217,20 +216,9 @@ namespace ProcessLayer.Processes.CnB
                     { "@CutOff", cutoff },
                     { "@Date", date } }))
                 {
-                    pd = ds.Get(dr =>
-                    {
-                        return new PayrollDeductions
-                        {
-                            ID = dr["ID"].ToLong(),
-                            Deduction = LookupProcess.GetDeduction(dr["Deduction ID"].ToNullableInt()),
-                            Amount = dr["PS"].ToNullableDecimal(),
-                            PS = dr["PS"].ToNullableDecimal(),
-                            ES = dr["ES"].ToNullableDecimal()
-                        };
-                    });
+                    return ds.Get(DeductionConverter);
                 }
             }
-            return pd;
         }
         public int GetMonthlyTaxScheduleID()
         {
@@ -240,7 +228,21 @@ namespace ProcessLayer.Processes.CnB
             }
 
         }
-        public PayrollDeductions GetHDMF(long? personnelID, decimal gross, int cutoff, DateTime date)
+        public IPayrollDeductions DeductionConverter(DataRow dr)
+        {
+            var c = Activator.CreateInstance<IPayrollDeductions>();
+
+            c.ID = dr["ID"].ToLong();
+            c.Deduction = LookupProcess.GetDeduction(dr["Deduction ID"].ToNullableInt());
+            c.Amount = dr["PS"].ToNullableDecimal();
+            c.PS = dr["PS"].ToNullableDecimal();
+            c.ES = dr["ES"].ToNullableDecimal();
+
+            try { c.EC = dr["EC"].ToNullableDecimal(); } catch { }
+
+            return c;
+        }
+        public IPayrollDeductions GetHDMF(long? personnelID, decimal gross, int cutoff, DateTime date)
         {
             using (var db = new DBTools())
             {
@@ -250,21 +252,11 @@ namespace ProcessLayer.Processes.CnB
                     { "@CutOff", cutoff },
                     { "@Date", date } }))
                 {
-                    return ds.Get(dr =>
-                    {
-                        return new PayrollDeductions
-                        {
-                            ID = dr["ID"].ToLong(),
-                            Deduction = LookupProcess.GetDeduction(dr["Deduction ID"].ToNullableInt()),
-                            Amount = dr["PS"].ToNullableDecimal(),
-                            PS = dr["PS"].ToNullableDecimal(),
-                            ES = dr["ES"].ToNullableDecimal()
-                        };
-                    });
+                    return ds.Get(DeductionConverter);
                 }
             }
         }
-        public PayrollDeductions GetSSS(long? personnelID, decimal gross, int cutoff, DateTime date)
+        public IPayrollDeductions GetSSS(long? personnelID, decimal gross, int cutoff, DateTime date)
         {
             using (var db = new DBTools())
             {
@@ -274,22 +266,11 @@ namespace ProcessLayer.Processes.CnB
                     { "@CutOff", cutoff },
                     { "@Date", date } }))
                 {
-                    return ds.Get(dr =>
-                    {
-                        return new PayrollDeductions
-                        {
-                            ID = dr["ID"].ToLong(),
-                            Deduction = LookupProcess.GetDeduction(dr["Deduction ID"].ToNullableInt()),
-                            Amount = dr["PS"].ToNullableDecimal(),
-                            PS = dr["PS"].ToNullableDecimal(),
-                            ES = dr["ES"].ToNullableDecimal(),
-                            EC = dr["EC"].ToNullableDecimal()
-                        };
-                    });
+                    return ds.Get(DeductionConverter);
                 }
             }
         }
-        public PayrollDeductions GetProvidentFund(long? personnelID, decimal gross, int cutoff, DateTime date)
+        public IPayrollDeductions GetProvidentFund(long? personnelID, decimal gross, int cutoff, DateTime date)
         {
             using (var db = new DBTools())
             {
@@ -299,17 +280,7 @@ namespace ProcessLayer.Processes.CnB
                     { "@CutOff", cutoff },
                     { "@Date", date } }))
                 {
-                    return ds.Get(dr =>
-                    {
-                        return new PayrollDeductions
-                        {
-                            ID = dr["ID"].ToLong(),
-                            Deduction = LookupProcess.GetDeduction(dr["Deduction ID"].ToNullableInt()),
-                            Amount = dr["PS"].ToNullableDecimal(),
-                            PS = dr["PS"].ToNullableDecimal(),
-                            ES = dr["ES"].ToNullableDecimal()
-                        };
-                    });
+                    return ds.Get(DeductionConverter);
                 }
             }
         }

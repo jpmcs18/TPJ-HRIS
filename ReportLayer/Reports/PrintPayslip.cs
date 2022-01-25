@@ -36,7 +36,7 @@ namespace ReportLayer.Reports
         {
             int addRow = 0;
             WriteToCell(PrintPayslipHelper.Instance.EmployeeNameCell, payroll.Personnel.FullName);
-            WriteToCell(PrintPayslipHelper.Instance.EmployeeNumberCell,  payroll.Personnel.EmployeeNo);
+            WriteToCell(PrintPayslipHelper.Instance.EmployeeNumberCell, payroll.Personnel.EmployeeNo);
             WriteToCell(PrintPayslipHelper.Instance.TINNoCell, "TIN: " + payroll.Personnel.TIN);
             WriteToCell(PrintPayslipHelper.Instance.HDMFNoCell, "HDMF No: " + payroll.Personnel.PAGIBIG);
             WriteToCell(PrintPayslipHelper.Instance.SSSNoCell, "SSS No: " + payroll.Personnel.SSS);
@@ -70,7 +70,7 @@ namespace ReportLayer.Reports
             WriteToCell(PrintPayslipHelper.Instance.SignatoryCell, payroll.Personnel.FullName);
 
             int startRow = PrintPayslipHelper.Instance.LoanStartRow;
-            if (payroll.SSSCalamityLoan > 0) 
+            if (payroll.SSSCalamityLoan > 0)
             {
                 InsertRowCopy(startRow, 1);
                 WriteToCell(startRow, PrintPayslipHelper.Instance.PayrollPeriodColumn, "SSS Calamity Loan").SetHorizontalAlignment(HorizontalAlignmentStyle.Center);
@@ -323,7 +323,7 @@ namespace ReportLayer.Reports
                 AutofitRow(startRow);
                 startRow++;
             }
-            if(payroll.Allowance == 0)
+            if (payroll.Allowance == 0)
                 DeleteCells(PrintPayslipHelper.Instance.AllowanceStartRow - 2 + (addRow > 0 ? addRow : 0), 0, PrintPayslipHelper.Instance.AllowanceStartRow + 10 + (addRow > 0 ? addRow : 0), PrintPayslipHelper.Instance.AmountColumn);
         }
         private string GetPeriod(DateTime start, DateTime end)
