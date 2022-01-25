@@ -2,31 +2,22 @@
 
 @{
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
-    var TimeEditRequestPageAccess = credential.GetPage("Kiosk/TimeEditRequest") ?? new DataAccessLayer.System.Page();
+    var PageAccess = credential.GetPage("Kiosk/TimeEditRequest") ?? new DataAccessLayer.System.Page();
     var TimeEditRequestCreator = credential.GetPage("Creator Request Over Time") ?? new DataAccessLayer.System.Page();
     var TimeEditRequestApprover = credential.GetPage("Approver Time Edit Request") ?? new DataAccessLayer.System.Page();
 
-    ViewBag.title = TimeEditRequestPageAccess.PageName;
+    ViewBag.title = PageAccess.PageName;
 
 }
 
 <div class="wrapper wrapper-content">
     <div class="page-heading">
         <div class="col-lg-8">
-            <h1>@Html.Raw(TimeEditRequestPageAccess.PageName ?? "&nbsp;")</h1>
-            <ol class="breadcrumb">
-                <li>
-                    <a href='@Url.Action("Index", "Home")'>Home</a>
-                </li>
-                <li>Kiosk</li>
-                <li class="active">
-                    <strong>@Html.Raw(TimeEditRequestPageAccess.PageName ?? "&nbsp;")</strong>
-                </li>
-            </ol>
+            @Html.Partial("~/Views/Shared/_Breadcrumbs.cshtml", PageAccess)
         </div>
         <div class="col-lg-4">
             <div class="title-action">
-                @if (TimeEditRequestPageAccess.Insert)
+                @if (PageAccess.Insert)
                 {
                     <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         @*<h1><b>My Overtime Requests</b></h1>*@

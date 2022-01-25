@@ -1,87 +1,85 @@
 ﻿@model WebTemplate.Models.Maintenance.Organization.Designation.Index
 
-<div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-12">
-        <h2 class="heading-main-title">@ViewBag.Page.PageName</h2>
-        <ol class="breadcrumb">
-            <li><a class="toggleSpinners" href="@Url.Action("Index", "Home")">Home</a></li>
-            <li>Maintenance</li>
-            <li>Organization</li>
-            <li class="active"><strong>@Html.Raw(ViewBag.Page.PageName ?? "&nbsp;")</strong></li>
-        </ol>
-    </div>
-</div>
+@{
+    var PageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("Maintenance/Organization/Designation");
+}
 
-<div class="wrapper wrapper-content">
-    <div class="row">
+    <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-12">
-            <div class="">
-                @*<div class="ibox-title">
-                        <h5>List of @ViewBag.Page.PageName</h5>
-                    </div>*@
+            @Html.Partial("~/Views/Shared/_Breadcrumbs.cshtml", PageAccess)
+        </div>
+    </div>
+
+    <div class="wrapper wrapper-content">
+        <div class="row">
+            <div class="col-lg-12">
                 <div class="">
-                    <div class="row">
-                        <div class="col-md-6">
-                            @*<label>Search Filter</label>*@
-                            <div class="input-group">
-                                <input type="text" id="txt_search" class="form-control" placeholder="Enter the @ViewBag.Page.PageName here..." value="@Html.ValueFor(m => m.Filter)" />
-                                <span class="input-group-btn">
-                                    <button type="button" id="btn_search" class="btn btn-primary font-bold"><i class="fa fa-search"></i></button>
-                                </span>
+                    @*<div class="ibox-title">
+                            <h5>List of @ViewBag.Page.PageName</h5>
+                        </div>*@
+                    <div class="">
+                        <div class="row">
+                            <div class="col-md-6">
+                                @*<label>Search Filter</label>*@
+                                <div class="input-group">
+                                    <input type="text" id="txt_search" class="form-control" placeholder="Enter the @ViewBag.Page.PageName here..." value="@Html.ValueFor(m => m.Filter)" />
+                                    <span class="input-group-btn">
+                                        <button type="button" id="btn_search" class="btn btn-primary font-bold"><i class="fa fa-search"></i></button>
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <br />
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <form id="form_search">
-                                @Html.Partial("~/Views/Maintenance/Organization/Designation/_Search.cshtml")
-                            </form>
+                        <br />
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <form id="form_search">
+                                    @Html.Partial("~/Views/Maintenance/Organization/Designation/_Search.cshtml")
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="modal inmodal custom-modal" id="modal_management" data-backdrop="static" data-keyboard="false" tabindex="" role="dialog" aria-hidden="true">
-    <div class="vertical-alignment-helper">
-        <div class="modal-center vertical-align-center">
-            <div class="modal-content animated fadeInDown modal-width-80">
-                <form id="formpost"></form>
+    <div class="modal inmodal custom-modal" id="modal_management" data-backdrop="static" data-keyboard="false" tabindex="" role="dialog" aria-hidden="true">
+        <div class="vertical-alignment-helper">
+            <div class="modal-center vertical-align-center">
+                <div class="modal-content animated fadeInDown modal-width-80">
+                    <form id="formpost"></form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="modal inmodal custom-modal" id="modal_management_pos" data-backdrop="static" data-keyboard="false" tabindex="" role="dialog" aria-hidden="true">
-    <div class="vertical-alignment-helper">
-        <div class="modal-center vertical-align-center" style="background-color: rgba(0, 0, 0, 0.5)">
-            <div class="modal-content animated fadeInDown modal-width-80">
-                <form id="formpost_pos"></form>
+    <div class="modal inmodal custom-modal" id="modal_management_pos" data-backdrop="static" data-keyboard="false" tabindex="" role="dialog" aria-hidden="true">
+        <div class="vertical-alignment-helper">
+            <div class="modal-center vertical-align-center" style="background-color: rgba(0, 0, 0, 0.5)">
+                <div class="modal-content animated fadeInDown modal-width-80">
+                    <form id="formpost_pos"></form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="modal inmodal custom-modal" id="modal_management_dept" data-backdrop="static" data-keyboard="false" tabindex="" role="dialog" aria-hidden="true">
-    <div class="vertical-alignment-helper">
-        <div class="modal-center vertical-align-center" style="background-color: rgba(0, 0, 0, 0.5)">
-            <div class="modal-content animated fadeInDown modal-width-80">
-                <form id="formpost_dept"></form>
+    <div class="modal inmodal custom-modal" id="modal_management_dept" data-backdrop="static" data-keyboard="false" tabindex="" role="dialog" aria-hidden="true">
+        <div class="vertical-alignment-helper">
+            <div class="modal-center vertical-align-center" style="background-color: rgba(0, 0, 0, 0.5)">
+                <div class="modal-content animated fadeInDown modal-width-80">
+                    <form id="formpost_dept"></form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<div id="floating-buttons" class="menu pmd-floating-action" role="navigation">
-    <button type="button" id="btnadd" class="btn btn-lg btn-circle pmd-floating-action-btn pmd-btn-fab pmd-btn-raised pmd-ripple-effect btn-primary" data-title="Create New">
-        <i class="fa fa-plus"></i>
-    </button>
-</div>
+    <div id="floating-buttons" class="menu pmd-floating-action" role="navigation">
+        <button type="button" id="btnadd" class="btn btn-lg btn-circle pmd-floating-action-btn pmd-btn-fab pmd-btn-raised pmd-ripple-effect btn-primary" data-title="Create New">
+            <i class="fa fa-plus"></i>
+        </button>
+    </div>
 
-<script type="text/javascript">
+    <script type="text/javascript">
     $(document).ready(function () {
         $('#txt_search').keydown(function () {
             if (event.keyCode == 13) {
@@ -536,4 +534,4 @@
             }
         });
     }
-</script>
+    </script>

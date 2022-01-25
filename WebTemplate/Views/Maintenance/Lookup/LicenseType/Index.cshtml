@@ -1,23 +1,15 @@
 ﻿@model WebTemplate.Models.Maintenance.Lookup.LicenseType.Index
 
 @{
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var PageAccess = credential.GetPage("Maintenance/Lookup/LicenseType") ?? new DataAccessLayer.System.Page();
     var perpetuals = new Dictionary<bool, string> { { true, "Perpetual Only" }, { false, "Not Perpetual" } };
 }
 
 <div class="wrapper wrapper-content">
     <div class="page-heading">
         <div class="col-lg-8">
-            <h1>@ViewBag.Page.PageName</h1>
-            <ol class="breadcrumb">
-                <li>
-                    <a href='@Url.Action("Index", "Home")'>Home</a>
-                </li>
-                <li>Maintenance</li>
-                <li>Lookup</li>
-                <li class="active">
-                    <strong>@Html.Raw(ViewBag.Page.PageName ?? "&nbsp;")</strong>
-                </li>
-            </ol>
+            @Html.Partial("~/Views/Shared/_Breadcrumbs.cshtml", PageAccess)
         </div>
         <div class="col-lg-4">
             <div class="title-action">
