@@ -1,93 +1,104 @@
 ﻿@model WebTemplate.Models.Maintenance.Lookup.PositionSalary.Index
 @{
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var PageAccess = credential.GetPage("Maintenance/Lookup/PositionSalary") ?? new DataAccessLayer.System.Page();
     var PageCount = Math.Ceiling((double)Model.ItemCount / Model.GridCount);
 }
 
-<div class="table-responsive">
-    <div class="mail-box">
-        <table class="table table-hover table-mail">
-            <thead>
-                @if (PageCount > 1)
-                {
-                    <tr>
-                        <td class="text-right" colspan="10" style="background-color: white;">
-                            <div class="btn-group">
-                                @using (Ajax.BeginForm("Index", "Maintenance/Lookup/PositionSalary",
-                                    new AjaxOptions { HttpMethod = "POST", OnBegin = "ShowLoadingScreen()", OnComplete = "RemoveLoadingScreen()", OnSuccess = "search_item_success", OnFailure = "toastr.error('Potentially dangerous value was detected', 'Saving failed')" }))
-                                {
-                                    @Html.AntiForgeryToken()
-                                    <input type="hidden" id="hid_search" name="@Html.NameFor(m => m.Filter)" value="@Html.ValueFor(m => m.Filter)" />
-                                    <input type="hidden" id="hid_page" name="@Html.NameFor(m => m.PageNumber)" value="@Html.ValueFor(m => m.PageNumber)" />
+@if (PageAccess.View)
+{
 
-                                    if (Model.PageNumber > 0)
-                                    {
-                                        <button type="button" name="@Html.NameFor(m => m.PageNumber)" value="1" class="btn btn-white @(Model.PageNumber == 1 ? "active" : "pages")">1 @*<i class="fa fa-angle-double-left"></i>*@</button>
-                                    }
-                                    if (Model.PageNumber - 1 > 2)
-                                    {
-                                        <button type="button" name="@Html.NameFor(m => m.PageNumber)" value="@(Model.PageNumber - 2)" class="btn btn-white pages">...@*<i class="fa fa-angle-left"></i>*@</button>
-                                    }
-                                    for (int i = Model.PageNumber - 2; i <= Model.PageNumber + 2; i++)
-                                    {
-                                        if (i > 1 && i < PageCount)
-                                        {
-                                            <button type="button" name="@Html.NameFor(m => m.PageNumber)" value="@(i)" class="btn btn-white @(i == Model.PageNumber ? "active" : "pages")">@(i)</button>
-                                        }
-                                    }
-                                    if (Model.PageNumber + 1 < PageCount - 1)
-                                    {
-                                        <button type="button" name="@Html.NameFor(m => m.PageNumber)" value="@(Model.PageNumber + 2)" class="btn btn-white pages">...@*<i class="fa fa-angle-right"></i>*@</button>
-                                    }
-                                    if (Model.PageNumber <= PageCount && PageCount > 1)
-                                    {
-                                        <button type="button" name="@Html.NameFor(m => m.PageNumber)" value="@PageCount" class="btn btn-white @(Model.PageNumber == PageCount ? "active" : "pages")">@PageCount @*<i class="fa fa-angle-double-right"></i>*@</button>
-                                    }
+}
+<form id="form_search_params" class="m-t-md" enctype="multipart/form-data" style="margin: 0 -15px;">
+    <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-3">
+        <input type="text" id="txt_search" class="form-control" placeholder="Enter the @ViewBag.Page.PageName here..." value="@Html.ValueFor(m => m.Filter)" />
+    </div>
+
+    <div class="form-group" style="">
+        <button type="button" id="btn_search" class="btn btn-primary font-bold" onclick="get_items()"><i class="fa fa-search"></i> Search</button>
+    </div>
+</form>
+<form id="form_search" enctype="multipart/form-data" class="pull-left" style="width: 100%;">
+    <table class="table table-hover table-striped">
+        <thead>
+            <tr>
+                <td class="text-right" colspan="10" style="background-color: white;">
+                    <div class="btn-group pull-left">
+                        @using (Ajax.BeginForm("Index", "Maintenance/Lookup/PositionSalary",
+                            new AjaxOptions { HttpMethod = "POST", OnBegin = "ShowLoadingScreen()", OnComplete = "RemoveLoadingScreen()", OnSuccess = "search_item_success", OnFailure = "toastr.error('Potentially dangerous value was detected', 'Saving failed')" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" id="hid_search" name="@Html.NameFor(m => m.Filter)" value="@Html.ValueFor(m => m.Filter)" />
+                            <input type="hidden" id="hid_page" name="@Html.NameFor(m => m.PageNumber)" value="@Html.ValueFor(m => m.PageNumber)" />
+
+                            if (Model.PageNumber > 0)
+                            {
+                                <button type="button" name="@Html.NameFor(m => m.PageNumber)" value="1" class="btn btn-white @(Model.PageNumber == 1 ? "active" : "pages")">1 @*<i class="fa fa-angle-double-left"></i>*@</button>
+                            }
+                            if (Model.PageNumber - 1 > 2)
+                            {
+                                <button type="button" name="@Html.NameFor(m => m.PageNumber)" value="@(Model.PageNumber - 2)" class="btn btn-white pages">...@*<i class="fa fa-angle-left"></i>*@</button>
+                            }
+                            for (int i = Model.PageNumber - 2; i <= Model.PageNumber + 2; i++)
+                            {
+                                if (i > 1 && i < PageCount)
+                                {
+                                    <button type="button" name="@Html.NameFor(m => m.PageNumber)" value="@(i)" class="btn btn-white @(i == Model.PageNumber ? "active" : "pages")">@(i)</button>
                                 }
+                            }
+                            if (Model.PageNumber + 1 < PageCount - 1)
+                            {
+                                <button type="button" name="@Html.NameFor(m => m.PageNumber)" value="@(Model.PageNumber + 2)" class="btn btn-white pages">...@*<i class="fa fa-angle-right"></i>*@</button>
+                            }
+                            if (Model.PageNumber <= PageCount && PageCount > 1)
+                            {
+                                <button type="button" name="@Html.NameFor(m => m.PageNumber)" value="@PageCount" class="btn btn-white @(Model.PageNumber == PageCount ? "active" : "pages")">@PageCount @*<i class="fa fa-angle-double-right"></i>*@</button>
+                            }
+                        }
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                @*<th class="text-center col-lg-1">Short Description</th>*@
+                <th class="text-center col-lg-2">Description</th>
+                <th class="text-center col-lg-2">Salary</th>
+                @*<th class="text-center col-lg-2">Created By</th>
+            <th class="text-center col-lg-2">Created Date</th>
+            <th class="text-center col-lg-2">Modified By</th>
+            <th class="text-center col-lg-2">Modified Date</th>*@
+                <th class="text-center col-lg-1">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr id="Row-Loading-Display" class="hidden">
+                <td style="text-align: center;" colspan="6">
+                    <i id="" class="fa fa-rotate-left rotate" style="padding: 8px; font-size: 20px; text-align: right;"></i>
+                </td>
+            </tr>
+            @if (Model.ItemList.Any())
+            {
+                for (int i = 0; i < Model.ItemList.Count; i++)
+                {
+                    <tr class="Row-Display read" style="cursor: pointer;">
+                        <td class="text-center text-uppercase">@Model.ItemList[i].Position.Description</td>
+                        <td class="text-center text-uppercase autonumeric">@Model.ItemList[i].Salary</td>
+                        <td style="" class="row-actions">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-primary btn-sm btn-rounded btn-outline" title="Edit" onclick="manage_item(@Model.ItemList[i].ID)"><i class="fa fa-pencil"></i></button>
+                                <button type="button" class="btn btn-danger btn-sm btn-rounded btn-outline" title="Delete" onclick="delete_item(@Model.ItemList[i].ID)"><i class="fa fa-trash"></i></button>
                             </div>
                         </td>
                     </tr>
                 }
-                @*<tr>
-            <th class="text-center col-lg-1">Short Description</th>
-            <th class="text-center col-lg-2">Description</th>
-            <th class="text-center col-lg-2">Created By</th>
-            <th class="text-center col-lg-2">Created Date</th>
-            <th class="text-center col-lg-2">Modified By</th>
-            <th class="text-center col-lg-2">Modified Date</th>
-            <th class="text-center col-lg-1">Action</th>
-        </tr>*@
-            </thead>
-            <tbody>
-                <tr id="Row-Loading-Display" class="hidden">
-                    <td style="text-align: center;" colspan="6">
-                        <i id="" class="fa fa-rotate-left rotate" style="padding: 8px; font-size: 20px; text-align: right;"></i>
-                    </td>
+            }
+            else
+            {
+                <tr id="No-Row-Display">
+                    <td style="text-align: center;" colspan="8">No Departments found...</td>
                 </tr>
-            @if (Model.ItemList.Any())
-                {
-                    for (int i = 0; i < Model.ItemList.Count; i++)
-                    {
-                        <tr class="Row-Display read" style="cursor: pointer;">
-                            <td class="text-center text-uppercase">@Model.ItemList[i].Position.Description</td>
-                            <td class="text-center text-uppercase autonumeric">@Model.ItemList[i].Salary</td>
-                            <td style="" class="row-actions">
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-primary btn-sm btn-rounded btn-outline" title="Edit" onclick="manage_item(@Model.ItemList[i].ID)"><i class="fa fa-pencil"></i></button>
-                                    <button type="button" class="btn btn-danger btn-sm btn-rounded btn-outline" title="Delete" onclick="delete_item(@Model.ItemList[i].ID)"><i class="fa fa-trash"></i></button>
-                                </div>
-                            </td>
-                        </tr>
-                    }
-                }
-                else
-                {
-                    <tr id="No-Row-Display">
-                        <td style="text-align: center;" colspan="8">No Departments found...</td>
-                    </tr>
-                }
-            </tbody>
-            <tfoot>
-            </tfoot>
-        </table>
-    </div>
-</div>
+            }
+        </tbody>
+        <tfoot>
+        </tfoot>
+    </table>
+</form>

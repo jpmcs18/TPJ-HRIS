@@ -45,6 +45,15 @@ input.input-incomplete {
     }
 }
 
+.index-container {
+    tr {
+        &:hover {
+            background-color: #ddd;
+            cursor: pointer;
+        }
+    }
+}
+
 #modal_management {
     .modal-body {
         .tabs-container {
@@ -1290,8 +1299,8 @@ table {
             width: 100%;
             text-align: left;
             float: left;
-            /*line-height: 2.4;*/
-            text-decoration: underline;
+            /*line-height: 3;
+            text-decoration: underline;*/
             white-space: unset !important;
 
             &:hover {
@@ -1309,7 +1318,9 @@ table {
             box-shadow: none;
 
             .tab-content {
-                height: 750px;// 850px;// 900px;
+                min-height: 625px;
+                height: 625px;
+                //height: 750px;// 850px;// 900px;
                 overflow-y: auto;
                 overflow-x: hidden;
                 margin-top: 0;
@@ -2191,4 +2202,20 @@ fieldset {
 
 label.form-control {
     margin: 0;
+}
+
+form, fieldset, div {
+    &.form-group {
+        margin-bottom: 0.5em;
+    }
+
+    &#form_search {
+        overflow-x: auto;
+    }
+}
+
+table.table-striped {
+    thead tr th {
+        background-color: #f9f9f9 !important;
+    }
 }

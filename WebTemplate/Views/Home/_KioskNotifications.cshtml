@@ -95,7 +95,7 @@
                     <div class="modal-content animated fadeInDown modal-width-30">
                         <div class="modal-header">
                             <h5 class="modal-title" style="text-align: center;">Kiosk Notifications</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close" title="Close (Esc)"><span aria-hidden="true">×</span></button>
                         </div>
                         <div class="modal-body">
                             @*@for (int i = 0; i < Model.Count(); i++)
@@ -135,7 +135,7 @@
                                         }
                                     }
                                 }*@
-
+                            <span class="text-muted">Press Esc to close.</span>
                             @Html.Raw(links)
                         </div>
                     </div>

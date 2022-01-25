@@ -6,73 +6,69 @@
 }
 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <form id="form_search" class="pull-left" style="width: 100%;">
-        <div class="table-responsive" style="height: 650px;">
-            <div class="col-lg-4 pull-right">
-                <div class="title-action">
-                    @if (PageAccess.Insert)
-                    {
-                        <a class="btn btn-primary compose-mail btnmodaladd" href="#">New Policy And Procedure</a>
-                    }
-                </div>
-            </div>
-            <div class="mail-box">
-                <table id="PolicyAndProcedureTable" class="table table-hover table-mail">
-                    <thead>
-                        @if (Model.PolicyAndProcedureList.Count() > 0)
-                        {
-                            <tr>
-                                <td class="text-right" colspan="10" style="background-color: white;">
-                                    <div class="btn-group pull-left">
-                                        @if (Model.Page > 0)
-                                        {
-                                            <button type="button" name="@Html.NameFor(m => m.Page)" value="1" class="btn btn-white @(Model.Page == 1 ? "active" : "modal-pages")">1 @*<i class="fa fa-angle-double-left"></i>*@</button>
-                                        }
-                                        @if (Model.Page - 1 > 2)
-                                        {
-                                            <button type="button" name="@Html.NameFor(m => m.Page)" value="@(Model.Page - 2)" class="btn btn-white pages">...@*<i class="fa fa-angle-left"></i>*@</button>
-                                        }
-                                        @for (int i = Model.Page - 1; i <= Model.Page + 1; i++)
-                                        {
-                                            if (i > 1 && i < Model.PageCount)
-                                            {
-                                                <button type="button" name="@Html.NameFor(m => m.Page)" value="@(i)" class="btn btn-white @(i == Model.Page ? "active" : "modal-pages")">@(i)</button>
-                                            }
-                                        }
-                                        @if (Model.Page + 1 < Model.PageCount - 1)
-                                        {
-                                            <button type="button" name="@Html.NameFor(m => m.Page)" value="@(Model.Page + 2)" class="btn btn-white modal-pages">...@*<i class="fa fa-angle-right"></i>*@</button>
-                                        }
-                                        @if (Model.Page <= Model.PageCount && Model.PageCount > 1)
-                                        {
-                                            <button type="button" name="@Html.NameFor(m => m.Page)" value="@Model.PageCount" class="btn btn-white @(Model.Page == Model.PageCount ? "active" : "modal-pages")">@Model.PageCount @*<i class="fa fa-angle-double-right"></i>*@</button>
-                                        }
-                                    </div>
-                                </td>
-                            </tr>
-                        }
-                        <tr>
-                            <th class="text-left">No.</th>
-                            <th class="text-center">Date</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (Model.PolicyAndProcedureList.Count() > 0)
-                        {
-                            for (int i = 0; i < Model.PolicyAndProcedureList.Count(); i++)
-                            {
-                                @Html.Partial("~/Views/MemoArchives/PolicyAndProcedure/_PolicyAndProcedure.cshtml", Model.PolicyAndProcedureList[i])
-                            }
-                        }
-                        else
-                        {
-                            <tr id="No-Row-Display"><td style="text-align: center;" colspan="6">No Record found...</td></tr>
-                        }
-                    </tbody>
-                    <tfoot>
-                    </tfoot>
-                </table>
+        <div class="col-lg-4 pull-right">
+            <div class="title-action">
+                @if (PageAccess.Insert)
+                {
+                    <a class="btn btn-primary compose-mail btnmodaladd" href="#">New Policy And Procedure</a>
+                }
             </div>
         </div>
+        <table id="PolicyAndProcedureTable" class="table table-hover table-striped">
+            <thead>
+                @if (Model.PolicyAndProcedureList.Count() > 0)
+                {
+                    <tr>
+                        <td class="text-right" colspan="10" style="background-color: white;">
+                            <div class="btn-group pull-left">
+                                @if (Model.Page > 0)
+                                {
+                                    <button type="button" name="@Html.NameFor(m => m.Page)" value="1" class="btn btn-white @(Model.Page == 1 ? "active" : "modal-pages")">1 @*<i class="fa fa-angle-double-left"></i>*@</button>
+                                }
+                                @if (Model.Page - 1 > 2)
+                                {
+                                    <button type="button" name="@Html.NameFor(m => m.Page)" value="@(Model.Page - 2)" class="btn btn-white pages">...@*<i class="fa fa-angle-left"></i>*@</button>
+                                }
+                                @for (int i = Model.Page - 1; i <= Model.Page + 1; i++)
+                                {
+                                    if (i > 1 && i < Model.PageCount)
+                                    {
+                                        <button type="button" name="@Html.NameFor(m => m.Page)" value="@(i)" class="btn btn-white @(i == Model.Page ? "active" : "modal-pages")">@(i)</button>
+                                    }
+                                }
+                                @if (Model.Page + 1 < Model.PageCount - 1)
+                                {
+                                    <button type="button" name="@Html.NameFor(m => m.Page)" value="@(Model.Page + 2)" class="btn btn-white modal-pages">...@*<i class="fa fa-angle-right"></i>*@</button>
+                                }
+                                @if (Model.Page <= Model.PageCount && Model.PageCount > 1)
+                                {
+                                    <button type="button" name="@Html.NameFor(m => m.Page)" value="@Model.PageCount" class="btn btn-white @(Model.Page == Model.PageCount ? "active" : "modal-pages")">@Model.PageCount @*<i class="fa fa-angle-double-right"></i>*@</button>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+                <tr>
+                    <th class="text-left">No.</th>
+                    <th class="text-center">Date</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.PolicyAndProcedureList.Count() > 0)
+                {
+                    for (int i = 0; i < Model.PolicyAndProcedureList.Count(); i++)
+                    {
+                        @Html.Partial("~/Views/MemoArchives/PolicyAndProcedure/_PolicyAndProcedure.cshtml", Model.PolicyAndProcedureList[i])
+                    }
+                }
+                else
+                {
+                    <tr id="No-Row-Display"><td style="text-align: center;" colspan="6">No Record found...</td></tr>
+                }
+            </tbody>
+            <tfoot>
+            </tfoot>
+        </table>
     </form>
 </div>

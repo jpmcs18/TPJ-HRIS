@@ -7,7 +7,7 @@
     var SearchPageAccess = credential.GetPage("Search") ?? new DataAccessLayer.System.Page();
 }
 
-<tr id="@Model.ID" class="Row-Display Row-Display-Personnel" tpjattr="PersonnelProfile" onclick="OpenProfile(@Model.ID);" style="" title="Click to open record">
+<tr id="@Model.ID" class="Row-Display Row-Display-Personnel" tpjattr="PersonnelProfile" onclick="OpenProfile(@Model.ID);" style="cursor: pointer;" title="Click to open record">
     <td class="text-center">
         @if (SearchPageAccess.Update || SearchPageAccess.Delete || SearchPageAccess.View)
         {
@@ -24,7 +24,7 @@
     <td style="text-align: left; text-transform: uppercase; max-width: 300px; white-space: normal;">
         <div class="clickable-text">
             <img class="personnel-pic" src="@(String.IsNullOrEmpty(Model.ImagePath) ? "\\Images\\default.jpg": Model.ImagePath)" style="height: 30px; width: 45px; min-height: 45px; min-width: 30px; border: 3px solid #eaeaea; margin-right: 10px; border-radius: 50px;" title="" />
-            @String.Format("{0}, {1} {2}", Model.LastName, Model.FirstName, Model.MiddleName)
+            @Html.Raw(String.Format("{0} {1}, <strong>{2}</strong>", Model.FirstName, Model.MiddleName, Model.LastName))
         </div>
     </td>
     <td style="text-align: center; text-transform: uppercase; " nowrap>@Model.EmployeeNo</td>

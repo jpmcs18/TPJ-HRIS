@@ -34,18 +34,16 @@
     </div>
     <div class="" style="margin-top: 80px;">
         <div class="col-xs-12 col-sm-12 col-md-push-2 col-md-8 col-lg-push-2 col-lg-8 animated fadeInLef">
-            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 m-b-sm" style="padding: 0px;">
-                <div class="tabs-container" style="border: 1px solid #009688;">
-                    <div class="tab-content" style="margin-top: 0px; max-height: unset; overflow: hidden;">
-                        @if (KioskApproverPageAccess.View)
-                        {
-                            <div id="tab-2" class="tab-pane active" style="height: unset;">
-                                <div id="CandidatesAndApproversForm" class="panel-body" style="padding: 10px; max-height: unset; height: 100%; border: 1px solid #e5e6e7; overflow: hidden;">
-                                    @Html.Partial("~/Views/Maintenance/Lookup/KioskApprover/_KioskApproversSearch.cshtml", Model)
-                                </div>
+            <div class="tabs-container" style="">
+                <div class="tab-content" style="margin-top: 0px; max-height: unset; overflow: hidden;">
+                    @if (KioskApproverPageAccess.View)
+                    {
+                        <div id="tab-2" class="tab-pane active" style="">
+                            <div id="CandidatesAndApproversForm" class="panel-body" style="padding: 10px; max-height: unset; height: 100%; border: 1px solid #e5e6e7; overflow: hidden;">
+                                @Html.Partial("~/Views/Maintenance/Lookup/KioskApprover/_KioskApproversSearch.cshtml", Model)
                             </div>
-                        }
-                    </div>
+                        </div>
+                    }
                 </div>
             </div>
         </div>

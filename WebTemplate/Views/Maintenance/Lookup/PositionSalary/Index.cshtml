@@ -1,50 +1,36 @@
 ﻿@model WebTemplate.Models.Maintenance.Lookup.PositionSalary.Index
 @{
-    var PageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("Maintenance/Lookup/PositionSalary");
-
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var PageAccess = credential.GetPage("Maintenance/Lookup/PositionSalary") ?? new DataAccessLayer.System.Page();
     ViewBag.title = PageAccess.PageName;
 }
 
 <div class="wrapper wrapper-content">
     <div class="page-heading">
         <div class="col-lg-8">
-            <h1>@Html.Raw(PageAccess.PageName ?? "&nbsp;")</h1>
-            <ol class="breadcrumb">
-                <li>
-                    <a href='@Url.Action("Index", "Home")'>Home</a>
-                </li>
-                <li>Maintenance</li>
-                <li>System</li>
-                <li class="active">
-                    <strong>@Html.Raw(PageAccess.PageName ?? "&nbsp;")</strong>
-                </li>
-            </ol>
+            @Html.Partial("~/Views/Shared/_Breadcrumbs.cshtml", PageAccess)
         </div>
         <div class="col-lg-4">
-            <div class="title-action">
-                @if (PageAccess.Insert)
-                {
-                    <a class="btn btn-primary compose-mail" href="#" id="btnadd" onclick="manage_item()">Add Position Salary</a>
-                }
-            </div>
+            @if (PageAccess.Insert)
+            {
+                <div class="title-action">
+                    <a class="btn btn-primary compose-mail" href="#" id="btnadd" onclick="manage_item()">Add @PageAccess.PageName</a>
+                </div>
+            }
         </div>
     </div>
-    <div class="" style="margin-top: 80px;">
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 animated fadeInDown">
-            <div class="file-manager">
-                <form id="form_search_params" class="m-t-md" enctype="multipart/form-data" style="margin: 0 -15px;">
-                    <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-3">
-                        <input type="text" id="txt_search" class="form-control" placeholder="Enter the @ViewBag.Page.PageName here..." value="@Html.ValueFor(m => m.Filter)" />
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 m-b-sm" style="padding: 0px; margin-top: 80px;">
+        <div class="tabs-container" style="">
+            <div class="tab-content" style="margin-top: 0px; max-height: unset; overflow-y: hidden; overflow-x: hidden; height: unset;">
+                @if (PageAccess.View)
+                {
+                    <div id="tab-2" class="tab-pane active" style="">
+                        <div id="" class="panel-body" style="padding: 10px !important; max-height: 100%; border: 1px solid #e5e6e7; overflow: hidden;">
+                            @Html.Partial("~/Views/Maintenance/Lookup/PositionSalary/_Search.cshtml")
+                        </div>
                     </div>
-                </form>
-
-                <div class="form-group" style="">
-                    <button type="button" id="btn_search" class="btn btn-primary font-bold" onclick="get_items()"><i class="fa fa-search"></i> Search</button>
-                </div>
+                }
             </div>
-            <form id="form_search" enctype="multipart/form-data" class="pull-left" style="width: 100%;">
-                @Html.Partial("~/Views/Maintenance/Lookup/PositionSalary/_Search.cshtml")
-            </form>
         </div>
     </div>
 </div>

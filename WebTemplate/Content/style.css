@@ -76,9 +76,11 @@
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   border-bottom: none;
+  display: flex;
 }
 .custom-modal .modal-center .modal-header .modal-title {
-  text-align: left;
+  text-align: center;
+  width: 100%;
   margin-left: 5px;
   font-weight: 500;
   margin-top: 0px;
@@ -90,11 +92,24 @@
   margin-right: 20px;
   margin-top: 2px;
 }
-.custom-modal .modal-center .modal-header .close {
-  margin-top: -33px;
-  margin-right: 3px;
+.custom-modal .modal-center .modal-header .close,
+.custom-modal .modal-center .modal-header .ok {
+  /*margin-top: -33px;
+                float: right;
+                margin-right: 3px;*/
   float: right;
-  font-size: 35px;
+  font-size: 25px;
+  font-weight: 700;
+  line-height: 1;
+  color: #000;
+  text-shadow: 0 1px 0 #fff;
+  filter: alpha(opacity=20);
+  opacity: 0.2;
+  -webkit-appearance: none;
+  padding: 0;
+  cursor: pointer;
+  background: 0 0;
+  border: 0;
 }
 .custom-modal .modal-center .modal-body {
   padding: 10px;
@@ -8672,6 +8687,10 @@ input.input-incomplete {
 .text-transform-none {
   text-transform: none !important;
 }
+.index-container tr:hover {
+  background-color: #ddd;
+  cursor: pointer;
+}
 #modal_management .modal-body .tabs-container .tab-content {
   width: 100%;
 }
@@ -9658,8 +9677,8 @@ table .Row-Display .clickable-text {
   width: 100%;
   text-align: left;
   float: left;
-  /*line-height: 2.4;*/
-  text-decoration: underline;
+  /*line-height: 3;
+            text-decoration: underline;*/
   white-space: unset !important;
 }
 table .Row-Display .clickable-text:hover {
@@ -9673,7 +9692,8 @@ table .Row-Display .clickable-text:hover {
   box-shadow: none;
 }
 #PersonnelProfile #form_personelprofile .modal-body .tab-content {
-  height: 750px;
+  min-height: 625px;
+  height: 625px;
   overflow-y: auto;
   overflow-x: hidden;
   margin-top: 0;
@@ -10368,6 +10388,19 @@ fieldset {
 }
 label.form-control {
   margin: 0;
+}
+form.form-group,
+fieldset.form-group,
+div.form-group {
+  margin-bottom: 0.5em;
+}
+form#form_search,
+fieldset#form_search,
+div#form_search {
+  overflow-x: auto;
+}
+table.table-striped thead tr th {
+  background-color: #f9f9f9 !important;
 }
 body > .sk-spinner {
   display: none;

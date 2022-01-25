@@ -2482,6 +2482,7 @@
     <Content Include="Views\HumanResource\Personnel\_PersonnelPolicyAndProcedure.cshtml" />
     <Content Include="Views\HumanResource\Personnel\_PersonnelPolicyAndProcedureContents.cshtml" />
     <Content Include="Views\MemoArchives\PolicyAndProcedure\_SearchVessel.cshtml" />
+    <Content Include="Views\Shared\_Breadcrumbs.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">

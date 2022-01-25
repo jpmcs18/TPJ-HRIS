@@ -2,214 +2,214 @@
 
 @{
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
-    var OtRequestPageAccess = credential.GetPage("RequestsApproval/OTRequests") ?? new DataAccessLayer.System.Page();
-    var OtRequestApprover = credential.GetPage("Approver Request Over Time") ?? new DataAccessLayer.System.Page();
+    var PageAccess = credential.GetPage("RequestsApproval/OTRequests") ?? new DataAccessLayer.System.Page();
+    var ApproverAccess = credential.GetPage("Approver Request Over Time") ?? new DataAccessLayer.System.Page();
     var ottypes = new Dictionary<int, string> { { 1, "After Office" }, { 2, "Early" }, { 3, "Whole Day" } };
 }
 
-<div class="main-container">
-    @if (OtRequestPageAccess.View)
-    {
-        <div class="container-header">
-            <div id="form_search_params" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
-                <input type="hidden" id="hid_search" name="@Html.NameFor(m => m.Filter)" value="@Html.ValueFor(m => m.Filter)" />
-                <input type="hidden" id="hid_page" name="@Html.NameFor(m => m.Page)" value="@Html.ValueFor(m => m.Page)" />
-                @Html.AntiForgeryToken()
-                @if (OtRequestApprover.Approve)
-                {
-                    <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-2">
-                        <label class="control-label">Personnel</label>
-                        <input type="text" id="txt_personnel" class="form-control" name="Personnel" placeholder="Personnel..." value="@Model.Personnel" />
-                    </div>
-                }
-
+@if (PageAccess.View)
+{
+    <form id="form_search_params" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
+        <fieldset>
+            <legend>Search</legend>
+            <input type="hidden" id="hid_search" name="@Html.NameFor(m => m.Filter)" value="@Html.ValueFor(m => m.Filter)" />
+            <input type="hidden" id="hid_page" name="@Html.NameFor(m => m.Page)" value="@Html.ValueFor(m => m.Page)" />
+            @Html.AntiForgeryToken()
+            @if (ApproverAccess.Approve)
+            {
                 <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-2">
-                    <label class="control-label">Start Date & Time</label>
-                    @Html.TextBox("StartDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.StartDateTime), new { @type = "datetime-local", @class = "form-control" })
+                    <label class="control-label">Personnel</label>
+                    <input type="text" id="txt_personnel" class="form-control" name="Personnel" placeholder="Personnel..." value="@Model.Personnel" />
                 </div>
+            }
 
-                <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-2">
-                    <label class="control-label">End Date & Time</label>
-                    @Html.TextBox("EndingDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.EndingDateTime), new { @type = "datetime-local", @class = "form-control" })
-                </div>
+            <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-2">
+                <label class="control-label">Start Date & Time</label>
+                @Html.TextBox("StartDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.StartDateTime), new { @type = "datetime-local", @class = "form-control" })
+            </div>
 
-                <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
-                    <label class="control-label">OT Type</label>
-                    <div>
-                        @Html.DropDownList("OtType", new SelectList(ottypes, "Key", "Value", Model.OtType ?? 0), "N/A", new { @class = "form-control" })
-                    </div>
-                </div>
+            <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-2">
+                <label class="control-label">End Date & Time</label>
+                @Html.TextBox("EndingDateTime", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.EndingDateTime), new { @type = "datetime-local", @class = "form-control" })
+            </div>
 
-                <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
-                    <label class="control-label" style="width: 100%; color: #fff;">Search</label>
-                    <button type="button" id="btn_search" class="btn btn-primary font-bold"><i class="fa fa-search"></i> Search</button>
+            <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                <label class="control-label">OT Type</label>
+                <div>
+                    @Html.DropDownList("OtType", new SelectList(ottypes, "Key", "Value", Model.OtType ?? 0), "N/A", new { @class = "form-control" })
                 </div>
             </div>
-            <div id="status_search_params" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
-                <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-2">
-                    <label class="control-label">
-                        @Html.CheckBoxFor(m => m.IsPending, new { @class = "i-checks status-checkbox" })
-                        Pending
-                    </label>s
-                </div>
 
-
-                <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-2">
-                    <label class="control-label">
-                        @Html.CheckBoxFor(m => m.IsCancelled, new { @class = "i-checks status-checkbox" })
-                        Cancelled
-                    </label>
-                </div>
-
-                <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-2">
-                    <label class="control-label">
-                        @Html.CheckBoxFor(m => m.IsApproved, new { @class = "i-checks status-checkbox" })
-                        Approved
-                    </label>
-                </div>
-
-                <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-2">
-                    <label class="control-label">
-                        @Html.CheckBoxFor(m => m.All, new { @class = "i-checks status-checkbox" })
-                        All
-                    </label>
-                </div>
+            <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                <label class="control-label" style="width: 100%; color: #fff;">Search</label>
+                <button type="button" id="btn_search" class="btn btn-primary font-bold"><i class="fa fa-search"></i> Search</button>
             </div>
-        </div>
-    }
+        </fieldset>
+    </form>
+    <form id="status_search_params" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
+        <fieldset>
+            <legend>Status</legend>
+            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-2">
+                <label class="control-label">
+                    @Html.CheckBoxFor(m => m.IsPending, new { @class = "i-checks status-checkbox" })
+                    Pending
+                </label>s
+            </div>
+
+
+            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-2">
+                <label class="control-label">
+                    @Html.CheckBoxFor(m => m.IsCancelled, new { @class = "i-checks status-checkbox" })
+                    Cancelled
+                </label>
+            </div>
+
+            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-2">
+                <label class="control-label">
+                    @Html.CheckBoxFor(m => m.IsApproved, new { @class = "i-checks status-checkbox" })
+                    Approved
+                </label>
+            </div>
+
+            <div class="form-group col-xs-12 col-sm-6 col-md-3 col-lg-2">
+                <label class="control-label">
+                    @Html.CheckBoxFor(m => m.All, new { @class = "i-checks status-checkbox" })
+                    All
+                </label>
+            </div>
+        </fieldset>
+    </form>
     <form id="form_search" class="pull-left" style="width: 100%;">
-        <div class="mail-box">
-            <table id="OTRequestsTable" class="table table-hover table-mail">
-                <thead>
-                    @if (Model.PageCount > 0)
+        <table id="OTRequestsTable" class="table table-hover table-striped">
+            <thead>
+                @if (Model.PageCount > 0)
+                {
+                    <tr>
+                        <td class="text-right" colspan="10" style="background-color: white;">
+                            <div class="btn-group pull-left">
+                                @if (Model.Page > 0)
+                                {
+                                    <button type="button" name="@Html.NameFor(m => m.Page)" value="1" class="btn btn-white @(Model.Page == 1 ? "active" : "pages")">1 @*<i class="fa fa-angle-double-left"></i>*@</button>
+                                }
+                                @if (Model.Page - 1 > 2)
+                                {
+                                    <button type="button" name="@Html.NameFor(m => m.Page)" value="@(Model.Page - 2)" class="btn btn-white pages">...@*<i class="fa fa-angle-left"></i>*@</button>
+                                }
+                                @for (int i = Model.Page - 1; i <= Model.Page + 1; i++)
+                                {
+                                    if (i > 1 && i < Model.PageCount)
+                                    {
+                                        <button type="button" name="@Html.NameFor(m => m.Page)" value="@(i)" class="btn btn-white @(i == Model.Page ? " active" : "pages")">@(i)</button>
+                                    }
+                                }
+                                @if (Model.Page + 1 < Model.PageCount - 1)
+                                {
+                                    <button type="button" name="@Html.NameFor(m => m.Page)" value="@(Model.Page + 2)" class="btn btn-white pages">...@*<i class="fa fa-angle-right"></i>*@</button>
+                                }
+                                @if (Model.Page <= Model.PageCount && Model.PageCount > 1)
+                                {
+                                    <button type="button" name="@Html.NameFor(m => m.Page)" value="@Model.PageCount" class="btn btn-white @(Model.Page == Model.PageCount ? "active" : "pages")">@Model.PageCount @*<i class="fa fa-angle-double-right"></i>*@</button>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+                <tr>
+                    <th style="text-align: left;">Personnel</th>
+                    <th style="text-align: left;">Request Date</th>
+                    <th style="text-align: left;">Reasons</th>
+                    <th style="text-align: left;">Is Office</th>
+                    <th style="text-align: left;">Status</th>
+                    <th style="text-align: left;">Last Modified</th>
+                    <th style="text-align: left;">Remarks</th>
+                    @if (PageAccess.Update || PageAccess.Delete)
                     {
-                        <tr>
-                            <td class="text-right" colspan="10" style="background-color: white;">
-                                <div class="btn-group pull-left">
-                                    @if (Model.Page > 0)
+                        <th style="text-align: center; min-width: 10%;" scope="col">Action</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                <tr id="Row-Loading-Display" class="hidden">
+                    <td style="text-align: center;" colspan="6">
+                        <i id="" class="fa fa-rotate-left rotate" style="padding: 8px; font-size: 20px; text-align: right;"></i>
+                    </td>
+                </tr>
+                @if (Model.OTRequests.Count() > 0)
+                {
+                    for (int i = 0; i < Model.OTRequests.Count(); i++)
+                    {
+                        var RowColorLabel = "";
+                        var LastStatus = Model.OTRequests[i].IsExpired == true ? "<span class='label label-warning'>Expired</span>" : (Model.OTRequests[i].Cancelled == true ? "<span class='label label-danger'>Cancelled</span>" : (Model.OTRequests[i].Approved == true ? "<span class='label label-primary'>Approved</span>" : "<span class='label label-info'>Pending</span>"));
+                        var LastUser = Model.OTRequests[i].Cancelled == true ? Model.OTRequests[i]._Cancel : (Model.OTRequests[i].Approved == true ? Model.OTRequests[i]._Approver : (Model.OTRequests[i].ModifiedBy != null ? Model.OTRequests[i]._Modifier : Model.OTRequests[i]._Creator));
+                        var LastDate = Model.OTRequests[i].Cancelled == true ? Model.OTRequests[i].CancelledOn : (Model.OTRequests[i].Approved == true ? Model.OTRequests[i].ApprovedOn : (Model.OTRequests[i].ModifiedBy != null ? Model.OTRequests[i].ModifiedOn : Model.OTRequests[i].CreatedOn));
+
+                        <tr id="Row-Display-OTRequests-@Model.OTRequests[i].ID" class="Row-Display Row-Display-OTRequest @RowColorLabel" style="">
+                            <td style="text-align: left;">
+                                <input hidden name="id" value="@Model.OTRequests[i].ID" />
+                                <input hidden name="personnelid" value="@Model.OTRequests[i].PersonnelID" />
+
+                                @Model.OTRequests[i]._Personnel.FullName
+                            </td>
+                            <td style="text-align: left;">
+                                @Html.Raw(String.Format("{0:MMM dd, yyyy}", Model.OTRequests[i].RequestDate))
+                            </td>
+                            <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
+                                <text class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@Model.OTRequests[i].Reasons">
+                                    @Model.OTRequests[i].Reasons
+                                </text>
+                            </td>
+                            <td class="text-left">
+                                @(Model.OTRequests[i].IsOffice ? "Yes" : "No")
+                                @if (!Model.OTRequests[i].IsOffice)
+                                {
+                                    if (Model.OTRequests[i].OTType == ProcessLayer.Helpers.Enumerable.OTType.Early || Model.OTRequests[i].OTType == ProcessLayer.Helpers.Enumerable.OTType.Whole)
                                     {
-                                        <button type="button" name="@Html.NameFor(m => m.Page)" value="1" class="btn btn-white @(Model.Page == 1 ? "active" : "pages")">1 @*<i class="fa fa-angle-double-left"></i>*@</button>
+                                        @Html.Raw(String.Format("<br/>Start: {0:HH':'mm tt}", Model.OTRequests[i].StartDateTime))
                                     }
-                                    @if (Model.Page - 1 > 2)
+                                    if (Model.OTRequests[i].OTType == ProcessLayer.Helpers.Enumerable.OTType.After || Model.OTRequests[i].OTType == ProcessLayer.Helpers.Enumerable.OTType.Whole)
                                     {
-                                        <button type="button" name="@Html.NameFor(m => m.Page)" value="@(Model.Page - 2)" class="btn btn-white pages">...@*<i class="fa fa-angle-left"></i>*@</button>
+                                        @Html.Raw(String.Format("<br/>End: {0:HH':'mm tt}", Model.OTRequests[i].EndDateTime))
                                     }
-                                    @for (int i = Model.Page - 1; i <= Model.Page + 1; i++)
+                                }
+                            </td>
+                            <td class="text-left">
+                                @Html.Raw(LastStatus)
+                            </td>
+                            <td class="text-left">
+                                @Html.Raw(String.Format("{0}<br/>{1:MM/dd/yyyy hh:mm tt}", LastUser ?? "", LastDate))
+                            </td>
+                            <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
+                                <text class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@Model.OTRequests[i].CancellationRemarks">
+                                    @Model.OTRequests[i].Remarks
+                                </text>
+                            </td>
+                            <td style="width: 160px;" align="center" s class="row-actions">
+                                <div class="btn-group">
+                                    @if (Model.OTRequests[i].IsExpired == false)
                                     {
-                                        if (i > 1 && i < Model.PageCount)
+                                        if ((Model.OTRequests[i].Approved == null && Model.OTRequests[i].Cancelled == null) || (Model.OTRequests[i].Approved == false && Model.OTRequests[i].Cancelled == false))
                                         {
-                                            <button type="button" name="@Html.NameFor(m => m.Page)" value="@(i)" class="btn btn-white @(i == Model.Page ? " active" : "pages")">@(i)</button>
+                                            <button type="button" name="id" class="btn btn-danger btn-sm btn-rounded CancelOTRequest" value="@Model.OTRequests[i].ID" title="Cancel"><i class="fa fa-ban"></i></button>
+                                            <button type="button" name="id" class="btn btn-primary btn-sm btn-rounded ApproveOTRequest" value="@Model.OTRequests[i].ID" title="View"><i class="fa fa-check"></i></button>
                                         }
-                                    }
-                                    @if (Model.Page + 1 < Model.PageCount - 1)
-                                    {
-                                        <button type="button" name="@Html.NameFor(m => m.Page)" value="@(Model.Page + 2)" class="btn btn-white pages">...@*<i class="fa fa-angle-right"></i>*@</button>
-                                    }
-                                    @if (Model.Page <= Model.PageCount && Model.PageCount > 1)
-                                    {
-                                        <button type="button" name="@Html.NameFor(m => m.Page)" value="@Model.PageCount" class="btn btn-white @(Model.Page == Model.PageCount ? "active" : "pages")">@Model.PageCount @*<i class="fa fa-angle-double-right"></i>*@</button>
+                                        else
+                                        {
+                                            <button type="button" name="id" tpj-show-tab="#tab-3" class="btn btn-info btn-sm btn-rounded ViewOTRequest" value="@Model.OTRequests[i].ID" title="View"><i class="fa fa-eye"></i></button>
+                                        }
                                     }
                                 </div>
                             </td>
                         </tr>
                     }
-                    <tr>
-                        <th style="text-align: left;">Personnel</th>
-                        <th style="text-align: left;">Request Date</th>
-                        <th style="text-align: left;">Reasons</th>
-                        <th style="text-align: left;">Is Office</th>
-                        <th style="text-align: left;">Status</th>
-                        <th style="text-align: left;">Last Modified</th>
-                        <th style="text-align: left;">Remarks</th>
-                        @if (OtRequestPageAccess.Update || OtRequestPageAccess.Delete)
-                        {
-                            <th style="text-align: center; min-width: 10%;" scope="col">Action</th>
-                        }
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr id="Row-Loading-Display" class="hidden">
-                        <td style="text-align: center;" colspan="6">
-                            <i id="" class="fa fa-rotate-left rotate" style="padding: 8px; font-size: 20px; text-align: right;"></i>
-                        </td>
-                    </tr>
-                    @if (Model.OTRequests.Count() > 0)
-                    {
-                        for (int i = 0; i < Model.OTRequests.Count(); i++)
-                        {
-                            var RowColorLabel = "";
-                            var LastStatus = Model.OTRequests[i].IsExpired == true ? "<span class='label label-warning'>Expired</span>" : (Model.OTRequests[i].Cancelled == true ? "<span class='label label-danger'>Cancelled</span>" : (Model.OTRequests[i].Approved == true ? "<span class='label label-primary'>Approved</span>" : "<span class='label label-info'>Pending</span>"));
-                            var LastUser = Model.OTRequests[i].Cancelled == true ? Model.OTRequests[i]._Cancel : (Model.OTRequests[i].Approved == true ? Model.OTRequests[i]._Approver : (Model.OTRequests[i].ModifiedBy != null ? Model.OTRequests[i]._Modifier : Model.OTRequests[i]._Creator));
-                            var LastDate = Model.OTRequests[i].Cancelled == true ? Model.OTRequests[i].CancelledOn : (Model.OTRequests[i].Approved == true ? Model.OTRequests[i].ApprovedOn : (Model.OTRequests[i].ModifiedBy != null ? Model.OTRequests[i].ModifiedOn : Model.OTRequests[i].CreatedOn));
-
-                            <tr id="Row-Display-OTRequests-@Model.OTRequests[i].ID" class="Row-Display Row-Display-OTRequest @RowColorLabel" style="">
-                                <td style="text-align: left;">
-                                    <input hidden name="id" value="@Model.OTRequests[i].ID" />
-                                    <input hidden name="personnelid" value="@Model.OTRequests[i].PersonnelID" />
-
-                                    @Model.OTRequests[i]._Personnel.FullName
-                                </td>
-                                <td style="text-align: left;">
-                                    @Html.Raw(String.Format("{0:MMM dd, yyyy}", Model.OTRequests[i].RequestDate))
-                                </td>
-                                <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
-                                    <text class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@Model.OTRequests[i].Reasons">
-                                        @Model.OTRequests[i].Reasons
-                                    </text>
-                                </td>
-                                <td class="text-left">
-                                    @(Model.OTRequests[i].IsOffice ? "Yes" : "No")
-                                    @if (!Model.OTRequests[i].IsOffice)
-                                    {
-                                        if (Model.OTRequests[i].OTType == ProcessLayer.Helpers.Enumerable.OTType.Early || Model.OTRequests[i].OTType == ProcessLayer.Helpers.Enumerable.OTType.Whole)
-                                        {
-                                            @Html.Raw(String.Format("<br/>Start: {0:HH':'mm tt}", Model.OTRequests[i].StartDateTime))
-                                        }
-                                        if (Model.OTRequests[i].OTType == ProcessLayer.Helpers.Enumerable.OTType.After || Model.OTRequests[i].OTType == ProcessLayer.Helpers.Enumerable.OTType.Whole)
-                                        {
-                                            @Html.Raw(String.Format("<br/>End: {0:HH':'mm tt}", Model.OTRequests[i].EndDateTime))
-                                        }
-                                    }
-                                </td>
-                                <td class="text-left">
-                                    @Html.Raw(LastStatus)
-                                </td>
-                                <td class="text-left">
-                                    @Html.Raw(String.Format("{0}<br/>{1:MM/dd/yyyy hh:mm tt}", LastUser ?? "", LastDate))
-                                </td>
-                                <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
-                                    <text class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@Model.OTRequests[i].CancellationRemarks">
-                                        @Model.OTRequests[i].Remarks
-                                    </text>
-                                </td>
-                                <td style="width: 160px;" align="center" s class="row-actions">
-                                    <div class="btn-group">
-                                        @if (Model.OTRequests[i].IsExpired == false)
-                                        {
-                                            if ((Model.OTRequests[i].Approved == null && Model.OTRequests[i].Cancelled == null) || (Model.OTRequests[i].Approved == false && Model.OTRequests[i].Cancelled == false))
-                                            {
-                                                <button type="button" name="id" class="btn btn-danger btn-sm btn-rounded CancelOTRequest" value="@Model.OTRequests[i].ID" title="Cancel"><i class="fa fa-ban"></i></button>
-                                                <button type="button" name="id" class="btn btn-primary btn-sm btn-rounded ApproveOTRequest" value="@Model.OTRequests[i].ID" title="View"><i class="fa fa-check"></i></button>
-                                            }
-                                            else
-                                            {
-                                                <button type="button" name="id" tpj-show-tab="#tab-3" class="btn btn-info btn-sm btn-rounded ViewOTRequest" value="@Model.OTRequests[i].ID" title="View"><i class="fa fa-eye"></i></button>
-                                            }
-                                        }
-                                    </div>
-                                </td>
-                            </tr>
-                        }
-                    }
-                    else
-                    {
-                        <tr id="No-Row-Display"><td style="text-align: center;" colspan="10">No @OtRequestPageAccess.PageName found...</td></tr>
-                    }
-                </tbody>
-            </table>
-        </div>
+                }
+                else
+                {
+                    <tr id="No-Row-Display"><td style="text-align: center;" colspan="10">No @PageAccess.PageName found...</td></tr>
+                }
+            </tbody>
+        </table>
     </form>
-</div>
+}
 
 @section scripts {
     <script type="text/javascript">
