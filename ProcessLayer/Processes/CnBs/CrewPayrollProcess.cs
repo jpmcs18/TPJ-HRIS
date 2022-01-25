@@ -147,7 +147,6 @@ namespace ProcessLayer.Processes.CnB
                 }
             }
         }
-
         public List<CrewVessel> GetCrewVessel(DBTools db, long payperiodId, bool isVesselOnly = false)
         {
             using (var ds = db.ExecuteReader("cnb.GetCrewVessel", new Dictionary<string, object> { { "@PayPeriodID", payperiodId } }))

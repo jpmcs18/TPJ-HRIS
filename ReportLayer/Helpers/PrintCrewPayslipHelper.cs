@@ -14,7 +14,6 @@ namespace ReportLayer.Helpers
             TINNoCell = Get(nameof(TINNoCell)).ToString();
             HDMFNoCell = Get(nameof(HDMFNoCell)).ToString();
             SSSNoCell = Get(nameof(SSSNoCell)).ToString();
-            EmployeeNumberCell = Get(nameof(EmployeeNumberCell)).ToString();
             BasicStartRow = Get(nameof(BasicStartRow)).ToInt();
             BasicMaxRow = Get(nameof(BasicMaxRow)).ToInt();
             PayrollPeriodColumn = Get(nameof(PayrollPeriodColumn)).ToInt();
@@ -46,7 +45,6 @@ namespace ReportLayer.Helpers
 
         public string SignatoryCell { get; set; }
         public string EmployeeNameCell { get; set; }
-        public string EmployeeNumberCell { get; set; }
         public string TINNoCell { get; set; }
         public string HDMFNoCell { get; set; }
         public string SSSNoCell { get; set; }

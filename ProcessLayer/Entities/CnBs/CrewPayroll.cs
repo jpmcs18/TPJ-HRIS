@@ -20,6 +20,7 @@ namespace ProcessLayer.Entities.CnB
         public Vessel Vessel { get; set; }
         public bool Modified { get; set; } = false;
 
+
         public Personnel Personnel { get; set; }
         public string FullName { get { return Personnel?.LastName + ", " + Personnel?.FirstName; } }
 

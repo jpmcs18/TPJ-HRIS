@@ -41,7 +41,6 @@ namespace ReportLayer.Reports
                 totalOTPay += payroll.CrewPayrollDetails.Where(x => x.IsHoliday).Sum(x => x.DailyRate * CrewPayrollParameters.Instance.CrewHolidayRate);
 
             WriteToCell(PrintCrewPayslipHelper.Instance.EmployeeNameCell, payroll.Personnel.FullName);
-            WriteToCell(PrintCrewPayslipHelper.Instance.EmployeeNumberCell, payroll.Personnel.EmployeeNo);
             WriteToCell(PrintCrewPayslipHelper.Instance.TINNoCell, "TIN: " + payroll.Personnel.TIN);
             WriteToCell(PrintCrewPayslipHelper.Instance.HDMFNoCell, "HDMF No: " + payroll.Personnel.PAGIBIG);
             WriteToCell(PrintCrewPayslipHelper.Instance.SSSNoCell, "SSS No: " + payroll.Personnel.SSS);

@@ -10,18 +10,15 @@ using System.Linq;
 
 namespace ReportLayer.Reports
 {
-    public class CrewPrintPayrollSheetB : SpreadSheetReportBase
+    public class PrintCrewPayrollSheetB : SpreadSheetReportBase
     {
-        public CrewPrintPayrollSheetB(string template) : base(template)
+        public PrintCrewPayrollSheetB(string template) : base(template)
         {
         }
 
         public CrewPayrollPeriod PayrollPeriod { get; set; }
         private int Row = 1;
         private decimal TotalBasicPay = 0;
-        private decimal TotalAllowance = 0;
-        private decimal TotalOT = 0;
-        private decimal TotalAdditionalPay = 0;
         private decimal TotalPagibigFund = 0;
         private decimal TotalPagibigLoan = 0;
         private decimal TotalSSS = 0;
@@ -30,13 +27,9 @@ namespace ReportLayer.Reports
         private decimal TotalTax = 0;
         private decimal TotalPhilHealth = 0;
         private decimal TotalVale = 0;
-        private decimal TotalOutStandingVale = 0;
         private decimal TotalNetpay = 0;
 
         private decimal GrandTotalBasicPay = 0;
-        private decimal GrandTotalAllowance = 0;
-        private decimal GrandTotalOT = 0;
-        private decimal GrandTotalAdditionalPay = 0;
         private decimal GrandTotalPagibigFund = 0;
         private decimal GrandTotalPagibigLoan = 0;
         private decimal GrandTotalSSS = 0;
@@ -45,7 +38,6 @@ namespace ReportLayer.Reports
         private decimal GrandTotalTax = 0;
         private decimal GrandTotalPhilHealth = 0;
         private decimal GrandTotalVale = 0;
-        private decimal GrandTotalOutStandingVale = 0;
         private decimal GrandTotalNetpay = 0;
         private int Cnt = 0;
         public override void GenerateReport()
