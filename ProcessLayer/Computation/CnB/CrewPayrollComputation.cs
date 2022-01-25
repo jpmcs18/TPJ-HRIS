@@ -48,20 +48,21 @@ namespace ProcessLayer.Computation.CnB
                     {
                         CrewPayroll crewPayroll = new CrewPayroll
                         {
-                            PersonnelID = crews[i].ID,
-                            Personnel = crews[i],
-                            VesselID = payrollPeriod.CrewVessel[i].Vessel.ID,
-                            Vessel = payrollPeriod.CrewVessel[i].Vessel
+                            PersonnelID = crews[j].ID,
+                            Personnel = crews[j],
+                            VesselID = Vessel[i].ID,
+                            Vessel = Vessel[i]
                         };
-                        List<CrewMovement> crewMovememnts = VesselMovementProcess.GetCrewList(Vessel[i].ID, crews[i].ID, payrollPeriod.StartDate, payrollPeriod.EndDate);
+                        List<CrewMovement> crewMovememnts = VesselMovementProcess.GetCrewList(Vessel[i].ID, crews[j].ID, payrollPeriod.StartDate, payrollPeriod.EndDate);
                         Compute(crewPayroll, crewMovememnts, payrollPeriod.Type, payrollPeriod.StartDate, payrollPeriod.EndDate, payrollPeriod.AdjustedStartDate, payrollPeriod.AdjustedEndDate);
 
-                        payrollPeriod.CrewVessel[i].CrewPayrolls.Add(crewPayroll);
+                        crewVessel.CrewPayrolls.Add(crewPayroll);
                     }
                     payrollPeriod.CrewVessel.Add(crewVessel);
                 }
             }
-
+            if (payrollPeriod.CrewVessel?.Any() ?? false)
+                throw new Exception("No Data Found");
             return payrollPeriod;
         }
         public CrewPayroll Recompute(CrewPayroll payroll, CrewPayrollPeriod payrollPeriod)
@@ -82,18 +83,18 @@ namespace ProcessLayer.Computation.CnB
             {
                 for (int i = 0; i < previousAdjustedPayroll.Count; i++)
                 {
-                    var cm = previousAdjustedCrewMovement.Where(x => x.OnboardDate?.Date <= previousAdjustedPayroll[i].LoggedDate && (x.OffboardDate ?? DateTime.Now).Date >= previousAdjustedPayroll[i].LoggedDate).OrderByDescending(x => x.OnboardDate).FirstOrDefault();
+                    var cm = previousAdjustedCrewMovement?.Where(x => x.OnboardDate?.Date <= previousAdjustedPayroll[i].LoggedDate && (x.OffboardDate ?? DateTime.Now).Date >= previousAdjustedPayroll[i].LoggedDate).OrderByDescending(x => x.OnboardDate).FirstOrDefault();
                     if ((cm?.PersonnelID ?? 0) == 0) continue;
                     var dailyrate = cm.DailyRate ?? cm.SNDailyRate ?? 0;
                     if (dailyrate == previousAdjustedPayroll[i].DailyRate) continue;
 
-                    var holiday = NonWorkingDays.Where(x => ((x.Yearly ?? false) && x.Day?.Month == previousAdjustedPayroll[i].LoggedDate.Month && x.Day?.Day == previousAdjustedPayroll[i].LoggedDate.Day) || x.Day == previousAdjustedPayroll[i].LoggedDate).FirstOrDefault();
+                    var holiday = NonWorkingDays?.Where(x => ((x.Yearly ?? false) && x.Day?.Month == previousAdjustedPayroll[i].LoggedDate.Month && x.Day?.Day == previousAdjustedPayroll[i].LoggedDate.Day) || x.Day == previousAdjustedPayroll[i].LoggedDate).FirstOrDefault();
 
                     CrewPayrollDetails details = new CrewPayrollDetails();
 
                     if (payroll.CrewPayrollDetails?.Where(x => x.LoggedDate == previousAdjustedPayroll[i].LoggedDate)?.Any() ?? false)
                     {
-                        details = payroll.CrewPayrollDetails.Where(x => x.LoggedDate == previousAdjustedPayroll[i].LoggedDate).First();
+                        details = payroll.CrewPayrollDetails?.Where(x => x.LoggedDate == previousAdjustedPayroll[i].LoggedDate).First();
                         details.IsHoliday = default;
                     }
                     details.Position = cm.PositionID != null ? cm._Position : cm._SNPosition;
@@ -149,11 +150,19 @@ namespace ProcessLayer.Computation.CnB
         {
             while (startDate <= endDate)
             {
-                var cm = actualMovement.Where(x => x.OnboardDate?.Date <= startDate.Date && (x.OffboardDate ?? DateTime.Now).Date >= startDate.Date).OrderByDescending(x => x.OnboardDate).FirstOrDefault();
-                if ((cm?.PersonnelID ?? 0) == 0) continue;
+                var cm = actualMovement?.Where(x => x.OnboardDate?.Date <= startDate.Date && (x.OffboardDate ?? DateTime.Now).Date >= startDate.Date).OrderByDescending(x => x.OnboardDate).FirstOrDefault();
+                if ((cm?.PersonnelID ?? 0) == 0)
+                {
+                    startDate = startDate.AddDays(1); 
+                    continue; 
+                }
 
-                var holiday = NonWorkingDays.Where(x => ((x.Yearly ?? false) && x.Day?.Month == startDate.Month && x.Day?.Day == startDate.Day) || x.Day == startDate).FirstOrDefault();
-                if ((holiday?.ID ?? 0) == 0 && startDate.DayOfWeek != DayOfWeek.Sunday) continue;
+                var holiday = NonWorkingDays?.Where(x => ((x.Yearly ?? false) && x.Day?.Month == startDate.Month && x.Day?.Day == startDate.Day) || x.Day == startDate).FirstOrDefault();
+                if ((holiday?.ID ?? 0) == 0 && startDate.DayOfWeek != DayOfWeek.Sunday)
+                {
+                    startDate = startDate.AddDays(1); 
+                    continue; 
+                }
 
 
                 CrewPayrollDetails details = new CrewPayrollDetails();

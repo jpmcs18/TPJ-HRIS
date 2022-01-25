@@ -147,7 +147,6 @@ namespace ProcessLayer.Processes.CnB
                 }
             }
         }
-
         public List<CrewVessel> GetCrewVessel(DBTools db, long payperiodId, bool isVesselOnly = false)
         {
             using (var ds = db.ExecuteReader("cnb.GetCrewVessel", new Dictionary<string, object> { { "@PayPeriodID", payperiodId } }))
@@ -509,7 +508,7 @@ namespace ProcessLayer.Processes.CnB
             {
                 { "@ID", SqlDbType.BigInt, details.ID }
             };
-            db.ExecuteNonQuery("cnb.CreateOrUpdatePayrollDetails", ref outparameters, parameters);
+            db.ExecuteNonQuery("cnb.CreateOrUpdateCrewPayrollDetails", ref outparameters, parameters);
             details.ID = outparameters.Get("@ID").ToLong();
         }
         public CrewPayrollPeriod GetCrewVesselPayroll(long payPeriodId)
@@ -583,7 +582,7 @@ namespace ProcessLayer.Processes.CnB
                         start = 16;
                         end = CrewPayrollParameters.Instance.CrewCutOff2;
                         assumeStart = CrewPayrollParameters.Instance.CrewCutOff2 + 1;
-                        assumeEnd = new DateTime(month, year, 1).AddMonths(1).AddDays(-1).Day;
+                        assumeEnd = new DateTime(year, month, 1).AddMonths(1).AddDays(-1).Day;
                         break;
                 }
             }
