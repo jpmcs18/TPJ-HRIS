@@ -1,0 +1,156 @@
+﻿@model WebTemplate.Models.CrewPayroll.Index
+
+@{
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var PageAccess = credential.GetPage("CnB/CrewPayrollSheetB") ?? new DataAccessLayer.System.Page();
+
+    var monno = DateTime.Now.Month;
+    var months = new List<string> { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
+}
+
+<div class="wrapper wrapper-content">
+    <div class="page-heading">
+        <div class="col-lg-8">
+            @Html.Partial("~/Views/Shared/_Breadcrumbs.cshtml", PageAccess)
+        </div>
+        <div class="col-lg-4">
+            <div class="title-action">
+
+            </div>
+        </div>
+    </div>
+    <div id="PayrollsForm" class="panel-body" style="margin-top: 80px;">
+        @Html.Partial("~/Views/CnB/CrewPayrollSheetB/_Search.cshtml")
+    </div>
+</div>
+
+<div class="modal inmodal custom-modal fade" id="GeneratePayroll" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-center" style="margin: 0;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Generate Payroll</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="form-group col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                            <label class="control-label">Year</label>
+                            <input type="text" id="txt_year" name="year" class="form-control tpj-year" placeholder="Year" value="@($"{DateTime.Now:yyyy}" )" />
+                        </div>
+                        <div class="form-group col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                            <label class="control-label">Month</label>
+                            <select id="select-month" class="form-control" name="month">
+                                @for (int i = 0; i < months.Count; i++)
+                                {
+                                    <option value="@(i+1)" @(i + 1 == monno ? "selected" : "")>@months[i]</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                            <label class="control-label">Cut Off</label>
+                            <select id="select-cutoff" name="cutoff" class="form-control">
+                                <option value="1">1st</option>
+                                <option value="2">2nd</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary pull-right" onclick="GeneratePayroll();" title="Generate Payroll">Generate</button>
+                    <button type="button" class="btn btn-white pull-right m-r-sm" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        Events();
+    });
+
+    function Events() {
+        $('.title-action').html('<button class="btn btn-primary compose-mail" id="btngenerate" onclick="OpenModal();">Generate Payroll</button>');
+        SearchTabEvents();
+    }
+
+    function SearchTabEvents() {
+
+    }
+
+    function SearchPayrolls() {
+        $('#form_search_params input[name="Page"]').val(1);
+        var params = $('#form_search_params *').serialize();
+
+        $.ajax({
+            url: '@Url.Action("Index", "CrewPayrollSheetB")',
+            data: params,
+            type: "GET",
+            cache: false,
+            beforeSend: function () {
+                ShowLoadingScreen();
+                //ShowHideRowLoadingDisplay('CrewPayrollBaseTable', true);
+            },
+            complete: function () {
+                RemoveLoadingScreen();
+            },
+            success: function (response) {
+                if (response.msg == null) {
+                    $('#PayrollsForm').html(response);
+                    Events();
+                } else {
+                    toastr.error(response.res);
+                }
+            },
+            error: function (response) {
+                toastr.error(response.res);
+            }
+        });
+    }
+
+    function OpenModal() {
+        $("#GeneratePayroll").appendTo('body').modal('show');
+        $('#select-month').select2();
+    }
+
+    function GeneratePayroll() {
+        var params = $('#GeneratePayroll *').serialize() +
+            '&__RequestVerificationToken=' +
+            $('@Html.AntiForgeryToken()').val();
+
+        $.ajax({
+            url: '@Url.Action("GeneratePayroll", "CrewPayrollSheetB")',
+            data: params,
+            type: "POST",
+            cache: false,
+            beforeSend: function () {
+                ShowLoadingScreen();
+            },
+            complete: function () {
+                RemoveLoadingScreen();
+            },
+            success: function (response) {
+                if (response.msg == null) {
+                    $('#PayrollBaseTable tbody').prepend(response);
+                    $('#GeneratePayroll').modal('hide');
+                    toastr.success('Payroll Base generated!');
+                    $('.txt_search').focus();
+                    CountRowDisplay();
+                    Events();
+                } else {
+                    toastr.error(response.res);
+                }
+            },
+            error: function (response) {
+                toastr.error(response.res);
+            }
+        });
+    }
+
+    function CountRowDisplay() {
+        if ($('#PayrollBaseTable tr.Row-Display').length > 0)
+            $('#PayrollBaseTable #No-Row-Display').addClass('hidden');
+        else
+            $('#PayrollBaseTable #No-Row-Display').removeClass('hidden')
+    }
+</script>

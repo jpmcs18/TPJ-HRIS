@@ -25,11 +25,11 @@ namespace WebTemplate.Controllers.CnB
             if (Request.IsAjaxRequest())
             {
                 ModelState.Clear();
-                return PartialViewCustom("_CrewPayrollSheetBSearch", model);
+                return PartialViewCustom("_Search", model);
             }
             else
             {
-                return ViewCustom("_CrewPayrollSheetBIndex", model);
+                return ViewCustom("Index", model);
             }
         }
 
@@ -44,7 +44,7 @@ namespace WebTemplate.Controllers.CnB
                 ModelState.Clear();
 
                 if (model.CrewVessel.Count() > 0)
-                    return PartialViewCustom("_CrewPayrollSheetB", model);
+                    return PartialViewCustom("_Payroll", model);
                 else
                     return Json(new { msg = false, res = "No payrolls generated!" });
             }
