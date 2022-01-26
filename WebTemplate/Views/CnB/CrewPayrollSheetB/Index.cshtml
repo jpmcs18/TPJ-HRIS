@@ -19,8 +19,13 @@
             </div>
         </div>
     </div>
-    <div id="PayrollsForm" class="panel-body" style="margin-top: 80px;">
-        @Html.Partial("~/Views/CnB/CrewPayrollSheetB/_Search.cshtml")
+    <div id="CrewPayrollSheet" class="panel-body" style="margin-top: 80px;">
+        <div id="Search" class="crewPayrollSheet">
+            @Html.Partial("~/Views/CnB/CrewPayrollSheetB/_Search.cshtml")
+        </div>
+        <div id="Vessels" class="crewPayrollSheet"></div>
+        <div id="Payrolls" class="crewPayrollSheet"></div>
+        <div id="PayrollDetails" class="crewPayrollSheet"></div>
     </div>
 </div>
 
@@ -78,6 +83,18 @@
 
     }
 
+    function OpenModal() {
+        $("#GeneratePayroll").appendTo('body').modal('show');
+        $('#select-month').select2();
+    }
+
+    function CountRowDisplay() {
+        if ($('#PayrollBaseTable tr.Row-Display').length > 0)
+            $('#PayrollBaseTable #No-Row-Display').addClass('hidden');
+        else
+            $('#PayrollBaseTable #No-Row-Display').removeClass('hidden')
+    }
+
     function SearchPayrolls() {
         $('#form_search_params input[name="Page"]').val(1);
         var params = $('#form_search_params *').serialize();
@@ -85,7 +102,7 @@
         $.ajax({
             url: '@Url.Action("Index", "CrewPayrollSheetB")',
             data: params,
-            type: "GET",
+            type: "POST",
             cache: false,
             beforeSend: function () {
                 ShowLoadingScreen();
@@ -96,7 +113,7 @@
             },
             success: function (response) {
                 if (response.msg == null) {
-                    $('#PayrollsForm').html(response);
+                    $('#CrewPayrollSheet #Search').html(response);
                     Events();
                 } else {
                     toastr.error(response.res);
@@ -106,11 +123,6 @@
                 toastr.error(response.res);
             }
         });
-    }
-
-    function OpenModal() {
-        $("#GeneratePayroll").appendTo('body').modal('show');
-        $('#select-month').select2();
     }
 
     function GeneratePayroll() {
@@ -147,10 +159,96 @@
         });
     }
 
-    function CountRowDisplay() {
-        if ($('#PayrollBaseTable tr.Row-Display').length > 0)
-            $('#PayrollBaseTable #No-Row-Display').addClass('hidden');
-        else
-            $('#PayrollBaseTable #No-Row-Display').removeClass('hidden')
+    function GetVessels(pid) {
+        var params = "payrollPeriodID=" + pid +
+                '&__RequestVerificationToken=' +
+                $('@Html.AntiForgeryToken()').val();
+
+        $.ajax({
+            url: '@Url.Action("GetVessels", "CrewPayrollSheetB")',
+            data: params,
+            type: "POST",
+            cache: false,
+            beforeSend: function () {
+                ShowLoadingScreen();
+            },
+            complete: function () {
+                RemoveLoadingScreen();
+            },
+            success: function (response) {
+                if (response.msg == null) {
+                    $(".crewPayrollSheet").hide();
+                    $('#CrewPayrollSheet #Vessels').html(response).show();
+                    Events();
+                } else {
+                    toastr.error(response.res);
+                }
+            },
+            error: function (response) {
+                toastr.error(response.res);
+            }
+        });
+    }
+
+    function GetPayrolls(pid, vid) {
+        var params = "payrollPeriodID=" + pid +
+            'vesselID' + vid + '&__RequestVerificationToken=' +
+            $('@Html.AntiForgeryToken()').val();
+
+        $.ajax({
+            url: '@Url.Action("GetPayrolls", "CrewPayrollSheetB")',
+            data: params,
+            type: "GET",
+            cache: false,
+            beforeSend: function () {
+                ShowLoadingScreen();
+            },
+            complete: function () {
+                RemoveLoadingScreen();
+            },
+            success: function (response) {
+                if (response.msg == null) {
+                    $(".crewPayrollSheet").hide();
+                    $('#CrewPayrollSheet #Payrolls').html(response).show();
+                    Events();
+                } else {
+                    toastr.error(response.res);
+                }
+            },
+            error: function (response) {
+                toastr.error(response.res);
+            }
+        });
+    }
+
+    function GetPayrollDetails(pid, vid) {
+        var params = "payrollPeriodID=" + pid +
+            'vesselID' + vid + '&__RequestVerificationToken=' +
+            $('@Html.AntiForgeryToken()').val();
+
+        $.ajax({
+            url: '@Url.Action("GetPayrollDetails", "CrewPayrollSheetB")',
+            data: params,
+            type: "GET",
+            cache: false,
+            beforeSend: function () {
+                ShowLoadingScreen();
+            },
+            complete: function () {
+                RemoveLoadingScreen();
+            },
+            success: function (response) {
+                if (response.msg == null) {
+                    $(".crewPayrollSheet").hide();
+                    $('#CrewPayrollSheet #PayrollDetails').html(response).show();
+                    Events();
+                } else {
+                    toastr.error(response.res);
+                }
+            },
+            error: function (response) {
+                toastr.error(response.res);
+            }
+        });
     }
 </script>

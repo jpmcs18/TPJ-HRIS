@@ -30,7 +30,7 @@ namespace WebTemplate
 
                 if (ctx.Session["Credentials"] is Credentials credentials)
                 {
-                    CustomPrincipal user = new CustomPrincipal(string.Format("{0}, {1} {2}", credentials.LastName, credentials.FirstName, credentials.MiddleName))
+                    CustomPrincipal user = new(string.Format("{0}, {1} {2}", credentials.LastName, credentials.FirstName, credentials.MiddleName))
                     {
                         UserID = credentials.UserID,
                         FirstName = credentials.FirstName,
@@ -95,8 +95,10 @@ namespace WebTemplate
                     Response.Redirect(String.Format("~/Security/Error?rid={0}", err_id));
 
             }
-            #pragma warning disable CS0168
+#pragma warning disable CS0168
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
             catch (Exception ex)
+#pragma warning restore IDE0059 // Unnecessary assignment of a value
             {
             #pragma warning restore CS0168 
             }

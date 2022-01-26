@@ -91,8 +91,8 @@ new AjaxOptions { HttpMethod = "POST", OnBegin = "ShowLoadingScreen()", OnComple
                             <td class="text-center text-uppercase autonumeric">@Model.ItemList[i].Salary</td>
                             <td style="" class="row-actions">
                                 <div class="btn-group">
-                                    <button type="button" class="btn btn-primary btn-sm btn-rounded btn-outline" title="Edit" onclick="manage_item(@Model.ItemList[i].ID)"><i class="fa fa-pencil"></i></button>
-                                    <button type="button" class="btn btn-danger btn-sm btn-rounded btn-outline" title="Delete" onclick="delete_item(@Model.ItemList[i].ID)"><i class="fa fa-trash"></i></button>
+                                    <button type="button" class="btn btn-primary btn-sm btn-rounded btn-outline" title="Edit" onclick="manage_item('@Model.ItemList[i].ID')"><i class="fa fa-pencil"></i></button>
+                                    <button type="button" class="btn btn-danger btn-sm btn-rounded btn-outline" title="Delete" onclick="delete_item('@Model.ItemList[i].ID')"><i class="fa fa-trash"></i></button>
                                 </div>
                             </td>
                         </tr>

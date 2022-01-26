@@ -1,0 +1,98 @@
+﻿@model WebTemplate.Models.CrewPayroll.CrewVesselList
+
+@{
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var PageAccess = credential.GetPage("CnB/CrewPayrollSheetB") ?? new DataAccessLayer.System.Page();
+}
+
+@if (!PageAccess.View)
+{
+    <style>
+    </style>
+    ViewBag.Message = "You do not have access to view this page.";
+    @Html.Partial("~/Views/Security/Unauthorized.cshtml")
+}
+else
+{
+    <div class="container-header">
+        <h1>
+            <text id="BackToPayrollBaseDiv">
+                <i id="BackToPayrollBase" class="fa fa-arrow-left m-r-sm" style="cursor: pointer" onclick="" title="Back"></i>
+            </text>
+            Payroll for <b>@Model.PayrollBase.StartDate.ToString("MMM dd, yyyy")</b> - <b>@Model.PayrollBase.EndDate.ToString("MMM dd, yyyy")</b>
+            @if (PageAccess.Approve == true && Model.Vessels.Count() > 0)
+            {
+                using (Html.BeginForm("PrintPayroll", "CrewPayrollSheetB", FormMethod.Post, new { @target = "_blank", @class = "pull-right" }))
+                {
+                    <button class="btn btn-primary compose-mail pull-right" type="submit" id="PrintPayroll" title="Print Payroll"><i class="fa fa-print"></i> Payroll</button>
+                    <input type="hidden" value="@Model.PayrollBase.ID" name="payrollPeriodId" />
+                }
+            }
+        </h1>
+    </div>
+    <form id="form_search" class="pull-left" style="width: 100%;">
+        <table id="VesselsTable" class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th style="text-align: center;">Vessel</th>
+                    @if (PageAccess.Update || PageAccess.Delete)
+                    {
+                        <th style="text-align: center; min-width: 5%;" scope="col">Action</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                <tr id="Row-Loading-Display" class="hidden">
+                    <td style="text-align: center;" colspan="6">
+                        <i id="" class="fa fa-rotate-left rotate" style="padding: 8px; font-size: 20px; text-align: right;"></i>
+                    </td>
+                </tr>
+                @if (Model.Vessels.Count() > 0)
+                {
+                    var Vessels = Model.Vessels.OrderBy(m => m.Vessel.Description);
+
+                    for (int i = 0; i < Model.Vessels.Count(); i++)
+                    {
+                        if (Model.Vessels[i].Vessel != null)
+                        {
+                            var Vessel = Model.Vessels[i].Vessel;
+
+                            <tr id="Row-Display-Vessel-@Vessel.ID" class="Row-Display Row-Display-Vessel read" style="" title="">
+                                <td style="text-align: left;" nowrap>
+                                    @($"{Vessel.Code} - {Vessel.Description}")
+                                </td>
+
+                                <td style="" class="row-actions">
+                                    <div class="btn-group">
+                                        @using (Html.BeginForm("PrintVesselPayroll", "CrewPayrollSheetB", FormMethod.Post, new { @target = "_blank", @class = "pull-right" }))
+                                        {
+                                            <button class="btn btn-primary compose-mail pull-right m-r-sm" type="submit" onclick="event.stopPropagation();" id="PrintVesselPayroll" title="Print Vessel Payslip"><i class="fa fa-file"></i> </button>
+                                            <input type="hidden" value="@Vessel.ID" name="vesselId" />
+                                            <input type="hidden" value="@Model.PayrollBase.ID" name="payrollPeriodId" />
+                                        }
+                                        @using (Html.BeginForm("PrintPayslip", "CrewPayrollSheetB", FormMethod.Post, new { @target = "_blank", @class = "pull-right" }))
+                                        {
+                                            <button class="btn btn-primary compose-mail pull-right m-r-sm" type="submit" id="PrintPayslip" title="Print Payslips"><i class="fa fa-file"></i> Payslips</button>
+                                            <input type="hidden" value="@Model.PayrollBase.ID" name="id" />
+                                            <input type="hidden" value="@Vessel.ID" name="vesselId" />
+                                        }
+                                        <button type="button" name="GetPayrolls" class="btn btn-outline btn-info btn-sm btn-rounded GetPayrolls" value="@Vessel.ID" onclick="GetPayrolls('@Model.PayrollBase.ID', '@Vessel.ID');" title="Get Payrolls"><i class="fa fa-group fa-1x"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr id="No-Row-Display"><td style="text-align: center;" colspan="8">No records found...</td></tr>
+                            return;
+                        }
+                    }
+                }
+                else
+                {
+                    <tr id="No-Row-Display"><td style="text-align: center;" colspan="8">No records found...</td></tr>
+                }
+            </tbody>
+        </table>
+    </form>
+}

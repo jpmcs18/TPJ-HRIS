@@ -1,0 +1,26 @@
+﻿@*model WebTemplate.Models.CrewPayroll.CrewVesselList
+
+{
+    //var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    //var PageAccess = credential.GetPage("CnB/CrewPayrollSheetB") ?? new DataAccessLayer.System.Page();
+}*@
+
+<!--<tr id="Row-Display-Vessel-Model.Vessel.ID" class="Row-Display Row-Display-Vessel read" style="" title="">
+    <td style="text-align: left;" nowrap>
+        <input type="hidden" value="Model.Vessel.ID" />
+    </td>-->
+    @**if (PageAccess.View)
+    {
+    }**@
+    <!--<td style="" class="row-actions">
+        <div class="btn-group">
+            using (Html.BeginForm("PrintVesselPayroll", "CrewPayrollSheetB", FormMethod.Post, new { target = "_blank", class = "pull-right" }))
+            {
+                <button class="btn btn-primary compose-mail pull-right m-r-sm" type="submit" onclick="event.stopPropagation();" id="PrintVesselPayroll" title="Print Vessel Payslip"><i class="fa fa-file"></i> </button>
+                <input type="hidden" value="Model.Vessel.ID" name="payrollPeriodId" />
+                <input type="hidden" value="Model.PayPeriodID" name="payrollPeriodId" />
+            }
+            <button type="button" name="GetPayrolls" class="btn btn-outline btn-info btn-sm btn-rounded GetPayrolls" value="Model.Vessel.ID" onclick="GetPayrolls('Model.PayPeriodID', 'Model.Vessel.ID');" title="Get Payrolls"><i class="fa fa-group fa-1x"></i></button>
+        </div>
+    </td>
+</tr>-->
