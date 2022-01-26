@@ -2498,6 +2498,7 @@
     <Content Include="Views\CnB\CrewPayrollSheetB\_Payrolls.cshtml" />
     <Content Include="Views\CnB\CrewPayrollSheetB\_Details.cshtml" />
     <Content Include="Views\CnB\CrewPayrollSheetB\_Vessel.cshtml" />
+    <Content Include="Views\CnB\CrewPayrollSheetB\_Payroll.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">

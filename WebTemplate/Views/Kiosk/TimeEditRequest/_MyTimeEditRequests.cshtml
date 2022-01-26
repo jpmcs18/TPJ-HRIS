@@ -11,7 +11,7 @@
     {
     <div class="file-manager">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px; margin: 0px -15px;">
-            <form id="form_search_params" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
+            <div id="form_search_params" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
                 <input type="hidden" id="hid_search" name="@Html.NameFor(m => m.Key)" value="@Html.ValueFor(m => m.Key)" />
                 <input type="hidden" id="hid_page" name="@Html.NameFor(m => m.Page)" value="@Html.ValueFor(m => m.Page)" />
                 @Html.AntiForgeryToken()
@@ -33,8 +33,8 @@
                         <button type="button" id="btn_search" class="btn btn-primary font-bold"><i class="fa fa-search"></i> Search</button>
                     </div>
                 </fieldset>
-            </form>
-            <form id="status_search_params" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
+            </div>
+            <div id="status_search_params" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
                 <fieldset>
                     <legend>Status</legend><div class="form-group col-xs-12 col-sm-3 col-md-2 col-lg-2">
                         <label class="control-label">
@@ -72,11 +72,11 @@
                         </label>
                     </div>
                 </fieldset>
-            </form>
+            </div>
         </div>
     </div>
     }
-<form id="form_search" class="pull-left" style="width: 100%;">
+<div id="form_search" class="pull-left" style="width: 100%;">
     <table id="TimeEditRequestsTable" class="table table-hover table-striped">
         <thead>
             <tr>
@@ -195,7 +195,7 @@
             }
         </tbody>
     </table>
-</form>
+</div>
 </div>
 
 @section scripts {

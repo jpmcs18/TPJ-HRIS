@@ -9,7 +9,7 @@
 
 @if (PageAccess.View)
 {
-    <form id="form_search_params" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
+    <div id="form_search_params" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
         @Html.Hidden("Page", Model.Page, new { @class = "form-control search-values" })
 
         <fieldset>
@@ -46,8 +46,8 @@
                 <button type="button" id="Btn_Search" class="btn btn-primary font-bold"><i class="fa fa-search"></i> Search</button>
             </div>
         </fieldset>
-    </form>
-    <form id="status_search_params" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
+    </div>
+    <div id="status_search_params" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
         <fieldset>
             <legend>Status</legend><div class="form-group col-xs-12 col-sm-3 col-md-2 col-lg-2">
                 <label class="control-label">
@@ -85,9 +85,9 @@
                 </label>
             </div>
         </fieldset>
-</form>
+</div>
     
-    <form id="form_search" class="pull-left" style="width: 100%;">
+    <div id="form_search" class="pull-left" style="width: 100%;">
         <table id="OTRequestsTable" class="table table-hover table-striped">
             <thead>
                 <tr>
@@ -242,5 +242,5 @@
                 }
             </tbody>
         </table>
-    </form>
+    </div>
 }

@@ -202,7 +202,7 @@ namespace WebTemplate.Controllers.CnB
 
             ModelState.Clear();
 
-            return PartialViewCustom("_Payrolls", model);
+            return PartialViewCustom("_Payroll", model);
         }
 
     }

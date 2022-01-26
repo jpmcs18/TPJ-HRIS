@@ -28,7 +28,7 @@
     <div class="" style="margin-top: 80px;">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 animated fadeInDown">
             <div class="file-manager">
-                <form id="form_search_params" class="m-t-md" enctype="multipart/form-data" style="margin: 0 -15px;">
+                <div id="form_search_params" class="m-t-md" enctype="multipart/form-data" style="margin: 0 -15px;">
                     <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-3">
                         <label class="control-label">Vessel</label>
                         @Html.DropDownListFor(m => m.VesselID, new SelectList(vessels, "ID", "Display"), new { @class = "form-control", @crew_vessel_action = "Filter" })
@@ -66,14 +66,14 @@
                         <label class="control-label">Remarks</label>
                         <input type="text" id="txt_remarks" class="form-control" name="Remarks" placeholder="Remarks..." value="" style="resize: none;" />@*@Html.ValueFor(m => m.Filter)*@
                     </div>
-                </form>
+                </div>
 
                 <div class="form-group" style="text-align: right;">
                     <label class="control-label" style="width: 0%; color: #fff;">Search</label>
                     <button type="button" id="btn_search" class="btn btn-primary font-bold"><i class="fa fa-search"></i> Search</button>
                 </div>
             </div>
-            <form id="form_search" enctype="multipart/form-data" class="pull-left" style="width: 100%;">
+            <div id="form_search" enctype="multipart/form-data" class="pull-left" style="width: 100%;">
                 <div class="">
                     <div class="mail-box">
                         <table id="CrewsTable" class="table table-hover table-striped">
@@ -133,7 +133,7 @@
                         </table>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>
@@ -154,7 +154,7 @@
             <div class="modal-content animated fadeInDown modal-width-40">
                 <form id="form_viewmembers">
                     @Html.Partial("~/Views/HumanResource/Crew/_CrewSearch.cshtml")
-                </form>
+                </div>
                 @if (PageAccess.Update)
                 {
                     <div class="modal-footer">

@@ -1,1 +1,96 @@
-﻿
+﻿@model WebTemplate.Models.CrewPayroll.CrewPayrollList
+
+@{
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var PageAccess = credential.GetPage("CnB/CrewPayrollSheetB") ?? new DataAccessLayer.System.Page();
+}
+
+@if (!PageAccess.View)
+{
+    <style>
+    </style>
+    ViewBag.Message = "You do not have access to view this page.";
+    @Html.Partial("~/Views/Security/Unauthorized.cshtml")
+}
+else
+{
+    <div id="HiddenPayrollBase">
+        <input type="hidden" value="@Model.PayrollBase.ID" name="id" />
+        <input type="hidden" value="@Model.PayrollBase.StartDate" name="startdate" />
+        <input type="hidden" value="@Model.PayrollBase.EndDate" name="enddate" />
+    </div>
+    <div class="container-header">
+        <h1>
+            <button id="" type="button" class="btn btn-default goBack" title="Go back to Payroll Sheets"><i class="fa fa-backward"></i></button>
+            <button id="" type="button" class="btn btn-default goBack" title="Go back to Vessels"><i class="fa fa-caret-left"></i></button>
+
+            @($"{Model.Vessel.Code} - {Model.Vessel.Description}")
+        </h1>
+    </div>
+    <div id="form_search" class="pull-left" style="width: 100%;">
+        <table id="PayrollsTable" class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th style="text-align: left;">Personnel</th>
+                    <th style="text-align: right;">Holiday Pay</th>
+                    <th style="text-align: right;">No Of Days</th>
+                    <th style="text-align: right;">Basic Pay</th>
+                    <th style="text-align: right;">Tax</th>
+                    <th style="text-align: right;">Total Deductions</th>
+                    <th style="text-align: right;">Gross Pay</th>
+                    <th style="text-align: right;">Net Pay</th>
+                    <th style="text-align: right;">Recomputed</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr id="Row-Loading-Display" class="hidden">
+                    <td style="text-align: center;" colspan="6">
+                        <i id="" class="fa fa-rotate-left rotate" style="padding: 8px; font-size: 20px; text-align: right;"></i>
+                    </td>
+                </tr>
+                @if (Model.CrewPayrolls.Count() > 0)
+                {
+                    var Vessels = Model.CrewPayrolls.OrderBy(m => m.Vessel.Description);
+
+                    for (int i = 0; i < Model.CrewPayrolls.Count(); i++)
+                    {
+                        <tr id="@Model.CrewPayrolls[i].ID" class="Row-Display Row-Display-Payrolls" style="cursor: pointer">
+                            <td hidden>
+                                <input id="PayrollPeriod.ID" name="PayrollPeriod.ID" value="@Html.ValueFor(m => m.PayrollBase.ID)" />
+                                <input id="PayrollPeriod.StartDate" name="PayrollPeriod.StartDate" value="@Html.ValueFor(m => m.PayrollBase.StartDate)" />
+                                <input id="PayrollPeriod.EndDate" name="PayrollPeriod.EndDate" value="@Html.ValueFor(m => m.PayrollBase.EndDate)" />
+                                <input id="PayRoll[@i].Personnel.ID" name="PayRoll.Personnel.ID" value="@Html.ValueFor(m => m.CrewPayrolls[i].Personnel.ID)" />
+                                <input id="PayRoll[@i].ID" name="PayRoll.ID" value="@Html.ValueFor(m => m.CrewPayrolls[i].ID)" />
+                            </td>
+                            <td style="text-align: left;"><i class="fa fa-angle-right"></i>&nbsp; @Model.CrewPayrolls[i].FullName</td>
+                            <td style="text-align: right;">@Model.CrewPayrolls[i].HolidayPay.ToString("#,##0.000")</td>
+                            <td style="text-align: right;">@Model.CrewPayrolls[i].NoOfDays.ToString("#,##0.000")</td>
+                            <td style="text-align: right;">@Model.CrewPayrolls[i].BasicPay.ToString("#,##0.00")</td>
+                            <td style="text-align: right;">@Model.CrewPayrolls[i].Tax.ToString("#,##0.000")</td>
+                            <td style="text-align: right;">@Model.CrewPayrolls[i].TotalDeductions.ToString("#,##0.000")</td>
+                            <td style="text-align: right;">@Model.CrewPayrolls[i].GrossPay.ToString("#,##0.000")</td>
+                            <td style="text-align: right;">@Model.CrewPayrolls[i].NetPay.ToString("#,##0.000")</td>
+                            <td style="text-align: right;">@(Model.CrewPayrolls[i].Recomputed ? "Yes" : "")</td>
+                            @if (PageAccess.Update || PageAccess.Delete)
+                            {
+                                <th style="text-align: center;">
+                                    <button id="RecomputePersonnelPayroll" class="recomputepayroll btn btn-info compose-mail pull-right m-r-sm" value="@Model.CrewPayrolls[i].ID" type="button" onclick="RecomputePersonnelPayroll('@Model.CrewPayrolls[i].ID');" title="Recompute Personnel Payroll"><i class="fa fa-refresh"></i> </button>
+                                    @using (Html.BeginForm("PrintIndividualPayslip", "CrewPayrollSheetB", FormMethod.Post, new { @target = "_blank", @class = "pull-right" }))
+                                    {
+                                        <button class="btn btn-primary compose-mail pull-right m-r-sm" type="submit" onclick="event.stopPropagation();" id="PrintPayslip" title="Print Personnel Payslip"><i class="fa fa-file"></i> </button>
+                                        <input type="hidden" value="@Model.CrewPayrolls[i].Personnel.ID" name="personnelId" />
+                                        <input type="hidden" value="@Model.CrewPayrolls[i].ID" name="payrollId" />
+                                    }
+                                </th>
+                            }
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr id="No-Row-Display"><td style="text-align: center;" colspan="8">No records found...</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
