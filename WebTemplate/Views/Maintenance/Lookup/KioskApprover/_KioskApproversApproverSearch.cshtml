@@ -1,4 +1,5 @@
 ﻿@model List<ProcessLayer.Entities.KioskApprovers>
+@using WebTemplate.Extension
 
 @{
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
@@ -45,9 +46,9 @@
                                     <div>
                                         <b class="text-primary">@String.Format("{0}, {1} {2}", Model[i]._Personnel.LastName, Model[i]._Personnel.FirstName, Model[i]._Personnel.MiddleName)</b>
                                         <br />
-                                        <text class="" style="text-transform: none; font-weight: 700;">@Model[i]._Personnel._Departments.Select(x => x._Department.Description).FirstOrDefault()</text>
+                                        <text class="" style="text-transform: none; font-weight: 700;">@Model[i]._Personnel._Departments.Select(x => x._Department).FirstOrDefault().CheckIfNull().Description</text>
                                         <br />
-                                        <text class="" style="text-transform: none;">@Model[i]._Personnel._Positions.Select(x => x._Position.Description).FirstOrDefault()</text>
+                                        <text class="" style="text-transform: none;">@Model[i]._Personnel._Positions.Select(x => x._Position).FirstOrDefault().CheckIfNull().Description</text>
                                     </div>
                                 </td>
                                 <td style="text-align: center;">
