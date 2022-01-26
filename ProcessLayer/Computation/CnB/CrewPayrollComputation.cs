@@ -95,6 +95,7 @@ namespace ProcessLayer.Computation.CnB
                     if (payroll.CrewPayrollDetails?.Where(x => x.LoggedDate == previousAdjustedPayroll[i].LoggedDate)?.Any() ?? false)
                     {
                         details = payroll.CrewPayrollDetails?.Where(x => x.LoggedDate == previousAdjustedPayroll[i].LoggedDate).First();
+                        details.Modified = true;
                     } 
                     details.Position = cm.PositionID != null ? cm._Position : cm._SNPosition;
                     details.PostiionID = details.Position?.ID ?? 0;
@@ -114,6 +115,7 @@ namespace ProcessLayer.Computation.CnB
                 payroll.NetPay = 0;
                 payroll.BasicPay = 0;
                 payroll.GrossPay = 0;
+                payroll.Modified = true;
             }
 
             if(Cutoff == 2)
@@ -169,7 +171,8 @@ namespace ProcessLayer.Computation.CnB
 
                 if (payroll.CrewPayrollDetails?.Where(x => x.LoggedDate == startDate)?.Any() ?? false)
                 {
-                    details = payroll.CrewPayrollDetails.Where(x => x.LoggedDate == startDate).First();
+                    details = payroll.CrewPayrollDetails.Where(x => x.LoggedDate == startDate).First(); 
+                    details.Modified = true;
                 }
                 details.Position = cm.PositionID != null ? cm._Position : cm._SNPosition;
                 details.PostiionID = details.Position?.ID ?? 0;

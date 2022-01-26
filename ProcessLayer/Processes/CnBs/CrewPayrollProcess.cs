@@ -282,7 +282,7 @@ namespace ProcessLayer.Processes.CnB
         {
             using (var db = new DBTools())
             {
-                using (var ds = db.ExecuteReader("cnb.GetPayroll", new Dictionary<string, object> { { "@ID", id } }))
+                using (var ds = db.ExecuteReader("cnb.GetCrewPayroll", new Dictionary<string, object> { { "@ID", id } }))
                 {
                     return ds.Get(CrewPayrollConverter);
                 }
