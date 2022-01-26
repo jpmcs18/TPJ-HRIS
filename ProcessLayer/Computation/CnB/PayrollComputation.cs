@@ -376,7 +376,7 @@ namespace ProcessLayer.Computation.CnB
             }
 
             payroll.BasicPay = payroll.PayrollDetails.Where(x => (x.ID > 0 && x.Modified) || x.ID == 0).GroupBy(x => x.Location?.ID ?? 0).Sum(t => t.Sum(x => (payroll.DailyRate * (x.IsHazard ? ((x.Location?.HazardRate ?? 0) + 1) : 1)).ToDecimalPlaces(3) * x.RegularDay).ToDecimalPlaces(2)).ToDecimalPlaces(2);
-            payroll.NOofDays = payroll.PayrollDetails.Where(x => (x.ID > 0 && x.Modified) || x.ID == 0).Sum(x => x.RegularDay);
+            payroll.NoOfDays = payroll.PayrollDetails.Where(x => (x.ID > 0 && x.Modified) || x.ID == 0).Sum(x => x.RegularDay);
 
             if (type == PayrollSheet.B)
             {

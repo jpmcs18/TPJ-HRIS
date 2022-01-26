@@ -16,7 +16,7 @@
 }
 else
 {
-    <form id="form_search_params" class="" enctype="multipart/form-data" style="">
+    <div id="form_search_params" class="" enctype="multipart/form-data" style="">
         <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-3">
             <input type="text" id="txt_search" class="form-control" placeholder="Enter the @ViewBag.Page.PageName here..." value="@Html.ValueFor(m => m.Filter)" />
         </div>
@@ -24,8 +24,8 @@ else
         <div class="form-group" style="">
             <button type="button" id="btn_search" class="btn btn-primary font-bold" onclick="get_items()"><i class="fa fa-search"></i> Search</button>
         </div>
-    </form>
-    <form id="form_search" enctype="multipart/form-data" class="" style="">
+    </div>
+    <div id="form_search" enctype="multipart/form-data" class="" style="">
         <table class="table table-hover table-striped">
             <thead>
                 <tr>
@@ -108,5 +108,5 @@ new AjaxOptions { HttpMethod = "POST", OnBegin = "ShowLoadingScreen()", OnComple
             <tfoot>
             </tfoot>
         </table>
-    </form>
+    </div>
 }

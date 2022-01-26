@@ -8,7 +8,7 @@
 
 @if (PageAccess.View)
 {
-    <form id="form_search_params" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
+    <div id="form_search_params" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
         @Html.Hidden("Page", Model.Page, new { @class = "form-control" })
         <fieldset>
             <legend>Search</legend>
@@ -35,8 +35,8 @@
                 <button type="button" id="btn_search" class="btn btn-primary font-bold"><i class="fa fa-search"></i> Search</button>
             </div>
         </fieldset>
-    </form>
-    <form id="status_search_params" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
+    </div>
+    <div id="status_search_params" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
         <fieldset>
             <legend>Status</legend>
             <div class="form-group col-xs-12 col-sm-3 col-md-2 col-lg-2">
@@ -75,8 +75,8 @@
                 </label>
             </div>
         </fieldset>
-    </form>
-    <form id="form_search" class="pull-left" style="width: 100%;">
+    </div>
+    <div id="form_search" class="pull-left" style="width: 100%;">
         <table id="TimeEditRequestsTable" class="table table-hover table-striped">
             <thead>
                 @if (Model.TimeEditRequests.Count() > 0)
@@ -249,7 +249,7 @@
                 }
             </tbody>
         </table>
-    </form>
+    </div>
 }
 
 

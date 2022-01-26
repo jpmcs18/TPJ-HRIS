@@ -42,6 +42,7 @@
                 <th style="text-align: right;">Total Overtime Pay</th>
                 <th style="text-align: right;">Total Deduction</th>
                 <th style="text-align: right;">Net Pay</th>
+                <th style="text-align: right;">Action</th>
             </tr>
         </thead>
         <tbody>
@@ -63,7 +64,7 @@
                             <input id="PayRoll[@i].ID" name="PayRoll.ID" value="@Html.ValueFor(m => m.Payrolls[i].ID)" />
                         </td>
                         <td style="text-align: left;"><i class="fa fa-angle-right"></i>&nbsp; @Model.Payrolls[i].Personnel.FullName</td>
-                        <td style="text-align: right;">@Model.Payrolls[i].NOofDays.ToString("#,##0.000")</td>
+                        <td style="text-align: right;">@Model.Payrolls[i].NoOfDays.ToString("#,##0.000")</td>
                         <td style="text-align: right;">@Model.Payrolls[i].BasicPay.ToString("#,##0.00")</td>
                         <td style="text-align: right;">@Model.Payrolls[i].SumOfAllAllowance.ToString("#,##0.000")</td>
                         <td style="text-align: right;">@Model.Payrolls[i].TotalOTPay.ToString("#,##0.000")</td>
@@ -72,7 +73,7 @@
                         @if (PayrollPageAccess.Update || PayrollPageAccess.Delete)
                         {
                             <th style="text-align: center;">
-                                <button id="RecomputePersonnelPayroll" class="recomputepayroll btn btn-info compose-mail pull-right m-r-sm" value="@Model.Payrolls[i].ID" type="submit" onclick="event.stopPropagation();" title="Recompute Personnel Payroll"><i class="fa fa-refresh"></i> </button>
+                                <button id="RecomputePersonnelPayroll" class="recomputepayroll btn btn-info compose-mail pull-right m-r-sm" value="@Model.Payrolls[i].ID" type="button" onclick="event.stopPropagation();" title="Recompute Personnel Payroll"><i class="fa fa-refresh"></i> </button>
                                 @using (Html.BeginForm("PrintIndividualPayslip", "PayrollSheetB", FormMethod.Post, new { @target = "_blank", @class = "pull-right" }))
                                 {
                                     <button class="btn btn-primary compose-mail pull-right m-r-sm" type="submit" onclick="event.stopPropagation();" id="PrintPayslip" title="Print Personnel Payslip"><i class="fa fa-file"></i> </button>
@@ -92,7 +93,7 @@
         <tfoot>
             <tr>
                 <td class="font-bold-700" style="text-align: right;">Total:</td>
-                <td class="font-bold-700" style="text-align: right;">@Model.Payrolls.Sum(x => x.NOofDays).ToString("#,##0.00")</td>
+                <td class="font-bold-700" style="text-align: right;">@Model.Payrolls.Sum(x => x.NoOfDays).ToString("#,##0.00")</td>
                 <td class="font-bold-700" style="text-align: right;">@Model.Payrolls.Sum(x => x.BasicPay).ToString("#,##0.00")</td>
                 <td class="font-bold-700" style="text-align: right;">@Model.Payrolls.Sum(x => x.SumOfAllAllowance).ToString("#,##0.000")</td>
                 <td class="font-bold-700" style="text-align: right;">@Model.Payrolls.Sum(x => x.TotalOTPay).ToString("#,##0.000")</td>

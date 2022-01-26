@@ -9,7 +9,7 @@ namespace ProcessLayer.Entities.CnB
         public long CrewPayrollPeriodID { get; set; }
         public long PersonnelID { get; set; }
         public decimal HolidayPay { get; set; }
-        public decimal  NoofDays { get; set; }
+        public decimal NoOfDays { get; set; }
         public decimal BasicPay { get; set; }
         public decimal Tax { get; set; }
         public decimal TotalDeductions { get; set; }
@@ -19,7 +19,6 @@ namespace ProcessLayer.Entities.CnB
         public int VesselID { get; set; }
         public Vessel Vessel { get; set; }
         public bool Modified { get; set; } = false;
-
 
         public Personnel Personnel { get; set; }
         public string FullName { get { return Personnel?.LastName + ", " + Personnel?.FirstName; } }

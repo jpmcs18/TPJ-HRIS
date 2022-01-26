@@ -60,10 +60,10 @@ namespace ReportLayer.Reports
 
             WriteToCell(PrintPayslipHelper.Instance.NetCell, payroll.OutstandingVale < 0 ? payroll.OutstandingVale.ToString("N2") : payroll.NetPay.ToString("N2"));
 
-            WriteToCell(PrintPayslipHelper.Instance.BasicTotalDaysCell, payroll.NOofDays);
+            WriteToCell(PrintPayslipHelper.Instance.BasicTotalDaysCell, payroll.NoOfDays);
             WriteToCell(PrintPayslipHelper.Instance.BasicSalaryCell, payroll.BasicPay.ToString("N2"));
 
-            WriteToCell(PrintPayslipHelper.Instance.AllowanceTotalDaysCell, payroll.NOofDays);
+            WriteToCell(PrintPayslipHelper.Instance.AllowanceTotalDaysCell, payroll.NoOfDays);
             WriteToCell(PrintPayslipHelper.Instance.AllowanceSalaryCell, payroll.TotalAllowance.ToString("N2"));
 
             WriteToCell(PrintPayslipHelper.Instance.AddTotalPayCell, payroll.SumOfAllAdditionalPay.ToString("N2"));

@@ -76,7 +76,6 @@
 
     function Events() {
         $('.title-action').html('<button class="btn btn-primary compose-mail" id="btngenerate" onclick="OpenModal();">Generate Payroll</button>');
-        SearchTabEvents();
     }
 
     function SearchTabEvents() {
@@ -95,6 +94,25 @@
             $('#PayrollBaseTable #No-Row-Display').removeClass('hidden')
     }
 
+    function GoBack(response, index) {
+        $(".crewPayrollSheet").hide();
+        $(".crewPayrollSheet").eq(index).html(response).show();
+
+        //var vIndex = $(".crewPayrollSheet:visible").index();
+        $(".crewPayrollSheet:visible").find(".goBack").each(function (e) {
+            var vIndex = $(this).index();
+            //var title = "Go back " + (vIndex + 1) + " page" + (vIndex > 1 ? "s" : "");
+            //$(this).attr("title", title).val(vIndex);
+            $(this).off("click").on("click", function (e) {
+                $(".crewPayrollSheet").hide().eq(vIndex).show();
+
+                if (vIndex == 0) {
+                    Events();
+                }
+            });
+        });
+    }
+
     function SearchPayrolls() {
         $('#form_search_params input[name="Page"]').val(1);
         var params = $('#form_search_params *').serialize();
@@ -106,7 +124,6 @@
             cache: false,
             beforeSend: function () {
                 ShowLoadingScreen();
-                //ShowHideRowLoadingDisplay('CrewPayrollBaseTable', true);
             },
             complete: function () {
                 RemoveLoadingScreen();
@@ -114,7 +131,7 @@
             success: function (response) {
                 if (response.msg == null) {
                     $('#CrewPayrollSheet #Search').html(response);
-                    Events();
+                    SearchTabEvents();
                 } else {
                     toastr.error(response.res);
                 }
@@ -177,9 +194,8 @@
             },
             success: function (response) {
                 if (response.msg == null) {
-                    $(".crewPayrollSheet").hide();
-                    $('#CrewPayrollSheet #Vessels').html(response).show();
-                    Events();
+                    GoBack(response, 1);
+                    $('.title-action').empty();
                 } else {
                     toastr.error(response.res);
                 }
@@ -192,13 +208,13 @@
 
     function GetPayrolls(pid, vid) {
         var params = "payrollPeriodID=" + pid +
-            'vesselID' + vid + '&__RequestVerificationToken=' +
+            '&vesselID=' + vid + '&__RequestVerificationToken=' +
             $('@Html.AntiForgeryToken()').val();
 
         $.ajax({
             url: '@Url.Action("GetPayrolls", "CrewPayrollSheetB")',
             data: params,
-            type: "GET",
+            type: "POST",
             cache: false,
             beforeSend: function () {
                 ShowLoadingScreen();
@@ -208,9 +224,7 @@
             },
             success: function (response) {
                 if (response.msg == null) {
-                    $(".crewPayrollSheet").hide();
-                    $('#CrewPayrollSheet #Payrolls').html(response).show();
-                    Events();
+                    GoBack(response, 2);
                 } else {
                     toastr.error(response.res);
                 }
@@ -223,13 +237,13 @@
 
     function GetPayrollDetails(pid, vid) {
         var params = "payrollPeriodID=" + pid +
-            'vesselID' + vid + '&__RequestVerificationToken=' +
+            '&vesselID=' + vid + '&__RequestVerificationToken=' +
             $('@Html.AntiForgeryToken()').val();
 
         $.ajax({
             url: '@Url.Action("GetPayrollDetails", "CrewPayrollSheetB")',
             data: params,
-            type: "GET",
+            type: "POST",
             cache: false,
             beforeSend: function () {
                 ShowLoadingScreen();
@@ -239,9 +253,46 @@
             },
             success: function (response) {
                 if (response.msg == null) {
-                    $(".crewPayrollSheet").hide();
-                    $('#CrewPayrollSheet #PayrollDetails').html(response).show();
-                    Events();
+                    GoBack(response, 3);
+                } else {
+                    toastr.error(response.res);
+                }
+            },
+            error: function (response) {
+                toastr.error(response.res);
+            }
+        });
+    }
+
+    function RecomputePersonnelPayroll(payrollId) {
+        var payrollPeriodId = $('#HiddenPayrollBase input[name="id"]').val();
+        var payrollPeriodStartDate = $('#HiddenPayrollBase input[name="startdate"]').val();
+        var payrollPeriodEndDate = $('#HiddenPayrollBase input[name="enddate"]').val();
+        var index = $(this).closest('tr').index();
+        var params = 'payrollId=' + payrollId +
+            '&__RequestVerificationToken=' +
+            $('@Html.AntiForgeryToken()').val();
+
+        $.ajax({
+            url: '@Url.Action("RecomputePersonnelPayroll", "CrewPayrollSheetB")',
+            data: params,
+            type: "POST",
+            cache: false,
+            beforeSend: function () {
+                ShowLoadingScreen();
+            },
+            complete: function () {
+                RemoveLoadingScreen();
+            },
+            success: function (response) {
+                if (response.msg == null) {
+                    $('#PayrollsTable tr#' + payrollId).replaceWith(response);
+                    $('#PayrollsTable tr#' + payrollId + ' input[id="PayrollPeriod.ID"]').val(payrollPeriodId);
+                    $('#PayrollsTable tr#' + payrollId + ' input[id="PayrollPeriod.StartDate"]').val(payrollPeriodStartDate);
+                    $('#PayrollsTable tr#' + payrollId + ' input[id="PayrollPeriod.EndDate"]').val(payrollPeriodEndDate);
+                    $('#PayrollsTable tr#' + payrollId + ' input[name="PayRoll.Personnel.ID"]').attr('id', 'PayRoll[' + index + '].Personnel.ID');
+                    $('#PayrollsTable tr#' + payrollId + ' input[name="PayRoll.ID"]').attr('id', 'PayRoll[' + index + '].ID');
+                    $('#PayrollsTable tr#' + payrollId + ' input[name="payPeriodid"]').val(payrollPeriodId);
                 } else {
                     toastr.error(response.res);
                 }

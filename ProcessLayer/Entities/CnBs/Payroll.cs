@@ -13,7 +13,7 @@ namespace ProcessLayer.Entities.CnB
         public long PayrollPeriodID { get; set; }
         public Personnel Personnel { get; set; }
         public string FullName { get { return Personnel.LastName + ", " + Personnel.FirstName; } }
-        public decimal NOofDays { get; set; }
+        public decimal NoOfDays { get; set; }
         public decimal DailyRate { get; set; }
         public decimal TotalDeductions { get; set; }
         public decimal Allowance { get; set; }

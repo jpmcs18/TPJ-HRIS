@@ -9,7 +9,7 @@
     {
         <div class="file-manager">
             <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
-                <form id="form_search_params" class="m-t-md" enctype="multipart/form-data" style="margin: 0 -15px;">
+                <div id="form_search_params" class="m-t-md" enctype="multipart/form-data" style="margin: 0 -15px;">
                     <input type="hidden" id="hid_search" name="@Html.NameFor(m => m.Filter)" value="@Html.ValueFor(m => m.Filter)" />
                     <input type="hidden" id="hid_page" name="@Html.NameFor(m => m.Page)" value="@Html.ValueFor(m => m.Page)" />
 
@@ -24,11 +24,11 @@
                     <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-3">
                         <button type="button" id="btn_search" class="btn btn-primary font-bold"><i class="fa fa-search"></i> Search</button>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     }
-    <form id="form_search" enctype="multipart/form-data" class="pull-left" style="width: 100%;">
+    <div id="form_search" enctype="multipart/form-data" class="pull-left" style="width: 100%;">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style=" padding: 0;">
             <div class="" style="margin: 0;">
                 <div class="mail-box">
@@ -96,5 +96,5 @@
                 </div>
             </div>
         </div>
-    </form>
+    </div>
 </div>
