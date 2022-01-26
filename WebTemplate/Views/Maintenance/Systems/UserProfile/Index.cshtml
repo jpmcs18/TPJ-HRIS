@@ -1,27 +1,19 @@
 ﻿@model WebTemplate.Models.Maintenance.Systems.UserProfile.Index
 @{
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
-    var SearchPageAccess = credential.GetPage("User Profile") ?? new DataAccessLayer.System.Page();
+    var PageAccess = credential.GetPage("User Profile") ?? new DataAccessLayer.System.Page();
 
-    ViewBag.title = SearchPageAccess.PageName;
+    ViewBag.title = PageAccess.PageName;
 }
 
 <div class="wrapper wrapper-content">
     <div class="page-heading">
         <div class="col-lg-8">
-            <h1>@Html.Raw(ViewBag.Page.PageName ?? "&nbsp;")</h1>
-            <ol class="breadcrumb">
-                <li>
-                    <a href='@Url.Action("Index", "Home")'>Home</a>
-                </li>
-                <li class="active">
-                    <strong>@Html.Raw(ViewBag.Page.PageName ?? "&nbsp;")</strong>
-                </li>
-            </ol>
+            @Html.Partial("~/Views/Shared/_Breadcrumbs.cshtml", PageAccess)
         </div>
         <div class="col-lg-4">
             <div class="title-action">
-                @if (SearchPageAccess.Insert)
+                @if (PageAccess.Insert)
                 {
                     <a class="btn btn-primary compose-mail" href="#" id="btnadd">New Page</a>
                 }

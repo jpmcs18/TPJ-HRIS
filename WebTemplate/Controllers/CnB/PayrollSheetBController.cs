@@ -18,8 +18,8 @@ namespace WebTemplate.Controllers.CnB
         public ActionResult Index(Index model)
         {
             model.Page = 1;
-            model.StartDate = model.StartDate ?? DateTime.Now.AddMonths(-1);
-            model.EndDate = model.EndDate ?? DateTime.Now;
+            model.StartDate ??= DateTime.Now.AddMonths(-1);
+            model.EndDate ??= DateTime.Now;
             model.Payrolls = PayrollProcess.Instance.GetPayrollBases(model.StartDate, model.EndDate, PayrollSheet.B, model.Page, model.GridCount, out int PageCount);
             model.PageCount = PageCount;
             if (Request.IsAjaxRequest())

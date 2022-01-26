@@ -56,17 +56,6 @@ namespace WebTemplate.Controllers.CnB
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult RecomputePersonnelPayroll(long payrollId)
-        {
-            CrewPayroll model = CrewPayrollProcess.Instance.RecomputeCrewPayroll(payrollId, User.UserID);
-
-            ModelState.Clear();
-
-            return PartialViewCustom("_CrewPayroll", model);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
         public ActionResult GetVessels(long payrollPeriodID)
         {
             try
@@ -74,11 +63,11 @@ namespace WebTemplate.Controllers.CnB
                 CrewVesselList crewVessel = new()
                 {
                     PayrollBase = CrewPayrollProcess.Instance.GetCrewPayrollBase(payrollPeriodID, true),
-                    Vessel = CrewPayrollProcess.Instance.GetCrewVessel(payrollPeriodID, true)
+                    Vessels = CrewPayrollProcess.Instance.GetCrewVessel(payrollPeriodID, true)
                 };
 
                 ModelState.Clear();
-                return PartialViewCustom("_CrewVessels", crewVessel);
+                return PartialViewCustom("_Vessels", crewVessel);
             }
             catch (Exception ex)
             {
@@ -100,7 +89,7 @@ namespace WebTemplate.Controllers.CnB
                 };
 
                 ModelState.Clear();
-                return PartialViewCustom("_CrewPayroll", crewPayroll);
+                return PartialViewCustom("_Payrolls", crewPayroll);
             }
             catch (Exception ex)
             {
@@ -131,7 +120,7 @@ namespace WebTemplate.Controllers.CnB
                 model.EndDate = (new DateTime(ld.Year, ld.Month, 1)).AddDays(-1);
 
                 ModelState.Clear();
-                return PartialViewCustom("_CrewPayrollDetails", model);
+                return PartialViewCustom("_Details", model);
             }
             catch (Exception ex)
             {
@@ -204,5 +193,17 @@ namespace WebTemplate.Controllers.CnB
             }
             return View("~/Views/PrintingView.cshtml");
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult RecomputePersonnelPayroll(long payrollId)
+        {
+            CrewPayroll model = CrewPayrollProcess.Instance.RecomputeCrewPayroll(payrollId, User.UserID);
+
+            ModelState.Clear();
+
+            return PartialViewCustom("_Payrolls", model);
+        }
+
     }
 }

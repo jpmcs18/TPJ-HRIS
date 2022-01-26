@@ -2,9 +2,9 @@
 
 @{
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
-    var SearchPageAccess = credential.GetPage("Search") ?? new DataAccessLayer.System.Page();
+    var PageAccess = credential.GetPage("Search") ?? new DataAccessLayer.System.Page();
 
-    ViewBag.title = SearchPageAccess.PageName;
+    ViewBag.title = PageAccess.PageName;
     var educationalLevels = ProcessLayer.Processes.LookupProcess.GetEducationalLevel();
     //var religions = ProcessLayer.Processes.LookupProcess.GetReligion();
     //var personnelLocations = ProcessLayer.Processes.LocationProcess.Instance.GetList();
@@ -24,19 +24,11 @@
 <div class="wrapper wrapper-content">
     <div class="page-heading">
         <div class="col-lg-8">
-            <h1>@Html.Raw(ViewBag.Page.PageName ?? "&nbsp;")</h1>
-            <ol class="breadcrumb">
-                <li>
-                    <a href='@Url.Action("Index", "Home")'>Home</a>
-                </li>
-                <li class="active">
-                    <strong>@Html.Raw(ViewBag.Page.PageName ?? "&nbsp;")</strong>
-                </li>
-            </ol>
+            @Html.Partial("~/Views/Shared/_Breadcrumbs.cshtml", PageAccess)
         </div>
         <div class="col-lg-4">
             <div class="title-action">
-                @if (SearchPageAccess.Insert)
+                @if (PageAccess.Insert)
                 {
                     <a class="btn btn-primary compose-mail" href="#" id="btnadd">Add Personnel</a>
                 }
@@ -48,7 +40,7 @@
             <div class="" style="padding: 0px;">
                 <div class="tabs-container" style="">
                     <div class="tab-content" style="margin-top: 0px; max-height: unset; overflow-y: auto; overflow-x: hidden;">
-                        @if (SearchPageAccess.View)
+                        @if (PageAccess.View)
                         {
                             <div id="tab-2" class="tab-pane active" style="">
                                 <div id="PersonnelsForm" class="panel-body" style="padding: 10px; max-height: 100%; border: 1px solid #e5e6e7; overflow-y: hidden;">
@@ -81,7 +73,7 @@
 </div>
 
 <div id="floating-buttons" class="menu pmd-floating-action" role="navigation">
-    @if (SearchPageAccess.Insert)
+    @if (PageAccess.Insert)
     {
         @*<button type="button" id="btnadd" class="btn btn-lg btn-circle pmd-floating-action-btn pmd-btn-fab pmd-btn-raised pmd-ripple-effect btn-primary" data-title="Create New">
                 <i class="fa fa-plus"></i>

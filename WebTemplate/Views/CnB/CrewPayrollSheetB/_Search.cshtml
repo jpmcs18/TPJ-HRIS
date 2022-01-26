@@ -84,7 +84,7 @@ else
                 {
                     for (int i = 0; i < Model.Payrolls.Count(); i++)
                     {
-                        <tr id="@Model.Payrolls[i].PayPeriod" class="Row-Display Row-Display-PayrollBase" onclick="ViewPayrollBase();" style="cursor: pointer">
+                        <tr id="@Model.Payrolls[i].PayPeriod" class="Row-Display Row-Display-PayrollBase" onclick="GetVessels('@Model.Payrolls[i].ID');" style="cursor: pointer">
                             <td hidden>
                                 <input id="PayrollBase.ID" name="PayrollBase.ID" value="@Html.ValueFor(m => m.Payrolls[i].ID)" />
                                 <input id="PayrollBase.StartDate" name="PayrollBase.StartDate" value="@Html.ValueFor(m => m.Payrolls[i].StartDate)" />

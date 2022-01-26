@@ -2,7 +2,7 @@
 @model WebTemplate.Models.Payroll.Index
 
 @{ var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
-    var PayrollPageAccess = credential.GetPage("CnB/PayrollSheetA") ?? new DataAccessLayer.System.Page();
+    var PageAccess = credential.GetPage("CnB/PayrollSheetA") ?? new DataAccessLayer.System.Page();
 
     var monno = DateTime.Now.Month;
     var months = new List<string> { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" }; }
@@ -10,16 +10,7 @@
 <div class="wrapper wrapper-content">
     <div class="page-heading">
         <div class="col-lg-8">
-            <h1>@Html.Raw(ViewBag.Page.PageName ?? "&nbsp;")</h1>
-            <ol class="breadcrumb">
-                <li>
-                    <a href='@Url.Action("Index", "Home")'>Home</a>
-                </li>
-                <li>Compensation and Benefits</li>
-                <li class="active">
-                    <strong>@Html.Raw(ViewBag.Page.PageName ?? "&nbsp;")</strong>
-                </li>
-            </ol>
+            @Html.Partial("~/Views/Shared/_Breadcrumbs.cshtml", PageAccess)
         </div>
         <div class="col-lg-4">
             <div class="title-action">
@@ -28,7 +19,7 @@
         </div>
     </div>
     <div class="" style="margin-top: 80px;">
-        @if (PayrollPageAccess.View)
+        @if (PageAccess.View)
         {
             <div id="PayrollsForm">
                 @Html.Partial("~/Views/CnB/PayrollSheetA/_PayrollSheetASearch.cshtml")

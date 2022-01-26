@@ -1,9 +1,9 @@
 ﻿@model WebTemplate.Models.Vessel.Crew.Index
 
 @{
-    var CrewPageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("HumanResource/Crew");
+    var PageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("HumanResource/Crew");
 
-    ViewBag.title = CrewPageAccess.PageName;
+    ViewBag.title = PageAccess.PageName;
     var vessels = ProcessLayer.Processes.VesselProcess.Instance.GetList();
     var crews = ProcessLayer.Processes.PersonnelProcess.GetList();
     var positions = ProcessLayer.Processes.PositionProcess.Instance.GetList();
@@ -14,19 +14,11 @@
 <div class="wrapper wrapper-content">
     <div class="page-heading">
         <div class="col-lg-8">
-            <h1>@Html.Raw(CrewPageAccess.PageName ?? "&nbsp;")</h1>
-            <ol class="breadcrumb">
-                <li>
-                    <a href='@Url.Action("Index", "Home")'>Home</a>
-                </li>
-                <li class="active">
-                    <strong>@Html.Raw(CrewPageAccess.PageName ?? "&nbsp;")</strong>
-                </li>
-            </ol>
+            @Html.Partial("~/Views/Shared/_Breadcrumbs.cshtml", PageAccess)
         </div>
         <div class="col-lg-4">
             <div class="title-action">
-                @if (CrewPageAccess.Insert)
+                @if (PageAccess.Insert)
                 {
                     <a class="btn btn-primary compose-mail" href="#" id="btnadd">Add</a>
                 }
@@ -43,7 +35,7 @@
                     </div>
                     <div class="form-group col-xs-12 col-sm-4 col-md-4 col-lg-3">
                         <label class="control-label">Crew</label>
-                        <input type="text" id="txt_search" name="Name" class="form-control" placeholder="Enter the @CrewPageAccess.PageName here..." value="" />@*@Html.ValueFor(m => m.Filter)*@
+                        <input type="text" id="txt_search" name="Name" class="form-control" placeholder="Enter the @PageAccess.PageName here..." value="" />@*@Html.ValueFor(m => m.Filter)*@
                         @*<div class="input-group">
                                 <span class="input-group-btn">
                                     <button type="button" id="btn_search" class="btn btn-primary font-bold"><i class="fa fa-search"></i></button>
@@ -163,7 +155,7 @@
                 <form id="form_viewmembers">
                     @Html.Partial("~/Views/HumanResource/Crew/_CrewSearch.cshtml")
                 </form>
-                @if (CrewPageAccess.Update)
+                @if (PageAccess.Update)
                 {
                     <div class="modal-footer">
                         <button id="" class="btn btn-default closeCrewSearch" value="0">Cancel</button>
@@ -199,7 +191,7 @@
                         </div>
                     </div>
                 </div>
-                @if (CrewPageAccess.Update)
+                @if (PageAccess.Update)
                 {
                     <div class="modal-footer">
                         <button id="" class="btn btn-default closePosDeptSearch" value="0">Cancel</button>
@@ -230,7 +222,7 @@
 </style>
 
 <script type="text/javascript">
-        var CrewPageAccess = @Html.Raw(Json.Encode(CrewPageAccess));
+        var PageAccess = @Html.Raw(Json.Encode(PageAccess));
         var $_positionDeptArr = @Html.Raw(Json.Encode(positionDepartment));
 
         $(document).ready(function() {
@@ -271,7 +263,7 @@
                 });
                 break;
             default:
-                if (CrewPageAccess.Delete == true) {
+                if (PageAccess.Delete == true) {
                     $tableName.find('tbody tr.member').each(function(e) {
                         if ($(this).find('input[type="checkbox"]').is(':checked')) {
                             if ($(this).find('input.Deleted').val() == "false") {

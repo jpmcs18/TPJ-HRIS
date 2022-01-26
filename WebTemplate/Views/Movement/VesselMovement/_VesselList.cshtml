@@ -4,19 +4,8 @@
 }
 
 <tr id="@Model.ID" class="Row-Display Row-Display-Vessel read" style="" title="" @*onclick="ViewVesselMovement(@Model.ID)"*@>
-    @*<td class="text-left">
-        @if (VesselPageAccess.Delete)
-        {
-            <input type="checkbox" class="i-checks chkRow" title="Select" value="@Model.ID">
-        }
-        else
-        {
-            <input type="checkbox" class="i-checks" title="" value="">
-        }
-    </td>*@
     <td nowrap class="text-center">
         <input type="hidden" value="@Model.ID" />
-        @*@Html.Raw(@String.Format("{0} - <b>{1}</b>", Model.Code ?? "", Model.Description ?? ""))*@
         @Model.Description
     </td>
     <td style="" class="row-actions">
@@ -32,26 +21,3 @@
             </div>
         </td>
 </tr>
-@*<tr id="@Model.ID" class="Row-Input Row-Input-Vessel hidden" style="cursor: pointer" title="">
-    <td>
-        @Html.HiddenFor(m => m.ID)
-        <input type="hidden" name="VesselID" value="@Model.ID" />
-        @Model.Description
-    </td>
-    @if (VesselPageAccess.Update || VesselPageAccess.Delete || VesselPageAccess.View)
-    {
-        <td style="" class="row-actions">
-            <div class="btn-group">
-                @if (VesselPageAccess.Update)
-                {
-                    <button type="button" name="SaveVessel" class="btn btn-info btn-sm btn-rounded SaveVessel" value="@Model.ID" title="Save"><i class="fa fa-save"></i></button>
-                }
-                else if (VesselPageAccess.View)
-                {
-                    <button type="button" name="CancelVessel" class="btn btn-outline btn-warning btn-sm btn-rounded CancelVessel" value="@Model.ID" title="Cancel"><i class="fa fa-times"></i></button>
-                }
-            </div>
-        </td>
-    }
-</tr>*@
-

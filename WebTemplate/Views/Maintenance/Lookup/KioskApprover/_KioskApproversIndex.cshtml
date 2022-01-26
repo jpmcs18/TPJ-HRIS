@@ -3,29 +3,20 @@
 @{
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
     var c = User as WebTemplate.Models.CustomPrincipal;
-    var KioskApproverPageAccess = credential.GetPage("Maintenance/Lookup/KioskApprover") ?? new DataAccessLayer.System.Page();
+    var PageAccess = credential.GetPage("Maintenance/Lookup/KioskApprover") ?? new DataAccessLayer.System.Page();
     var departments = ProcessLayer.Processes.Lookups.DepartmentProcess.Instance.GetList();
 
-    ViewBag.title = KioskApproverPageAccess.PageName;
+    ViewBag.title = PageAccess.PageName;
 }
 
 <div class="wrapper wrapper-content">
     <div class="page-heading">
         <div class="col-lg-8">
-            <h1>@Html.Raw(KioskApproverPageAccess.PageName ?? "&nbsp;")</h1>
-            <ol class="breadcrumb">
-                <li>
-                    <a href='@Url.Action("Index", "Home")'>Home</a>
-                </li>
-                <li>Movement</li>
-                <li class="active">
-                    <strong>@Html.Raw(KioskApproverPageAccess.PageName ?? "&nbsp;")</strong>
-                </li>
-            </ol>
+            @Html.Partial("~/Views/Shared/_Breadcrumbs.cshtml", PageAccess)
         </div>
         <div class="col-lg-4">
             <div class="title-action">
-                @if (KioskApproverPageAccess.Insert)
+                @if (PageAccess.Insert)
                 {
                     @*<button type="button" id="CreateNewKioskApprover" tpj-show-tab="#tab-1" class="btn btn-primary font-bold pull-right" title="New Kiosk Approver"><i class="fa fa-plus"></i>&nbsp;&nbsp;New Kiosk Approver</button>*@
                 }
@@ -36,7 +27,7 @@
         <div class="col-xs-12 col-sm-12 col-md-push-2 col-md-8 col-lg-push-2 col-lg-8 animated fadeInLef">
             <div class="tabs-container" style="">
                 <div class="tab-content" style="margin-top: 0px; max-height: unset; overflow: hidden;">
-                    @if (KioskApproverPageAccess.View)
+                    @if (PageAccess.View)
                     {
                         <div id="tab-2" class="tab-pane active" style="">
                             <div id="CandidatesAndApproversForm" class="panel-body" style="padding: 10px; max-height: unset; height: 100%; border: 1px solid #e5e6e7; overflow: hidden;">
@@ -51,7 +42,7 @@
 </div>
 
 <script type="text/javascript">
-    var KioskApproverPageAccess = @Html.Raw(Json.Encode(KioskApproverPageAccess));
+    var PageAccess = @Html.Raw(Json.Encode(PageAccess));
     var departmentsArr = @Html.Raw(Json.Encode(departments));
     var editMode = false;
     var $_personnelIDsArr = []; var $_loadedPersonnelIDsArr = [];

@@ -1,15 +1,17 @@
 ﻿@model DataAccessLayer.System.Page
 
-@{ 
+@{
     var breadcrumbs = Model.URL.Split('/');
 }
 
 <h1>@Html.Raw(Model.PageName ?? "&nbsp;")</h1>
 <ol class="breadcrumb">
-    <li class="text-muted"><a href='@Url.Action("Index", "Home")' style="text-decoration: underline;">Home</a></li>
+    @if (Model.PageName.ToLower().Trim() != "home") {
+        <li class="text-muted"><a href='@Url.Action("Index", "Home")' style="text-decoration: underline;">Home</a></li>
+    }
     @foreach (var b in breadcrumbs)
     {
         bool isActivePage = b.ToLower().Trim() == Model.PageName.Replace(" ", "").ToLower().Trim();
-        <li class="@(isActivePage ? "active" : "text-muted")">@Html.Raw(isActivePage ? $"<strong><a href='{b}' style='text-decoration: underline;'>{Model.PageName}</a></strong>" : b)</li>
+    <li class="@(isActivePage ? "active" : "text-muted")">@Html.Raw(isActivePage ? $"<strong><a href='{b}' style='text-decoration: underline;'>{Model.PageName}</a></strong>" : b)</li>
     }
 </ol>

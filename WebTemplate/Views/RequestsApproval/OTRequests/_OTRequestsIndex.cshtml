@@ -2,29 +2,20 @@
 
 @{
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
-    var OtRequestPageAccess = credential.GetPage("RequestsApproval/OTRequests") ?? new DataAccessLayer.System.Page();
+    var PageAccess = credential.GetPage("RequestsApproval/OTRequests") ?? new DataAccessLayer.System.Page();
     var OtRequestApprover = credential.GetPage("Approver Request Over Time") ?? new DataAccessLayer.System.Page();
 
-    ViewBag.title = OtRequestPageAccess.PageName;
+    ViewBag.title = PageAccess.PageName;
 }
 
 <div class="wrapper wrapper-content">
     <div class="page-heading">
         <div class="col-lg-8">
-            <h1>@Html.Raw(OtRequestPageAccess.PageName ?? "&nbsp;")</h1>
-            <ol class="breadcrumb">
-                <li>
-                    <a href='@Url.Action("Index", "Home")'>Home</a>
-                </li>
-                <li>Requests Approval</li>
-                <li class="active">
-                    <strong>@Html.Raw(OtRequestPageAccess.PageName ?? "&nbsp;")</strong>
-                </li>
-            </ol>
+            @Html.Partial("~/Views/Shared/_Breadcrumbs.cshtml", PageAccess)
         </div>
         <div class="col-lg-4">
             <div class="title-action">
-                @if (OtRequestPageAccess.Insert)
+                @if (PageAccess.Insert)
                 {
                     @*<a class="btn btn-primary compose-mail" href="#" id="btnadd">New Request</a>*@
                 }

@@ -42,13 +42,13 @@ namespace WebTemplate.Controllers
 
             if (Properties.Settings.Default.isDevMode)
             {
-                CustomPrincipalSerialize principal = new CustomPrincipalSerialize
-                {
-                    UserID = 1, //superadmin
-                    FirstName = "Super",
-                    LastName = "Admin",
-                    EmailAddress = "Email@address.com"
-                };
+                //CustomPrincipalSerialize principal = new CustomPrincipalSerialize
+                //{
+                //    UserID = 1, //superadmin
+                //    FirstName = "Super",
+                //    LastName = "Admin",
+                //    EmailAddress = "Email@address.com"
+                //};
                 SetCredentials(1);
                 return RedirectToLocal(returnUrl);
             }
@@ -218,7 +218,7 @@ namespace WebTemplate.Controllers
                 return PartialViewCustom(model);
             }
 
-            string view = Request.Browser.IsMobileDevice ? "Login_Mobile" : "Login";
+            //string view = Request.Browser.IsMobileDevice ? "Login_Mobile" : "Login";
             return ViewCustom("Login", model);
         }
         

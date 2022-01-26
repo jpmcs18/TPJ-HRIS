@@ -6,7 +6,6 @@
 }
 
 <div class="main-container mid">
-
     @if (PayrollPageAccess.View)
     {
         <div class="file-manager">
@@ -71,7 +70,6 @@
                             </tr>
                         }
                         <tr>
-                            <th style="text-align: center;"></th>
                             <th style="text-align: center;">Start Date</th>
                             <th style="text-align: center;">End Date</th>
                         </tr>
@@ -93,7 +91,6 @@
                                         <input id="PayrollBase.EndDate" name="PayrollBase.EndDate" value="@Html.ValueFor(m => m.Payrolls[i].EndDate)" />
                                     </td>
 
-                                    <td style="text-align: center;"><i class="fa fa-angle-right"></i></td>
                                     <td style="text-align: center">@Model.Payrolls[i].StartDate.ToString("MMM dd, yyyy")</td>
                                     <td style="text-align: center">@Model.Payrolls[i].EndDate.ToString("MMM dd, yyyy")</td>
                                 </tr>

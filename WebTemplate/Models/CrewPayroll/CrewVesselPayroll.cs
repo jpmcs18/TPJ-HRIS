@@ -6,7 +6,7 @@ namespace WebTemplate.Models.CrewPayroll
     public class CrewVesselList
     {
         public CrewPayrollPeriod PayrollBase { get; set; }
-        public List<CrewVessel> Vessel { get; set; }
+        public List<CrewVessel> Vessels { get; set; }
     }
 
     public class CrewPayrollList

@@ -44,35 +44,25 @@
                             {
                                 if (Model[i - 1].Type != k.Type)
                                 {
-                                    @*@Html.Raw("<a href='/RequestsApproval/" + (k.Type.ToString().Replace("_", "")) + "s" + "' style='width: 100%;' target='_blank'>")
-                                        @Html.Raw(k.Type.ToString().Replace("_", " "))@(k.Count > 1 ? "s" : "")*@
-
-                                    links += "<a href='/RequestsApproval/" + (k.Type.ToString().Replace("_", "")) + "s" + "' style='width: 100%;' target='_blank'>";
+                                    links += "<a class='btn btn-default' href='/RequestsApproval/" + (k.Type.ToString().Replace("_", "")) + "s" + "' style='width: 100%;' target='_blank'>";
                                     links += k.Type.ToString().Replace("_", " ") + (k.Count > 1 ? "s" : "");
                                 }
 
-                                if (i < Model.Count() - 1 && k.Type != Model[i + 1].Type)
-                                {
-                                    @*@Html.Raw($" (<b>{k.Count}</b> {Type})</br></a></br>")*@
-
-                                    links += $" (<b>{k.Count}</b> {Type})</br></a></br>";
-                                }
-                                else
-                                {
-                                    @*@Html.Raw($" (<b>{k.Count}</b> {Type})</a></br>")*@
-
-                                    links += $" (<b>{k.Count}</b> {Type})</br></a></br>";
-                                }
+                                links += $" (<b>{k.Count}</b> {Type})</br></a></br>";
+                                //if (i < Model.Count() - 1 && k.Type != Model[i + 1].Type)
+                                //{
+                                //    links += $" (<b>{k.Count}</b> {Type}</br></a></br>";
+                                //}
+                                //else
+                                //{
+                                //    links += $" (<b>{k.Count}</b> {Type})</br></a></br>";
+                                //}
                             }
                             else
                             {
-                                @*@Html.Raw("<a class='btn btn-default' href='/RequestsApproval/" + (k.Type.ToString().Replace("_", "")) + "s" + "' style='width: 100%;' target='_blank'>")
-                                    @Html.Raw(k.Type.ToString().Replace("_", " "))@(k.Count > 1 ? "s" : "")
-                                    @Html.Raw($" (<b>{k.Count}</b> {Type})</br>")*@
-
                                 links += "<a class='btn btn-default' href='/RequestsApproval/" + (k.Type.ToString().Replace("_", "")) + "s" + "' style='width: 100%;' target='_blank'>";
                                 links += k.Type.ToString().Replace("_", " ") + (k.Count > 1 ? "s" : "");
-                                links += $" (<b>{k.Count}</b> {Type})</br></a></br>";
+                                links += $" (<b>{k.Count}</b> {Type})";
                             }
                         }
                     }
@@ -135,7 +125,7 @@
                                         }
                                     }
                                 }*@
-                            <span class="text-muted">Press Esc to close.</span>
+                            <span class="text-muted">Press X or Esc to close.</span>
                             @Html.Raw(links)
                         </div>
                     </div>
