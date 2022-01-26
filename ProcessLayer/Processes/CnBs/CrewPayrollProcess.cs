@@ -78,8 +78,11 @@ namespace ProcessLayer.Processes.CnB
                 PayPeriodID = dr["PayPeriodID"].ToLong(),
                 Vessel = VesselProcess.Instance.Converter(dr)
             };
-            crewVessel.CrewPayrolls = GetCrewPayrolls(crewVessel.PayPeriodID, crewVessel.Vessel.ID);
-            return new CrewVessel();
+            if (!VesselOnly)
+            {
+                crewVessel.CrewPayrolls = GetCrewPayrolls(crewVessel.PayPeriodID, crewVessel.Vessel.ID);
+            }
+            return crewVessel;
         }
 
         internal CrewLoanDeductions CrewLoanDeductionConverter(DataRow dr)
