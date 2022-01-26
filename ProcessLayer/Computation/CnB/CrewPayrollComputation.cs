@@ -95,8 +95,7 @@ namespace ProcessLayer.Computation.CnB
                     if (payroll.CrewPayrollDetails?.Where(x => x.LoggedDate == previousAdjustedPayroll[i].LoggedDate)?.Any() ?? false)
                     {
                         details = payroll.CrewPayrollDetails?.Where(x => x.LoggedDate == previousAdjustedPayroll[i].LoggedDate).First();
-                        details.IsHoliday = default;
-                    }
+                    } 
                     details.Position = cm.PositionID != null ? cm._Position : cm._SNPosition;
                     details.PostiionID = details.Position?.ID ?? 0;
                     details.Vessel = cm.PositionID != null ? cm._Vessel : cm._SNVessel;
@@ -171,7 +170,6 @@ namespace ProcessLayer.Computation.CnB
                 if (payroll.CrewPayrollDetails?.Where(x => x.LoggedDate == startDate)?.Any() ?? false)
                 {
                     details = payroll.CrewPayrollDetails.Where(x => x.LoggedDate == startDate).First();
-                    details.IsHoliday = default;
                 }
                 details.Position = cm.PositionID != null ? cm._Position : cm._SNPosition;
                 details.PostiionID = details.Position?.ID ?? 0;
