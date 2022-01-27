@@ -111,7 +111,10 @@ namespace ProcessLayer.Computation.CnB
                     details.IsHoliday = Cutoff == 1 ? (holiday?.ID ?? 0) > 0 : false;
                     details.IsCorrected = true;
                     details.DailyRate = dailyrate;
-                    payroll.CrewPayrollDetails.Add(details);
+                    if ((details?.ID ?? 0) == 0)
+                    {
+                        payroll.CrewPayrollDetails.Add(details);
+                    }
                 }
             }
             if (payroll.ID > 0)
@@ -138,7 +141,7 @@ namespace ProcessLayer.Computation.CnB
 
             GenerateDetails(payroll, periodStart.Date, assumeStart.Date, assumeEnd.Date, crewMovememnts, false);
 
-            payroll.BasicPay = payroll.CrewPayrollDetails.Where(x => (x.ID > 0 && x.Modified) || x.ID == 0).Sum(t => t.DailyRate * ((t.IsAdditionalsOnly ? 0 : 1) + (t.IsSunday ? CrewPayrollParameters.Instance.CrewSundayRate : CrewPayrollParameters.Instance.CrewHolidayRate))).ToDecimalPlaces(2);
+            payroll.BasicPay = payroll.CrewPayrollDetails.Where(x => (x.ID > 0 && x.Modified) || x.ID == 0).Sum(t => t.DailyRate * ((t.IsAdditionalsOnly ? 0 : 1) + (t.IsSunday ? CrewPayrollParameters.Instance.CrewSundayRate : (t.IsHoliday ? CrewPayrollParameters.Instance.CrewHolidayRate : 0)))).ToDecimalPlaces(2);
 
             payroll.GrossPay = payroll.BasicPay.ToDecimalPlaces(2);
             if (Cutoff == 2)
@@ -146,7 +149,7 @@ namespace ProcessLayer.Computation.CnB
                 ComputeDeductions(payroll, periodStart, Cutoff);
                 ComputeLoans(payroll, deductibleLoans);
 
-                payroll.Tax += PayrollProcess.Instance.GetTax(payroll.Personnel?.ID ?? 0, type, payroll.GrossPay, Cutoff, periodStart) ?? 0;
+                payroll.Tax = CrewPayrollProcess.Instance.GetCrewTax(payroll.GrossPay, periodStart) ?? 0;
                 payroll.TotalDeductions += payroll.Tax.ToDecimalPlaces(2);
             }
             payroll.NetPay += payroll.GrossPay.ToDecimalPlaces(2) - payroll.TotalDeductions.ToDecimalPlaces(2);
@@ -189,7 +192,11 @@ namespace ProcessLayer.Computation.CnB
                 details.IsAdditionalsOnly = isAdditionalOnly;
                 details.DailyRate = cm.DailyRate ?? cm.SNDailyRate ?? 0;
                 details.IsAdjusted = startDate >= assumeStart;
-                payroll.CrewPayrollDetails.Add(details);
+
+                if ((details?.ID ?? 0) == 0)
+                { 
+                    payroll.CrewPayrollDetails.Add(details); 
+                }
 
                 startDate = startDate.AddDays(1);
             }
