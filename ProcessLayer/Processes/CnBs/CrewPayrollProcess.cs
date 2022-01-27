@@ -140,6 +140,21 @@ namespace ProcessLayer.Processes.CnB
 
             }
         }
+
+        public decimal? GetCrewTax(decimal? gross, DateTime date)
+        {
+
+            var parameters = new Dictionary<string, object> {
+                { "@Gross", gross },
+                { "@Date", date }
+            };
+
+            using (var db = new DBTools())
+            {
+                return db.ExecuteScalar("cnb.GetCrewTax", parameters).ToNullableDecimal();
+            }
+        }
+
         public CrewVessel GetCrewVessel(long payperiodId, int vesselId)
         {
             using (var db = new DBTools())
