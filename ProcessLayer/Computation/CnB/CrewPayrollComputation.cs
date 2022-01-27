@@ -67,6 +67,11 @@ namespace ProcessLayer.Computation.CnB
         }
         public CrewPayroll Recompute(CrewPayroll payroll, CrewPayrollPeriod payrollPeriod)
         {
+            Cutoff = (payrollPeriod.EndDate - payrollPeriod.StartDate).TotalDays > 25 ? 0 : (payrollPeriod.EndDate.Day <= 15 ? 1 : 2);
+
+            if (Cutoff == 2 || Cutoff == 0)
+                NonWorkingDays = NonWorkingDaysProcess.Instance.GetNonWorkingDays(payrollPeriod.StartDate, payrollPeriod.AdjustedEndDate)?.Where(x => (x.NonWorkingType == 1 || x.NonWorkingType == 2) && (x.IsGlobal ?? false))?.ToList();
+
             List<CrewMovement> crewMovememnts = VesselMovementProcess.GetCrewList(payroll.Vessel.ID, payroll.PersonnelID, payrollPeriod.StartDate, payrollPeriod.EndDate);
             Compute(payroll, crewMovememnts, payrollPeriod.Type, payrollPeriod.StartDate, payrollPeriod.EndDate, payrollPeriod.AdjustedStartDate, payrollPeriod.AdjustedEndDate);
             return payroll;
@@ -101,8 +106,8 @@ namespace ProcessLayer.Computation.CnB
                     details.PostiionID = details.Position?.ID ?? 0;
                     details.Vessel = cm.PositionID != null ? cm._Vessel : cm._SNVessel;
                     details.VesselID = details.Vessel?.ID ?? 0;
-                    details.IsSunday = Cutoff == 1 ? previousAdjustedPayroll[i].LoggedDate.DayOfWeek == DayOfWeek.Sunday : false;
                     details.LoggedDate = previousAdjustedPayroll[i].LoggedDate;
+                    details.IsSunday = Cutoff == 1 ? previousAdjustedPayroll[i].LoggedDate.DayOfWeek == DayOfWeek.Sunday : false;
                     details.IsHoliday = Cutoff == 1 ? (holiday?.ID ?? 0) > 0 : false;
                     details.IsCorrected = true;
                     details.DailyRate = dailyrate;
@@ -131,7 +136,7 @@ namespace ProcessLayer.Computation.CnB
                 }
             }
 
-            GenerateDetails(payroll, periodStart.Date, assumeStart.Date, assumeEnd.Date, crewMovememnts, true);
+            GenerateDetails(payroll, periodStart.Date, assumeStart.Date, assumeEnd.Date, crewMovememnts, false);
 
             payroll.BasicPay = payroll.CrewPayrollDetails.Where(x => (x.ID > 0 && x.Modified) || x.ID == 0).Sum(t => t.DailyRate * ((t.IsAdditionalsOnly ? 0 : 1) + (t.IsSunday ? CrewPayrollParameters.Instance.CrewSundayRate : CrewPayrollParameters.Instance.CrewHolidayRate))).ToDecimalPlaces(2);
 
@@ -159,7 +164,7 @@ namespace ProcessLayer.Computation.CnB
                 }
 
                 var holiday = NonWorkingDays?.Where(x => ((x.Yearly ?? false) && x.Day?.Month == startDate.Month && x.Day?.Day == startDate.Day) || x.Day == startDate).FirstOrDefault();
-                if ((holiday?.ID ?? 0) == 0 && startDate.DayOfWeek != DayOfWeek.Sunday)
+                if ((holiday?.ID ?? 0) == 0 && startDate.DayOfWeek != DayOfWeek.Sunday && isAdditionalOnly)
                 {
                     startDate = startDate.AddDays(1); 
                     continue; 

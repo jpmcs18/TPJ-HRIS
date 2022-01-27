@@ -263,7 +263,7 @@ namespace ReportLayer.Reports
             foreach (var dailyRate in dailyRates)
             {
                 WriteClosing(payroll.Vessel);
-                decimal noofdays = dailyRate.Where(x => !x.IsAdditionalsOnly).Count();
+                decimal noofdays = dailyRate.Where(x => !x.IsAdditionalsOnly).Select(x => x.LoggedDate).Count();
                     noofdays += dailyRate.Where(x => x.IsSunday).Select(x => CrewPayrollParameters.Instance.CrewSundayRate).Sum();
                     noofdays += dailyRate.Where(x => x.IsHoliday).Select(x => CrewPayrollParameters.Instance.CrewHolidayRate).Sum();
                 decimal rate = dailyRate.Select(x => x.DailyRate).FirstOrDefault();

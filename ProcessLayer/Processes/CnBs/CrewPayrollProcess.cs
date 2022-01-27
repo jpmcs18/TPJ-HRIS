@@ -156,7 +156,7 @@ namespace ProcessLayer.Processes.CnB
             {
                 VesselOnly = isVesselOnly;
                 List<CrewVessel> vessels = ds.GetList(CrewVesselConverter);
-                VesselOnly = isVesselOnly;
+                VesselOnly = false;
                 return vessels;
             }
         }
@@ -495,7 +495,7 @@ namespace ProcessLayer.Processes.CnB
             {
                 { "@CrewPayrollID", payrollId },
                 { "@LoggedDate", details.LoggedDate },
-                { "@DailyRate", details.TotalRegularMinutes },
+                { "@DailyRate", details.DailyRate },
                 { "@IsHoliday", details.IsHoliday },
                 { "@IsSunday", details.IsSunday },
                 { "@IsAdjusted", details.IsAdjusted },
