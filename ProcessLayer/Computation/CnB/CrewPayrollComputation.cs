@@ -111,7 +111,10 @@ namespace ProcessLayer.Computation.CnB
                     details.IsHoliday = Cutoff == 1 ? (holiday?.ID ?? 0) > 0 : false;
                     details.IsCorrected = true;
                     details.DailyRate = dailyrate;
-                    payroll.CrewPayrollDetails.Add(details);
+                    if ((details?.ID ?? 0) == 0)
+                    {
+                        payroll.CrewPayrollDetails.Add(details);
+                    }
                 }
             }
             if (payroll.ID > 0)
@@ -189,7 +192,11 @@ namespace ProcessLayer.Computation.CnB
                 details.IsAdditionalsOnly = isAdditionalOnly;
                 details.DailyRate = cm.DailyRate ?? cm.SNDailyRate ?? 0;
                 details.IsAdjusted = startDate >= assumeStart;
-                payroll.CrewPayrollDetails.Add(details);
+
+                if ((details?.ID ?? 0) == 0)
+                { 
+                    payroll.CrewPayrollDetails.Add(details); 
+                }
 
                 startDate = startDate.AddDays(1);
             }
