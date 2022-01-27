@@ -287,12 +287,13 @@
             success: function (response) {
                 if (response.msg == null) {
                     $('#PayrollsTable tr#' + payrollId).replaceWith(response);
+                    $('#PayrollsTable tr#' + payrollId + " #RecomputePersonnelPayroll").attr("onclick", "RecomputePersonnelPayroll(" + payrollId + ");");
                     $('#PayrollsTable tr#' + payrollId + ' input[id="PayrollPeriod.ID"]').val(payrollPeriodId);
                     $('#PayrollsTable tr#' + payrollId + ' input[id="PayrollPeriod.StartDate"]').val(payrollPeriodStartDate);
                     $('#PayrollsTable tr#' + payrollId + ' input[id="PayrollPeriod.EndDate"]').val(payrollPeriodEndDate);
                     $('#PayrollsTable tr#' + payrollId + ' input[name="PayRoll.Personnel.ID"]').attr('id', 'PayRoll[' + index + '].Personnel.ID');
                     $('#PayrollsTable tr#' + payrollId + ' input[name="PayRoll.ID"]').attr('id', 'PayRoll[' + index + '].ID');
-                    $('#PayrollsTable tr#' + payrollId + ' input[name="payPeriodid"]').val(payrollPeriodId);
+                    $('#PayrollsTable tr#' + payrollId + ' input[name="payrollId"]').val(payrollPeriodId);
                 } else {
                     toastr.error(response.res);
                 }
