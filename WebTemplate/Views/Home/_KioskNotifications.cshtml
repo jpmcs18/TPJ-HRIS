@@ -1,4 +1,5 @@
 ﻿@model List<ProcessLayer.Entities.Kiosk.KioskNotification>
+    @using ProcessLayer.Helpers.Enumerable;
 
 @{
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
@@ -29,40 +30,37 @@
                 {
                     for (int i = 0; i < Model.Count(); i++)
                     {
-                        var k = Model[i];
+                        var current = Model[i];
 
-                        if (k.Count > 0 && (
-                            (k.Type == ProcessLayer.Helpers.Enumerable.KioskNotoficationType.Leave_Request && LeaveRequestsApprover.Approve == true) ||
-                            (k.Type == ProcessLayer.Helpers.Enumerable.KioskNotoficationType.OT_Request && OtRequestApprover.Approve == true) ||
-                            (k.Type == ProcessLayer.Helpers.Enumerable.KioskNotoficationType.Time_Edit_Request && TimeEditRequestApprover.Approve == true) ||
-                            (k.Type == ProcessLayer.Helpers.Enumerable.KioskNotoficationType.High_Risk_Request && OtRequestApprover.Approve == true)
+                        if (current.Count > 0 && (
+                            (current.Type == ProcessLayer.Helpers.Enumerable.KioskNotoficationType.Leave_Request && LeaveRequestsApprover.Approve == true) ||
+                            (current.Type == ProcessLayer.Helpers.Enumerable.KioskNotoficationType.OT_Request && OtRequestApprover.Approve == true) ||
+                            (current.Type == ProcessLayer.Helpers.Enumerable.KioskNotoficationType.Time_Edit_Request && TimeEditRequestApprover.Approve == true) ||
+                            (current.Type == ProcessLayer.Helpers.Enumerable.KioskNotoficationType.High_Risk_Request && OtRequestApprover.Approve == true)
                             ))
                         {
-                            var Type = k.Filter.ToString().Replace("_", " ");
+                            var Type = current.Filter.ToString().Replace("_", " ");
 
                             if (i > 0)
                             {
-                                if (Model[i - 1].Type != k.Type)
+                                if (Model[i - 1].Type != current.Type)
                                 {
-                                    links += "<a class='btn btn-default' href='/RequestsApproval/" + (k.Type.ToString().Replace("_", "")) + "s" + "' style='width: 100%;' target='_blank'>";
-                                    links += k.Type.ToString().Replace("_", " ") + (k.Count > 1 ? "s" : "");
+                                    links += "<a class='btn btn-default' href='/RequestsApproval/" + (current.Type.ToString().Replace("_", "")) + "s" + "' style='width: 100%;' target='_blank'>";
+                                    links += current.Type.ToString().Replace("_", " ") + (current.Count > 1 ? "s" : "");
                                 }
 
-                                links += $" (<b>{k.Count}</b> {Type})</br></a></br>";
-                                if (i < Model.Count() - 1 && k.Type != Model[i + 1].Type)
+                                links += $") (<b>{current.Count}</b> {Type}";
+
+                                if (i <= Model.Count() - 1 && current.Type != Model[i + 1].Type)
                                 {
-                                    links += $" (<b>{k.Count}</b> {Type}</br></a></br>";
-                                }
-                                else
-                                {
-                                    links += $" (<b>{k.Count}</b> {Type})";
+                                    links += $")</a></br>";
                                 }
                             }
                             else
                             {
-                                links += "<a class='btn btn-default' href='/RequestsApproval/" + (k.Type.ToString().Replace("_", "")) + "s" + "' style='width: 100%;' target='_blank'>";
-                                links += k.Type.ToString().Replace("_", " ") + (k.Count > 1 ? "s" : "");
-                                links += $" (<b>{k.Count}</b> {Type})</br></a></br>";
+                                links += "<a class='btn btn-default' href='/RequestsApproval/" + (current.Type.ToString().Replace("_", "")) + "s" + "' style='width: 100%;' target='_blank'>";
+                                links += current.Type.ToString().Replace("_", " ") + (current.Count > 1 ? "s" : "");
+                                links += $" (<b>{current.Count}</b> {Type}";
                             }
                         }
                     }
