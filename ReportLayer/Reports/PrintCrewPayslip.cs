@@ -45,6 +45,10 @@ namespace ReportLayer.Reports
             WriteToCell(PrintCrewPayslipHelper.Instance.HDMFNoCell, "HDMF No: " + payroll.Personnel.PAGIBIG);
             WriteToCell(PrintCrewPayslipHelper.Instance.SSSNoCell, "SSS No: " + payroll.Personnel.SSS);
 
+            var totalNoOfDays = payroll.CrewPayrollDetails.Where(x => !x.IsAdditionalsOnly).Count();
+            WriteToCell(PrintCrewPayslipHelper.Instance.BasicTotalDaysCell, totalNoOfDays.ToString("N2"));
+            WriteToCell(PrintCrewPayslipHelper.Instance.BasicSalaryCell, payroll.BasicPay.ToString("N2"));
+
             WriteToCell(PrintCrewPayslipHelper.Instance.TotalOTPayCell, totalOTPay.ToString("N2"));
 
             WriteToCell(PrintCrewPayslipHelper.Instance.PagibigLoanCell, payroll.PagibigLoan.ToString("N2"));
@@ -54,16 +58,13 @@ namespace ReportLayer.Reports
             WriteToCell(PrintCrewPayslipHelper.Instance.SSSLoanCell, payroll.SSSLoan.ToString("N2"));
             WriteToCell(PrintCrewPayslipHelper.Instance.TaxCell, payroll.Tax.ToString("N2"));
             WriteToCell(PrintCrewPayslipHelper.Instance.PhilHealthCell, payroll.PhilHealth.ToString("N2"));
+            WriteToCell(PrintCrewPayslipHelper.Instance.ValeCell, 0.ToString("N2"));
 
             WriteToCell(PrintCrewPayslipHelper.Instance.TotalDedCell, payroll.TotalDeductions.ToString("N2"));
 
             WriteToCell(PrintCrewPayslipHelper.Instance.NetCell, payroll.NetPay.ToString("N2"));
             
             WriteToCell(PrintCrewPayslipHelper.Instance.SignatoryCell, payroll.Personnel.FullName);
-
-            var totalNoOfDays = payroll.CrewPayrollDetails.Where(x => !x.IsAdditionalsOnly).Count();
-            WriteToCell(PrintCrewPayslipHelper.Instance.BasicTotalDaysCell, totalNoOfDays.ToString("N2"));
-            WriteToCell(PrintCrewPayslipHelper.Instance.BasicSalaryCell, payroll.BasicPay.ToString("N2"));
 
             var startRow = PrintCrewPayslipHelper.Instance.OTStartRow;
 
@@ -145,7 +146,7 @@ namespace ReportLayer.Reports
             WriteToCell(startRow, PrintCrewPayslipHelper.Instance.OTPayColumn, 0.ToString("N2"));
             startRow++;
 
-            var basics = payroll.CrewPayrollDetails.Where(x => !x.IsAdditionalsOnly).GroupBy(x => x.DailyRate);
+            var basics = payroll.CrewPayrollDetails.Where(x => !x.IsAdditionalsOnly).OrderBy(x => x.LoggedDate).GroupBy(x => x.DailyRate);
 
             startRow = PrintCrewPayslipHelper.Instance.BasicStartRow;
 

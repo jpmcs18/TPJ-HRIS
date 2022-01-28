@@ -26,7 +26,7 @@ namespace ProcessLayer.Helpers.ObjectParameter.Payroll
         public int CrewCutOff1 { get; set; }
         public int CrewCutOff2 { get; set; }
         public decimal CrewHolidayRate { get; set; }
-        public decimal CrewRegularRate { get; set; }
+        public decimal CrewRegularRate { get { return (decimal)0.5; } }
         public decimal CrewSundayRate { get; set; }
     }
 }

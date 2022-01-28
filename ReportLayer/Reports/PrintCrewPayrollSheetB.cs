@@ -236,6 +236,8 @@ namespace ReportLayer.Reports
                 .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
             WriteToCell(Row, PrintCrewPayrollSheetBHelper.Instance.ColumnPhilHealth, payroll.PhilHealth.ToString("N2"))
                 .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
+            WriteToCell(Row, PrintCrewPayrollSheetBHelper.Instance.ColumnVale, 0.ToString("N2"))
+                .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
             WriteToCell(Row, PrintCrewPayrollSheetBHelper.Instance.ColumnNetAmount, payroll.NetPay.ToString("N2"))
                 .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
 
@@ -270,7 +272,7 @@ namespace ReportLayer.Reports
                 decimal salary = rate * noofdays;
 
                 WriteToCell(Row, PrintCrewPayrollSheetBHelper.Instance.ColumnPosition, dailyRate.Select(x => x.Position?.Description).FirstOrDefault())
-                    .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
+                    .SetHorizontalAlignment(HorizontalAlignmentStyle.Left);
                 WriteToCell(Row, PrintCrewPayrollSheetBHelper.Instance.ColumnNoOfDays, noofdays.ToString("N3"))
                     .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
                 WriteToCell(Row, PrintCrewPayrollSheetBHelper.Instance.ColumnRate, rate.ToString("N3"))
@@ -278,7 +280,7 @@ namespace ReportLayer.Reports
                 WriteToCell(Row, PrintCrewPayrollSheetBHelper.Instance.ColumnSalary, salary.ToString("N2"))
                     .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
                 TotalBasicPay += salary;
-                GrandTotalBasicPay += payroll.PagibigFund;
+                GrandTotalBasicPay += salary;
 
                 Cnt++;
                 Row++;
