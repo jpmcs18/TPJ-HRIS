@@ -9,9 +9,9 @@ namespace ProcessLayer.Entities
         public TimeSpan? StartTime { get; set; }
         public TimeSpan? EndTime { get; set; }
         public int? NonWorkingType { get; set; }
-        public bool? IsGlobal { get; set; } = false;
+        public bool? IsGlobal { get; set; }
         public Lookup Type { get; set; }
-        public bool? Yearly { get; set; } = false;
+        public bool? Yearly { get; set; }
 
         public int? LocationID { get; set; }
         public Location Location { get; set; }

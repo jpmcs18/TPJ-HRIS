@@ -30,7 +30,7 @@ namespace DataAccessLayer.System
 
         public int? CreatedBy { get; set; }
 
-        public bool? Deleted { get; set; } = false;
+        public bool? Deleted { get; set; }
 
         public int? UpdatedBy { get; set; }
 

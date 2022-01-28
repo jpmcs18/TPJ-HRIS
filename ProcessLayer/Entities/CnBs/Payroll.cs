@@ -72,7 +72,7 @@ namespace ProcessLayer.Entities.CnB
         public decimal SSS { get { return PayrollDeductions.Where(x => x.Deduction.Description.Replace("-", "").Replace(" ", "").ToLower().Contains("sss")).Sum(x => x.Amount) ?? 0; } }
         public decimal ProvidentFund { get { return PayrollDeductions.Where(x => x.Deduction.Description.Replace("-", "").Replace(" ", "").ToLower().Contains("provident")).Sum(x => x.Amount) ?? 0; } }
         public decimal PhilHealth { get { return PayrollDeductions.Where(x => x.Deduction.Description.Replace("-", "").Replace(" ", "").ToLower().Contains("philhealth")).Sum(x => x.Amount) ?? 0; } }
-        public decimal Vale { get { return LoanDeductions.Where(x => x.PersonnelLoan._Loan.IsPersonal ?? false).Sum(x => x.Amount); } }
+        public decimal Vale { get { return LoanDeductions.Where(x => x.PersonnelLoan._Loan.isPersonal ?? false).Sum(x => x.Amount); } }
         public decimal NoOfDaysPresent { get { return PayrollDetails.Where(x => x.IsPresent).Sum(x => x.RegularDay); } }
         public decimal ExtensionPresent { get { return PayrollDetails.Where(x => x.IsExtended).Count(); } }
         public decimal HighRiskPresent { get { return PayrollDetails.Where(x => x.IsHighRisk && (x.Location?.ID ?? 0) == 0).Count(); } }

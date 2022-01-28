@@ -7,12 +7,12 @@ namespace ProcessLayer.Entities.Kiosk
         public long ID { get; set; }
         public long? PersonnelID { get; set; }
         public string Reasons { get; set; }
-        public bool? Cancelled { get; set; } = false;
+        public bool? Cancelled { get; set; }
         public int? CancelledBy { get; set; }
         public DateTime? CancelledOn { get; set; }
         public string CancellationRemarks { get; set; }
 
-        public bool? Approved { get; set; } = false;
+        public bool? Approved { get; set; }
         public int? ApprovedBy { get; set; }
         public DateTime? ApprovedOn { get; set; }
 

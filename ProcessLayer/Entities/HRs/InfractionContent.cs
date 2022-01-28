@@ -13,7 +13,7 @@ namespace ProcessLayer.Entities
         public string Message { get; set; }
         public string File { get; set; }
         public string FilePath { get; set; }
-        public bool? SaveOnly { get; set; } = false;
+        public bool? SaveOnly { get; set; }
         public bool FromPersonnel { get; set; }
         public bool IsFileSupported
         {

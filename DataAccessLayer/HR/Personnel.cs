@@ -12,7 +12,7 @@ namespace DataAccessLayer.HR
         public string First_Name { get; set; }
         public string Middle_Name { get; set; }
         public string Last_Name { get; set; }
-        public bool? Gender { get; set; } = false;
+        public bool? Gender { get; set; }
         public DateTime? Date_Hired { get; set; }
         public int? Employment_Status_ID { get; set; }
         public DateTime? Resignation_Date { get; set; }

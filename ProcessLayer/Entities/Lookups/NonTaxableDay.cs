@@ -6,7 +6,7 @@ namespace ProcessLayer.Entities
     {
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
-        public bool? IsGlobal { get; set; } = false;
+        public bool? IsGlobal { get; set; }
         public int? LocationID { get; set; }
         public Location Location { get; set; }
     }

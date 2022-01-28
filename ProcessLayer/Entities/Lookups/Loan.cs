@@ -2,7 +2,7 @@
 {
     public class Loan : Lookup<int>
     {
-        public bool? GovernmentLoan { get; set; } = false;
-        public bool? IsPersonal { get; set; } = false;
+        public bool? GovernmentLoan { get; set; }
+        public bool? isPersonal { get; set; }
     }
 }

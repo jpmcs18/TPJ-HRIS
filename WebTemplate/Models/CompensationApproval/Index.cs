@@ -8,7 +8,7 @@ namespace WebTemplate.Models.CompensationApproval
 {
     public class Index : BaseModel
     {
-        //public bool? Status { get; set; } = false;
+        //public bool? Status { get; set; }
         public List<PersonnelCompensation> PersonnelCompensations { get; set; } = new List<PersonnelCompensation>();
     }
 }

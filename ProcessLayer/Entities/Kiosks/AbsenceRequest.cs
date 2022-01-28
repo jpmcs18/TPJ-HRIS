@@ -7,15 +7,15 @@ namespace ProcessLayer.Entities.Kiosk
     {
         public float? NoofDays { get; set; }
         public DateTime? RequestDate { get; set; }
-        public bool? Noted { get; set; } = false;
-        public bool IsExpired { get { return Approved != true && Cancelled != true && CreatedOn != null && ((DateTime.Now - CreatedOn).Value.TotalHours >= 48); } }
+        public bool? Noted { get; set; }
+        public bool IsExpired { get { return Approved != true && Cancelled != true && CreatedOn != null && ((DateTime.Now - CreatedOn).Value.TotalHours >= 48) && false; } }
         public int? NotedBy { get; set; }
         public DateTime? NotedOn { get; set; }
-        public bool? IsAbsent { get; set; } = false;
-        public bool? IsHalfDay { get; set; } = false;
-        public bool? IsMorning { get; set; } = false;
-        public bool? IsAfternoon { get; set; } = false;
-        public bool? IsUndertime { get; set; } = false;
+        public bool? IsAbsent { get; set; }
+        public bool? IsHalfDay { get; set; }
+        public bool? IsMorning { get; set; }
+        public bool? IsAfternoon { get; set; }
+        public bool? IsUndertime { get; set; }
         public DateTime? Time { get; set; }
         public string Remarks
         {

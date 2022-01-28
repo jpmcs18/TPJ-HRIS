@@ -32,7 +32,7 @@ namespace ProcessLayer.Entities
         public string MaidenMiddleName { get; set; }
         [DisplayName("Last Name")]
         public string LastName { get; set; }
-	    public bool? Gender { get; set; } = false;
+	    public bool? Gender { get; set; }
         [DisplayName("Date Hired")]
         public DateTime? DateHired { get; set; }
         [DisplayName("Nationality")]
@@ -82,14 +82,14 @@ namespace ProcessLayer.Entities
         [DisplayName("Contact No.")]
         public string ReferenceContactNo { get; set; }
         [DisplayName("Walk-In")]
-        public bool? WalkIn { get; set; } = false;
+        public bool? WalkIn { get; set; }
         public string ImagePath { get; set; }
         public string Image { get; set; }
 
         [DisplayName("Payroll Type")]
         public int? PayrollTypeID { get; set; }
         [DisplayName("Fixed Salary")]
-        public bool? FixedSalary { get; set; } = false;
+        public bool? FixedSalary { get; set; }
         public long? LinkedPersonnelID { get; set; }
 
         [DisplayName("Automatic Overtime")]
@@ -98,8 +98,8 @@ namespace ProcessLayer.Entities
         public decimal AdditionalHazardRate { get; set; }
         [DisplayName("Biomatrics ID")]
         public int BiometricsID { get; set; }
-        public bool? Approved { get; set; } = false;
-        public bool? Cancelled { get; set; } = false;
+        public bool? Approved { get; set; }
+        public bool? Cancelled { get; set; }
 
         public List<EducationalBackground> _EducationalBackground { get; set; } = new List<EducationalBackground>();
         public List<WorkExperience> _WorkExperience { get; set; } = new List<WorkExperience>();

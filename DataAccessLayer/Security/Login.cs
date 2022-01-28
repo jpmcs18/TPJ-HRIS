@@ -17,7 +17,7 @@ namespace DataAccessLayer.Security
 
         public bool RememberMe { get; set; }
         public bool IsValidUsername { get; set; }
-        public bool? IsAuthenticated { get; set; } = false;
+        public bool? IsAuthenticated { get; set; }
         public int UserID { get; set; }
         public int UserStatusID { get; set; }
 

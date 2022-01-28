@@ -14,7 +14,7 @@ namespace ProcessLayer.Entities.HR
         public decimal PaidAmount { get; set; }
         public decimal? Amortization { get; set; }
         public float? PaymentTerms { get; set; }
-        public bool? PayrollDeductible { get; set; } = false;
+        public bool? PayrollDeductible { get; set; }
         public int? WhenToDeduct { get; set; }
         public DateTime? DateStart { get; set; }
         public string Remarks { get; set; }

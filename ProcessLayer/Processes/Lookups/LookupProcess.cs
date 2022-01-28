@@ -385,7 +385,7 @@ namespace ProcessLayer.Processes
             {
                 ID = dr["ID"].ToInt(),
                 Description = dr["Description"].ToString(),
-                IsPersonal = dr["is Personal"].ToNullableBoolean(),
+                isPersonal = dr["is Personal"].ToNullableBoolean(),
                 GovernmentLoan = dr["Government Loan"].ToNullableBoolean()
             };
         }

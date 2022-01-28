@@ -18,7 +18,7 @@ namespace ProcessLayer.Entities
         [DisplayName("Memo Date")]
         public DateTime? MemoDate { get; set; }
         public long? InReplyTo { get; set; }
-        public bool? PersonnelReply { get; set; } = false;
+        public bool? PersonnelReply { get; set; }
         public string Description { get; set; }
         public string Subject { get; set; }
         public string File { get; set; }

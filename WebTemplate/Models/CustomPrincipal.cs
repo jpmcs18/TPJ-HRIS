@@ -12,7 +12,7 @@ namespace WebTemplate.Models
         public long? PersonnelID { get; set; }
         public string EmailAddress { get; set; }
 
-        public bool? ForcePasswordChange { get; set; } = false;
+        public bool? ForcePasswordChange { get; set; }
 
         public CustomPrincipal(string username)
         {

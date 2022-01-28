@@ -2,7 +2,6 @@
 {
     public enum KioskNotoficationType
     {
-        None = 0,
         Leave_Request = 1,
         OT_Request = 2,
         Time_Edit_Request = 3,
