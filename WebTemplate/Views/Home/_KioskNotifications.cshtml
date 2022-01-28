@@ -49,20 +49,20 @@
                                 }
 
                                 links += $" (<b>{k.Count}</b> {Type})</br></a></br>";
-                                //if (i < Model.Count() - 1 && k.Type != Model[i + 1].Type)
-                                //{
-                                //    links += $" (<b>{k.Count}</b> {Type}</br></a></br>";
-                                //}
-                                //else
-                                //{
-                                //    links += $" (<b>{k.Count}</b> {Type})</br></a></br>";
-                                //}
+                                if (i < Model.Count() - 1 && k.Type != Model[i + 1].Type)
+                                {
+                                    links += $" (<b>{k.Count}</b> {Type}</br></a></br>";
+                                }
+                                else
+                                {
+                                    links += $" (<b>{k.Count}</b> {Type})";
+                                }
                             }
                             else
                             {
                                 links += "<a class='btn btn-default' href='/RequestsApproval/" + (k.Type.ToString().Replace("_", "")) + "s" + "' style='width: 100%;' target='_blank'>";
                                 links += k.Type.ToString().Replace("_", " ") + (k.Count > 1 ? "s" : "");
-                                links += $" (<b>{k.Count}</b> {Type})";
+                                links += $" (<b>{k.Count}</b> {Type})</br></a></br>";
                             }
                         }
                     }
@@ -88,43 +88,6 @@
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close" title="Close (Esc)"><span aria-hidden="true">×</span></button>
                         </div>
                         <div class="modal-body">
-                            @*@for (int i = 0; i < Model.Count(); i++)
-                                {
-                                    var k = Model[i];
-
-                                    if (k.Count > 0 && (
-                                        (k.Type.ToString() == "Leave_Request" && LeaveRequestsApprover.Approve == true) ||
-                                        (k.Type.ToString() == "OT_Request" && OtRequestApprover.Approve == true) ||
-                                        (k.Type.ToString() == "Time_Edit_Request" && OtRequestApprover.Approve == true) ||
-                                        (k.Type.ToString() == "High_Risk_Request" && OtRequestApprover.Approve == true)
-                                        ))
-                                    {
-                                        var Type = k.Filter.ToString();
-
-                                        if (i > 0)
-                                        {
-                                            if (Model[i - 1].Type.ToString() != k.Type.ToString())
-                                            {
-                                                @Html.Raw(k.Type.ToString().Replace("_", " "))@(k.Count > 1 ? "s" : "")
-                                            }
-
-                                            if (i < Model.Count() - 1 && k.Type.ToString() != Model[i + 1].Type.ToString())
-                                            {
-                                                @Html.Raw($" (<b>{k.Count}</b> {Type})</br>")
-                                                @Html.Raw("</br>")
-                                            }
-                                            else
-                                            {
-                                                @Html.Raw($" (<b>{k.Count}</b> {Type})")
-                                            }
-                                        }
-                                        else
-                                        {
-                                            @Html.Raw(k.Type.ToString().Replace("_", " "))@(k.Count > 1 ? "s" : "")
-                                            @Html.Raw($" (<b>{k.Count}</b> {Type})</br>")
-                                        }
-                                    }
-                                }*@
                             <span class="text-muted">Press X or Esc to close.</span>
                             @Html.Raw(links)
                         </div>
