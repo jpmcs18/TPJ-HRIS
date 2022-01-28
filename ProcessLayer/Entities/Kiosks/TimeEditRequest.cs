@@ -7,7 +7,7 @@ namespace ProcessLayer.Entities.Kiosk
         public DateTime RequestDate { get; set; }
         public DateTime? LoginDateTime { get; set; }
         public DateTime? LogoutDateTime { get; set; }
-        public bool IsExpired { get { return Approved != true && Cancelled != true && CreatedOn != null && ((DateTime.Now - CreatedOn).Value.TotalHours >= 48) && false; } }
+        public bool IsExpired { get { return Approved != true && Cancelled != true && CreatedOn != null && ((DateTime.Now - CreatedOn).Value.TotalHours >= 48); } }
         public string Remarks
         {
             get

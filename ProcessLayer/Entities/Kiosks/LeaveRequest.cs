@@ -12,14 +12,14 @@ namespace ProcessLayer.Entities.Kiosk
         public DateTime? RequestedDate { get; set; }
         public string File { get; set; }
         public string FilePath { get; set; }
-        public bool IsExpired { get { return Approved != true && Cancelled != true && CreatedOn != null && ((DateTime.Now - CreatedOn).Value.TotalHours >= 48) && false; } }
+        public bool IsExpired { get { return Approved != true && Cancelled != true && CreatedOn != null && ((DateTime.Now - CreatedOn).Value.TotalHours >= 48); } }
         public int? NotedBy { get; set; }
         public DateTime? NotedOn { get; set; }
-        public bool? Noted { get; set; }
-        public bool? IsAbsent { get; set; }
-        public bool? IsHalfDay { get; set; }
-        public bool? IsMorning { get; set; }
-        public bool? IsAfternoon { get; set; }
+        public bool? Noted { get; set; } = false;
+        public bool? IsAbsent { get; set; } = false;
+        public bool? IsHalfDay { get; set; } = false;
+        public bool? IsMorning { get; set; } = false;
+        public bool? IsAfternoon { get; set; } = false;
 
         public string Remarks
         {

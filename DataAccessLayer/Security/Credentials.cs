@@ -14,7 +14,7 @@ namespace DataAccessLayer.Security
         public string LastName { get; set; }
         public string EmailAddress { get; set; }
         public long? PersonnelID { get; set; }
-        public bool? ForcePasswordChange { get; set; }
+        public bool? ForcePasswordChange { get; set; } = false;
 
         public Credentials()
         {

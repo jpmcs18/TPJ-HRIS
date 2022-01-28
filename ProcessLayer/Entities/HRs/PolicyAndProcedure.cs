@@ -13,7 +13,7 @@ namespace ProcessLayer.Entities
         public string Subject { get; set; }
         public string File { get; set; }
         public string FilePath { get; set; }
-        public bool? SaveOnly { get; set; }
+        public bool? SaveOnly { get; set; } = false;
         public bool IsFileSupported
         {
             get
@@ -24,7 +24,7 @@ namespace ProcessLayer.Entities
 
         public List<PersonnelPolicyAndProcedure> Content { get; set; }
         public long? PersonnelPolicyAndProcedureId { get; set; }
-        public bool? Acknowledge { get; set; }
+        public bool? Acknowledge { get; set; } = false;
         public bool IsNew { get; set; }
     }
 }

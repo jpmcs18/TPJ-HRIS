@@ -45,7 +45,7 @@ namespace DataAccessLayer.System
         [DisplayName("User Manual Link")]
         public string UserManualURL { get; set; }
 
-        public bool? AccessibleByAll { get; set; }
+        public bool? AccessibleByAll { get; set; } = false;
 
         [DisplayName("Navigation Menu Type")]
         public int? NavMenuId { get; set; }

@@ -41,7 +41,7 @@ namespace DataAccessLayer.System
         public string MiddleName { get; set; }
 
         [DisplayName("Gender")]
-        public bool? Gender { get; set; }
+        public bool? Gender { get; set; } = false;
 
         public string Password { get; set; }
 
@@ -71,7 +71,7 @@ namespace DataAccessLayer.System
 
         public int? SignOnAttempts { get; set; }
 
-        public bool? Deleted { get; set; }
+        public bool? Deleted { get; set; } = false;
 
         public DateTime? LastLoginDate { get; set; }
 
@@ -79,7 +79,7 @@ namespace DataAccessLayer.System
 
         public DateTime? LastPasswordChange { get; set; }
 
-        public bool? ForcePasswordChange { get; set; }
+        public bool? ForcePasswordChange { get; set; } = false;
 
         public string LastSessionID { get; set; }
 
@@ -91,7 +91,7 @@ namespace DataAccessLayer.System
 
         public string LastWorkstationNameUsed { get; set; }
 
-        public bool? LoggedOn { get; set; }
+        public bool? LoggedOn { get; set; } = false;
 
         public DateTime? ExpirationDate { get; set; }
 
@@ -101,9 +101,9 @@ namespace DataAccessLayer.System
 
         public string PasswordSalt { get; set; }
 
-        public bool? IsVerifiedEmailAddress { get; set; }
+        public bool? IsVerifiedEmailAddress { get; set; } = false;
 
-        public bool? IsVerifiedMobileNumber { get; set; }
+        public bool? IsVerifiedMobileNumber { get; set; } = false;
 
         public HR.Personnel Personnel { get; set; }
 
