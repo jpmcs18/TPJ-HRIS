@@ -2243,7 +2243,7 @@
     <Content Include="Views\Shared\_RightSidebar.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <Content Include="Views\Security\Unauthorized.cshtml" />

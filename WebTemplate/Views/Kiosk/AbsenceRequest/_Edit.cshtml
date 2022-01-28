@@ -9,6 +9,7 @@
     var timeofday = new Dictionary<int, string> { { 1, "Morning" }, { 2, "Afternoon" } };
 
     var IsPending = (Model.Approved == null || Model.Approved == false) && (Model.Cancelled == null || Model.Cancelled == false);
+    var overrideExpired = WebTemplate.Properties.Settings.Default.isDevMode;
 }
 
 @Html.Hidden("PersonnelID", Model.PersonnelID, new { @class = "form-control absence-main" })
@@ -73,7 +74,7 @@
     </div>
 </div>
 
-@if (!(Model.IsExpired && IsPending))
+@if (!((Model.IsExpired && overrideExpired) && IsPending))
 {
     <div class="row">
         <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">

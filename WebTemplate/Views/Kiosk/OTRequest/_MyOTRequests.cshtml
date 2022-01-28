@@ -5,6 +5,7 @@
     var PageAccess = credential.GetPage("Kiosk/OTRequest") ?? new DataAccessLayer.System.Page();
     var CreatorAccess = credential.GetPage("Creator Request Over Time") ?? new DataAccessLayer.System.Page();
     var ottypes = new Dictionary<int, string> { { 1, "After Office" }, { 2, "Early" }, { 3, "Whole Day" } };
+    var overrideExpired = WebTemplate.Properties.Settings.Default.isDevMode;
 }
 
 @if (PageAccess.View)
@@ -149,9 +150,8 @@
                 {
                     for (int i = 0; i < Model.OTRequests.Count(); i++)
                     {
-
                         var RowColorLabel = ""; // Model.OTRequests[i].OTRequests[i].Cancelled == true ? " label-danger" : Model.OTRequests[i].OTRequests[i].Approved == true ? " label-primary" : Model.OTRequests[i].OTRequests[i].ModifiedBy != null ? " label-success" : " label-info";
-                        var LastStatus = Model.OTRequests[i].IsExpired == true ? "<span class='label label-warning'>Expired</span>" : (Model.OTRequests[i].Cancelled == true ? "<span class='label label-danger'>Cancelled</span>" : (Model.OTRequests[i].Approved == true ? "<span class='label label-primary'>Approved</span>" : "<span class='label label-info'>Pending</span>"));
+                        var LastStatus = Model.OTRequests[i].IsExpired == true && !overrideExpired ? "<span class='label label-warning'>Expired</span>" : (Model.OTRequests[i].Cancelled == true ? "<span class='label label-danger'>Cancelled</span>" : (Model.OTRequests[i].Approved == true ? "<span class='label label-primary'>Approved</span>" : "<span class='label label-info'>Pending</span>"));
                         var LastUser = Model.OTRequests[i].Cancelled == true ? Model.OTRequests[i]._Cancel : (Model.OTRequests[i].Approved == true ? Model.OTRequests[i]._Approver : (Model.OTRequests[i].ModifiedBy != null ? Model.OTRequests[i]._Modifier : Model.OTRequests[i]._Creator));
                         var LastDate = Model.OTRequests[i].Cancelled == true ? Model.OTRequests[i].CancelledOn : (Model.OTRequests[i].Approved == true ? Model.OTRequests[i].ApprovedOn : (Model.OTRequests[i].ModifiedBy != null ? Model.OTRequests[i].ModifiedOn : Model.OTRequests[i].CreatedOn));
 
