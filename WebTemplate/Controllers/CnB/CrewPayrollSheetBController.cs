@@ -183,7 +183,7 @@ namespace WebTemplate.Controllers.CnB
                     payroll
                 }
             };
-            using (PrintCrewPayslip report = new(Server.MapPath(PrintPayslipHelper.Instance.Template)))
+            using (PrintCrewPayslip report = new(Server.MapPath(PrintCrewPayslipHelper.Instance.Template)))
             {
                 report.PayrollPeriod = CrewPayrollProcess.Instance.GetCrewPayrollBase(payroll.CrewPayrollPeriodID, true);
                 report.CrewVessel = crewVessel;
