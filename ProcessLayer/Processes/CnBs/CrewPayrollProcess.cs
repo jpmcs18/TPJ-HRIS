@@ -449,7 +449,7 @@ namespace ProcessLayer.Processes.CnB
             Dictionary<string, object> parameters = new Dictionary<string, object>
             {
                 { "@CrewPayrollPeriodID", baseId },
-                { "@PersonnelID", payroll.Personnel.ID },
+                { "@PersonnelID", payroll.PersonnelID },
                 { "@HolidayPay", payroll.HolidayPay },
                 { "@NoofDays", payroll.NoOfDays },
                 { "@BasicPay", payroll.BasicPay },
