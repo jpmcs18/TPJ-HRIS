@@ -1,23 +1,48 @@
 ﻿@model WebTemplate.Models.Maintenance.Systems.User.Index
 @{
+    var PageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("Maintenance/Systems/User");
+
     var entity = new DataAccessLayer.System.User();
-    var userstatus = entity.LookupUserStatus();
+    var statuses = (new DataAccessLayer.System.User()).LookupUserStatus();
     var PageCount = Math.Ceiling((double)Model.ItemCount / Model.GridCount);
 }
 
-<div class="" >
-    <div class="mail-box">
+@if (!PageAccess.View)
+{
+    <style>
+    </style>
+    ViewBag.Message = "You do not have access to view this page.";
+    @Html.Partial("~/Views/Security/Unauthorized.cshtml")
+}
+else
+{
+    <div id="form_search_params" class="row" style="">
+        @Html.HiddenFor(m => m.PageNumber, new { @class = "form-control" })
+        @Html.AntiForgeryToken()
+
+        <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-3">
+            <label class="control-label">@PageAccess.PageName</label>
+            @Html.TextBoxFor(m => m.Filter, new { @class = "form-control", @placeholder = PageAccess.PageName + "..." })
+        </div>
+
+        <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-3">
+            <label class="control-label">Status</label>
+            @Html.DropDownListFor(m => m.FilterStatus, new SelectList(statuses, "Key", "Value", Model.FilterStatus), "N/A", new { @class = "form-control" })
+        </div>
+
+        <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+            <label class="control-label" style="width: 100%; color: transparent;">Search</label>
+            <button type="button" id="btn_search" class="btn btn-primary font-bold"><i class="fa fa-search"></i> Search</button>
+        </div>
+    </div>
+    <div id="form_search_results" class="" style="">
         <table class="table table-hover table-striped">
             <thead>
                 @if (PageCount > 1)
                 {
                     <tr>
-                        <td class="text-right" colspan="10">
+                        <td class="pull-left" colspan="10">
                             <div class="btn-group">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" id="hid_search" name="@Html.NameFor(m => m.Filter)" value="@Html.ValueFor(m => m.Filter)" />
-                                <input type="hidden" id="hid_status" name="@Html.NameFor(m => m.FilterStatus)" value="@Html.ValueFor(m => m.FilterStatus)" />
-                                <input type="hidden" id="hid_page" name="@Html.NameFor(m => m.PageNumber)" value="@Html.ValueFor(m => m.PageNumber)" />
                                 @if (PageCount > 1)
                                 {
                                     if (Model.PageNumber > 0)
@@ -48,34 +73,43 @@
                         </td>
                     </tr>
                 }
-                @*<tr>
-            <th class="text-center col-lg-2">Username</th>
-            <th class="text-center col-lg-6">Full Name</th>
-            <th class="text-center col-lg-2">Account Status</th>
-            <th class="text-center col-lg-2">Action</th>
-        </tr>*@
+                <tr>
+                    <th class="text-center col-lg-2">Username</th>
+                    <th class="text-center col-lg-6">Full Name</th>
+                    <th class="text-center col-lg-2">Status</th>
+                    <th class="text-center col-lg-2">Action</th>
+                </tr>
             </thead>
             <tbody>
                 <tr id="Row-Loading-Display" class="Row-Display hidden">
-                    <td style="text-align: center;" colspan="6">
+                    <td style="text-align: center;" colspan="10">
                         <i id="" class="fa fa-rotate-left rotate" style="padding: 8px; font-size: 20px; text-align: right;"></i>
                     </td>
                 </tr>
-                @for (int i = 0; i < Model.ItemList.Count; i++)
+                @if (Model.ItemList.Any())
                 {
-                    <tr class="Row-Display read" style="cursor: pointer;">
-                        <td class="text-center">@Model.ItemList[i].UserName</td>
-                        <td class="text-center">@(String.Format("{0} {1} {2}", Model.ItemList[i].FirstName, Model.ItemList[i].MiddleName, Model.ItemList[i].LastName))</td>
-                        <td class="text-center">@userstatus.Where(u => u.Key == Model.ItemList[i].UserStatusID).Select(u => u.Value).FirstOrDefault()</td>
-                        <td class="row-actions">
-                            <div class="">
-                                <button type="button" class="btn btn-outline btn-primary btn-rounded btnsearch btn-sm" value="@Model.ItemList[i].ID" title="Edit"><i class="fa fa-pencil"></i></button>
-                                @if (Model.ItemList[i].UserStatusID != 2) //inactive
-                                {
-                                    <button type="button" class="btn btn-outline btn-danger btn-sm btn-rounded btndelete" value="@Model.ItemList[i].ID" title="Delete"><i class="fa fa-trash"></i></button>
-                                }
-                            </div>
-                        </td>
+                    for (int i = 0; i < Model.ItemList.Count; i++)
+                    {
+                        <tr class="Row-Display read" style="cursor: pointer;">
+                            <td class="text-center">@Model.ItemList[i].UserName</td>
+                            <td class="text-center">@(String.Format("{0} {1} {2}", Model.ItemList[i].FirstName, Model.ItemList[i].MiddleName, Model.ItemList[i].LastName))</td>
+                            <td class="text-center">@statuses.Where(u => u.Key == Model.ItemList[i].UserStatusID).Select(u => u.Value).FirstOrDefault()</td>
+                            <td class="row-actions">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-outline btn-primary btn-rounded btnsearch btn-sm" value="@Model.ItemList[i].ID" title="Edit"><i class="fa fa-pencil"></i></button>
+                                    @if (Model.ItemList[i].UserStatusID != 2) //inactive
+                                    {
+                                        <button type="button" class="btn btn-outline btn-danger btn-sm btn-rounded btndelete" value="@Model.ItemList[i].ID" title="Delete"><i class="fa fa-trash"></i></button>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr id="No-Row-Display">
+                        <td style="text-align: center;" colspan="8">No records found...</td>
                     </tr>
                 }
             </tbody>
@@ -83,4 +117,4 @@
             </tfoot>
         </table>
     </div>
-</div>
+}

@@ -28,7 +28,7 @@
             <button type="button" id="btn_search" class="btn btn-primary font-bold pull-right"><i class="fa fa-search"></i> Search</button>
         </div>
     </div>
-    <div id="form_search" class="pull-left" style="width: 100%;">
+    <div id="form_search_results" class="pull-left" style="width: 100%;">
         <table id="VesselMovementsTable" class="table table-hover table-striped">
             <thead>
                 @if (Model.VesselList.Count() > 0)
@@ -75,7 +75,7 @@
             </thead>
             <tbody>
                 <tr id="Row-Loading-Display" class="hidden">
-                    <td style="text-align: center;" colspan="6">
+                    <td style="text-align: center;" colspan="10">
                         <i id="" class="fa fa-rotate-left rotate" style="padding: 8px; font-size: 20px; text-align: right;"></i>
                     </td>
                 </tr>

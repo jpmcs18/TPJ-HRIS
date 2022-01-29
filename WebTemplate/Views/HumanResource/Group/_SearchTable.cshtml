@@ -19,13 +19,13 @@
         </thead>
         <tbody>
             <tr id="Row-Loading-Display" class="hidden">
-                <td style="text-align: center;" colspan="6">
+                <td style="text-align: center;" colspan="10">
                     <i id="" class="fa fa-rotate-left rotate" style="padding: 8px; font-size: 20px; text-align: right;"></i>
                 </td>
             </tr>
             @if (Model.Personnels.Personnel.Count() > 0)
             {
-                <tr id="No-Row-Display" class="hidden"><td style="text-align: center;" colspan="6">No Personnels found...</td></tr>
+                <tr id="No-Row-Display" class="hidden"><td style="text-align: center;" colspan="10">No Personnels found...</td></tr>
                 for (int i = 0; i < Model.Personnels.Personnel.Count(); i++)
                 {
                     <tr class="personnel Personnel-@Model.Personnels.Personnel[i].ID">
@@ -89,13 +89,13 @@
             else
             {
                 <tr id="No-Row-Display">
-                    <td style="text-align: center;" colspan="6">No Personnels found...</td>
+                    <td style="text-align: center;" colspan="10">No Personnels found...</td>
                 </tr>
             }
         </tbody>
         <tfoot>
             @*<tr>
-                    <td class="text-right" colspan="6">
+                    <td class="text-right" colspan="10">
                         <div class="btn-group">
                             @Html.AntiForgeryToken()
                             <input type="hidden" id="hid_search" name="@Html.NameFor(m => m.Filter)" value="@Html.ValueFor(m => m.Filter)" />

@@ -32,9 +32,9 @@
                         <br />
                         <div class="row">
                             <div class="col-lg-12">
-                                <form id="form_search">
+                                <div id="form_search_params">
                                     @Html.Partial("~/Views/Maintenance/Organization/Designation/_Search.cshtml")
-                                </form>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -47,7 +47,7 @@
         <div class="vertical-alignment-helper">
             <div class="modal-center vertical-align-center">
                 <div class="modal-content animated fadeInDown modal-width-80">
-                    <form id="formpost"></form>
+                    <div id="formpost"></div>
                 </div>
             </div>
         </div>
@@ -57,7 +57,7 @@
         <div class="vertical-alignment-helper">
             <div class="modal-center vertical-align-center" style="background-color: rgba(0, 0, 0, 0.5)">
                 <div class="modal-content animated fadeInDown modal-width-80">
-                    <form id="formpost_pos"></form>
+                    <div id="formpost_pos"></div>
                 </div>
             </div>
         </div>
@@ -67,7 +67,7 @@
         <div class="vertical-alignment-helper">
             <div class="modal-center vertical-align-center" style="background-color: rgba(0, 0, 0, 0.5)">
                 <div class="modal-content animated fadeInDown modal-width-80">
-                    <form id="formpost_dept"></form>
+                    <div id="formpost_dept"></div>
                 </div>
             </div>
         </div>
@@ -170,9 +170,11 @@
     }
     function event_save_pos() {
         $('#btnsave_pos').click(function () {
+            var params = $('#formpost_pos *').serializeArray();
+
             $.ajax({
                 url: '@Url.Action("Save", "Maintenance/Organization/Position")',
-                data: $('#formpost_pos').serializeArray(),
+                data: params,
                 type: "POST",
                 cache: false,
                 beforeSend: function () {
@@ -341,7 +343,7 @@
                     })
                 }
                 else {
-                    swal("Cancelled", "Delete Cancelled", "success");
+                    //swal("Cancelled", "Delete Cancelled", "success");
                     }
                 }
             );
@@ -410,44 +412,48 @@
                     })
                 }
                 else {
-                    swal("Cancelled", "Delete Cancelled", "success");
+                    //swal("Cancelled", "Delete Cancelled", "success");
                     }
                 }
             );
         })
-    }
-    function event_save() {
-        $('#btnsave').click(function () {
-            $.ajax({
-                url: '@Url.Action("Save", "Maintenance/Organization/Designation")',
-                data: $('#formpost').serializeArray(),
-                type: "POST",
-                cache: false,
-                beforeSend: function () {
-                    ShowLoadingScreen()
-                },
-                complete: function () {
-                    RemoveLoadingScreen()
-                },
-                success: function (response) {
-                    if (response != null) {
-                        if (response.success == true) {
-                            toastr.success('Record Saved.');
-                            manage(response.id)
+        }
+
+        function event_save() {
+            var params = $('#formpost *').serializeArray();
+
+            $('#btnsave').click(function () {
+                $.ajax({
+                    url: '@Url.Action("Save", "Maintenance/Organization/Designation")',
+                    data: params,
+                    type: "POST",
+                    cache: false,
+                    beforeSend: function () {
+                        ShowLoadingScreen()
+                    },
+                    complete: function () {
+                        RemoveLoadingScreen()
+                    },
+                    success: function (response) {
+                        if (response != null) {
+                            if (response.success == true) {
+                                toastr.success('Record Saved.');
+                                manage(response.id)
+                            }
+                            else if (response.success == false) {
+                                toastr.error(response.msg, 'An error has occured.');
+                            }
                         }
-                        else if (response.success == false) {
-                            toastr.error(response.msg, 'An error has occured.');
-                        }
+                    },
+                    error: function () {
+                        toastr.error('AJAX backend error', 'An error has occured.');
                     }
-                },
-                error: function () {
-                    toastr.error('AJAX backend error', 'An error has occured.');
-                }
-            })
-        });
-        event_pos();
-        event_dept();
-    }
+                })
+            });
+            event_pos();
+            event_dept();
+        }
+
     function event_search() {
         $('.pages').click(function () {
             $('#hid_page').val($(this).val())
@@ -471,7 +477,7 @@
             },
             function (isconfirm) {
                 if (isconfirm) {
-                    var data = [{ name: '__RequestVerificationToken', value: $('#form_search input[name="__RequestVerificationToken"]').val() },
+                    var data = [{ name: '__RequestVerificationToken', value: $('#form_search_params input[name="__RequestVerificationToken"]').val() },
                         { name: 'uid', value: $(e).val() }]
                     $.ajax({
                         url: '@Url.Action("Delete", "Maintenance/Organization/Designation")',
@@ -506,16 +512,18 @@
                     })
                 }
                 else {
-                    swal("Cancelled", "Delete Cancelled", "success");
+                    //swal("Cancelled", "Delete Cancelled", "success");
                     }
                 }
             );
         })
     }
-    function search() {
+        function search() {
+            var params = $('#form_search_params *').serializeArray();
+
         $.ajax({
             url: '@Url.Action("Index", "Maintenance/Organization/Designation")',
-            data: $('#form_search').serializeArray(),
+            data: params,
             type: "GET",
             cache: false,
             beforeSend: function () {
@@ -525,7 +533,7 @@
                 RemoveLoadingScreen()
             },
             success: function (response) {
-                $("#form_search").html(response);
+                $("#form_search_params").html(response);
                 event_search()
                 $('#txt_search').focus()
             },

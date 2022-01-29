@@ -20,31 +20,16 @@
             </div>
         </div>
     </div>
-    <div class="" style="margin-top: 80px;">
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 animated fadeInDown">
-            <div class="file-manager">
-                <div id="form_search_params" class="m-t-md" enctype="multipart/form-data" style="margin: 0 -15px;">
-                    <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-3">
-                        <input type="text" id="txt_search" class="form-control" placeholder="Enter the @ViewBag.Page.PageName here..." value="@Html.ValueFor(m => m.Filter)" />
-                    </div>
-                </div>
-
-                <div class="form-group" style="">
-                    <button type="button" id="btn_search" class="btn btn-primary font-bold"><i class="fa fa-search"></i> Search</button>
-                </div>
-            </div>
-            <div id="form_search" enctype="multipart/form-data" class="pull-left" style="width: 100%;">
-                @Html.Partial("~/Views/Maintenance/Systems/NavMenu/_Search.cshtml")
-            </div>
-        </div>
+    <div id="form_search" class="panel-body" style="margin-top: 80px;">
+        @Html.Partial("~/Views/Maintenance/Systems/NavMenu/_Search.cshtml")
     </div>
 </div>
 
 <div class="modal inmodal custom-modal" id="modal_management" data-backdrop="static" data-keyboard="false" tabindex="" role="dialog" aria-hidden="true">
     <div class="vertical-alignment-helper">
         <div class="modal-center vertical-align-center">
-            <div class="modal-content animated fadeInDown modal-width-100">
-                <form id="formpost"></div>
+            <div class="modal-content animated fadeInDown modal-width-60">
+                <div id="formpost"></div>
             </div>
         </div>
     </div>
@@ -58,20 +43,9 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $('#txt_search').keydown(function () {
-            if (event.keyCode == 13) {
-                $('#btn_search').click()
-            }
-        })
-        $('#btn_search').click(function () {
-            $('#hid_search').val($('#txt_search').val())
-            search()
-        });
         event_search();
-        $('#btnadd').click(function () {
-            manage()
-        })
     });
+
     function manage(id) {
         $.ajax({
             url: '@Url.Action("Management", "Maintenance/Systems/NavMenu")',
@@ -88,23 +62,28 @@
                 $("#formpost").html(response);
                 $('#modal_management').appendTo("body").modal('show');
                 event_save();
-                Select2Override();
             },
             error: function () {
                 toastr.error('AJAX backend error', 'An error has occured.');
             }
         });
     }
+
     function event_save() {
+        Select2Override();
+
         $(".touchspin").TouchSpin({
             verticalbuttons: true,
             buttondown_class: 'btn btn-white',
             buttonup_class: 'btn btn-white'
         });
+
         $('#btnsave').click(function () {
+            var params = $('#formpost *').serializeArray();
+
             $.ajax({
                 url: '@Url.Action("Save", "Maintenance/Systems/NavMenu")',
-                data: $('#formpost').serializeArray(),
+                data: params,
                 type: "POST",
                 cache: false,
                 beforeSend: function () {
@@ -130,14 +109,35 @@
             })
         });
     }
+
     function event_search() {
+        $('.footable').footable();
+
+        $('#Filter').keydown(function () {
+            if (event.keyCode == 13) {
+                $('#btn_search').click();
+            }
+        })
+
+        $('#btn_search').click(function () {
+            $('#hid_search').val($('#txt_search').val())
+            search();
+        });
+
+        $('#btnadd').click(function () {
+            manage();
+        });
+
         $('.pages').click(function () {
-            $('#hid_page').val($(this).val())
-            search()
-        })
+            $('#form_search_params input[name="PageNumber"]').val($(this).val());
+            search();
+        });
+
         $('.btnsearch').click(function () {
-            manage($(this).val())
-        })
+            $('#form_search_params input[name="PageNumber"]').val(1);
+            manage($(this).val());
+        });
+
         $('.btndelete').click(function () {
             var e = this
             swal({
@@ -153,7 +153,7 @@
             },
             function (isconfirm) {
                 if (isconfirm) {
-                    var data = [{ name: '__RequestVerificationToken', value: $('#form_search input[name="__RequestVerificationToken"]').val() },
+                    var data = [{ name: '__RequestVerificationToken', value: $('#form_search_params input[name="__RequestVerificationToken"]').val() },
                         { name: 'uid', value: $(e).val() }]
                     $.ajax({
                         url: '@Url.Action("Delete", "Maintenance/Systems/NavMenu")',
@@ -188,28 +188,30 @@
                     })
                 }
                 else {
-                    swal("Cancelled", "Delete Cancelled", "success");
+                    //swal("Cancelled", "Delete Cancelled", "success");
                     }
                 }
             );
         })
     }
+
     function search() {
+        var params = $('#form_search_params *').serializeArray();
+
         $.ajax({
             url: '@Url.Action("Index", "Maintenance/Systems/NavMenu")',
-            data: $('#form_search').serializeArray(),
+            data: params,
             type: "GET",
             cache: false,
             beforeSend: function () {
-                ShowLoadingScreen()
+                ShowLoadingScreen();
             },
             complete: function () {
-                RemoveLoadingScreen()
+                RemoveLoadingScreen();
             },
             success: function (response) {
                 $("#form_search").html(response);
-                event_search()
-                $('#txt_search').focus()
+                event_search();
             },
             error: function () {
                 toastr.error('AJAX backend error', 'An error has occured.');

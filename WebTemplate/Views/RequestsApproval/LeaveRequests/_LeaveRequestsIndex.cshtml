@@ -88,9 +88,9 @@
                         <div class="modal-body" style="max-height: 750px; background-color: #fff; overflow: hidden;">
                             <input id="browseFile" type="file" class="btn btn-default" />
                             @Html.Hidden("leaveRequestId", 0)
-                            <form id="DeleteDocumentForm" action="/LeaveRequests/DeleteDocument?leaveRequestId=">
+                            <div id="DeleteDocumentForm" action="/LeaveRequests/DeleteDocument?leaveRequestId=">
                                 <input id="DeleteDocument" type="hidden" value="Delete" class="btn btn-danger btn-outline btn-w-m font-bold-700 pull-right" title="Delete" />
-                            </form>
+                            </div>
                         </div>
                         <div class="modal-footer" style=" margin: 0;">
                             <button type="button" class="btn btn-default btn-outline btn-w-m font-bold-700 pull-left" data-dismiss="modal">Close</button>
@@ -112,7 +112,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form id="UploadDocumentForm" style=" overflow-x: auto;">
+                        <div id="UploadDocumentForm" style=" overflow-x: auto;">
                             <fieldset>
                                 <legend>Select File</legend>
                                 <div id="SelectedFilesPreview">
@@ -128,7 +128,7 @@
                                 </div>
                                 @*<input type="hidden" id="DeleteDocument" class="btn btn-primary btn-w-m font-bold-700 pull-right" value="Delete"/>*@
                             </fieldset>
-                        </form>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         @*<button type="button" class="btn btn-default btn-outline btn-w-m font-bold-700 pull-left" data-dismiss="modal">Close</button>*@

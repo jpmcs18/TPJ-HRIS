@@ -11,6 +11,7 @@
     <div class="row">
         @Html.AntiForgeryToken()
         @Html.HiddenFor(m => m.NavMenu.ID)
+
         <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-4">
             @Html.LabelFor(m => m.NavMenu.NavIconClass, new { @class = "control-label" })
             @Html.TextBoxFor(m => m.NavMenu.NavIconClass, new { @class = "form-control text-transform-none" })

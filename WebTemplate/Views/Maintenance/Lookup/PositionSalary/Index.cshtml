@@ -64,7 +64,7 @@
                         toastr.error(response.ErrorMsg, "Backend Error");
                     }
                     else {
-                        $('#form_search').html(response);
+                        $('#form_search_params').html(response);
                         InitializeAutoNumeric('.autonumeric');
                         $('#view-text-description').focus();
                     }
@@ -158,7 +158,7 @@
                     toastr.error(response.ErrorMsg, "Backend Error");
                 }
                 else {
-                    $('#form_search').html(response);
+                    $('#form_search_params').html(response);
                 }
             }
             else {

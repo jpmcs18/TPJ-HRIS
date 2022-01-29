@@ -25,7 +25,7 @@
             <div class="file-manager">
                 @Html.AntiForgeryToken()
 
-                <div id="form_search_params" class="m-t-md" enctype="multipart/form-data" style="margin: 0 -15px;">
+                <div id="form_search_params" class="m-t-md" style="margin: 0 -15px;">
                     <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-4">
                         <div class="">
                             @Html.DropDownList("IsApprover", new SelectList(isapprovers, "Key", "Value"), "--All--", new { @class = "form-control" })
@@ -41,7 +41,7 @@
                     <button type="button" id="btn_search" class="btn btn-primary font-bold" onclick="get_items()"><i class="fa fa-search"></i> Search</button>
                 </div>
             </div>
-            <div id="form_search" enctype="multipart/form-data" class="pull-left" style="width: 100%;">
+            <div id="form_search_results" class="pull-left" style="width: 100%;">
                 @Html.Partial("~/Views/Maintenance/Lookup/ApproverPosition/_Search.cshtml")
             </div>
         </div>
@@ -107,12 +107,12 @@
             },
             success: function (response) {
                 if (response.ErrorMsg == null) {
-                    $('#form_search').html(response);
+                    $('#form_search_params').html(response);
                     $('#view-text-description').focus();
                     Events();
                 }
                 else {
-                    $('#form_search').html('<h3 class="text-center m-t-md">No item found...</h3>');
+                    $('#form_search_params').html('<h3 class="text-center m-t-md">No item found...</h3>');
                     toastr.error(response.ErrorMsg, "Backend Error");
                 }
             },

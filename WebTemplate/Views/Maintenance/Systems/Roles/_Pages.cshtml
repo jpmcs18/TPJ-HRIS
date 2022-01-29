@@ -41,15 +41,15 @@
         <div class="" style="height: 500px; overflow-y: auto; float: left; width: 100%; ">
             <table class="table table-hover table-striped" data-page-size="8" data-filter=#txtfilter>
                 <thead>
-                    @if (Model.Role.Pages.Any())
+                    @*@if (Model.Role.Pages.Any())
                     {
                         <tr>
                             <td class="text-right" colspan="10" style="background-color: white;">
                                 <ul class="pagination pull-right"></ul>
                             </td>
                         </tr>
-                    }
-                    @*<tr>
+                    }*@
+                    <tr>
                         <th class="text-center">Page Name</th>
                         <th class="text-center">Page URL</th>
                         <th class="text-center" data-sort-ignore="true">View</th>
@@ -57,15 +57,17 @@
                         <th class="text-center" data-sort-ignore="true">Update</th>
                         <th class="text-center" data-sort-ignore="true">Delete</th>
                         <th class="text-center" data-sort-ignore="true">Approve</th>
-                        <th class="text-center" data-sort-ignore="true">Action</th>        </tr>*@
+                        <th class="text-center" data-sort-ignore="true">Action</th>
+                    </tr>
 
                 </thead>
                 <tbody>
                     <tr id="Row-Loading-Display" class="hidden">
-                        <td style="text-align: center;" colspan="6">
+                        <td style="text-align: center;" colspan="10">
                             <i id="" class="fa fa-rotate-left rotate" style="padding: 8px; font-size: 20px; text-align: right;"></i>
                         </td>
                     </tr>
+                    <tr id="No-Row-Display" class="hidden"><td style="text-align: center;" colspan="10">No records found...</td></tr>
                     @if (Model.Role.Pages.Any())
                     {
                         for (int i = 0; i < Model.Role.Pages.Count; i++)
@@ -90,7 +92,7 @@
                     }
                     else
                     {
-                        <tr id="No-Row-Display"><td style="text-align: center;" colspan="6">No Pages found...</td></tr>
+                        <tr id="No-Row-Display"><td style="text-align: center;" colspan="10">No records found...</td></tr>
                     }
                 </tbody>
                 <tfoot>

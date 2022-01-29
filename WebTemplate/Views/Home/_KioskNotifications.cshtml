@@ -41,27 +41,21 @@
                         {
                             var Type = current.Filter.ToString().Replace("_", " ");
 
-                            if (i > 0)
-                            {
-                                if (Model[i - 1].Type != current.Type)
-                                {
-                                    links += "<a class='btn btn-default' href='/RequestsApproval/" + (current.Type.ToString().Replace("_", "")) + "s" + "' style='width: 100%;' target='_blank'>";
-                                    links += current.Type.ToString().Replace("_", " ") + (current.Count > 1 ? "s" : "");
-                                }
-
-                                links += $") (<b>{current.Count}</b> {Type}";
-
-                                if (i <= Model.Count() - 1 && current == Model.Last())
-                                {
-                                    //links += current.Type != Model[i + 1].Type ? $")</a></br>" : "";
-                                    links += ")</a></br>";
-                                }
-                            }
-                            else
+                            if (i == 0 || (i > 0 && Model[i - 1].Type != current.Type))
                             {
                                 links += "<a class='btn btn-default' href='/RequestsApproval/" + (current.Type.ToString().Replace("_", "")) + "s" + "' style='width: 100%;' target='_blank'>";
                                 links += current.Type.ToString().Replace("_", " ") + (current.Count > 1 ? "s" : "");
                                 links += $" (<b>{current.Count}</b> {Type}";
+                            }
+
+                            //Same type
+                            if (current != Model.Last() && current.Type == Model[i + 1].Type)
+                            {
+                                links += $") (<b>{current.Count}</b> {Type}";
+                            }
+                            else
+                            {
+                                links += ")</a></br>";
                             }
                         }
                     }
