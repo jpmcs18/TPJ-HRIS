@@ -17,7 +17,7 @@ namespace ReportLayer.Reports
         }
 
         public CrewPayrollPeriod PayrollPeriod { get; set; }
-        private int Row = 1;
+        private int Row = 0;
         private decimal TotalBasicPay = 0;
         private decimal TotalPagibigFund = 0;
         private decimal TotalPagibigLoan = 0;
@@ -48,9 +48,12 @@ namespace ReportLayer.Reports
             int sheets = 0;
             foreach (var vessel in PayrollPeriod.CrewVessel)
             {
+                Row = 1;
                 DuplicateSheet(vessel.Vessel.Code);
                 WriteCrewPayroll(vessel);
                 sheets++;
+                ResetTotal();
+                ResetGrandTotal();
             }
             if (sheets > 0)
             {
@@ -150,14 +153,27 @@ namespace ReportLayer.Reports
             TotalVale = 0;
             TotalNetpay = 0;
         }
+        private void ResetGrandTotal()
+        {
+            GrandTotalBasicPay = 0;
+            GrandTotalPagibigFund = 0;
+            GrandTotalPagibigLoan = 0;
+            GrandTotalSSS = 0;
+            GrandTotalProvident = 0;
+            GrandTotalSSSLoan = 0;
+            GrandTotalTax = 0;
+            GrandTotalPhilHealth = 0;
+            GrandTotalVale = 0;
+            GrandTotalNetpay = 0;
+        }
         private void WriteHeader(Vessel vessel)
         {
             MergeCell(Row, PrintCrewPayrollSheetBHelper.Instance.ColumnNo, Row, PrintCrewPayrollSheetBHelper.Instance.ColumnNoOfDays)
-                .WriteToCell($"VESSEL:{vessel.Description}")
+                .WriteToCell($"VESSEL : {vessel.Description}")
                 .SetHorizontalAlignment(HorizontalAlignmentStyle.Left);
 
             MergeCell(Row, PrintCrewPayrollSheetBHelper.Instance.ColumnPagibigFund, Row, PrintCrewPayrollSheetBHelper.Instance.ColumnNetAmount)
-                .WriteToCell($"FOR THE PERIOD FROM: {PayrollPeriod.StartDate:MMMM dd yyyy} - {PayrollPeriod.EndDate:MMMM dd yyyy}")
+                .WriteToCell($"FOR THE PERIOD FROM : {PayrollPeriod.StartDate:MMMM dd yyyy} - {PayrollPeriod.AdjustedEndDate:MMMM dd yyyy}")
                 .SetHorizontalAlignment(HorizontalAlignmentStyle.Right);
 
             Row++;

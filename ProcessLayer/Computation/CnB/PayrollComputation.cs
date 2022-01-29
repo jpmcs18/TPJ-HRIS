@@ -730,10 +730,10 @@ namespace ProcessLayer.Computation.CnB
                         payroll.PayrollDeductions.Add(new PayrollDeductions { Deduction = d._Deduction, Amount = d.Amount });
                 });
             }
-            PayrollDeductions HDMF = (PayrollDeductions)PayrollProcess.Instance.GetHDMF(payroll.Personnel?.ID, payroll.GrossPay, cutoff, periodStart);
-            PayrollDeductions PhilHealth = (PayrollDeductions)PayrollProcess.Instance.GetPhilHealth(payroll.Personnel?.ID, payroll.GrossPay, cutoff, periodStart);
-            PayrollDeductions SSS = (PayrollDeductions)PayrollProcess.Instance.GetSSS(payroll.Personnel?.ID, payroll.GrossPay, cutoff, periodStart);
-            PayrollDeductions ProvFund = (PayrollDeductions)PayrollProcess.Instance.GetProvidentFund(payroll.Personnel?.ID, payroll.GrossPay, cutoff, periodStart);
+            PayrollDeductions HDMF = PayrollProcess.Instance.GetHDMF(payroll.Personnel?.ID, payroll.GrossPay, cutoff, periodStart);
+            PayrollDeductions PhilHealth = PayrollProcess.Instance.GetPhilHealth(payroll.Personnel?.ID, payroll.GrossPay, cutoff, periodStart);
+            PayrollDeductions SSS = PayrollProcess.Instance.GetSSS(payroll.Personnel?.ID, payroll.GrossPay, cutoff, periodStart);
+            PayrollDeductions ProvFund = PayrollProcess.Instance.GetProvidentFund(payroll.Personnel?.ID, payroll.GrossPay, cutoff, periodStart);
 
             if ((PhilHealth?.Amount ?? 0) > 0)
             {

@@ -29,7 +29,7 @@ namespace ProcessLayer.Processes
                 DepartmentID = dr[CrewMovementFields.DepartmentID].ToNullableInt(),
                 PositionID = dr[CrewMovementFields.PositionID].ToNullableInt(),
                 VesselID = dr[CrewMovementFields.VesselID].ToNullableInt(),
-                DailyRate = dr[CrewMovementFields.DailyRate].ToNullableDecimal(),
+                DailyRate = dr[CrewMovementFields.DailyRate].ToNullableDecimal(), 
                 SNPositionID = dr[CrewMovementFields.SNPositionID].ToNullableInt(),
                 SNVesselID = dr[CrewMovementFields.SNVesselID].ToNullableInt(),
                 SNDailyRate = dr[CrewMovementFields.SNDailyRate].ToNullableDecimal(),
@@ -50,7 +50,6 @@ namespace ProcessLayer.Processes
                 PostedDate = dr[CrewMovementFields.PostedDate].ToNullableDateTime(),
                 CancelledDate = dr[CrewMovementFields.CancelledDate].ToNullableDateTime(),
                 DryDock = dr[CrewMovementFields.DryDock].ToBoolean(),
-
             };
 
             if (WithPreviousCrewMovement)
