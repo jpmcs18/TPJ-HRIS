@@ -97,6 +97,70 @@ namespace ProcessLayer.Processes.CnB
             return loanDeductions;
         }
 
+        public CrewPayrollDeductions DeductionConverter(DataRow dr)
+        {
+            var c = new CrewPayrollDeductions
+            {
+                ID = dr["ID"].ToLong(),
+                Deduction = LookupProcess.GetDeduction(dr["Deduction ID"].ToNullableInt()),
+                Amount = dr["PS"].ToNullableDecimal(),
+                PS = dr["PS"].ToNullableDecimal(),
+                ES = dr["ES"].ToNullableDecimal()
+            };
+
+            try { c.EC = dr["EC"].ToNullableDecimal(); } catch { }
+
+            return c;
+        }
+        public CrewPayrollDeductions GetPhilHealth(decimal gross, DateTime date)
+        {
+            using (var db = new DBTools())
+            {
+                using (var ds = db.ExecuteReader("cnb.GetCrewPhilHealth", new Dictionary<string, object> {
+                      { "@Gross", gross},
+                    { "@Date", date } }))
+                {
+                    return ds.Get(DeductionConverter);
+                }
+            }
+        }
+        public CrewPayrollDeductions GetHDMF(decimal gross, DateTime date)
+        {
+            using (var db = new DBTools())
+            {
+                using (var ds = db.ExecuteReader("cnb.GetCrewHDMF", new Dictionary<string, object> {
+                     { "@Gross", gross},
+                    { "@Date", date } }))
+                {
+                    return ds.Get(DeductionConverter);
+                }
+            }
+        }
+        public CrewPayrollDeductions GetSSS(decimal gross, DateTime date)
+        {
+            using (var db = new DBTools())
+            {
+                using (var ds = db.ExecuteReader("cnb.GetCrewSSS", new Dictionary<string, object> {
+                      { "@Gross", gross},
+                    { "@Date", date } }))
+                {
+                    return ds.Get(DeductionConverter);
+                }
+            }
+        }
+        public CrewPayrollDeductions GetProvidentFund(decimal gross, DateTime date)
+        {
+            using (var db = new DBTools())
+            {
+                using (var ds = db.ExecuteReader("cnb.GetCrewProvidentFund", new Dictionary<string, object> {
+                    { "@Gross", gross},
+                    { "@Date", date } }))
+                {
+                    return ds.Get(DeductionConverter);
+                }
+            }
+        }
+
         internal CrewPayrollDeductions CrewPayrollDeductionConverter(DataRow dr)
         {
             return new CrewPayrollDeductions

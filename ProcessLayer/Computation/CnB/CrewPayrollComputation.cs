@@ -123,6 +123,7 @@ namespace ProcessLayer.Computation.CnB
                 payroll.NetPay = 0;
                 payroll.BasicPay = 0;
                 payroll.GrossPay = 0;
+                payroll.TotalDeductions = 0;
                 payroll.Modified = true;
             }
 
@@ -225,10 +226,10 @@ namespace ProcessLayer.Computation.CnB
         }
         private void ComputeDeductions(CrewPayroll payroll, DateTime periodStart, int cutoff)
         {
-            CrewPayrollDeductions HDMF = (CrewPayrollDeductions)PayrollProcess.Instance.GetHDMF(payroll.Personnel?.ID, payroll.GrossPay, cutoff, periodStart);
-            CrewPayrollDeductions PhilHealth = (CrewPayrollDeductions)PayrollProcess.Instance.GetPhilHealth(payroll.Personnel?.ID, payroll.GrossPay, cutoff, periodStart);
-            CrewPayrollDeductions SSS = (CrewPayrollDeductions)PayrollProcess.Instance.GetSSS(payroll.Personnel?.ID, payroll.GrossPay, cutoff, periodStart);
-            CrewPayrollDeductions ProvFund = (CrewPayrollDeductions)PayrollProcess.Instance.GetProvidentFund(payroll.Personnel?.ID, payroll.GrossPay, cutoff, periodStart);
+            CrewPayrollDeductions HDMF = CrewPayrollProcess.Instance.GetHDMF(payroll.GrossPay, periodStart);
+            CrewPayrollDeductions PhilHealth = CrewPayrollProcess.Instance.GetPhilHealth(payroll.GrossPay, periodStart);
+            CrewPayrollDeductions SSS = CrewPayrollProcess.Instance.GetSSS(payroll.GrossPay, periodStart);
+            CrewPayrollDeductions ProvFund = CrewPayrollProcess.Instance.GetProvidentFund(payroll.GrossPay, periodStart);
 
             if ((PhilHealth?.Amount ?? 0) > 0)
             {
