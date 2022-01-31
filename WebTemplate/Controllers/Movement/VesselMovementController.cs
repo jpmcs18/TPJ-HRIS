@@ -163,7 +163,9 @@ namespace WebTemplate.Controllers.Movement
         public ActionResult GetVesselCrews(CrewList model)
         {
             try
-            {   
+            {
+                model.StartingDate = model.StartingDate ?? DateTime.Now.AddMonths(-1);
+                model.EndingDate = model.EndingDate ?? DateTime.Now;
                 model.Vessel = VesselProcess.Instance.Get(model.VesselID);
                 model.Crews = VesselMovementProcess.GetCrewDetailList(model.VesselID, model.StartingDate, model.EndingDate);
                 ModelState.Clear();

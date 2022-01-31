@@ -182,6 +182,7 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\CnB\CrewPayrollSheetAController.cs" />
     <Compile Include="Controllers\CnB\CrewPayrollSheetBController.cs" />
     <Compile Include="Controllers\CnB\PayrollSheetAController.cs" />
     <Compile Include="Controllers\CnB\PayrollSheetBController.cs" />
