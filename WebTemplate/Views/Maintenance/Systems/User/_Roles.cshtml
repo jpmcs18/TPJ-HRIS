@@ -28,57 +28,56 @@
                 </span>
             </div>
         </div>
-        <div class="">
-            <div class="mail-box">
-                <table class="table table-hover table-striped" data-page-size="8" data-filter=#txtfilter>
-                    <thead>
-                    @if (Model.User.Roles.Any())
+        <div class="" style="height: 500px; overflow-y: auto; float: left; width: 100%; ">
+            <table class="table table-hover table-striped" data-page-size="8" data-filter=#txtfilter>
+                <thead>
+                    @*@if (Model.User.Roles.Any())
                     {
-                        <tr>
-                            <td class="text-right" colspan="10" style="background-color: white;">
-                                <ul class="pagination pull-right"></ul>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td class="text-right" colspan="10" style="background-color: white;">
+                            <ul class="pagination pull-right"></ul>
+                        </td>
+                    </tr>
                     }
-                        @*<tr>
-                                <th class="text-center">Role Name</th>
-                                <th class="text-center">Role Description</th>
-                                <th class="text-center">Admin</th>
-                                <th class="text-center" data-sort-ignore="true">Action</th>
-                            </tr>*@
-                    </thead>
-                    <tbody>
+                    *
+                    <tr>
+                        <th class="text-center">Role Name</th>
+                        <th class="text-center">Role Description</th>
+                        <th class="text-center">Admin</th>
+                        <th class="text-center" data-sort-ignore="true">Action</th>
+                    </tr>*@
+                </thead>
+                <tbody>
                     <tr id="Row-Loading-Display" class="hidden">
-                        <td style="text-align: center;" colspan="6">
+                        <td style="text-align: center;" colspan="10">
                             <i id="" class="fa fa-rotate-left rotate" style="padding: 8px; font-size: 20px; text-align: right;"></i>
                         </td>
                     </tr>
-                        @if (Model.User.Roles.Any())
+                    @if (Model.User.Roles.Any())
+                    {
+                        for (int i = 0; i < Model.User.Roles.Count; i++)
                         {
-                            for (int i = 0; i < Model.User.Roles.Count; i++)
-                             {
-                                 var role = roles.Where(r => r.ID == Model.User.Roles[i].RoleID);
-                                 <tr class="Row-Display read" style="">
-                                     <td class="text-center">@(role.Select(r => r.RoleName).FirstOrDefault() ?? "N/A")</td>
-                                     <td class="text-center">@(role.Select(r => r.RoleDescription).FirstOrDefault() ?? "N/A")</td>
-                                     <td class="text-center">@(users.Where(u => u.ID == role.Select(r => r.RoleAdmin).FirstOrDefault()).Select(u => u.UserName).FirstOrDefault() ?? "N/A")</td>
-                                     <td style="" class="row-actions">
-                                         <input type="hidden" name="@Html.NameFor(m => m.User.Roles[i].RoleID)" value="@Model.User.Roles[i].RoleID"/>
-                                         <a class="btn btn-outline btn-primary btn-sm btn-rounded" title="Edit" target="_blank" href="@Url.Action("Index", "Maintenance/Systems/Roles", new {uid = Model.User.Roles[i].RoleID})"><i class="fa fa-pencil"></i></a>
-                                         <button type="button" value="@Model.User.Roles[i].RoleID" title="Delete" class="btnremoveitem btn btn-outline btn-primary btn-sm btn-rounded"><i class="fa fa-times"></i></button>
-                                     </td>
-                                 </tr>
-                             }
+                            var role = roles.Where(r => r.ID == Model.User.Roles[i].RoleID);
+                            <tr class="Row-Display read" style="">
+                                <td class="text-center">@(role.Select(r => r.RoleName).FirstOrDefault() ?? "N/A")</td>
+                                <td class="text-center">@(role.Select(r => r.RoleDescription).FirstOrDefault() ?? "N/A")</td>
+                                <td class="text-center">@(users.Where(u => u.ID == role.Select(r => r.RoleAdmin).FirstOrDefault()).Select(u => u.UserName).FirstOrDefault() ?? "N/A")</td>
+                                <td style="" class="row-actions">
+                                    <input type="hidden" name="@Html.NameFor(m => m.User.Roles[i].RoleID)" value="@Model.User.Roles[i].RoleID" />
+                                    <a class="btn btn-outline btn-primary btn-sm btn-rounded" title="Edit" target="_blank" href="@Url.Action("Index", "Maintenance/Systems/Roles", new {uid = Model.User.Roles[i].RoleID})"><i class="fa fa-pencil"></i></a>
+                                    <button type="button" value="@Model.User.Roles[i].RoleID" title="Delete" class="btnremoveitem btn btn-outline btn-primary btn-sm btn-rounded"><i class="fa fa-times"></i></button>
+                                </td>
+                            </tr>
                         }
-                        else
-                        {
-                            <tr id="No-Row-Display"><td style="text-align: center;" colspan="6">No Roles found...</td></tr>
-                        }
-                        </tbody>
-                    <tfoot>
-                    </tfoot>
-                </table>
-            </div>
+                    }
+                    else
+                    {
+                        <tr id="No-Row-Display"><td style="text-align: center;" colspan="10">No Roles found...</td></tr>
+                    }
+                </tbody>
+                <tfoot>
+                </tfoot>
+            </table>
         </div>
     }
     else

@@ -28,7 +28,7 @@
     <div class="" style="margin-top: 80px;">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 animated fadeInDown">
             <div class="file-manager">
-                <div id="form_search_params" class="m-t-md" enctype="multipart/form-data" style="margin: 0 -15px;">
+                <div id="form_search_params" class="m-t-md" style="margin: 0 -15px;">
                     <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-3">
                         <label class="control-label">Vessel</label>
                         @Html.DropDownListFor(m => m.VesselID, new SelectList(vessels, "ID", "Display"), new { @class = "form-control", @crew_vessel_action = "Filter" })
@@ -73,7 +73,7 @@
                     <button type="button" id="btn_search" class="btn btn-primary font-bold"><i class="fa fa-search"></i> Search</button>
                 </div>
             </div>
-            <div id="form_search" enctype="multipart/form-data" class="pull-left" style="width: 100%;">
+            <div id="form_search_results" class="pull-left" style="width: 100%;">
                 <div class="">
                     <div class="mail-box">
                         <table id="CrewsTable" class="table table-hover table-striped">
@@ -152,7 +152,7 @@
     <div class="vertical-alignment-helper">
         <div class="modal-center vertical-align-center">
             <div class="modal-content animated fadeInDown modal-width-40">
-                <form id="form_viewmembers">
+                <div id="form_viewmembers">
                     @Html.Partial("~/Views/HumanResource/Crew/_CrewSearch.cshtml")
                 </div>
                 @if (PageAccess.Update)
@@ -873,9 +873,9 @@
                 },
                 success: function(response) {
                     if (response.msg == null) {
-                        $("#form_search thead").remove();
-                        $("#form_search tbody").remove();
-                        $(response).insertBefore($("#form_search tfoot"))
+                        $("#form_search_results thead").remove();
+                        $("#form_search_results tbody").remove();
+                        $(response).insertBefore($("#form_search_results tfoot"))
                         Events();
                         $('#txt_search').focus()
                     } else {

@@ -98,7 +98,7 @@
         </fieldset>
     </div>
 
-    <div id="form_search" class="pull-left" style="width: 100%;">
+    <div id="form_search_results" class="pull-left" style="width: 100%;">
         <table id="LeaveRequestsTable" class="table table-hover table-striped">
             <thead>
                 <tr>
@@ -143,9 +143,8 @@
                             <input id="SelectAll" type="checkbox" class="i-checks" title="Select All" value="">
                         }
                     </th>
-                    <th class="text-left">Leave Type</th>
+                    <th class="text-left">Type/Requested Date</th>
                     @*<th class="text-center">Start/End DateTime</th>*@
-                    <th class="text-center">Requested Date</th>
                     <th class="text-left">No. of Days</th>
                     <th class="text-left">Reasons</th>
                     <th class="text-center">Status</th>
@@ -175,19 +174,7 @@
                                 }
                             </td>
                             <td class="text-left">
-                                @Model.LeaveRequests[i]._LeaveType.Description
-                            </td>
-                            <td class="text-center">
-                                @*@if (Model.LeaveRequests[i].LeaveType.BulkUse ?? false)
-                                {
-                                    @Html.Raw(String.Format("{0:MMM dd, yyyy}", Model.LeaveRequests[i].StartDateTime))
-                                }
-                                else
-                                {
-                                    @Html.Raw(String.Format("{0:MMM dd, yyyy @ hh:mm tt} -<br/>{1:MMM dd, yyyy @ hh:mm tt}", Model.LeaveRequests[i].StartDateTime, Model.LeaveRequests[i].EndDateTime))
-                                {
-                                {
-                                }*@
+                                <b>@Model.LeaveRequests[i]._LeaveType.Description</b><br />
                                 @Html.Raw(String.Format("{0:MMM dd, yyyy}", Model.LeaveRequests[i].RequestedDate))
                             </td>
                             <td class="text-left">

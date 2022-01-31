@@ -21,7 +21,7 @@
     <script language="JavaScript" type="text/javascript" src="~/Scripts/plugins/jasny/jasny-bootstrap.min.js"></script>
 </head>
 <body>
-    <form>
+    <div>
         <div class="form-group">
             <label for="exampleInputEmail1">Email address</label>
             <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
@@ -36,7 +36,7 @@
             <label class="form-check-label" for="exampleCheck1">Check me out</label>
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
+    </div>
 
     @using (Html.BeginForm("Login", "Security", FormMethod.Post))
     {

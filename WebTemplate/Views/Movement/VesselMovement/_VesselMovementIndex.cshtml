@@ -35,7 +35,7 @@
         </div>
 
         <div id="VesselCrewList" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 animated fadeInRigh" style="display: none; background-color: #fff; padding: 1em;">
-            <div id="form_search" class="pull-left" style="width: 100%;"></div>
+            <div id="form_search_results" class="pull-left" style="width: 100%;"></div>
         </div>
     </div>
 </div>
@@ -54,7 +54,7 @@
     <div class="vertical-alignment-helper">
         <div class="modal-center vertical-align-center">
             <div class="modal-content animated fadeInUp modal-width-40">
-                <form id="form_viewmembers">
+                <div id="form_viewmembers">
                     @*Html.Partial("~/Views/HumanResource/Crew/_CrewSearch.cshtml")*@
                 </div>
                 @if (PageAccess.Update)
@@ -253,7 +253,7 @@
                 success: function(response) {
                     if (response.msg == null) {
                         $('#VesselList').hide();
-                        $('#VesselCrewList #form_search').html(response);
+                        $('#VesselCrewList #form_search_results').html(response);
                         $('#VesselCrewList').show();
 
                         $('#BackToVesselList').off('click').on('click', ViewVesselList);
@@ -295,7 +295,7 @@
                 success: function(response) {
                     if (response.msg == null) {
                         $('#VesselList').hide();
-                        $('#VesselCrewList #form_search').html(response);
+                        $('#VesselCrewList #form_search_results').html(response);
                         $('#VesselCrewList').show();
 
                         $('#BackToVesselList').off('click').on('click', ViewVesselList);
@@ -322,7 +322,7 @@
             $('#VesselList').show();
 
             $('#VesselMovement').empty();
-            $('#VesselCrewList #form_search').empty();
+            $('#VesselCrewList #form_search_results').empty();
 
             $('#VesselMovement').hide();
             $('#VesselCrewList').hide();

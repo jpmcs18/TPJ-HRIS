@@ -59,6 +59,7 @@ namespace WebTemplate.Controllers.Maintenance.Systems
             model.User.AddRole(model.SelectedRoleID);
             return PartialViewCustom("_Roles", model);
         }
+        
         public ActionResult RemoveRole(Management model)
         {
             model.User.RemoveRole(model.SelectedRoleID);
