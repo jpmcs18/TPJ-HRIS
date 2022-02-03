@@ -1,6 +1,6 @@
 ﻿@model ProcessLayer.Entities.Vessel
 @{
-    var VesselPageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("Movement/VesselMovement");
+    var PageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("Movement/VesselMovement");
 }
 
 <tr id="@Model.ID" class="Row-Display Row-Display-Vessel read" style="" title="" @*onclick="ViewVesselMovement(@Model.ID)"*@>
@@ -10,11 +10,11 @@
     </td>
     <td style="" class="row-actions">
             <div class="btn-group">
-                @if (VesselPageAccess.View)
+                @if (PageAccess.View)
                 {
                     <button type="button" name="ViewCrews" class="btn btn-outline btn-info btn-sm btn-rounded ViewCrews m-l-sm" value="@Model.ID" title="View Crews"><i class="fa fa-group fa-1x"></i></button>
                 }
-                @if (VesselPageAccess.Update || VesselPageAccess.Delete || VesselPageAccess.View)
+                @if (PageAccess.Update || PageAccess.Delete || PageAccess.View)
                 {
                     <button type="button" name="ViewVesselMovement" class="btn btn-outline btn-success btn-sm btn-rounded ViewVesselMovement" value="@Model.ID" title="View Vessel Movement"><i class="fa fa-ship fa-1x"></i></button>
                 }

@@ -5,59 +5,62 @@
     int lastMovementTypeID = Model.VesselMovements.LastOrDefault().CheckIfNull<ProcessLayer.Entities.VesselMovement>().MovementTypeID;
 }
 
-<div id="VesselMovementParameters" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 m-b-sm" style="padding: 0px;">
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="text-align: left;">
-        <h1>
-            <button id="BackToVesselList" class="btn btn-default btn-outline m-r-md" title="Back"><i class="fa fa-arrow-left" style="cursor: pointer"></i> Back</button>
-            @*<i id="BackToVesselList" class="fa fa-arrow-left m-r-sm" style="cursor: pointer" title="Back"></i>*@
-            <i id="RefreshVesselMovement" class="fa fa-refresh m-r-lg hidden" style="cursor: pointer" title="Refresh"></i>
-            @*@Model.Vessel.Code - <b>@Model.Vessel.Description</b>*@
-            <b>@(Model.Vessel.Description ?? "")</b>
-        </h1>
+<style>
+    html, body {
+        overflow: hidden;
+    }
+</style>
 
-        <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3 text-left">
-            <label class="control-label">Start Date & Time</label>
-            @Html.TextBox("StartinDate", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.StartinDate), new { @type = "datetime-local", @class = "form-control" })
-        </div>
 
-        <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3 text-left m-b-md   ">
-            <label class="control-label">End Date & Time</label>
-            @Html.TextBox("EndingDate", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.EndingDate), new { @type = "datetime-local", @class = "form-control" })
-        </div>
+<div id="VesselMovementParameters" class="">
+    @Html.HiddenFor(m => m.VesselID, new { @class = "form-control" })
 
-        <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2 m-b-md">
-            @*@Html.HiddenFor(m => m.VesselID)*@
-            <button type="button" id="btn_search_vesselmovement" value="@Model.VesselID" class="btn btn-primary font-bold pull-left m-t-md"><i class="fa fa-search"></i> Search</button>
-        </div>
+    <div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-4">
+        <h1 style="line-height: .9;">@(Model.Vessel.Description ?? "N/A")</h1>
+    </div>
+
+    <div class="form-group col-xs-12 col-sm-4 col-md-2 col-lg-3">
+        <label class="control-label">Start Date & Time</label>
+        @Html.TextBox("StartingDate", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.StartingDate), new { @type = "datetime-local", @class = "form-control" })
+    </div>
+
+    <div class="form-group col-xs-12 col-sm-4 col-md-2 col-lg-3">
+        <label class="control-label">End Date & Time</label>
+        @Html.TextBox("EndingDate", String.Format("{0:yyyy'-'MM'-'dd'T'HH':'mm}", Model.EndingDate), new { @type = "datetime-local", @class = "form-control" })
+    </div>
+
+    <div class="form-group col-xs-12 col-sm-4 col-md-2 col-lg-2">
+        <label class="control-label" style="width: 100%; color: transparent;">Search</label>
+        <button type="button" id="btn_search_vesselmovement" value="@Model.VesselID" onclick="ViewVesselMovement('@Model.VesselID');" class="btn btn-primary font-bold pull-left"><i class="fa fa-search"></i> Search</button>
     </div>
 </div>
-<div id="" class="vertical-timeline vertical-container dark-timeline center-orientation m-t-lg" style="overflow-y: auto;">
-    @*@Html.Partial("~/Views/Movement/VesselMovement/_VesselMovementNew.cshtml", new ProcessLayer.Entities.VesselMovement() { VesselID = Model.VesselID, MovementDate = DateTime.Now, MovementTypeID = lastMovementTypeID })*@
 
-    @if (Model.VesselMovements.Any())
-    {
-        for (int i = 0; i < Model.VesselMovements.Count(); i++)
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="overflow-y: auto; height: 555px; min-height: 555px;">
+    <div id="" class="vertical-timeline vertical-container dark-timeline center-orientation m-t-lg">
+        @if (Model.VesselMovements.Any())
         {
-            @*@Html.Partial("~/Views/Movement/VesselMovement/_VesselMovement.cshtml", Model.VesselMovements[i].VesselMovements[i])*@
-            <div class="vertical-timeline-block movement-@(Model.VesselMovements[i].MovementTypeID == 1 ? "departure" : Model.VesselMovements[i].MovementTypeID == 2 ? "arrival" : "drydock") center-orientation animated fadeInUp Row-Display">
-                <div class="vertical-timeline-icon @(Model.VesselMovements[i].MovementTypeID == 1 ? "blue" : Model.VesselMovements[i].MovementTypeID == 2 ? "lazur" : "yellow")-bg">
-                    <i class="fa fa-@(Model.VesselMovements[i].MovementTypeID == 1 ? "ship" : Model.VesselMovements[i].MovementTypeID == 2 ? "anchor" : "wrench")"></i>
-                </div>
+            for (int i = 0; i < Model.VesselMovements.Count(); i++)
+            {
+                <div class="movement-@(Model.VesselMovements[i]._VesselMovementType.ID == 1 ? "departure" : (Model.VesselMovements[i]._VesselMovementType.ID == 2 ? "arrival" : "drydock")) vertical-timeline-block center-orientation animated fadeInUp Row-Display">
+                    <div class="vertical-timeline-icon@(Model.VesselMovements[i]._VesselMovementType.ID == 1 ? " blue" : (Model.VesselMovements[i]._VesselMovementType.ID == 2 ? " lazur" : " yellow"))-bg">
+                        <i class="fa fa-@(Model.VesselMovements[i]._VesselMovementType.ID == 1 ? "ship" : Model.VesselMovements[i]._VesselMovementType.ID == 2 ? "anchor" : "wrench")"></i>
+                    </div>
 
-                <div class="vertical-timeline-content">
-                    @if (i == Model.VesselMovements.Count() - 1)
-                    {
-                        <button type="button" value="@Model.VesselMovements[i].ID" id="DeleteVesselMovement" class="btn btn-outline btn-danger pull-right" title="Delete"><i class="fa fa-trash"></i></button>
-                        <button type="button" value="@Model.VesselMovements[i].ID" id="EditVesselMovement" class="btn btn-outline btn-primary pull-right" title="Edit"><i class="fa fa-pencil"></i></button>
-                    }
-                    <h2>@(String.IsNullOrEmpty(Model.VesselMovements[i]._VesselMovementType.ToString()) ? "" : Model.VesselMovements[i]._VesselMovementType.Description): <b>@(Model.VesselMovements[i].Place ?? "")</b></h2>
-                    <span class="vertical-date">
-                        @Html.Raw(String.Format("{0}{1}", Model.VesselMovements[i].MovementDate.ToShortDateString() == DateTime.Now.ToShortDateString() ? "Today" : String.Format("<b>{0:MMM dd, yyyy}</b>", Model.VesselMovements[i].MovementDate), " @ " + String.Format("<b>{0:hh:mm tt}</b>", Model.VesselMovements[i].MovementDate)))
-                    </span>
+                    <div class="vertical-timeline-content@(Model.VesselMovements[i]._VesselMovementType.ID == 1 ? " blue" : (Model.VesselMovements[i]._VesselMovementType.ID == 2 ? " lazur" : " yellow"))-bg" style="padding: 10px;">
+                        @if (i == Model.VesselMovements.Count() - 1)
+                        {
+                            <button type="button" value="@Model.VesselMovements[i].ID" id="DeleteVesselMovement" class="btn btn-outline btn-danger pull-right" title="Delete"><i class="fa fa-trash"></i></button>
+                            <button type="button" value="@Model.VesselMovements[i].ID" id="EditVesselMovement" class="btn btn-outline btn-primary pull-right" title="Edit"><i class="fa fa-pencil"></i></button>
+                        }
+                        <h2 style="margin: 0 0 .7em 0; ">@(String.IsNullOrEmpty(Model.VesselMovements[i]._VesselMovementType.ToString()) ? "" : Model.VesselMovements[i]._VesselMovementType.Description): <b>@(Model.VesselMovements[i].Place ?? "")</b></h2>
+                        <span class="vertical-date">
+                            @Html.Raw(String.Format("{0}{1}", Model.VesselMovements[i].MovementDate.ToShortDateString() == DateTime.Now.ToShortDateString() ? "Today" : String.Format("<b>{0:MMM dd, yyyy}</b>", Model.VesselMovements[i].MovementDate), " @ " + String.Format("<b>{0:hh:mm tt}</b>", Model.VesselMovements[i].MovementDate)))
+                        </span>
+                    </div>
                 </div>
-            </div>
+            }
         }
-    }
 
-    @Html.Partial("~/Views/Movement/VesselMovement/_VesselMovementNew.cshtml", new ProcessLayer.Entities.VesselMovement() { VesselID = Model.VesselID, MovementDate = DateTime.Now, MovementTypeID = lastMovementTypeID })
+        @Html.Partial("~/Views/Movement/VesselMovement/_VesselMovementNew.cshtml", new ProcessLayer.Entities.VesselMovement() { VesselID = Model.VesselID, MovementDate = DateTime.Now, MovementTypeID = lastMovementTypeID })
+    </div>
 </div>

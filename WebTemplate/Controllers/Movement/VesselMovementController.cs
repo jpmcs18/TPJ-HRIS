@@ -41,7 +41,7 @@ namespace WebTemplate.Controllers.Movement
             {
                 model.Vessel = VesselProcess.Instance.Get(model.VesselID);
                 model.VesselMovements =
-                    VesselMovementProcess.GetList(model.VesselID, model.StartinDate, model.EndingDate);
+                    VesselMovementProcess.GetList(model.VesselID, model.StartingDate, model.EndingDate);
 
                 ModelState.Clear();
                 return PartialViewCustom("_VesselMovementManagement", model);
@@ -164,8 +164,8 @@ namespace WebTemplate.Controllers.Movement
         {
             try
             {
-                model.StartingDate = model.StartingDate ?? DateTime.Now.AddMonths(-1);
-                model.EndingDate = model.EndingDate ?? DateTime.Now;
+                model.StartingDate ??= DateTime.Now.AddMonths(-1);
+                model.EndingDate ??= DateTime.Now;
                 model.Vessel = VesselProcess.Instance.Get(model.VesselID);
                 model.Crews = VesselMovementProcess.GetCrewDetailList(model.VesselID, model.StartingDate, model.EndingDate);
                 ModelState.Clear();
@@ -182,10 +182,10 @@ namespace WebTemplate.Controllers.Movement
         {
                 using (var report = new PrintVesselMovement(Server.MapPath(PrintVesselMovementHelper.Instance.Template)))
                 {
-                    report.StartDate = model.StartinDate;
+                    report.StartDate = model.StartingDate;
                     report.EndDate = model.EndingDate;
                     report.Vessel = VesselProcess.Instance.Get(model.VesselID);
-                    report.VesselMovements = VesselMovementProcess.GetList(model.VesselID, model.StartinDate, model.EndingDate);
+                    report.VesselMovements = VesselMovementProcess.GetList(model.VesselID, model.StartingDate, model.EndingDate);
                     report.GenerateReport();
                     ViewBag.Content = report.SaveToPDF();
                 }

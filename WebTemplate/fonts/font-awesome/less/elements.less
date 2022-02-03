@@ -1906,6 +1906,10 @@ a.forum-item-title:hover {
     .vertical-timeline-content.blue-bg:before {
         border-color: transparent @blue transparent transparent;
     }
+
+    .vertical-timeline-content.lazur-bg:before {
+        border-color: transparent @lazur transparent transparent;
+    }
 }
 
 .dark-timeline .vertical-timeline-content,
@@ -1993,10 +1997,19 @@ a.forum-item-title:hover {
 
 @media only screen and (min-width: 1170px) {
     .center-orientation .vertical-timeline-icon {
-        width: 60px;
-        height: 60px;
+        &.blue-bg, &.navy-bg, &.yellow-bg {
+            width: 50px;
+            height: 50px;
+            margin-left: -25px;
+        }
+
+        &.lazur-bg {
+            width: 60px;
+            height: 60px;
+            margin-left: -30px;
+        }
+
         left: 50%;
-        margin-left: -30px;
         -webkit-transform: translateZ(0);
         -webkit-backface-visibility: hidden;
         font-size: 19px;
@@ -2027,6 +2040,10 @@ a.forum-item-title:hover {
     border-radius: 1em;
     padding: 1em;
     color: #000;
+
+    button {
+        background: #eee;
+    }
 }
 
 .vertical-timeline-content:after {

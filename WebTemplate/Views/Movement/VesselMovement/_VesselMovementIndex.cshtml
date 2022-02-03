@@ -7,35 +7,34 @@
     ViewBag.title = PageAccess.PageName;
 }
 
+<style>
+    html, body {
+        overflow: hidden;
+    }
+
+    .vessel-selected {
+        background-color: #ddd !important;
+    }
+</style>
+
 <div class="wrapper wrapper-content">
     <div class="page-heading">
         <div class="col-lg-8">
             @Html.Partial("~/Views/Shared/_Breadcrumbs.cshtml", PageAccess)
         </div>
+        <div class="col-lg-4">
+            <div class="title-action"></div>
+        </div>
     </div>
     <div class="" style="margin-top: 80px;">
-        <div id="VesselList" class="col-xs-12 col-sm-12 col-md-push-2 col-md-8 col-lg-push-3 col-lg-6 animated fadeInLef">
-            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 m-b-sm" style="padding: 0px;">
-                <div class="tabs-container" style="">
-                    <div class="tab-content" style="margin-top: 0px; max-height: unset; overflow-y: auto; overflow-x: hidden;">
-                        @if (PageAccess.View)
-                        {
-                            <div id="tab-2" class="tab-pane active" style="">
-                                <div id="VesselMovementsForm" class="panel-body" style="padding: 10px; max-height: 100%; border: 1px solid #e5e6e7; overflow-y: hidden;">
-                                    @Html.Partial("~/Views/Movement/VesselMovement/_VesselMovementSearch.cshtml")
-                                </div>
-                            </div>
-                        }
-                    </div>
-                </div>
+        <div id="VesselList" class="col-xs-12 col-sm-12 col-md-4 col-lg-3">
+            @Html.Partial("~/Views/Movement/VesselMovement/_VesselMovementSearch.cshtml")
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-8 col-lg-9" style="overflow-y: auto; padding: .5em 0; border-left: 1px solid #ddd; ">
+            <div id="VesselMovement" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 animated fadeInRigh" style="">
             </div>
-        </div>
-
-        <div id="VesselMovement" class="col-xs-12 col-sm-12 col-md-12 col-lg-offset-2 col-lg-8 animated fadeInRigh" style="display: none; background-color: #fff; padding: 1em; ">
-        </div>
-
-        <div id="VesselCrewList" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 animated fadeInRigh" style="display: none; background-color: #fff; padding: 1em;">
-            <div id="form_search_results" class="pull-left" style="width: 100%;"></div>
+            <div id="VesselCrewList" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 animated fadeInRigh" style="display: none;">
+            </div>
         </div>
     </div>
 </div>
@@ -126,16 +125,17 @@
                 radioClass: 'iradio_square-green',
             });
 
-            $('.i-checks').iCheck({
-                checkboxClass: 'icheckbox_square-green',
-                radioClass: 'iradio_square-green',
-            });
-
             //$('#btnadd').off('click').on('click', NewMemo);
 
             $('.pages').off('click').on('click',
                 function() {
-                    $('#hid_page').val($(this).val())
+                    $('#form_search_params #Page').val($(this).val())
+                    Search();
+                });
+
+            $('#btn_search').off('click').on('click',
+                function () {
+                    $('#form_search_params #Page').val(1);
                     Search();
                 });
 
@@ -146,30 +146,23 @@
                     }
                 });
 
-            $('#btn_search').off('click').on('click', function() {
-                $('#hid_search').val($('.txt_search').val());
-                $('#hid_page').val(1);
-                $('#hid_empStat').val($('#EmploymentStatusID').val());
-                Search();
-            });
-
             $('input.chkRow').off('ifClicked').on('ifClicked', EnableDelete);
             $('button#MultipleDelete').off('click').on('click', MultipleDelete);
             $('input#SelectAll').off('ifClicked').on('ifClicked', SelectAllRows);
 
             $('.clearInput').off('click').on('click', ClearField);
-            $('#txt_description').off('keydown').on('keydown',
+            $('#Description').off('keydown').on('keydown',
                 function () {
                     if (event.keyCode == 13) {
                         $('#btn_search').click();
                     }
                 });
 
-            $('.ViewVesselMovement').off('click').on('click', function (e) {
-                var id = $(this).val();
-                ViewVesselMovement(id);
-            });
-            $('.ViewCrews').off('click').on('click', ViewCrews);
+            //$('.ViewVesselMovement').off('click').on('click', function (e) {
+            //    var id = $(this).val();
+            //    ViewVesselMovement(id);
+            //});
+            //$('.ViewCrews').off('click').on('click', ViewCrews);
         }
 
         function VesselManagementEvents() {
@@ -211,19 +204,13 @@
                 },
                 success: function(response) {
                     if (response.msg == null) {
-                        $('#VesselList').hide();
+                        $('#VesselCrewList').hide();
                         $('#VesselMovement').html(response).show();
-
-                        $('#BackToVesselList').off('click').on('click', ViewVesselList);
                         $('#NewVesselMovement').off('click').on('click', SaveVesselMovement);
-                        $('#btn_search_vesselmovement').off('click').on('click', function (e) {
-                            var id = $(this).val();
-                            ViewVesselMovement(id);
-                        });
+                        $('#VesselMovementsTable tr').removeClass("vessel-selected");
+                        $('#VesselMovementsTable tr#' + id).addClass("vessel-selected");
 
                         VesselManagementEvents();
-
-                        //$(".vertical-timeline").animate({ scrollTop: $(".vertical-timeline")[0].scrollHeight }, 1500);
                     } else {
                         toastr.error(response.res);
                     }
@@ -253,7 +240,7 @@
                 success: function(response) {
                     if (response.msg == null) {
                         $('#VesselList').hide();
-                        $('#VesselCrewList #form_search_results').html(response);
+                        $('#VesselCrewList').html(response);
                         $('#VesselCrewList').show();
 
                         $('#BackToVesselList').off('click').on('click', ViewVesselList);
@@ -271,9 +258,8 @@
             });
         }
 
-        function ViewCrews() {
+        function ViewCrews(vesselID) {
             event.stopPropagation();
-            var vesselID = $(this).val();
 
             var formdata = new FormData();
             formdata.append('VesselID', vesselID);
@@ -290,19 +276,25 @@
                     ShowLoadingScreen()
                 },
                 complete: function() {
-                    RemoveLoadingScreen()
+                    RemoveLoadingScreen();
+
+                    if ($('#VesselCrewList table tbody tr.Row-Display-VesselCrew').length > 0) {
+                        $(".title-action").append('<button id="PrintVesselCrewList" value="' + vesselID + '" type="button" class="btn btn-primary btn-outline m-l-md" title="Print Crew List"><i class="fa fa-print" style="cursor: pointer"></i> Print</button>');
+                        $('#PrintVesselCrewList').off('click').on('click', PrintVesselCrewList);
+                    }
+                    else {
+                        $(".title-action").empty();
+                    }
                 },
                 success: function(response) {
                     if (response.msg == null) {
-                        $('#VesselList').hide();
-                        $('#VesselCrewList #form_search_results').html(response);
-                        $('#VesselCrewList').show();
-
-                        $('#BackToVesselList').off('click').on('click', ViewVesselList);
+                        $('#VesselMovement').hide();
+                        $('#VesselCrewList').html(response).show();
                         $('#btn_search_vesselmovement').off('click').on('click', SearchCrews);
-                        $('#PrintVesselCrewList').off('click').on('click', PrintVesselCrewList);
 
-                        //VesselManagementEvents();
+                        $('#VesselMovementsTable tr').removeClass("vessel-selected");
+                        $('#VesselMovementsTable tr#' + vesselID).addClass("vessel-selected");
+
                         InitDateTimePicker();
                     } else {
                         toastr.error(response.res);
@@ -322,76 +314,77 @@
             $('#VesselList').show();
 
             $('#VesselMovement').empty();
-            $('#VesselCrewList #form_search_results').empty();
+            $('#VesselCrewList').empty();
 
             $('#VesselMovement').hide();
             $('#VesselCrewList').hide();
         }
 
-        function Search() {
-            $.ajax({
-                url: '@Url.Action("Index", "VesselMovement")',
-                data: $('#form_search_params *').serialize(),
-                type: "GET",
-                cache: false,
-                beforeSend: function() {
-                    ShowLoadingScreen()
-                },
-                complete: function() {
-                    RemoveLoadingScreen()
-                },
-                success: function(response) {
-                    if (response.msg == null) {
-                        $("#VesselMovementsForm").html(response);
-                        Events();
-                        $('.txt_search').focus()
-                    } else {
-                        toastr.error(response.res);
-                    }
-                },
-                error: function() {
-                    toastr.error('AJAX backend error', 'An error has occured.');
+    function Search() {
+        var params = $('#form_search_params *').serialize();
+
+        $.ajax({
+            url: '@Url.Action("Index", "VesselMovement")',
+            data: params,
+            type: "GET",
+            cache: false,
+            beforeSend: function() {
+                ShowLoadingScreen()
+            },
+            complete: function() {
+                RemoveLoadingScreen()
+            },
+            success: function(response) {
+                if (response.msg == null) {
+                    $("#VesselList").html(response);
+                    Events();
+                } else {
+                    toastr.error(response.res);
                 }
-            });
-        }
+            },
+            error: function() {
+                toastr.error('AJAX backend error', 'An error has occured.');
+            }
+        });
+    }
 
-        function SearchVesselMovement() {
-            var params = $('#VesselMovement #VesselMovementParameters *').serialize() +
-                //'&VesselID=' +
-                //$(this).val() +
-                '&__RequestVerificationToken=' +
-                $('@Html.AntiForgeryToken()').val();
+    function SearchVesselMovement() {
+        var params = $('#VesselMovement #VesselMovementParameters *').serialize() +
+            //'&VesselID=' +
+            //$(this).val() +
+            '&__RequestVerificationToken=' +
+            $('@Html.AntiForgeryToken()').val();
 
-            $.ajax({
-                url: '@Url.Action("VesselMovementManagement", "VesselMovement")',
-                data: params,
-                type: 'POST',
-                cache: false,
-                beforeSend: function() {
-                    ShowLoadingScreen()
-                },
-                complete: function() {
-                    RemoveLoadingScreen()
-                },
-                success: function(response) {
-                    if (response.msg == null) {
-                        $('#VesselMovement').html(response).show();
+        $.ajax({
+            url: '@Url.Action("VesselMovementManagement", "VesselMovement")',
+            data: params,
+            type: 'POST',
+            cache: false,
+            beforeSend: function() {
+                ShowLoadingScreen()
+            },
+            complete: function() {
+                RemoveLoadingScreen()
+            },
+            success: function(response) {
+                if (response.msg == null) {
+                    $('#VesselMovement').html(response).show();
 
-                        $('#BackToVesselList').off('click').on('click', ViewVesselList);
-                        $('#NewVesselMovement').off('click').on('click', SaveVesselMovement);
+                    $('#BackToVesselList').off('click').on('click', ViewVesselList);
+                    $('#NewVesselMovement').off('click').on('click', SaveVesselMovement);
 
-                        VesselManagementEvents();
+                    VesselManagementEvents();
 
-                        //$(".vertical-timeline").animate({ scrollTop: $(".vertical-timeline")[0].scrollHeight }, 1500);
-                    } else {
-                        toastr.error(response.res);
-                    }
-                },
-                error: function() {
-                    toastr.error('AJAX backend error', 'An error has occured.');
+                    //$(".vertical-timeline").animate({ scrollTop: $(".vertical-timeline")[0].scrollHeight }, 1500);
+                } else {
+                    toastr.error(response.res);
                 }
-            });
-        }
+            },
+            error: function() {
+                toastr.error('AJAX backend error', 'An error has occured.');
+            }
+        });
+    }
 
         function EditOrNewVesselMovement() {
             if ($('#VesselMovement #NewMovementDiv').length == 1) {
@@ -467,12 +460,12 @@
             var isUpdate = $('#VesselMovement #NewMovementDiv .fa-pencil').length === 1 && movementID > 0;
 
             if (place == '') {
-                toastr.error('Place is empty!');
+                toastr.error('Place is required!');
                 return
             }
 
             if (datetime == '') {
-                toastr.error('Date & Time is empty!');
+                toastr.error('Date & Time is required!');
                 return
             }
 
