@@ -1,22 +1,15 @@
 ﻿@model ProcessLayer.Entities.PersonnelGroup
 @{
-    var GroupPageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("HumanResource/Group");
+    var PageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("HumanResource/Group");
 } 
 
-<tr id="@Model.ID" class="Row-Display Row-Display-Group" style="">
+<tr id="@Model.ID" class="Row-Display Row-Display-Group" style="cursor: pointer;" title="Click to open record" onclick="ViewMembers(@Model.ID);">
     <td class="text-center">
-        @if (GroupPageAccess.Delete)
-        {
-            <input type="checkbox" class="i-checks chkRow" title="Select" value="@Model.ID">
-        }
-        else
-        {
-            <input type="checkbox" class="i-checks" title="" value="">
-        }
+        @Html.Raw($"<input type='checkbox' class='i-checks{(PageAccess.Delete ? " chkRow" : "")}' title='' value='{(PageAccess.Delete ? Model.ID.ToString() : "")}'>")
     </td>
     <td style="text-align: center;">
         <input type="hidden" value="@Model.ID" />
-        <div class="clickable-text" title="Click to open record" onclick="ViewMembers(@Model.ID);">@Model.Description</div>
+        <div class="clickable-text">@Model.Description</div>
     </td>
     <td class="hidden"><input type="hidden" class="MemberCount" value="@Model._PersonnelGroupMembers.Count()" /></td>
     <td style="text-align: center; white-space: nowrap;">
@@ -48,15 +41,7 @@
     </td>
     <td style="" class="row-actions">
         <div class="btn-group">
-            @*@if (GroupPageAccess.Delete)
-            {
-                <button type="button" name="DeleteGroup" class="btn btn-outline btn-danger btn-sm btn-rounded DeleteGroup" value="@Model.ID" title="Delete"><i class="fa fa-trash"></i></button>
-            }
-            @if (GroupPageAccess.View)
-            {
-                <button type="button" name="ViewMembers" class="btn btn-primary btn-sm btn-rounded ViewMembers" value="@Model.ID" title="View Members"><i class="fa fa-eye"></i></button>
-            }*@
-            @if (GroupPageAccess.Update)
+            @if (PageAccess.Update)
             {
                 <button type="button" name="EditGroup" class="btn btn-info btn-sm btn-rounded EditGroup" value="@Model.ID" title="Edit"><i class="fa fa-pencil"></i></button>
             }
@@ -64,19 +49,15 @@
     </td>
 </tr>
 <tr id="@Model.ID" class="Row-Input hidden">
-    <td class=""></td>
-    <td class="hidden">
+    <td>
         @Html.HiddenFor(m => m.ID);
     </td>
     <td style="text-align: center;">
         @Html.TextBoxFor(m => m.Description, new { @class = "form-control text-transform-none" })
     </td>
-    @*<td style="text-align: center;">
-        @(Model._PersonnelGroupMembers.Count() + " member" + (Model._PersonnelGroupMembers.Count() > 0 ? "s" : ""))
-    </td>*@
     <td colspan="2" style="text-align: right; width: 168px;">
         <div class="btn-group">
-            @if (GroupPageAccess.Update)
+            @if (PageAccess.Update)
             {
                 <button type="button" name="CancelGroup" class="btn btn-outline btn-warning btn-sm btn-rounded CancelGroup" value="@Model.ID" title="Cancel"><i class="fa fa-times"></i></button>
                 <button type="button" name="SaveGroup" class="btn btn-info btn-sm btn-rounded SaveGroup" value="@Model.ID" title="Save"><i class="fa fa-save"></i></button>
@@ -84,4 +65,3 @@
         </div>
     </td>
 </tr>
-
