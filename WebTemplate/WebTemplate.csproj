@@ -1693,6 +1693,7 @@
     <Content Include="Resources\Template\Absence.xlsx" />
     <Content Include="Resources\Template\CrewPayrollSheetB.xlsx" />
     <Content Include="Resources\Template\CrewPayslip.xlsx" />
+    <Content Include="Resources\Template\CrewPayrollSheetA.xlsx" />
     <None Include="Scripts\jquery-3.5.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.5.1.js" />
     <Content Include="Scripts\jquery-3.5.1.min.js" />

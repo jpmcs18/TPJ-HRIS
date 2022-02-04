@@ -35,11 +35,11 @@ namespace WebTemplate.Controllers.CnB
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult GeneratePayroll(int month, int year, int cutoff)
+        public ActionResult GeneratePayroll(int month, int year)
         {
             try
             {
-                CrewPayrollPeriod model = CrewPayrollProcess.Instance.GenerateCrewPayroll(month, year, cutoff, PayrollSheet.B, User.UserID);
+                CrewPayrollPeriod model = CrewPayrollProcess.Instance.GenerateCrewPayroll(month, year, 0, PayrollSheet.A, User.UserID);
 
                 ModelState.Clear();
 
@@ -131,13 +131,13 @@ namespace WebTemplate.Controllers.CnB
         [HttpPost]
         public ActionResult PrintPayroll(long payrollPeriodId)
         {
-            using (PrintCrewPayrollSheetB report = new(Server.MapPath(PrintCrewPayrollSheetBHelper.Instance.Template)))
+            using (PrintCrewPayrollSheetA report = new(Server.MapPath(PrintCrewPayrollSheetAHelper.Instance.Template)))
             {
                 report.PayrollPeriod = CrewPayrollProcess.Instance.GetCrewPayrollBase(payrollPeriodId);
 
                 report.GenerateReport();
                 ViewBag.Content = report.SaveToPDF();
-                ViewBag.Title = $"Crew Payroll Sheet - B | {report.PayrollPeriod.StartDate:MMMM dd yyyy} - {report.PayrollPeriod.AdjustedEndDate:MMMM dd yyyy}";
+                ViewBag.Title = $"Crew Payroll Sheet - A | {report.PayrollPeriod.StartDate:MMMM dd yyyy} - {report.PayrollPeriod.AdjustedEndDate:MMMM dd yyyy}";
             }
             return View("~/Views/PrintingView.cshtml");
         }
@@ -145,51 +145,14 @@ namespace WebTemplate.Controllers.CnB
         [HttpPost]
         public ActionResult PrintVesselPayroll(long payrollPeriodId, int vesselId)
         {
-            using (PrintCrewPayrollSheetB report = new(Server.MapPath(PrintCrewPayrollSheetBHelper.Instance.Template)))
+            using (PrintCrewPayrollSheetA report = new(Server.MapPath(PrintCrewPayrollSheetAHelper.Instance.Template)))
             {
 
                 report.PayrollPeriod = CrewPayrollProcess.Instance.GetCrewPayrollBase(payrollPeriodId, true);
                 report.PayrollPeriod.CrewVessel = new System.Collections.Generic.List<CrewVessel> { CrewPayrollProcess.Instance.GetCrewVessel(payrollPeriodId, vesselId) };
                 report.GenerateReport();
                 ViewBag.Content = report.SaveToPDF();
-                ViewBag.Title = $"Crew Payroll Sheet - B | {report.PayrollPeriod.StartDate:MMMM dd yyyy} - {report.PayrollPeriod.AdjustedEndDate:MMMM dd yyyy}";
-            }
-            return View("~/Views/PrintingView.cshtml");
-        }
-
-        [HttpPost]
-        public ActionResult PrintPayslip(long id, int vesselId)
-        {
-            using (PrintCrewPayslip report = new(Server.MapPath(PrintCrewPayslipHelper.Instance.Template)))
-            {
-                report.PayrollPeriod = CrewPayrollProcess.Instance.GetCrewPayrollBase(id, true);
-                report.CrewVessel = CrewPayrollProcess.Instance.GetCrewVessel(id, vesselId);
-                report.GenerateReport();
-                ViewBag.Content = report.SaveToPDF();
-                ViewBag.Title = $"Crew Payslip | {report.PayrollPeriod.StartDate:MMMM dd yyyy} - {report.PayrollPeriod.EndDate:MMMM dd yyyy}";
-            }
-            return View("~/Views/PrintingView.cshtml");
-        }
-
-        [HttpPost]
-        public ActionResult PrintIndividualPayslip(long payrollId)
-        {
-            CrewPayroll payroll = CrewPayrollProcess.Instance.GetCrewPayroll(payrollId);
-            CrewVessel crewVessel = new()
-            {
-                Vessel = payroll.Vessel,
-                CrewPayrolls = new System.Collections.Generic.List<CrewPayroll>
-                {
-                    payroll
-                }
-            };
-            using (PrintCrewPayslip report = new(Server.MapPath(PrintCrewPayslipHelper.Instance.Template)))
-            {
-                report.PayrollPeriod = CrewPayrollProcess.Instance.GetCrewPayrollBase(payroll.CrewPayrollPeriodID, true);
-                report.CrewVessel = crewVessel;
-                report.GenerateReport();
-                ViewBag.Content = report.SaveToPDF();
-                ViewBag.Title = $"Individual Crew Payslip | {report.PayrollPeriod.StartDate:MMMM dd yyyy} - {report.PayrollPeriod.AdjustedEndDate:MMMM dd yyyy}";
+                ViewBag.Title = $"Crew Payroll Sheet - A | {report.PayrollPeriod.StartDate:MMMM dd yyyy} - {report.PayrollPeriod.AdjustedEndDate:MMMM dd yyyy}";
             }
             return View("~/Views/PrintingView.cshtml");
         }

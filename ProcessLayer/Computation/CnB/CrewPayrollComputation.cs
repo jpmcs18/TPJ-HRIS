@@ -80,7 +80,7 @@ namespace ProcessLayer.Computation.CnB
         {
             List<PersonnelLoan> deductibleLoans = PersonnelLoanProcess.Instance.GetPayrollBGovernmentLoanDeductions(payroll.Personnel.ID, periodStart, periodEnd);
             DateTime prevAssumeEnd = periodStart.AddDays(-1);
-            int cutoffAssumeStart = (Cutoff == 2 ? CrewPayrollParameters.Instance.CrewCutOff1 : CrewPayrollParameters.Instance.CrewCutOff2) + 1;
+            int cutoffAssumeStart = (Cutoff == 2 || Cutoff == 0 ? CrewPayrollParameters.Instance.CrewCutOff1 : CrewPayrollParameters.Instance.CrewCutOff2) + 1;
             DateTime prevAssumeStart = new DateTime(prevAssumeEnd.Year, prevAssumeEnd.Month, cutoffAssumeStart);
             List<CrewPayrollDetails> previousAdjustedPayroll = CrewPayrollProcess.Instance.GetPreviousAdjustedPayroll(prevAssumeStart, prevAssumeEnd, payroll.PersonnelID);
             List<CrewMovement> previousAdjustedCrewMovement = CrewMovementProcess.GetCrewActualMovement(payroll.PersonnelID, null, prevAssumeStart, prevAssumeEnd);
@@ -107,8 +107,8 @@ namespace ProcessLayer.Computation.CnB
                     details.Vessel = cm.PositionID != null ? cm._Vessel : cm._SNVessel;
                     details.VesselID = details.Vessel?.ID ?? 0;
                     details.LoggedDate = previousAdjustedPayroll[i].LoggedDate;
-                    details.IsSunday = Cutoff == 1 ? previousAdjustedPayroll[i].LoggedDate.DayOfWeek == DayOfWeek.Sunday : false;
-                    details.IsHoliday = Cutoff == 1 ? (holiday?.ID ?? 0) > 0 : false;
+                    details.IsSunday = Cutoff == 1 || Cutoff == 0 ? previousAdjustedPayroll[i].LoggedDate.DayOfWeek == DayOfWeek.Sunday : false;
+                    details.IsHoliday = Cutoff == 1 || Cutoff == 0 ? (holiday?.ID ?? 0) > 0 : false;
                     details.IsCorrected = true;
                     details.DailyRate = dailyrate;
                     if ((details?.ID ?? 0) == 0)
@@ -145,7 +145,7 @@ namespace ProcessLayer.Computation.CnB
             payroll.BasicPay = payroll.CrewPayrollDetails.Where(x => (x.ID > 0 && x.Modified) || x.ID == 0).Sum(t => t.DailyRate * ((t.IsAdditionalsOnly ? 0 : 1) + (t.IsSunday ? CrewPayrollParameters.Instance.CrewSundayRate : (t.IsHoliday ? CrewPayrollParameters.Instance.CrewHolidayRate : 0)))).ToDecimalPlaces(2);
 
             payroll.GrossPay = payroll.BasicPay.ToDecimalPlaces(2);
-            if (Cutoff == 2)
+            if (Cutoff == 2 || Cutoff == 0)
             {
                 ComputeDeductions(payroll, periodStart, Cutoff);
                 ComputeLoans(payroll, deductibleLoans);
@@ -187,9 +187,9 @@ namespace ProcessLayer.Computation.CnB
                 details.PostiionID = details.Position?.ID ?? 0;
                 details.Vessel = cm.PositionID != null ? cm._Vessel : cm._SNVessel;
                 details.VesselID = details.Vessel?.ID ?? 0;
-                details.IsSunday = Cutoff == 2 ? startDate.DayOfWeek == DayOfWeek.Sunday : false;
+                details.IsSunday = Cutoff == 2 || Cutoff == 0 ? startDate.DayOfWeek == DayOfWeek.Sunday : false;
                 details.LoggedDate = startDate;
-                details.IsHoliday = Cutoff == 2 ? (holiday?.ID ?? 0) > 0 : false;
+                details.IsHoliday = Cutoff == 2 || Cutoff == 0 ? (holiday?.ID ?? 0) > 0 : false;
                 details.IsAdditionalsOnly = isAdditionalOnly;
                 details.DailyRate = cm.DailyRate ?? cm.SNDailyRate ?? 0;
                 details.IsAdjusted = startDate >= assumeStart;
