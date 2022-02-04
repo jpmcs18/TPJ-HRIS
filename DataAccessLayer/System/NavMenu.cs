@@ -237,7 +237,7 @@ namespace DataAccessLayer.System
 
             foreach (NavMenu n in nm)
             {
-                n.Pages = pages.Pages.Where(p => p.NavMenuId == n.ID).OrderBy(p => p.PageOrder).ToList();
+                n.Pages = pages.Pages.OrderBy(p => p.PageName).Where(p => p.NavMenuId == n.ID).OrderBy(p => p.PageOrder).ToList();
             }
 
             return GenerateNavMenu(nm, nm, 10);

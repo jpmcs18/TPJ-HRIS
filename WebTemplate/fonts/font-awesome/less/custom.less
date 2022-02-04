@@ -1,5 +1,27 @@
 @import "variables.less";
 
+table {
+    &.loading {
+        tr #Row-Loading-Display {
+            display: block !important;
+        }
+    }
+
+    tr#Row-Loading-Display {
+        display: none;
+
+        td {
+            text-align: center;
+
+            i {
+                padding: 8px;
+                font-size: 20px;
+                text-align: right;
+            }
+        }
+    }
+}
+
 .btn-group, .btn-group-vertical {
     display: inline-flex !important;
 }
@@ -1319,9 +1341,16 @@ table {
             box-shadow: none;
 
             .tab-content {
-                min-height: 625px;
-                height: 625px;
-                //height: 750px;// 850px;// 900px;
+                @media only screen and (min-width: 600px) and (max-width: 1366px) {
+                    min-height: 490px;
+                    height: 490px;
+                }
+
+                @media only screen and (min-width: 1367px) {
+                    min-height: 800px;
+                    height: 800px;
+                }
+
                 overflow-y: auto;
                 overflow-x: hidden;
                 margin-top: 0;
