@@ -33,7 +33,7 @@
                         <td style="text-align: center;">@(Model.Personnel._Positions[i]._Position?.Description ?? "")</td>
                         <td style="text-align: center;">@(String.Format("{0:MMMM dd, yyyy}", Model.Personnel._Positions[i].StartDate))</td>
                         <td style="text-align: center;">
-                            @if (i < Model.Personnel._Positions.Count() - 1)
+                            @if (Model.Personnel._Positions[i].EndDate != null)
                             {
                                 @(String.Format("{0:MMMM dd, yyyy}", Model.Personnel._Positions[i].EndDate))
                             }

@@ -36,26 +36,11 @@
         </div>
     </div>
     <div class="" style="margin-top: 80px;">
-        <div class="" animated fadeInLef">
-            <div class="" style="padding: 0px;">
-                <div class="tabs-container" style="">
-                    <div class="tab-content" style="margin-top: 0px; max-height: unset; overflow-y: auto; overflow-x: hidden;">
-                        @if (PageAccess.View)
-                        {
-                            <div id="tab-2" class="tab-pane active" style="">
-                                <div id="PersonnelsForm" class="panel-body" style="padding: 10px; max-height: 100%; border: 1px solid #e5e6e7; overflow-y: hidden;">
-                                    @Html.Partial("~/Views/HumanResource/Personnel/_PersonnelSearch.cshtml")
-                                </div>
-                            </div>
-                        }
-                    </div>
-                </div>
-            </div>
+        <div id="PersonnelsForm">
+            @Html.Partial("~/Views/HumanResource/Personnel/_PersonnelSearch.cshtml")
+        </div>
 
-            <div class="file-manager">
-            </div>
-            <div id="" class="pull-left" style="width: 100%;">
-            </div>
+        <div class="file-manager">
         </div>
     </div>
 </div>
@@ -149,6 +134,7 @@
                         //location.reload();
                         Search();
                     }
+                    toastr.clear();
                 });
 
             $('select#EmploymentStatusID').off('change').on('change', SelectChange);
@@ -218,8 +204,8 @@
                         SelectedDaysEvents();
 
                         CheckRequiredFields();
-                        toastr.info("Click X button on top-left corner to close, or press Escape.", "What's new?", { tapToDismiss: true, timeOut: 300000 });
-                        toastr.info("Click check button on top-right corner to save (Personal/Employment Info), or press Enter.", "What's new?", { tapToDismiss: true, timeOut: 300000 });
+                        toastr.info("Click X button on top-left corner to close, or press Escape.", "What's new?", { tapToDismiss: true, timeOut: 10000 });
+                        toastr.info("Click check button on top-right corner to save (Personal/Employment Info), or press Enter.", "What's new?", { tapToDismiss: true, timeOut: 10000 });
                     } else {
                         toastr.error(response.res);
                     }

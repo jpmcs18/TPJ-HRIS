@@ -275,17 +275,13 @@
     function UploadDocument(leaveReqID, filename) {
         e.preventDefault();
         $tr = $('#LeaveRequestForm tr#Row-Display-LeaveRequests-' + leaveReqID);
-        //var action = $('#DeleteDocumentForm').attr('action');
         filename = $tr.find('td button').attr('title');
 
         if (leaveReqID) {
             $('#LeaveRequestForm #leaveRequestId').val(leaveReqID);
-            //$('#UploadDocumentModal').attr('action', action + (filename ? leaveReqID : ''));
             $('#LeaveRequestForm #filename').text('filename: ' + filename);
-            //$('#LeaveRequestForm #DeleteDocument').attr(filename ? 'submit' : 'hidden');
             $('#LeaveRequestForm .modal-header .close').off('click').on('click', CancelDocumentUpload);
             $("#LeaveRequestForm #browseFile").val('');
-            //$('#UploadDocumentModal').appendTo('body').modal('show');
         }
         else {
             toastr.warning('Warning', 'Leave Request not found.');
@@ -296,7 +292,6 @@
         $('#SelectedFilesPreview').empty();
         $('#LeaveRequestForm .fileinput .close').trigger('click');
         $("#LeaveRequestForm #browseFile").val('');
-        //$('#UploadDocumentModal').modal('hide');
     }
 
     function ValidateFile() {

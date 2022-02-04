@@ -7259,6 +7259,7 @@ body .md-stepper-horizontal .md-step .md-step-circle {
     text-overflow: ellipsis;
     max-width: 250px;
     display: none;
+    color: #000;
   }
 }
 @media only screen and (min-width: 768px) {
@@ -7878,6 +7879,7 @@ body .md-stepper-horizontal .md-step .md-step-circle {
     text-overflow: ellipsis;
     max-width: 250px;
     display: none;
+    color: #000;
   }
 }
 @media only screen and (min-width: 768px) {
@@ -8673,6 +8675,20 @@ body.skin-3 {
     text-align: left;
     display: inline-block;
   }
+}
+table.loading tr #Row-Loading-Display {
+  display: block !important;
+}
+table tr#Row-Loading-Display {
+  display: none;
+}
+table tr#Row-Loading-Display td {
+  text-align: center;
+}
+table tr#Row-Loading-Display td i {
+  padding: 8px;
+  font-size: 20px;
+  text-align: right;
 }
 .btn-group,
 .btn-group-vertical {
@@ -9713,12 +9729,22 @@ table .Row-Display .clickable-text:hover {
   box-shadow: none;
 }
 #PersonnelProfile #form_personelprofile .modal-body .tab-content {
-  min-height: 625px;
-  height: 625px;
   overflow-y: auto;
   overflow-x: hidden;
   margin-top: 0;
   padding: 0 0 170px 0;
+}
+@media only screen and (min-width: 600px) and (max-width: 1366px) {
+  #PersonnelProfile #form_personelprofile .modal-body .tab-content {
+    min-height: 490px;
+    height: 490px;
+  }
+}
+@media only screen and (min-width: 1367px) {
+  #PersonnelProfile #form_personelprofile .modal-body .tab-content {
+    min-height: 800px;
+    height: 800px;
+  }
 }
 #PersonnelProfile #form_personelprofile .modal-body .tab-content .tab-pane .panel {
   box-shadow: none;

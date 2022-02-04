@@ -16,6 +16,7 @@ namespace WebTemplate.Models.Personnel
         public List<ProcessLayer.Entities.Personnel> BirthdayCelebrantsToday { get; set; } = new List<ProcessLayer.Entities.Personnel>();
         public List<ProcessLayer.Entities.Personnel> BirthdayCelebrantsUpcoming { get; set; } = new List<ProcessLayer.Entities.Personnel>();
 
+        public List<PersonnelLicense> ExpiringLicensesRecent { get; set; } = new List<PersonnelLicense>();
         public List<PersonnelLicense> ExpiringLicensesToday { get; set; } = new List<PersonnelLicense>();
         public List<PersonnelLicense> ExpiringLicensesUpcoming { get; set; } = new List<PersonnelLicense>();
 
