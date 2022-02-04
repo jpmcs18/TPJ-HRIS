@@ -167,6 +167,5 @@ namespace WebTemplate.Controllers.CnB
 
             return PartialViewCustom("_Payroll", model);
         }
-
     }
 }

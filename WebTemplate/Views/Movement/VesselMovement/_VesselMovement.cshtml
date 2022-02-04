@@ -4,12 +4,12 @@
     var VesselPageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("HumanResource/VesselMovement");
 }
 
-<div class="vertical-timeline-block movement-@(Model.MovementTypeID == 1 ? "departure" : Model.MovementTypeID == 2 ? "arrival" : "drydock") center-orientation animated fadeInUp Row-Display">
-    <div class="vertical-timeline-icon @(Model.MovementTypeID == 1 ? "blue" : Model.MovementTypeID == 2 ? "lazur" : "yellow")-bg">
+<div class="movement-@(Model.MovementTypeID == 1 ? "departure" : (Model.MovementTypeID == 2 ? "arrival" : "drydock")) vertical-timeline-block center-orientation animated fadeInUp Row-Display">
+    <div class="vertical-timeline-icon@(Model.MovementTypeID == 1 ? " blue" : (Model.MovementTypeID == 2 ? " lazur" : " yellow"))-bg">
         <i class="fa fa-@(Model.MovementTypeID == 1 ? "ship" : Model.MovementTypeID == 2 ? "anchor" : "wrench")"></i>
     </div>
 
-    <div class="vertical-timeline-content">
+    <div class="vertical-timeline-content@(Model.MovementTypeID == 1 ? " blue" : (Model.MovementTypeID == 2 ? " lazur" : " yellow"))-bg">
         <button type="button" value="@Model.ID" id="DeleteVesselMovement" class="btn btn-outline btn-danger pull-right" title="Delete"><i class="fa fa-trash"></i></button>
         <button type="button" value="@Model.ID" id="EditVesselMovement" class="btn btn-outline btn-primary pull-right" title="Edit"><i class="fa fa-pencil"></i></button>
         <h2>@(String.IsNullOrEmpty(Model._VesselMovementType.ToString()) ? "" : Model._VesselMovementType.Description): <b>@(Model.Place ?? "")</b></h2>

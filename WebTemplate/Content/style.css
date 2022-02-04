@@ -2943,6 +2943,10 @@ a.forum-item-title:hover {
 .dark-timeline.center-orientation .vertical-timeline-block:nth-child(2n) .vertical-timeline-content.blue-bg:before {
   border-color: transparent #2196F3 transparent transparent;
 }
+.dark-timeline .vertical-timeline-block:nth-child(2n) .vertical-timeline-content.lazur-bg:before,
+.dark-timeline.center-orientation .vertical-timeline-block:nth-child(2n) .vertical-timeline-content.lazur-bg:before {
+  border-color: transparent #23c6c8 transparent transparent;
+}
 @media only screen and (min-width: 1170px) {
   #vertical-timeline.center-orientation {
     margin-top: 3em;
@@ -3010,13 +3014,22 @@ a.forum-item-title:hover {
 }
 @media only screen and (min-width: 1170px) {
   .center-orientation .vertical-timeline-icon {
-    width: 60px;
-    height: 60px;
     left: 50%;
-    margin-left: -30px;
     -webkit-transform: translateZ(0);
     -webkit-backface-visibility: hidden;
     font-size: 19px;
+  }
+  .center-orientation .vertical-timeline-icon.blue-bg,
+  .center-orientation .vertical-timeline-icon.navy-bg,
+  .center-orientation .vertical-timeline-icon.yellow-bg {
+    width: 50px;
+    height: 50px;
+    margin-left: -25px;
+  }
+  .center-orientation .vertical-timeline-icon.lazur-bg {
+    width: 60px;
+    height: 60px;
+    margin-left: -30px;
   }
   .vertical-timeline-icon.passenger {
     width: 50px;
@@ -3039,6 +3052,9 @@ a.forum-item-title:hover {
   border-radius: 1em;
   padding: 1em;
   color: #000;
+}
+.vertical-timeline-content button {
+  background: #eee;
 }
 .vertical-timeline-content:after {
   content: "";
@@ -8746,7 +8762,7 @@ h3 {
   .vertical-timeline-block.center-orientation:before {
     left: 50%;
     margin-left: -2px;
-    top: 45%;
+    top: 70%;
   }
   .vertical-timeline-block.center-orientation:before .vertical-timeline-icon {
     top: unset;
@@ -8775,6 +8791,12 @@ h3 {
 }
 .vertical-timeline-block .vertical-timeline-content::before {
   border-color: transparent #aaa transparent transparent;
+}
+.vertical-timeline-block .vertical-timeline-content#New {
+  background: #eeeeee;
+}
+.vertical-timeline-block .vertical-timeline-content#New::before {
+  border-color: transparent transparent transparent transparent;
 }
 .vertical-timeline-block .vertical-timeline-content:hover,
 .vertical-timeline-block .vertical-timeline-content:focus {

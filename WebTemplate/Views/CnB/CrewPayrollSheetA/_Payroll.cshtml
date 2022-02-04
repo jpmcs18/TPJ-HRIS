@@ -1,0 +1,37 @@
+﻿@model ProcessLayer.Entities.CnB.CrewPayroll
+
+@{
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var PageAccess = credential.GetPage("CnB/CrewPayrollSheetA") ?? new DataAccessLayer.System.Page();
+}
+
+<tr id="@Model.ID" class="Row-Display Row-Display-Payrolls" style="cursor: pointer">
+    <td hidden>
+        <input id="PayrollPeriod.ID" name="PayrollPeriod.ID" />
+        <input id="PayrollPeriod.StartDate" name="PayrollPeriod.StartDate" />
+        <input id="PayrollPeriod.EndDate" name="PayrollPeriod.EndDate" />
+        <input id="PayRoll[0].Personnel.ID" name="PayRoll.Personnel.ID" value="@Html.ValueFor(m => m.Personnel.ID)" />
+        <input id="PayRoll[0].ID" name="PayRoll.ID" value="@Html.ValueFor(m => m.ID)" />
+    </td>
+    <td style="text-align: left;"><i class="fa fa-angle-right"></i>&nbsp; @Model.FullName</td>
+    @*<td style="text-align: right;">@Model.HolidayPay.ToString("#,##0.000")</td>
+    <td style="text-align: right;">@Model.NoOfDays.ToString("#,##0.000")</td>
+    <td style="text-align: right;">@Model.BasicPay.ToString("#,##0.00")</td>
+    <td style="text-align: right;">@Model.GrossPay.ToString("#,##0.000")</td>
+    <td style="text-align: right;">@(Model.Recomputed ? "Yes" : "")</td>*@
+    <td style="text-align: right;">@Model.Tax.ToString("#,##0.000")</td>
+    <td style="text-align: right;">@Model.TotalDeductions.ToString("#,##0.000")</td>
+    <td style="text-align: right;">@Model.NetPay.ToString("#,##0.000")</td>
+    @if (PageAccess.Update || PageAccess.Delete)
+    {
+        <th style="text-align: center;">
+            <button id="RecomputePersonnelPayroll" class="recomputepayroll btn btn-info compose-mail pull-right m-r-sm" value="@Model.ID" type="button" onclick="RecomputePersonnelPayroll();" title="Recompute Personnel Payroll"><i class="fa fa-refresh"></i> </button>
+            @using (Html.BeginForm("PrintIndividualPayslip", "CrewPayrollSheetA", FormMethod.Post, new { @target = "_blank", @class = "" }))
+            {
+                <button class="btn btn-primary compose-mail pull-right m-r-sm" type="submit" onclick="event.stopPropagation();" id="PrintPayslip" title="Print Personnel Payslip"><i class="fa fa-file"></i> </button>
+                <input type="hidden" value="@Model.Personnel.ID" name="personnelId" />
+                <input type="hidden" value="0" name="payrollId" />
+            }
+        </th>
+    }
+</tr>

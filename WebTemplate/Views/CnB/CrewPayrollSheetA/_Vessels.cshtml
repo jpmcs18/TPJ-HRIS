@@ -1,0 +1,86 @@
+﻿@model WebTemplate.Models.CrewPayroll.CrewVesselList
+
+@{
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var PageAccess = credential.GetPage("CnB/CrewPayrollSheetA") ?? new DataAccessLayer.System.Page();
+}
+
+@if (!PageAccess.View)
+{
+    <style>
+    </style>
+    ViewBag.Message = "You do not have access to view this page.";
+    @Html.Partial("~/Views/Security/Unauthorized.cshtml")
+}
+else
+{
+    <div class="container-header">
+        <h1>
+            <button id="" type="button" class="btn btn-default goBack" title="Go back to Payroll Sheets"><i class="fa fa-caret-left"></i></button>
+            Payroll for <b>@Model.PayrollBase.StartDate.ToString("MMM dd, yyyy")</b> - <b>@Model.PayrollBase.AdjustedEndDate.ToString("MMM dd, yyyy")</b>
+            @if (PageAccess.Approve == true && Model.Vessels.Count() > 0)
+            {
+                using (Html.BeginForm("PrintPayroll", "CrewPayrollSheetA", FormMethod.Post, new { @target = "_blank", @class = "pull-right" }))
+                {
+                    <button class="btn btn-primary compose-mail pull-right" type="submit" id="PrintPayroll" title="Print Payroll"><i class="fa fa-print"></i> Payroll</button>
+                    <input type="hidden" value="@Model.PayrollBase.ID" name="payrollPeriodId" />
+                }
+            }
+        </h1>
+    </div>
+    <div id="form_search_results" class="pull-left" style="width: 100%;">
+        <table id="" class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th style="text-align: center;">Vessel</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr id="Row-Loading-Display" class="hidden">
+                    <td style="text-align: center;" colspan="10">
+                        <i id="" class="fa fa-rotate-left rotate" style="padding: 8px; font-size: 20px; text-align: right;"></i>
+                    </td>
+                </tr>
+                @if (Model.Vessels.Count() > 0)
+                {
+                    var Vessels = Model.Vessels.OrderBy(m => m.Vessel.Description);
+
+                    for (int i = 0; i < Model.Vessels.Count(); i++)
+                    {
+                        if (Model.Vessels[i].Vessel != null)
+                        {
+                            var Vessel = Model.Vessels[i].Vessel;
+
+                            <tr id="Row-Display-Vessel-@Vessel.ID" class="Row-Display Row-Display-Vessel read" style="" title="">
+                                <td style="text-align: center;" nowrap>
+                                    @($"{Vessel.Code} - {Vessel.Description}")
+                                </td>
+                                @if (PageAccess.Update || PageAccess.Delete)
+                                {
+                                    <td style="text-align: center " class="">
+                                        <button type="button" name="GetPayrolls" class="btn btn-info compose-mail m-r-sm pull-right GetPayrolls" value="@Vessel.ID" onclick="GetPayrolls('@Model.PayrollBase.ID', '@Vessel.ID');" title="Get Payrolls"><i class="fa fa-eye fa-1x"></i></button>
+                                        @using (Html.BeginForm("PrintVesselPayroll", "CrewPayrollSheetA", FormMethod.Post, new { @target = "_blank", @class = "pull-right" }))
+                                        {
+                                            <button class="btn btn-primary compose-mail m-r-sm" type="submit" onclick="event.stopPropagation();" id="PrintVesselPayroll" title="Print Vessel Payroll"><i class="fa fa-file"></i></button>
+                                            <input type="hidden" value="@Vessel.ID" name="vesselId" />
+                                            <input type="hidden" value="@Model.PayrollBase.ID" name="payrollPeriodId" />
+                                        }
+                                    </td>
+                                }
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr id="No-Row-Display"><td style="text-align: center;" colspan="8">No records found...</td></tr>
+                            return;
+                        }
+                    }
+                }
+                else
+                {
+                    <tr id="No-Row-Display"><td style="text-align: center;" colspan="8">No records found...</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

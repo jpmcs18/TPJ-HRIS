@@ -120,7 +120,7 @@ input.input-incomplete {
         .vertical-timeline-block.center-orientation:before {
             left: 50%;
             margin-left: -2px;
-            top: 45%;
+            top: 70%;
 
             .vertical-timeline-icon {
                 top: unset;
@@ -163,6 +163,14 @@ input.input-incomplete {
 
     .vertical-timeline-content {
         //border: 1px solid #ccc;
+
+        &#New {
+            background: #eeeeee;
+
+            &::before {
+                border-color: transparent transparent transparent transparent;
+            }
+        }
 
         &:hover, &:focus {
             box-shadow: 0px 2px 6px 3px rgba(0, 0, 0, 0.1607843137254902);

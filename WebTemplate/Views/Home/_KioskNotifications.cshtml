@@ -48,7 +48,7 @@
                                 links += $" (<b>{current.Count}</b> {Type}";
                             }
 
-                            //Same type
+                            //If Same type, append filter
                             if (current != Model.Last() && current.Type == Model[i + 1].Type)
                             {
                                 links += $") (<b>{current.Count}</b> {Type}";
