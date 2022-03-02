@@ -35,6 +35,8 @@ namespace ProcessLayer.Entities
         public int? CheckedBy { get; set; }
         public string Checker { get; set; }
         public DateTime? CheckedDate { get; set; }
+        public Location OriginLocation { get; set; }
+        public Location DestinationLocation { get; set; }
 
         public List<VesselCrews> CrewList { get; set; }
     }  
