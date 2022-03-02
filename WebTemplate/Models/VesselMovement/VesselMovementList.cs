@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace WebTemplate.Models.VesselMovement
 {
-    public class VesselMovement
+    public class VesselMovementList
     {
         public DateTime StartingDate { get; set; } = DateTime.Now.AddYears(-1);
         public DateTime EndingDate { get; set; } = DateTime.Now.AddHours(5);

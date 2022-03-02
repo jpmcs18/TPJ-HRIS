@@ -23,7 +23,6 @@ namespace ProcessLayer.Processes
             var v = new VesselMovement {
                 ID = dr[VesselMovementFields.ID].ToShort(),
                 VesselID = dr[VesselMovementFields.VesselID].ToShort(),
-                Place = dr[VesselMovementFields.Place].ToString(),
                 MovementTypeID = dr[VesselMovementFields.MovementTypeID].ToInt(),
                 MovementDate = dr[VesselMovementFields.MovementDate].ToDateTime()
             };
@@ -215,7 +214,6 @@ namespace ProcessLayer.Processes
                 {VesselMovementParameters.VesselID, vessel.VesselID}
                 , {VesselMovementParameters.MovementTypeID, vessel.MovementTypeID}
                 , {VesselMovementParameters.MovementDate, vessel.MovementDate}
-                , {VesselMovementParameters.Place, vessel.Place}
                 , {CredentialParameters.LogBy, userid}
             };
             var outparameters = new List<OutParameters> {

@@ -356,7 +356,7 @@
     <Compile Include="Models\TimeLog\ValidateTimelog.cs" />
     <Compile Include="Models\VesselMovement\CrewList.cs" />
     <Compile Include="Models\VesselMovement\Index.cs" />
-    <Compile Include="Models\VesselMovement\VesselMovement.cs" />
+    <Compile Include="Models\VesselMovement\VesselMovementList.cs" />
     <Compile Include="Models\Vessel\Crew\Index.cs" />
     <Compile Include="Models\Vessel\Vessel\Index.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -10,11 +10,33 @@ namespace ProcessLayer.Entities
     {
         public long ID { get; set; }
         public short VesselID { get; set; }
-        public string Place { get; set; }
         public int MovementTypeID { get; set; }
         public DateTime MovementDate { get; set; }
-
+        public DateTime VoyageStartDate { get; set; }
+        public DateTime? VoyageEndDate { get; set; }
+        public int VoyageStatusID { get; set; }
+        public int OriginLocationID { get; set; }
+        public int DestinationLocationID { get; set; }
+        public DateTime? ETA { get; set; }
+        public DateTime? ETD { get; set; }
+        public string VoyageDetails { get; set; }
         public Vessel _Vessel { get; set; } = new Vessel();
         public Lookup _VesselMovementType { get; set; } = new Lookup();
-    }
+
+        public int CreatedBy { get; set; }
+        public string Creator { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public int? ModifiedBy  { get; set; }
+        public string Modifier { get; set; }
+        public DateTime? ModifiedDate { get; set; }
+        public int? ApprovedBy { get; set; }
+        public string Approver { get; set; }
+        public DateTime? ApprovedDate { get; set; }
+        public int? CheckedBy { get; set; }
+        public string Checker { get; set; }
+        public DateTime? CheckedDate { get; set; }
+
+        public List<VesselCrews> CrewList { get; set; }
+    }  
+
 }

@@ -25,7 +25,8 @@ namespace ProcessLayer.Processes
                 HazardRate = dr["Hazard Rate"].ToNullableDecimal() ?? 0,
                 RequiredTimeLog = dr["Required Time Log"].ToNullableBoolean(),
                 WithHolidayAndSunday = dr["With Holiday And Sunday"].ToNullableBoolean(),
-                WithAdditionalForExtension = dr["With Additional For Extension"].ToNullableBoolean()
+                WithAdditionalForExtension = dr["With Additional For Extension"].ToNullableBoolean(),
+                InternationalLocation = dr["International Location"].ToNullableBoolean()
             };
         }
 
@@ -84,7 +85,7 @@ namespace ProcessLayer.Processes
                 using (var ds = db.ExecuteReader(LookupProcedures.GetLookup,
                     new Dictionary<string, object> {
                         { LookupParameters.Table, "Location" },
-                        { LookupParameters.Id, (id ?? 0) },
+                        { LookupParameters.Id, id ?? 0 },
                         { LookupParameters.Schema, "lookup"},
                     }))
                 {
@@ -108,6 +109,7 @@ namespace ProcessLayer.Processes
                     { "@RequiredTimeLog", location.RequiredTimeLog },
                     { "@WithHolidayAndSunday", location.WithHolidayAndSunday },
                     { "@WithAdditionalForExtension", location.WithAdditionalForExtension },
+                    { "@InternationalLocation", location.InternationalLocation },
                     { "@LogBy", user },
                 });
                 location.ID = outParams.Get("@ID").ToInt();

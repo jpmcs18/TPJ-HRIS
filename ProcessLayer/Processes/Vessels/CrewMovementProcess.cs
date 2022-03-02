@@ -203,6 +203,14 @@ namespace ProcessLayer.Processes
 
         public static CrewMovement CreateOrUpdate(CrewMovement crew, int userid)
         {
+            using (var db = new DBTools())
+            {
+                return CreateOrUpdate(db, crew, userid);
+            }
+        }
+
+        public static CrewMovement CreateOrUpdate(DBTools db, CrewMovement crew, int userid)
+        {
             var parameters = new Dictionary<string, object> {
                 {CrewMovementParameters.TransactionNo, crew.TransactionNo}
                 , {CrewMovementParameters.PersonnelID, crew.PersonnelID}
@@ -218,15 +226,15 @@ namespace ProcessLayer.Processes
                 , {CrewMovementParameters.DryDock, crew.DryDock}
                 , {CredentialParameters.LogBy, userid}
             };
+            
             var outparameters = new List<OutParameters> {
                 {CrewMovementParameters.ID, SqlDbType.BigInt, crew.ID }
             };
-            using (var db = new DBTools())
-            {
-                db.ExecuteNonQuery(CrewMovementProcedures.CreateOrUpdate, ref outparameters, parameters);
-                crew.ID = outparameters.Get(CrewMovementParameters.ID).ToLong();
-                crew = Get(crew.ID);
-            }
+             
+            db.ExecuteNonQuery(CrewMovementProcedures.CreateOrUpdate, ref outparameters, parameters);
+            crew.ID = outparameters.Get(CrewMovementParameters.ID).ToLong();
+            crew = Get(crew.ID);
+            
             return crew;
         }
 

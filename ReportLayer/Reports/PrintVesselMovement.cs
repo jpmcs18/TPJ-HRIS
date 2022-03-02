@@ -27,7 +27,6 @@ namespace ReportLayer.Reports
             {
                 WriteToCell(startRow, PrintVesselMovementHelper.Instance.DateColumn, movement.MovementDate.ToString("MMMM dd, yyyy"));
                 WriteToCell(startRow, PrintVesselMovementHelper.Instance.MovementColumn, movement._VesselMovementType.Description);
-                WriteToCell(startRow, PrintVesselMovementHelper.Instance.PlaceColumn, movement.Place);
                 startRow++;
             }
         }

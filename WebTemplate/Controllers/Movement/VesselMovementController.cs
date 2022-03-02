@@ -5,7 +5,6 @@ using System.Linq;
 using System.Web.Mvc;
 using ProcessLayer.Entities;
 using WebTemplate.Models.VesselMovement;
-using VesselMovement = WebTemplate.Models.VesselMovement.VesselMovement;
 using ReportLayer.Reports;
 using ReportLayer.Helpers;
 using System.Web.Script.Serialization;
@@ -35,7 +34,7 @@ namespace WebTemplate.Controllers.Movement
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult VesselMovementManagement(VesselMovement model)
+        public ActionResult VesselMovementManagement(VesselMovementList model)
         {
             try
             {
@@ -58,7 +57,7 @@ namespace WebTemplate.Controllers.Movement
         {
             try
             {
-                ProcessLayer.Entities.VesselMovement model = VesselMovementProcess.Get(id ?? 0);
+                VesselMovement model = VesselMovementProcess.Get(id ?? 0);
                 model.VesselID = vesselid ?? 0;
 
                 ModelState.Clear();
@@ -76,7 +75,7 @@ namespace WebTemplate.Controllers.Movement
         {
             try
             {
-                ProcessLayer.Entities.VesselMovement model = VesselMovementProcess.Get(id ?? 0);
+                VesselMovement model = VesselMovementProcess.Get(id ?? 0);
                 ModelState.Clear();
                 return PartialViewCustom("_VesselMovement", model);
             }
@@ -88,7 +87,7 @@ namespace WebTemplate.Controllers.Movement
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateOrUpdateVesselMovement(ProcessLayer.Entities.VesselMovement model)
+        public ActionResult CreateOrUpdateVesselMovement(VesselMovement model)
         {
             try
             {
@@ -178,7 +177,7 @@ namespace WebTemplate.Controllers.Movement
         }
 
         [HttpPost]
-        public ActionResult PrintVesselMovement(VesselMovement model)
+        public ActionResult PrintVesselMovement(VesselMovementList model)
         {
                 using (var report = new PrintVesselMovement(Server.MapPath(PrintVesselMovementHelper.Instance.Template)))
                 {

@@ -9,5 +9,6 @@
         public bool? RequiredTimeLog { get; set; }
         public bool? WithHolidayAndSunday { get; set; }
         public bool? WithAdditionalForExtension { get; set; }
+        public bool? InternationalLocation { get; set; }
     }
 }
