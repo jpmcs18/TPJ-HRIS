@@ -721,16 +721,9 @@
             cache: false,
             beforeSend: function () {
                 ShowLoadingScreen();
-                $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr').addClass('hidden');
-                $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr#Row-Loading-Display').removeClass('hidden');
             },
             complete: function () {
                 RemoveLoadingScreen();
-                $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr').addClass('hidden');
-                if ($('#SearchPersonnelOrGroup #SearchTableDiv tbody tr.personnel').length > 0) {
-                    $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr.personnel').removeClass('hidden');
-                } else
-                    $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr#No-Row-Display').removeClass('hidden');
             },
             success: function(response) {
                 if (response.msg == null) {
@@ -768,16 +761,9 @@
             cache: false,
             beforeSend: function () {
                 ShowLoadingScreen();
-                $('#SearchPersonnelOrGroup #GroupTableDiv tbody tr').addClass('hidden');
-                $('#SearchPersonnelOrGroup #GroupTableDiv tbody tr#Row-Loading-Display').removeClass('hidden');
             },
             complete: function () {
                 RemoveLoadingScreen();
-                $('#SearchPersonnelOrGroup #GroupTableDiv tbody tr').addClass('hidden');
-                if ($('#SearchPersonnelOrGroup #GroupTableDiv tbody tr.member').length > 0) {
-                    $('#SearchPersonnelOrGroup #GroupTableDiv tbody tr.member').removeClass('hidden');
-                } else
-                    $('#SearchPersonnelOrGroup #GroupTableDiv tbody tr#No-Row-Display').removeClass('hidden');
             },
             success: function(response) {
                 if (response.msg == null) {
@@ -815,16 +801,9 @@
             cache: false,
             beforeSend: function () {
                 ShowLoadingScreen();
-                $('#SearchPersonnelOrGroup #VesselTableDiv tbody tr').addClass('hidden');
-                $('#SearchPersonnelOrGroup #VesselTableDiv tbody tr#Row-Loading-Display').removeClass('hidden');
             },
             complete: function () {
                 RemoveLoadingScreen();
-                $('#SearchPersonnelOrGroup #VesselTableDiv tbody tr').addClass('hidden');
-                if ($('#SearchPersonnelOrGroup #VesselTableDiv tbody tr.vessel').length > 0) {
-                    $('#SearchPersonnelOrGroup #VesselTableDiv tbody tr.vessel').removeClass('hidden');
-                } else
-                    $('#SearchPersonnelOrGroup #VesselTableDiv tbody tr#No-Row-Display').removeClass('hidden');
             },
             success: function (response) {
                 if (response.msg == null) {

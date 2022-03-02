@@ -903,15 +903,10 @@
                 type: "POST",
                 cache: false,
                 beforeSend: function () {
-                    $('#SearchCrewModal #SearchCrewDiv tbody tr').addClass('hidden');
-                    $('#SearchCrewModal #SearchCrewDiv tbody tr#Row-Loading-Display').removeClass('hidden');
+                    ShowLoadingScreen();
                 },
                 complete: function () {
-                    $('#SearchCrewModal #SearchCrewDiv tbody tr').addClass('hidden');
-                    if ($('#SearchCrewModal #SearchCrewDiv tbody tr.personnel').length > 0)
-                        $('#SearchCrewModal #SearchCrewDiv tbody tr.personnel').removeClass('hidden');
-                    else
-                        $('#SearchCrewModal #SearchCrewDiv tbody tr#No-Row-Display').removeClass('hidden');
+                    RemoveLoadingScreen();
                 },
                 success: function(response) {
                     if (response.msg == null) {

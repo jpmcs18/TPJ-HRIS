@@ -814,16 +814,11 @@
                 },
                 type: "POST",
                 cache: false,
-                beforeSend: function() {
-                    $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr').addClass('hidden');
-                    $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr#Row-Loading-Display').removeClass('hidden');
+                beforeSend: function () {
+                    ShowLoadingScreen();
                 },
-                complete: function() {
-                    $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr').addClass('hidden');
-                    if ($('#SearchPersonnelOrGroup #SearchTableDiv tbody tr.personnel').length > 0) {
-                        $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr.personnel').removeClass('hidden');
-                    } else
-                        $('#SearchPersonnelOrGroup #SearchTableDiv tbody tr#No-Row-Display').removeClass('hidden');
+                complete: function () {
+                    RemoveLoadingScreen();
                 },
                 success: function(response) {
                     if (response.msg == null) {

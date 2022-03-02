@@ -12,18 +12,10 @@
         <div class="col-lg-8">
             @Html.Partial("~/Views/Shared/_Breadcrumbs.cshtml", PageAccess)
         </div>
-        <div class="col-lg-4">
-            <div class="title-action">
-
-            </div>
-        </div>
+        <div class="col-lg-4"><div class="title-action"></div></div>
     </div>
-    <div class="" style="margin-top: 80px;">
-        @if (PageAccess.View)
-        {
-            <div id="PayrollsForm">
-                @Html.Partial("~/Views/CnB/PayrollSheetA/_PayrollSheetASearch.cshtml")
-            </div>}
+    <div class="PayrollsForm" style="margin-top: 80px;">
+        @Html.Partial("~/Views/CnB/PayrollSheetA/_PayrollSheetASearch.cshtml")
     </div>
 </div>
 
@@ -333,7 +325,6 @@
                 },
                 success: function (response) {
                     if (response.msg == null) {
-                        //$("#PayrollsForm").html(response);
                         $('#PayrollBaseTable tbody').prepend(response);
                         CountRowDisplay();
                         Events();
@@ -341,7 +332,6 @@
 
                         $('#GeneratePayroll').modal('hide');
                         toastr.success('Payroll Base generated!');
-                        //$('.ViewPayrollBase').off('click').on('click', ViewPayrollBase);
                         $('.Row-Display-PayrollBase').off('click').on('click', ViewPayrollBase);
                     } else {
                         toastr.error(response.res);

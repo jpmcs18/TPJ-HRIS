@@ -1,124 +1,126 @@
 ﻿@model WebTemplate.Models.Groups.Index
 
 @{
-    var GroupPageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("HumanResource/Group");
+    var PageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("HumanResource/Group");
 
-    ViewBag.title = GroupPageAccess.PageName;
+    ViewBag.title = PageAccess.PageName;
 }
 
-<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-    @if (GroupPageAccess.View)
-    {
-        <div class="file-manager">
-            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px; margin: 0px -15px;">
-                <div id="form_search_params" class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
-                    @*<input type="hidden" id="hid_search" name="@Html.NameFor(m => m.Filter)" value="@Html.ValueFor(m => m.Filter)" />*@
-                    <input type="hidden" id="hid_page" name="@Html.NameFor(m => m.Page)" value="@Html.ValueFor(m => m.Page)" />
-                    @Html.AntiForgeryToken()
+@if (!PageAccess.View)
+{
+    <style>
+    </style>
+    ViewBag.Message = "You do not have access to view this page.";
+    @Html.Partial("~/Views/Security/Unauthorized.cshtml")
+}
+else
+{
+    <div id="form_search_params" class="" style="">
+        @Html.Hidden("Page", Model.Page, new { @class = "form-control" })
+        @Html.AntiForgeryToken()
 
-                    <div class="form-group col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                        @*<label class="control-label">Group Name</label>*@
-                        <input type="text" id="txt_search" class="form-control" name="@Html.NameFor(m => m.Filter)" placeholder="Group Name..." value="@Html.ValueFor(m => m.Filter)" />@*@Html.ValueFor(m => m.Filter)*@
-                    </div>
-
-                    <div class="form-group col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                        @*<label class="control-label" style="width: 100%; color: #fff;">Search</label>*@
-                        <button type="button" id="btn_search" class="btn btn-primary font-bold"><i class="fa fa-search"></i> Search</button>
-                    </div>
-                </div>
-            </div>
+        <div class="form-group col-xs-12 col-sm-12 col-md-4 col-lg-4">
+            <label class="control-label">Group Name</label>
+            <input type="text" id="txt_search" class="form-control" name="@Html.NameFor(m => m.Filter)" placeholder="Group Name..." value="@Html.ValueFor(m => m.Filter)" />@*@Html.ValueFor(m => m.Filter)*@
         </div>
-    }
-<div id="form_search_results" class="pull-left" style="width: 100%;">
-    <table id="GroupsTable" class="table table-hover table-striped">
-        <thead>
-            @if (Model.PersonnelGroups.Count() > 0)
-            {
-                <tr>
-                    <td class="text-right" colspan="10" style="background-color: white;">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" id="hid_page" name="@Html.NameFor(m => m.Page)" value="@Html.ValueFor(m => m.Page)" />
-                        <input type="hidden" id="hid_search" name="@Html.NameFor(m => m.Filter)" value="@Html.ValueFor(m => m.Filter)" />
 
-                        <div class="pull-left m-r-md">
-                            <button type="button" id="MultipleDelete" class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="top" title="Delete selected rows" disabled>
-                                <i class="fa fa-trash-o"></i>
-                            </button>
-                        </div>
+        <div class="form-group col-xs-12 col-sm-12 col-md-4 col-lg-4">
+            <label class="control-label" style="width: 100%; color: transparent;">Search</label>
+            <button type="button" id="btn_search" class="btn btn-primary font-bold"><i class="fa fa-search"></i> Search</button>
+        </div>
+    </div>
 
-                        <div class="btn-group pull-left">
-                            @if (Model.Page > 0)
-                            {
-                                <button type="button" name="@Html.NameFor(m => m.Page)" value="1" class="btn btn-white @(Model.Page == 1 ? "active" : "pages")">1 @*<i class="fa fa-angle-double-left"></i>*@</button>
-                            }
-                            @if (Model.Page - 1 > 2)
-                            {
-                                <button type="button" name="@Html.NameFor(m => m.Page)" value="@(Model.Page - 2)" class="btn btn-white pages">...@*<i class="fa fa-angle-left"></i>*@</button>
-                            }
-                            @for (int i = Model.Page - 1; i <= Model.Page + 1; i++)
-                            {
-                                if (i > 1 && i < Model.PageCount)
+    <div id="form_search_results" class="" style="">
+        <table id="GroupsTable" class="table table-hover table-striped">
+            <thead>
+                @if (Model.PersonnelGroups.Count() > 0)
+                {
+                    <tr>
+                        <td class="text-right" colspan="10" style="background-color: white;">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" id="hid_page" name="@Html.NameFor(m => m.Page)" value="@Html.ValueFor(m => m.Page)" />
+                            <input type="hidden" id="hid_search" name="@Html.NameFor(m => m.Filter)" value="@Html.ValueFor(m => m.Filter)" />
+
+                            <div class="pull-left m-r-md">
+                                <button type="button" id="MultipleDelete" class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="top" title="Delete selected rows" disabled>
+                                    <i class="fa fa-trash-o"></i>
+                                </button>
+                            </div>
+
+                            <div class="btn-group pull-left">
+                                @if (Model.Page > 0)
                                 {
-                                    <button type="button" name="@Html.NameFor(m => m.Page)" value="@(i)" class="btn btn-white @(i == Model.Page ? "active" : "pages")">@(i)</button>
+                                    <button type="button" name="@Html.NameFor(m => m.Page)" value="1" class="btn btn-white @(Model.Page == 1 ? "active" : "pages")">1 @*<i class="fa fa-angle-double-left"></i>*@</button>
                                 }
-                            }
-                            @if (Model.Page + 1 < Model.PageCount - 1)
-                            {
-                                <button type="button" name="@Html.NameFor(m => m.Page)" value="@(Model.Page + 2)" class="btn btn-white pages">...@*<i class="fa fa-angle-right"></i>*@</button>
-                            }
-                            @if (Model.Page <= Model.PageCount && Model.PageCount > 1)
-                            {
-                                <button type="button" name="@Html.NameFor(m => m.Page)" value="@Model.PageCount" class="btn btn-white @(Model.Page == Model.PageCount ? "active" : "pages")">@Model.PageCount @*<i class="fa fa-angle-double-right"></i>*@</button>
-                            }
+                                @if (Model.Page - 1 > 2)
+                                {
+                                    <button type="button" name="@Html.NameFor(m => m.Page)" value="@(Model.Page - 2)" class="btn btn-white pages">...@*<i class="fa fa-angle-left"></i>*@</button>
+                                }
+                                @for (int i = Model.Page - 1; i <= Model.Page + 1; i++)
+                                {
+                                    if (i > 1 && i < Model.PageCount)
+                                    {
+                                        <button type="button" name="@Html.NameFor(m => m.Page)" value="@(i)" class="btn btn-white @(i == Model.Page ? "active" : "pages")">@(i)</button>
+                                    }
+                                }
+                                @if (Model.Page + 1 < Model.PageCount - 1)
+                                {
+                                    <button type="button" name="@Html.NameFor(m => m.Page)" value="@(Model.Page + 2)" class="btn btn-white pages">...@*<i class="fa fa-angle-right"></i>*@</button>
+                                }
+                                @if (Model.Page <= Model.PageCount && Model.PageCount > 1)
+                                {
+                                    <button type="button" name="@Html.NameFor(m => m.Page)" value="@Model.PageCount" class="btn btn-white @(Model.Page == Model.PageCount ? "active" : "pages")">@Model.PageCount @*<i class="fa fa-angle-double-right"></i>*@</button>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+
+                <tr>
+                    <th style="text-align: center;" scope="col">
+                        <input id="SelectAll" type="checkbox" class="i-checks" title="Select All" value="">
+                    </th>
+                    <th style="text-align: center; width: 45%;">Description</th>
+                    <th style="text-align: center; width: 45%;">Members</th>
+                    @if (PageAccess.Update || PageAccess.Delete)
+                    {
+                        <th style="text-align: center; min-width: 10%;" scope="col">Action</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                <tr id="Row-Loading-Display" class="hidden">
+                    <td style="text-align: center;" colspan="10">
+                        <i id="" class="fa fa-rotate-left rotate" style="padding: 8px; font-size: 20px; text-align: right;"></i>
+                    </td>
+                </tr>
+                @if (Model.PersonnelGroups.Count() > 0)
+                {
+                    for (int i = 0; i < Model.PersonnelGroups.Count(); i++)
+                    {
+                        @Html.Partial("~/Views/HumanResource/Group/_Group.cshtml", Model.PersonnelGroups[i])
+                    }
+                }
+                else
+                {
+                    <tr id="No-Row-Display"><td style="text-align: center;" colspan="10">No records found...</td></tr>
+                }
+            </tbody>
+            <tfoot>
+                @*@Html.Partial("~/Views/HumanResource/Group/_Group.cshtml", new ProcessLayer.Entities.PersonnelGroup())*@
+                <tr id="0" class="Row-Input">
+                    <td class=""></td>
+                    <td style="text-align: center;">
+                        <input type="text" name="Description" class="form-control text-transform-none" placeholder="Description" />
+                    </td>
+                    <td colspan="2" style="text-align: right; width: 168px;">
+                        <div class="btn-group" style="">
+                            <button type="button" name="CancelGroup" class="btn btn-outline btn-warning btn-sm btn-rounded CancelGroup" value="0" title="Clear"><i class="fa fa-times"></i></button>
+                            <button type="button" name="SaveGroup" class="btn btn-info btn-sm btn-rounded SaveGroup" value="0" title="Save"><i class="fa fa-save"></i></button>
                         </div>
                     </td>
                 </tr>
-            }
-
-            <tr>
-                <th style="text-align: center;" scope="col">
-                    <input id="SelectAll" type="checkbox" class="i-checks" title="Select All" value="">
-                </th>
-                <th style="text-align: center; width: 45%;">Description</th>
-                <th style="text-align: center; width: 45%;">Members</th>
-                @if (GroupPageAccess.Update || GroupPageAccess.Delete)
-                {
-                    <th style="text-align: center; min-width: 10%;" scope="col">Action</th>
-                }
-            </tr>
-        </thead>
-        <tbody>
-            <tr id="Row-Loading-Display" class="hidden">
-                <td style="text-align: center;" colspan="10">
-                    <i id="" class="fa fa-rotate-left rotate" style="padding: 8px; font-size: 20px; text-align: right;"></i>
-                </td>
-            </tr>
-            @if (Model.PersonnelGroups.Count() > 0)
-            {
-                for (int i = 0; i < Model.PersonnelGroups.Count(); i++)
-                {
-                    @Html.Partial("~/Views/HumanResource/Group/_Group.cshtml", Model.PersonnelGroups[i])
-                }
-            }
-            else
-            {
-                <tr id="No-Row-Display"><td style="text-align: center;" colspan="10">No @GroupPageAccess.PageName found...</td></tr>
-            }
-        </tbody>
-        <tfoot>
-            <tr id="0" class="Row-Input">
-                <td class=""></td>
-                <td style="text-align: center;">
-                    <input type="text" name="Description" class="form-control text-transform-none" placeholder="Description" />
-                </td>
-                <td colspan="2" style="text-align: right; width: 168px;">
-                    <div class="btn-group" style="">
-                        <button type="button" name="CancelGroup" class="btn btn-outline btn-warning btn-sm btn-rounded CancelGroup" value="0" title="Clear"><i class="fa fa-times"></i></button>
-                        <button type="button" name="SaveGroup" class="btn btn-info btn-sm btn-rounded SaveGroup" value="0" title="Save"><i class="fa fa-save"></i></button>
-                    </div>
-                </td>
-            </tr>
-        </tfoot>
-    </table>
-</div>
-</div>
+            </tfoot>
+        </table>
+    </div>
+}

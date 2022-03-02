@@ -162,6 +162,16 @@
             });
         }
 
+        function ShowHideRowLoadingDisplay(table) {
+            $table = $('#' + table);
+            if ($table.hasClass('loading')) {
+                $table.removeClass('loading');
+            }
+            else {
+                $table.addClass('loading');
+            }
+        }
+
         function ShowHideRowLoadingDisplay(table, isShow) {
             if (isShow) {
                 $('#' + table + ' tbody tr').addClass('hidden');

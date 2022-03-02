@@ -21,6 +21,7 @@ namespace WebTemplate.Controllers
             model.BirthdayCelebrantsToday = PersonnelProcess.GetBirthdayCelebrantsThisDay().ToList();
             model.BirthdayCelebrantsUpcoming = PersonnelProcess.GetBirthdayCelebrantsThisMonthUpcoming().ToList();
 
+            model.ExpiringLicensesRecent = PersonnelLicenseProcess.GetExpiringLicensesThisMonthRecent().ToList();
             model.ExpiringLicensesToday = PersonnelLicenseProcess.GetExpiringLicensesThisDay().ToList();
             model.ExpiringLicensesUpcoming = PersonnelLicenseProcess.GetExpiringLicensesThisMonthUpcoming().ToList();
 

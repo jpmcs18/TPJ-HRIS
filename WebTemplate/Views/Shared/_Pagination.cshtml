@@ -1,0 +1,31 @@
+﻿@model List<int>
+
+@if (Model[2] > 0)
+{
+    <tr>
+        <td class="text-right" colspan="10" style="background-color: white;">
+            <div class="btn-group pull-left">
+                @if (Model[0] > 0)
+                {
+                    <button type="button" name="@Html.NameFor(m => m[0])" value="1" class="btn btn-white @(Model[0] == 1 ? "active" : "pages")">1 @*<i class="fa fa-angle-double-left"></i>*@</button>}
+                @if (Model[0] - 1 > 2)
+                {
+                    <button type="button" name="@Html.NameFor(m => m[0])" value="@(Model[0] - 2)" class="btn btn-white pages">...@*<i class="fa fa-angle-left"></i>*@</button>}
+                @for (int i = Model[0] - 1; i <= Model[0] + 1; i++)
+                {
+                    if (i > 1 && i < Model[1])
+                    {
+                        <button type="button" name="@Html.NameFor(m => m[0])" value="@(i)" class="btn btn-white @(i == Model[0] ? " active" : "pages")">@(i)</button>
+                    }
+                }
+                @if (Model[0] + 1 < Model[1] - 1)
+                {
+                    <button type="button" name="@Html.NameFor(m => m[0])" value="@(Model[0] + 2)" class="btn btn-white pages">...@*<i class="fa fa-angle-right"></i>*@</button>}
+                @if (Model[0] <= Model[1] && Model[1] > 1)
+                {
+                    <button type="button" name="@Html.NameFor(m => m[0])" value="@Model[1]" class="btn btn-white @(Model[0] == Model[1] ? "active" : "pages")">@Model[1] @*<i class="fa fa-angle-double-right"></i>*@</button>
+                }
+            </div>
+        </td>
+    </tr>
+}

@@ -2508,6 +2508,7 @@
     <Content Include="Views\CnB\CrewPayrollSheetA\_Vessel.cshtml" />
     <Content Include="Views\CnB\CrewPayrollSheetA\_Vessels.cshtml" />
     <Content Include="Views\CnB\CrewPayrollSheetA\Index.cshtml" />
+    <Content Include="Views\Shared\_Pagination.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">

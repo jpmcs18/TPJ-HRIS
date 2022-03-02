@@ -399,6 +399,13 @@
             GetPayroll(serialized);
         }
 
+        function CountRowDisplay() {
+            if ($('#PayrollBaseTable tr.Row-Display').length > 0)
+                $('#PayrollBaseTable #No-Row-Display').addClass('hidden');
+            else
+                $('#PayrollBaseTable #No-Row-Display').removeClass('hidden')
+        }
+
         function InitDateTimePicker() {
             $('input.js-datetimepicker').tpjdatetime({
                 withtime: false,
