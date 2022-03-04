@@ -21,15 +21,18 @@
         {
             var counter = 0;
             var prevBdayDay = 0;
+            //string lastMonth = "";
             foreach (var person in licenseList)
             {
                 String fullname = String.Format("{0}, {1} {2}", person.LastName, person.FirstName, person.MiddleName);
                 String searchName = String.Format("{0}{1}{2}", person.FirstName, person.MiddleName, person.LastName);
-                String birthday = $"<tr class='list-title' style='background-color: #ddd;'><td>{person.BirthDate.Value.ToString("dddd MMMM dd")}</td></tr>";
+                String birthday = $"<tr class='list-title' style='background-color: #ddd;'><td>{person.BirthDate.Value.ToString("dddd, MMMM dd")}</td></tr>";
+                //String month = person.BirthDate.Value.ToString("MMMM");
                 int age = person.BirthDate.Value != null ? GetAge(person.BirthDate.Value) : 0;
 
                 element += counter > 0 ? (prevBdayDay != person.BirthDate.Value.Day ? birthday : "") : birthday;
 
+                // element += $"{(month != lastMonth ? $"<tr><td>{month}</td></tr>" : "")}";
                 element += $"<tr title='{fullname}, {age}' onclick='";
                 //element += "window.open(" + '"' + ""{Url.Action("Personnel", "Index", new { Filter = searchName })}', '_blank');";
                 element += $"'><td style='text-align: left; padding: 5px; border: 1px solid #eee;'><a href='/HumanResource/Personnel/Index?Filter={searchName}' target='_blank'><div style='float: left; text-transform: uppercase;'>";
@@ -37,6 +40,7 @@
                 element += $"</div><div style='white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'><b>{fullname}</b><br />{age}</div></a></td></tr>";
 
                 prevBdayDay = person.BirthDate.Value.Day;
+                //lastMonth = month;
                 counter++;
             }
         }
