@@ -1,0 +1,147 @@
+﻿@model WebTemplate.Models.VesselMovement.VesselMovementList
+@using WebTemplate.Extension
+
+@{
+    var PageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("Movement/CrewMovement");
+
+    //var movement = new ProcessLayer.Entities.VesselMovement();
+    var vesselClassifications = ProcessLayer.Processes.LookupProcess.GetVeselClassification();
+}
+
+<style>
+    html, body {
+        overflow: hidden;
+    }
+
+    legend {
+        margin: 0;
+    }
+</style>
+
+<div style="padding: 0.5em;">
+    @*<h2>Voyages</h2>*@
+
+    <fieldset>
+        <legend>Vessel</legend>
+        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+            <label class="form-control" title="Code">@Model.Vessel.Code</label>
+        </div>
+        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+            <label class="form-control">@Model.Vessel.Description</label>
+        </div>
+        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+            <label class="form-control">@Model.Vessel._Classification.Description</label>
+        </div>
+    </fieldset>
+
+    <form id="VesselMovementParameters" class="form-group">
+        <fieldset>
+            <legend>Search</legend>
+            @Html.HiddenFor(m => m.VesselID)
+            <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                Starting Date
+                @Html.TextBox("StartingDate", String.Format("{0:yyyy'-'MM'-'dd}", Model.StartingDate), new { @class = "form-control", @type = "date", @placeholder = "" })
+            </div>
+            <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                Ending Date
+                @Html.TextBox("EndingDate", String.Format("{0:yyyy'-'MM'-'dd}", Model.EndingDate), new { @class = "form-control", @type = "date", @placeholder = "" })
+            </div>
+            <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                <label class="control-label" style="width: 100%; color: transparent;">Search</label>
+                <button type="button" class="btn btn-primary font-bold pull-left" onclick="Search()"><i class="fa fa-search"></i> Search</button>
+            </div>
+        </fieldset>
+    </form>
+
+    <form class="">
+        <fieldset>
+            <legend>Voyages</legend>
+            <table class="table table-stripped table-bordered" style="margin-bottom: 0px;">
+                <thead>
+                    <tr>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Origin Location</th>
+                        <th>ETD</th>
+                        <th>Destination Location</th>
+                        <th>ETA</th>
+                        <th>Details</th>
+                        <th>Created</th>
+                        <th>Modified</th>
+                        <th>Approved</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.VesselMovements.Count() > 0)
+                    {
+                        for (int i = 0; i < Model.VesselMovements.Count(); i++)
+                        {
+                            var movement = Model.VesselMovements[i];
+
+                            <tr>
+                                <td>@movement.VoyageStartDate.CheckIfNull().ToString("MMM dd, yyyy")</td>
+                                <td>@movement.VoyageEndDate.CheckIfNull().ToString("MMM dd, yyyy")</td>
+                                <td>@movement.OriginLocation</td>
+                                <td>@movement.ETD</td>
+                                <td>@movement.DestinationLocation</td>
+                                <td>@movement.ETA</td>
+                                <td>@movement.VoyageDetails</td>
+                                <td>@movement.Creator<br/>@movement.CreatedDate.CheckIfNull().ToString("MMM dd, yyyy hh:mm:ss")</td>
+                                <td>@movement.Modifier<br />@movement.ModifiedDate.CheckIfNull().ToString("MMM dd, yyyy hh:mm:ss")</td>
+                                <td>@movement.Approver<br />@movement.ApprovedDate.CheckIfNull().ToString("MMM dd, yyyy hh:mm:ss")</td>
+                                <td>
+                                    <div class="btn-group">
+                                        @if (PageAccess.Delete)
+                                        {
+                                        }
+                                        @if (PageAccess.Update || PageAccess.View)
+                                        {
+                                        }
+                                        <button class="btn btn-primary" onclick="GetVesselCrews('@movement.VesselID');"><i class="fa fa-group"></i> View Crews</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <div class="btn-group">
+                                    @if (PageAccess.Delete)
+                                    {
+                                    }
+                                    @if (PageAccess.Update || PageAccess.View)
+                                    {
+                                    }
+                                    <button class="btn btn-primary btn-rounded" type="button" onclick="GetVesselCrews(0);" title="View Vessel Crews"><i class="fa fa-group"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        @*<tr><td class="text-center" colspan="10">No records...</td></tr>*@
+                    }
+                </tbody>
+            </table>
+        </fieldset>
+    </form>
+</div>
+
+<div id="VoyageCrewsModal" class="modal" data-backdrop="static" data-keyboard="false" tabindex="" role="dialog" aria-hidden="true">
+    <div class="modal-body">
+        @*@Html.Partial("~/Views/Movement/VesselMovement/Voyage/_Crews.cshtml")*@
+    </div>
+</div>
+
+<script>
+</script>
