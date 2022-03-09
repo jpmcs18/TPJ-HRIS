@@ -26,16 +26,13 @@ namespace ProcessLayer.Processes
                 MovementTypeID = dr[VesselMovementFields.MovementTypeID].ToInt(),
                 MovementDate = dr[VesselMovementFields.MovementDate].ToDateTime()
             };
-
             if(!IsVesselMovementOnly)
             {
                 v._Vessel = VesselProcess.Instance.Get(v.VesselID);
                 v._VesselMovementType = LookupProcess.GetVesselMovementType(v.MovementTypeID);
             }
-
             return v;
         }
-
 
         public static List<CrewDetails> GetCrewDetailList(int vesselid, DateTime? startingdate, DateTime? endingdate)
         {
@@ -97,7 +94,6 @@ namespace ProcessLayer.Processes
                 { CrewMovementParameters.StartingDate, startingdate },
                 { CrewMovementParameters.EndingDate, endingdate }
             };
-
             using (var db = new DBTools())
             {
                 using (var ds = db.ExecuteReader(CrewMovementProcedures.GetVesselCrews, Parameters))
@@ -107,10 +103,8 @@ namespace ProcessLayer.Processes
                     CrewMovementProcess.WithPreviousCrewMovement = true;
                 }
             }
-
             return crews;
         }
-
 
         public static List<CrewMovement> GetCrewList(int vesselid, long personnelId, DateTime? startingdate, DateTime? endingdate)
         {
@@ -122,7 +116,6 @@ namespace ProcessLayer.Processes
                 { CrewMovementParameters.StartingDate, startingdate },
                 { CrewMovementParameters.EndingDate, endingdate }
             };
-
             using (var db = new DBTools())
             {
                 using (var ds = db.ExecuteReader(CrewMovementProcedures.GetVesselCrews, Parameters))
@@ -132,11 +125,10 @@ namespace ProcessLayer.Processes
                     CrewMovementProcess.WithPreviousCrewMovement = true;
                 }
             }
-
             return crews;
         }
 
-        public static CrewMovement GetTransferredVessel (long previouscrewmovementid)
+        public static CrewMovement GetTransferredVessel(long previouscrewmovementid)
         {
             var crew = new CrewMovement();
             var Parameters = new Dictionary<string, object>
@@ -153,7 +145,6 @@ namespace ProcessLayer.Processes
                     CrewMovementProcess.WithPreviousCrewMovement = true;
                 }
             }
-
             return crew;
         }
 
@@ -178,6 +169,7 @@ namespace ProcessLayer.Processes
         public static List<VesselMovement> GetList(int vesselid, DateTime? startingdate = null, DateTime? endingdate = null, bool isVesselMovementOnly = false)
         {
             var vms = new List<VesselMovement>();
+
             var parameters = new Dictionary<string, object> {
                 { VesselMovementParameters.VesselID, vesselid }
                 , {VesselMovementParameters.StartingDate, startingdate}
@@ -192,6 +184,7 @@ namespace ProcessLayer.Processes
                     IsVesselMovementOnly = false;
                 }
             }
+
             return vms;
         }
 

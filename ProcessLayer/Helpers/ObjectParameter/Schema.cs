@@ -34,6 +34,7 @@
         public const string Vessel = "Vessel";
         public const string MemoType = "Memo Type";
         public const string VesselMovementType = "Vessel Movement Type";
+        public const string VesselClassification = "Vessel Classification";
         public const string ScheduleType = "Schedule Type";
         public const string PayrollType = "Payroll Type";
         public const string LeaveType = "Leave Type";

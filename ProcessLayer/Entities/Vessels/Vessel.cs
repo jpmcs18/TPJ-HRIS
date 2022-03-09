@@ -11,5 +11,8 @@
         public string Email { get; set; }
 
         public string Display { get; set; }
+
+        public short ClassificationID { get; set; }
+        public Lookup _Classification { get; set; } = new Lookup();
     }
 }

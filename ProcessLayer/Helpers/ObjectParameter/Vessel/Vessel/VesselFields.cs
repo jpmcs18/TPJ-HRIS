@@ -16,5 +16,6 @@ namespace ProcessLayer.Helpers.ObjectParameter.Vessel
         public const string HP = "HP";
         public const string Display = "Display";
         public const string Email = "Email";
+        public const string ClassificationID = "Vessel Classification ID";
     }
 }

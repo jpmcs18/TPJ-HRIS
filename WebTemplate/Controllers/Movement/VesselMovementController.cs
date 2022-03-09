@@ -24,11 +24,11 @@ namespace WebTemplate.Controllers.Movement
             if (Request.IsAjaxRequest())
             {
                 ModelState.Clear();
-                return PartialViewCustom("_VesselMovementSearch", model);
+                return PartialViewCustom("_Search", model);
             }
             else
             {
-                return ViewCustom("_VesselMovementIndex", model);
+                return ViewCustom("Index", model);
             }
         }
 
@@ -43,7 +43,7 @@ namespace WebTemplate.Controllers.Movement
                     VesselMovementProcess.GetList(model.VesselID, model.StartingDate, model.EndingDate);
 
                 ModelState.Clear();
-                return PartialViewCustom("_VesselMovementManagement", model);
+                return PartialViewCustom("/Voyage/_Management", model);
             }
             catch (Exception ex)
             {
@@ -61,7 +61,7 @@ namespace WebTemplate.Controllers.Movement
                 model.VesselID = vesselid ?? 0;
 
                 ModelState.Clear();
-                return PartialViewCustom("_VesselMovementNew", model);
+                return PartialViewCustom("_New", model);
             }
             catch (Exception ex)
             {
@@ -77,7 +77,7 @@ namespace WebTemplate.Controllers.Movement
             {
                 VesselMovement model = VesselMovementProcess.Get(id ?? 0);
                 ModelState.Clear();
-                return PartialViewCustom("_VesselMovement", model);
+                return PartialViewCustom("_Movement", model);
             }
             catch (Exception ex)
             {
@@ -94,7 +94,7 @@ namespace WebTemplate.Controllers.Movement
                 model = VesselMovementProcess.CreateOrUpdate(model, User.UserID);
 
                 ModelState.Clear();
-                return PartialViewCustom("_VesselMovement", model);
+                return PartialViewCustom("_Movement", model);
             }
             catch (Exception ex)
             {
@@ -168,7 +168,7 @@ namespace WebTemplate.Controllers.Movement
                 model.Vessel = VesselProcess.Instance.Get(model.VesselID);
                 model.Crews = VesselMovementProcess.GetCrewDetailList(model.VesselID, model.StartingDate, model.EndingDate);
                 ModelState.Clear();
-                return PartialViewCustom("_VesselCrewSearch", model);
+                return PartialViewCustom("/Voyage/_Crews", model);
             }
             catch (Exception ex)
             {
@@ -190,6 +190,7 @@ namespace WebTemplate.Controllers.Movement
                 }
                 return View("~/Views/PrintingView.cshtml");
         }
+
         [HttpPost]
         public ActionResult PrintCrewList(CrewList model)
         {
@@ -204,7 +205,6 @@ namespace WebTemplate.Controllers.Movement
                     ViewBag.Content = report.SaveToPDF();
                 }
                 return View("~/Views/PrintingView.cshtml");
-        }
-        
+        }       
     }
 }

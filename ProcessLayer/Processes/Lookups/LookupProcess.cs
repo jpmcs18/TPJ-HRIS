@@ -337,6 +337,16 @@ namespace ProcessLayer.Processes
             return GetLookupById(Table.VesselMovementType, id);
         }
 
+        public static IEnumerable<Lookup> GetVeselClassification(bool HasDefault = false)
+        {
+            return GetLookup(Table.VesselClassification, HasDefault);
+        }
+
+        public static Lookup GetVeselClassification(int? id)
+        {
+            return GetLookupById(Table.VesselClassification, id);
+        }
+
         public static IEnumerable<PayrollType> GetPayrollType(bool HasDefault = false)
         {
            var p =  GetLookups<PayrollType>(PayrollTypeConverter, Table.PayrollType).ToList();
