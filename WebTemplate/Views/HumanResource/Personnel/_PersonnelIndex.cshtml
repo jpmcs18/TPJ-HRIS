@@ -157,10 +157,12 @@
                 },
                 success: function(response) {
                     if (response.msg == null) {
-                        BindSaveFunction(true, response);
-                        $('#DependentsDiv').attr('hidden', 'true')
-                        $('#DetailsDiv').attr('hidden', 'true')
-                        $('#ResignationDetailsDiv').attr('hidden', 'true')
+                        try {
+                            BindSaveFunction(true, response);
+                            $('#DependentsDiv').attr('hidden', 'true')
+                            $('#DetailsDiv').attr('hidden', 'true')
+                            $('#ResignationDetailsDiv').attr('hidden', 'true')
+                        } catch {}
                     } else {
                         toastr.error(response.res);
                     }
@@ -192,20 +194,21 @@
                 },
                 success: function(response) {
                     if (response.msg == null) {
-                        BindSaveFunction(false, response);
+                        try {
+                            BindSaveFunction(false, response);
 
-                        //$('#btnNewWorkExp').val(id);
-                        //$('#btnNewEducBG').val(id);
-                        //$('#btnNewTraining').val(id);
-                        //$('#btnNewMemo').val(id);
+                            //$('#btnNewWorkExp').val(id);
+                            //$('#btnNewEducBG').val(id);
+                            //$('#btnNewTraining').val(id);
+                            //$('#btnNewMemo').val(id);
 
+                            TabEvents();
+                            SelectedDaysEvents();
 
-                        TabEvents();
-                        SelectedDaysEvents();
-
-                        CheckRequiredFields();
-                        toastr.info("Click X button on top-left corner to close, or press Escape.", "What's new?", { tapToDismiss: true, timeOut: 10000 });
-                        toastr.info("Click check button on top-right corner to save (Personal/Employment Info), or press Enter.", "What's new?", { tapToDismiss: true, timeOut: 10000 });
+                            CheckRequiredFields(false);
+                            toastr.info("Click X button on top-left corner to close, or press Escape.", "What's new?", { tapToDismiss: true, timeOut: 10000 });
+                            toastr.info("Click check button on top-right corner to save (Personal/Employment Info), or press Enter.", "What's new?", { tapToDismiss: true, timeOut: 10000 });
+                        } catch { }
                     } else {
                         toastr.error(response.res);
                     }
@@ -485,15 +488,17 @@
                 },
                 success: function (response) {
                     if (response.msg == null) {
-                        $('#form-loan-details').html(response);
+                        try {
+                            $('#form-loan-details').html(response);
 
-                        //$('.grid').masonry({
-                        //    // options
-                        //    itemSelector: '.grid-item',
-                        //    columnWidth: 250
-                        //});
+                            //$('.grid').masonry({
+                            //    // options
+                            //    itemSelector: '.grid-item',
+                            //    columnWidth: 250
+                            //});
 
-                        //ResizeTabContentResponsive();
+                            //ResizeTabContentResponsive();
+                        } catch { }
                     } else {
                         toastr.error(response.res);
                     }
@@ -648,7 +653,7 @@
             formdata.append("__RequestVerificationToken", $('@Html.AntiForgeryToken()').val());
             formdata.append("Personnel.ID", $('#Personnel_ID').val());
 
-            var requiredFields = CheckRequiredFields().join(', ');
+            var requiredFields = CheckRequiredFields(true).join(', ');
 
             if ($('#' + tabID + ' .input-incomplete').length == 0) {
                 $.ajax({
@@ -755,11 +760,13 @@
                     },
                     success: function(response) {
                         if (response.msg == null) {
-                            $panel.prepend('<div>' + response + '</div>').animate({ scrollTop: 0 }, '100');
-                            Events2();
-                            InitDatePicker();
-                            InitInputFileBrowse();
-                            $panel.find('div #' + divName + '-0 .edit' + divName).trigger('click');
+                            try {
+                                $panel.prepend('<div>' + response + '</div>').animate({ scrollTop: 0 }, '100');
+                                Events2();
+                                InitDatePicker();
+                                InitInputFileBrowse();
+                                $panel.find('div #' + divName + '-0 .edit' + divName).trigger('click');
+                            } catch { }
                         } else {
                             toastr.error(response.res);
                         }
@@ -836,12 +843,14 @@
                 },
                 success: function(response) {
                     if (response.msg == null) {
-                        $panel.html(response);
-                        ShowTabs(false);
-                        $('#WorkExp-0').attr('id', '#WorkExp-' + panelID);
-                        Events2();
-                        $('#StoreEditModel').val('');
-                        toastr.success(tabName + ' saved!', 'Success');
+                        try {
+                            $panel.html(response);
+                            ShowTabs(false);
+                            $('#WorkExp-0').attr('id', '#WorkExp-' + panelID);
+                            Events2();
+                            $('#StoreEditModel').val('');
+                            toastr.success(tabName + ' saved!', 'Success');
+                        } catch { }
                     } else {
                         toastr.error(response.res);
                     }
@@ -887,9 +896,11 @@
                     },
                     success: function(response) {
                         if (response.msg == null) {
-                            $panel.html(response);
-                            Events2();
-                            $('#StoreEditModel').val('');
+                            try {
+                                $panel.html(response);
+                                Events2();
+                                $('#StoreEditModel').val('');
+                            } catch { }
                         } else {
                             toastr.error(response.res);
                         }
@@ -1134,22 +1145,24 @@
                     },
                     success: function(response) {
                         if (response.msg == null) {
-                            $displayRow.after(response);
-                            $inputRow.remove();
-                            $displayRow.remove();
+                            try {
+                                $displayRow.after(response);
+                                $inputRow.remove();
+                                $displayRow.remove();
 
-                            HideOptions('.licenseTypeID', '.licenseTypes', '#LicenseTypeID');
-                            HideOptions('.vaccineTypeID', '.vaccineTypes', '#VaccineTypeID');
+                                HideOptions('.licenseTypeID', '.licenseTypes', '#LicenseTypeID');
+                                HideOptions('.vaccineTypeID', '.vaccineTypes', '#VaccineTypeID');
 
-                            if ($('#' + divName + 'sTable tbody tr.Row-Input').length == 0) {
-                                $('#' + divName + 'sTable tbody tr#No-Row-Display').hide();
-                            }
+                                if ($('#' + divName + 'sTable tbody tr.Row-Input').length == 0) {
+                                    $('#' + divName + 'sTable tbody tr#No-Row-Display').hide();
+                                }
 
-                            Events2();
-                            InitDatePicker();
-                            InitInputFileBrowse();
-                            $('#StoreEditModel').val('');
-                            //toastr.success(divName + ' saved!', 'Success');
+                                Events2();
+                                InitDatePicker();
+                                InitInputFileBrowse();
+                                $('#StoreEditModel').val('');
+                                //toastr.success(divName + ' saved!', 'Success');
+                            } catch { }
                         } else {
                             toastr.error(response.res);
                         }
@@ -1404,34 +1417,36 @@
                 },
                 success: function(response) {
                     if (response.msg == null) {
-                        if (rowID > 0) {
-                            $displayRow.after(response);
-                            $inputRow.remove();
-                            $displayRow.remove();
-                        } else {
-                            $('#' + divName + 'sTable tbody').append(response);
-                            $inputRow.find('input.form-control').val('');
-                            $inputRow.find('select.form-control').val('').trigger('click');
-                        }
+                        try {
+                            if (rowID > 0) {
+                                $displayRow.after(response);
+                                $inputRow.remove();
+                                $displayRow.remove();
+                            } else {
+                                $('#' + divName + 'sTable tbody').append(response);
+                                $inputRow.find('input.form-control').val('');
+                                $inputRow.find('select.form-control').val('').trigger('click');
+                            }
 
-                        HideOptions('.licenseTypeID', '.licenseTypes', '#LicenseTypeID');
-                        HideOptions('.vaccineTypeID', '.vaccineTypes', '#VaccineTypeID');
-                        $('#Row-Input-' + divName + '-0 select').val(0).trigger('change')
+                            HideOptions('.licenseTypeID', '.licenseTypes', '#LicenseTypeID');
+                            HideOptions('.vaccineTypeID', '.vaccineTypes', '#VaccineTypeID');
+                            $('#Row-Input-' + divName + '-0 select').val(0).trigger('change')
 
-                        if ($('#' + divName + 'sTable tbody tr.Row-Input').length > 0) {
-                            $('#' + divName + 'sTable tbody tr#No-Row-Display').hide();
-                        }
+                            if ($('#' + divName + 'sTable tbody tr.Row-Input').length > 0) {
+                                $('#' + divName + 'sTable tbody tr#No-Row-Display').hide();
+                            }
 
-                        InitDatePicker();
-                        InitInputFileBrowse();
-                        $('#StoreEditModel').val('');
-                        toastr.success(divName + ' saved!', 'Success');
+                            InitDatePicker();
+                            InitInputFileBrowse();
+                            $('#StoreEditModel').val('');
+                            toastr.success(divName + ' saved!', 'Success');
 
-                        if (divName == 'Department') SelectPositions(0);
+                            if (divName == 'Department') SelectPositions(0);
 
-                        CheckRequiredTables();
-                        Events2();
-                        Select2Override();
+                            CheckRequiredTables();
+                            Events2();
+                            Select2Override();
+                        } catch { }
                     } else {
                         toastr.error(response.res);
                     }
@@ -1461,12 +1476,48 @@
             }
         }
 
-        function CheckRequiredFields() {
+        function CheckRequiredFields(isSave) {
             var i = CheckRequiredInputs();
             var s = CheckRequiredSelects();
             var t = CheckRequiredTables();
 
-            return (i.concat(s)).concat(t);
+            var ret = (i.concat(s)).concat(t);
+
+            if (ret.length > 0) {
+                var elem = '';
+                ret.forEach(function (e) {
+                    var isActivePaneDivExists = $('#PersonnelProfile .tab-pane.active #' + e + 'sDiv').length > 0;
+                    var isActivePaneElementExists = $('#PersonnelProfile .tab-pane.active label:contains(' + e + ')').closest('.form-control').length > 0;
+                    var isInactivePaneDivExists = $('#PersonnelProfile .tab-pane #' + e + 'sDiv').length > 0;
+                    var isInactivePaneElementExists = $('#PersonnelProfile .tab-pane label:contains(' + e + ')').closest('.form-control').length > 0;
+                    elem = e;
+
+                    if (isActivePaneDivExists || isInactivePaneDivExists) {
+                        elem += 'sDiv';
+                    }
+                    if (isActivePaneElementExists) {
+                        elem = $('#PersonnelProfile .tab-pane.active label:contains(' + e + ')').closest('.form-control').attr('id');
+                    }
+                    if (isInactivePaneElementExists) {
+                        elem = $('#PersonnelProfile .tab-pane label:contains(' + e + ')').closest('.form-control').attr('id');
+                    }
+
+                    if (isInactivePaneDivExists || isInactivePaneElementExists) {
+                        //var tab = $('#' + elem).closest('.tab-pane');
+                        //$('#PersonnelProfile .tab-pane').removeClass('active');
+                        //tab.addClass('active');
+                        $('.nav-tabs a[href="#tab-2"]').trigger('click');
+                    }
+                });
+
+                if (isSave) {
+                    $('#PersonnelProfile .tab-content').animate({
+                        scrollTop: $("#" + elem).offset().top
+                    }, 2000);
+                }
+            }
+
+            return ret;
         }
 
         function CheckRequiredInputs() {
@@ -1657,10 +1708,12 @@
                 },
                 success: function(response) {
                     if (response.msg == null) {
-                        $("#PersonnelsForm").html(response);
-                        Events();
-                        $('#txt_search').focus()
-                        isPersonnelUpdated = false;
+                        try {
+                            $("#PersonnelsForm").html(response);
+                            Events();
+                            $('#txt_search').focus()
+                            isPersonnelUpdated = false;
+                        } catch { }
                     } else {
                         toastr.error(response.res);
                     }
@@ -2274,19 +2327,21 @@
                     },
                     success: function(response) {
                         if (response.msg == null) {
-                            $('#MemoRepliesDiv .chat-discussion').append(response);
-                            toastr.success('Memo Archive Sent!', 'Success');
+                            try {
+                                $('#MemoRepliesDiv .chat-discussion').append(response);
+                                toastr.success('Memo Archive Sent!', 'Success');
 
-                            if ($('#ViewReplies .modal-body .chat-discussion table tbody tr.no-message-td')
-                                .hasClass('hidden') ==
-                                false) {
-                                $('#ViewReplies .modal-body .chat-discussion table tbody tr.no-message-td')
-                                    .addClass('hidden');
-                            }
+                                if ($('#ViewReplies .modal-body .chat-discussion table tbody tr.no-message-td')
+                                    .hasClass('hidden') ==
+                                    false) {
+                                    $('#ViewReplies .modal-body .chat-discussion table tbody tr.no-message-td')
+                                        .addClass('hidden');
+                                }
 
-                            $('.chat-message-form').find(".browsefile")
-                                .replaceWith($('.chat-message-form').find(".browsefile").val('').clone(true));
-                            $('.chat-message-form').find(".clearInput").trigger('click');
+                                $('.chat-message-form').find(".browsefile")
+                                    .replaceWith($('.chat-message-form').find(".browsefile").val('').clone(true));
+                                $('.chat-message-form').find(".clearInput").trigger('click');
+                            } catch { }
                         } else {
                             toastr.error(response.res);
                         }

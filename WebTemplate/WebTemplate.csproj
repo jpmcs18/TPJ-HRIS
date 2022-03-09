@@ -2337,11 +2337,11 @@
     <Content Include="Views\Maintenance\Systems\User\_SearchPersonnel.cshtml" />
     <Content Include="Views\Movement\VesselMovement\_Vessel.cshtml" />
     <Content Include="Views\Movement\VesselMovement\_VesselList.cshtml" />
-    <Content Include="Views\Movement\VesselMovement\_VesselMovement.cshtml" />
-    <Content Include="Views\Movement\VesselMovement\_VesselMovementIndex.cshtml" />
-    <Content Include="Views\Movement\VesselMovement\_VesselMovementManagement.cshtml" />
-    <Content Include="Views\Movement\VesselMovement\_VesselMovementNew.cshtml" />
-    <Content Include="Views\Movement\VesselMovement\_VesselMovementSearch.cshtml" />
+    <Content Include="Views\Movement\VesselMovement\_Movement.cshtml" />
+    <Content Include="Views\Movement\VesselMovement\Index.cshtml" />
+    <Content Include="Views\Movement\VesselMovement\_Management.cshtml" />
+    <Content Include="Views\Movement\VesselMovement\_New.cshtml" />
+    <Content Include="Views\Movement\VesselMovement\_Search.cshtml" />
     <Content Include="Views\Movement\CrewMovement\_CrewMovementIndex.cshtml" />
     <Content Include="Views\Movement\CrewMovement\_Crew.cshtml" />
     <Content Include="Views\Movement\CrewMovement\_CrewList.cshtml" />
@@ -2349,8 +2349,8 @@
     <Content Include="Views\Movement\CrewMovement\_CrewMovementManagement.cshtml" />
     <Content Include="Views\Movement\CrewMovement\_CrewMovementNew.cshtml" />
     <Content Include="Views\Movement\CrewMovement\_CrewMovementSearch.cshtml" />
-    <Content Include="Views\Movement\VesselMovement\_VesselCrewSearch.cshtml" />
-    <Content Include="Views\Movement\VesselMovement\_VesselCrewList.cshtml" />
+    <Content Include="Views\Movement\VesselMovement\_CrewSearch.cshtml" />
+    <Content Include="Views\Movement\VesselMovement\_CrewList.cshtml" />
     <Content Include="Views\PrintingView.cshtml" />
     <Content Include="Views\Movement\CrewMovement\_CrewMovementList.cshtml" />
     <Content Include="Views\Movement\CrewMovement\_CrewMovementListSearch.cshtml" />
@@ -2509,6 +2509,8 @@
     <Content Include="Views\CnB\CrewPayrollSheetA\_Vessels.cshtml" />
     <Content Include="Views\CnB\CrewPayrollSheetA\Index.cshtml" />
     <Content Include="Views\Shared\_Pagination.cshtml" />
+    <Content Include="Views\Movement\VesselMovement\Voyage\_Management.cshtml" />
+    <Content Include="Views\Movement\VesselMovement\Voyage\_Crews.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">
