@@ -155,15 +155,17 @@
                 complete: function() {
                     RemoveLoadingScreen();
                 },
-                success: function(response) {
-                    if (response.msg == null) {
-                        BindSaveFunction(true, response);
-                        $('#DependentsDiv').attr('hidden', 'true')
-                        $('#DetailsDiv').attr('hidden', 'true')
-                        $('#ResignationDetailsDiv').attr('hidden', 'true')
-                    } else {
-                        toastr.error(response.res);
-                    }
+                success: function (response) {
+                    try {
+                        if (response.msg == null) {
+                            BindSaveFunction(true, response);
+                            $('#DependentsDiv').attr('hidden', 'true')
+                            $('#DetailsDiv').attr('hidden', 'true')
+                            $('#ResignationDetailsDiv').attr('hidden', 'true')
+                        } else {
+                            toastr.error(response.res);
+                        }
+                    } catch { }
                 },
                 error: function(x) {
                 }
@@ -483,6 +485,7 @@
                 complete: function () {
                     RemoveLoadingScreen()
                 },
+                
                 success: function (response) {
                     if (response.msg == null) {
                         $('#form-loan-details').html(response);

@@ -9,8 +9,9 @@ namespace WebTemplate
     {
         public static void RegisterRoutes(RouteCollection routes)
         {
+
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
-            
+
             var page = new Page();
             var pages = page.GetRoutes();
             foreach (var p in pages)

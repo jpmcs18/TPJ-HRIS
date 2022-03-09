@@ -208,6 +208,7 @@ namespace ProcessLayer.Processes
             }
         }
 
+
         public static VesselMovement CreateOrUpdate(VesselMovement vessel, int userid)
         {
             var parameters = new Dictionary<string, object> {
@@ -229,7 +230,35 @@ namespace ProcessLayer.Processes
             }
             return vessel;
         }
+        public static List<VesselMovementCrews> CreateOrUpdateCrew(List<VesselMovementCrews> crews, int userid)
+        {
+            for (int i = 0; i < crews.Count; i++)
+            {
+                var crew = crews[i];
 
+                var parameters = new Dictionary<string, object> {
+                    {VesselMovementParameters.VesselID, vessel.VesselID}
+                    , {VesselMovementParameters.MovementTypeID, vessel.MovementTypeID}
+                    , {VesselMovementParameters.MovementDate, vessel.MovementDate}
+                    , {CredentialParameters.LogBy, userid}
+                };
+                
+                var outparameters = new List<OutParameters> {
+                    {VesselMovementParameters.ID,SqlDbType.BigInt, vessel.ID }
+                };
+                using (var db = new DBTools())
+                {
+                    db.ExecuteNonQuery(VesselMovementProcedures.CreateOrUpdate, ref outparameters, parameters);
+                    vessel.ID = outparameters.Get(VesselMovementParameters.ID).ToLong();
+
+                    vessel._Vessel = VesselProcess.Instance.Get(vessel.VesselID);
+                    vessel._VesselMovementType = LookupProcess.GetVesselMovementType(vessel.MovementTypeID);
+                }
+            }
+
+            return crews;
+
+        }
         public static void Delete(long vesselmovementid, int userid)
         {
             var parameters = new Dictionary<string, object> {
