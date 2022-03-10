@@ -223,6 +223,7 @@ namespace ProcessLayer.Processes
             }
             return vessel;
         }
+
         public static List<VesselMovementCrews> CreateOrUpdateCrew(List<VesselMovementCrews> crews, int userid)
         {
             for (int i = 0; i < crews.Count; i++)
@@ -235,7 +236,7 @@ namespace ProcessLayer.Processes
                     , {VesselMovementParameters.MovementDate, vessel.MovementDate}
                     , {CredentialParameters.LogBy, userid}
                 };
-                
+
                 var outparameters = new List<OutParameters> {
                     {VesselMovementParameters.ID,SqlDbType.BigInt, vessel.ID }
                 };
@@ -250,8 +251,8 @@ namespace ProcessLayer.Processes
             }
 
             return crews;
-
         }
+
         public static void Delete(long vesselmovementid, int userid)
         {
             var parameters = new Dictionary<string, object> {

@@ -38,7 +38,6 @@ namespace ProcessLayer.Entities
         public Location OriginLocation { get; set; }
         public Location DestinationLocation { get; set; }
 
-        public List<VesselCrews> CrewList { get; set; }
         public List<VesselMovementCrews> VesselMovementCrewList { get; set; }
         public List<VesselCrews> CrewList { get; set; } = new List<VesselCrews>();
     }  
