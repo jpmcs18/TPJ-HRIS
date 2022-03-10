@@ -158,6 +158,7 @@
     <Compile Include="Entities\Vessels\VesselCrews.cs" />
     <Compile Include="Entities\Vessels\VesselMovement.cs" />
     <Compile Include="Entities\HRs\WorkExperience.cs" />
+    <Compile Include="Entities\Vessels\VesselMovementCrews.cs" />
     <Compile Include="Helpers\CrewDetails.cs" />
     <Compile Include="Helpers\DataSetTableExtension.cs" />
     <Compile Include="Helpers\Enumerable\ComputationType.cs" />

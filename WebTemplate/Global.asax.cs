@@ -70,12 +70,12 @@ namespace WebTemplate
                 if (ex is HttpException httpex)
                     err_code = httpex?.GetHttpCode() ?? 0;
 
-                if (err_code != 404 /*&& err_code != 500*/)
+                if (err_code != 404)
                 {
                     var error = new Error
                     {
                         HResult = ex.HResult,
-                        Message = (((System.Data.SqlClient.SqlException)ex).Procedure + ": " ?? "") + ex.Message,
+                        Message = ex.Message,
                         InnerExceptionMessage = ex.InnerException?.Message,
                         StackTrace = ex.StackTrace,
                         Source = ex.Source,
@@ -84,23 +84,23 @@ namespace WebTemplate
                     error.Save();
                     err_id = error.ID;
                 }
-                
+
                 if (!Request.Url.AbsolutePath.StartsWith("~/Security/NotFound") && err_code == 404)
+                {
                     Response.Redirect("~/Security/NotFound");
-                else
+                    return;
+                }
+
                 if (!Request.Url.AbsolutePath.StartsWith("~/Security/ServerError") && err_code == 500)
+                {
                     Response.Redirect(String.Format("~/Security/ServerError?rid={0}", err_id));
-                else
+                    return;
+                }
+                
                 if (!Request.Url.AbsolutePath.StartsWith("~/Security/Error"))
                     Response.Redirect(String.Format("~/Security/Error?rid={0}", err_id));
-
             }
-#pragma warning disable CS0168
-#pragma warning disable IDE0059 // Unnecessary assignment of a value
-            catch (Exception ex)
-#pragma warning restore IDE0059 // Unnecessary assignment of a value
-            {
-            #pragma warning restore CS0168 
+            catch{
             }
         }
     }
