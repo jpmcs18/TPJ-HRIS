@@ -38,7 +38,7 @@ namespace ProcessLayer.Processes
                 v._Vessel = VesselProcess.Instance.Get(v.VesselID);
                 v.OriginLocation = LocationProcess.Instance.Get(v.OriginLocationID);
                 v.DestinationLocation = LocationProcess.Instance.Get(v.DestinationLocationID);
-                v.VesselMovementCrewList = GetCrews(v.ID);
+                v.VesselMovementCrewList = GetMovementCrews(v.ID);
             }
 
             return v;
@@ -50,6 +50,7 @@ namespace ProcessLayer.Processes
             var v = new VesselMovementCrews
             {
                 ID = dr["ID"].ToLong(),
+                VesselMovementID = dr["Vessel Movement ID"].ToLong(),
                 PersonnelID = dr["Personnel ID"].ToLong(),
                 DepartmentID = dr["Department ID"].ToNullableInt(),
                 PositionID = dr["Position ID"].ToInt(),
@@ -67,9 +68,20 @@ namespace ProcessLayer.Processes
             return v;
         }
 
-        public static List<VesselMovementCrews> GetCrews(long vesselMovementId)
+        public static List<VesselMovementCrews> GetMovementCrews(long vesselMovementId)
         {
-            return new List<VesselMovementCrews>();
+            var parameters = new Dictionary<string, object>
+            {
+                { "@MovementID", vesselMovementId }
+            };
+
+            using (var db = new DBTools())
+            {
+                using (var ds = db.ExecuteReader("vessel.GetVesselMovementCrew", parameters))
+                {
+                    return ds.GetList(CrewConverter);
+                }
+            }
         }
 
         public static List<CrewDetails> GetCrewDetailList(int vesselid, DateTime? startingdate, DateTime? endingdate)
@@ -302,7 +314,18 @@ namespace ProcessLayer.Processes
             }
 
             return crews;
-
+        }
+        public static void DeleteCrew(long vesselmovementcrewid, int userid)
+        {
+            var parameters = new Dictionary<string, object> {
+                {VesselMovementParameters.ID, vesselmovementcrewid }
+                , {"@Delete", true }
+                , {CredentialParameters.LogBy, userid}
+            };
+            using (var db = new DBTools())
+            {
+                db.ExecuteNonQuery(VesselMovementProcedures.CreateOrUpdateCrew, parameters);
+            }
         }
         public static void Delete(long vesselmovementid, int userid)
         {
