@@ -5,6 +5,7 @@ using ProcessLayer.Helpers.ObjectParameter;
 using ProcessLayer.Helpers.ObjectParameter.Vessel;
 using ProcessLayer.Helpers.ObjectParameter.VesselCrewMovement;
 using ProcessLayer.Helpers.ObjectParameter.VesselMovement;
+using ProcessLayer.Processes.Lookups;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -21,21 +22,55 @@ namespace ProcessLayer.Processes
         internal static VesselMovement Converter(DataRow dr)
         {
             var v = new VesselMovement {
-                ID = dr[VesselMovementFields.ID].ToShort(),
-                VesselID = dr[VesselMovementFields.VesselID].ToShort(),
-                MovementTypeID = dr[VesselMovementFields.MovementTypeID].ToInt(),
-                MovementDate = dr[VesselMovementFields.MovementDate].ToDateTime()
+                ID = dr["ID"].ToLong(),
+                VesselID = dr["Vessel ID"].ToInt(),
+                VoyageStartDate = dr["Voyage Start Date"].ToDateTime(),
+                VoyageEndDate = dr["Voyage End Date"].ToNullableDateTime(),
+                OriginLocationID = dr["Origin Location ID"].ToInt(),
+                DestinationLocationID = dr["Destination Location ID"].ToNullableInt(),
+                ETA = dr["ETA"].ToDateTime(),
+                ETD = dr["ETD"].ToNullableDateTime(),
+                VoyageDetails = dr["Voyage Details"].ToString()
             };
 
             if(!IsVesselMovementOnly)
             {
                 v._Vessel = VesselProcess.Instance.Get(v.VesselID);
-                v._VesselMovementType = LookupProcess.GetVesselMovementType(v.MovementTypeID);
+                v.OriginLocation = LocationProcess.Instance.Get(v.OriginLocationID);
+                v.DestinationLocation = LocationProcess.Instance.Get(v.DestinationLocationID);
+                v.VesselMovementCrewList = GetCrews(v.ID);
             }
 
             return v;
         }
 
+
+        internal static VesselMovementCrews CrewConverter(DataRow dr)
+        {
+            var v = new VesselMovementCrews
+            {
+                ID = dr["ID"].ToLong(),
+                PersonnelID = dr["Personnel ID"].ToLong(),
+                DepartmentID = dr["Department ID"].ToNullableInt(),
+                PositionID = dr["Position ID"].ToInt(),
+                DailyRate = dr["Daily Rate"].ToDecimal(),
+                Remarks = dr["Remarks"].ToString()
+            };
+
+            if (!IsVesselMovementOnly)
+            {
+                v.Position = PositionProcess.Instance.Get(v.PositionID);
+                v.Department = DepartmentProcess.Instance.Get(v.DepartmentID ?? 0);
+                v.Personnel = PersonnelProcess.Get(v.PersonnelID, true);
+            }
+
+            return v;
+        }
+
+        public static List<VesselMovementCrews> GetCrews(long vesselMovementId)
+        {
+            return new List<VesselMovementCrews>();
+        }
 
         public static List<CrewDetails> GetCrewDetailList(int vesselid, DateTime? startingdate, DateTime? endingdate)
         {
@@ -213,12 +248,17 @@ namespace ProcessLayer.Processes
         {
             var parameters = new Dictionary<string, object> {
                 {VesselMovementParameters.VesselID, vessel.VesselID}
-                , {VesselMovementParameters.MovementTypeID, vessel.MovementTypeID}
-                , {VesselMovementParameters.MovementDate, vessel.MovementDate}
+                , {VesselMovementParameters.VoyageStartDate, vessel.VoyageStartDate}
+                , {VesselMovementParameters.VoyageEndDate, vessel.VoyageEndDate}
+                , {VesselMovementParameters.OriginLocationID, vessel.OriginLocationID}
+                , {VesselMovementParameters.DestinationLocationID, vessel.DestinationLocationID}
+                , {VesselMovementParameters.ETD, vessel.ETD}
+                , {VesselMovementParameters.ETA, vessel.ETA}
+                , {VesselMovementParameters.VoyageDetails, vessel.VoyageDetails}
                 , {CredentialParameters.LogBy, userid}
             };
             var outparameters = new List<OutParameters> {
-                {VesselMovementParameters.ID,SqlDbType.BigInt, vessel.ID }
+                {VesselMovementParameters.ID, SqlDbType.BigInt, vessel.ID }
             };
             using (var db = new DBTools())
             {
@@ -226,8 +266,10 @@ namespace ProcessLayer.Processes
                 vessel.ID = outparameters.Get(VesselMovementParameters.ID).ToLong();
 
                 vessel._Vessel = VesselProcess.Instance.Get(vessel.VesselID);
-                vessel._VesselMovementType = LookupProcess.GetVesselMovementType(vessel.MovementTypeID);
             }
+
+            CreateOrUpdateCrew(vessel.VesselMovementCrewList, userid);
+
             return vessel;
         }
         public static List<VesselMovementCrews> CreateOrUpdateCrew(List<VesselMovementCrews> crews, int userid)
@@ -237,22 +279,25 @@ namespace ProcessLayer.Processes
                 var crew = crews[i];
 
                 var parameters = new Dictionary<string, object> {
-                    {VesselMovementParameters.VesselID, vessel.VesselID}
-                    , {VesselMovementParameters.MovementTypeID, vessel.MovementTypeID}
-                    , {VesselMovementParameters.MovementDate, vessel.MovementDate}
+                    {VesselMovementParameters.PersonnelID, crew.PersonnelID}
+                    , {VesselMovementParameters.DepartmentID, crew.DepartmentID}
+                    , {VesselMovementParameters.PositionID, crew.PositionID}
+                    , {VesselMovementParameters.DailyRate, crew.DailyRate}
+                    , {VesselMovementParameters.Remarks, crew.Remarks}
                     , {CredentialParameters.LogBy, userid}
                 };
                 
                 var outparameters = new List<OutParameters> {
-                    {VesselMovementParameters.ID,SqlDbType.BigInt, vessel.ID }
+                    {VesselMovementParameters.ID, SqlDbType.BigInt, crew.ID }
                 };
                 using (var db = new DBTools())
                 {
-                    db.ExecuteNonQuery(VesselMovementProcedures.CreateOrUpdate, ref outparameters, parameters);
-                    vessel.ID = outparameters.Get(VesselMovementParameters.ID).ToLong();
+                    db.ExecuteNonQuery(VesselMovementProcedures.CreateOrUpdateCrew, ref outparameters, parameters);
+                    crew.ID = outparameters.Get(VesselMovementParameters.ID).ToLong();
 
-                    vessel._Vessel = VesselProcess.Instance.Get(vessel.VesselID);
-                    vessel._VesselMovementType = LookupProcess.GetVesselMovementType(vessel.MovementTypeID);
+                    crew.Personnel = PersonnelProcess.Get(crew.PersonnelID, true);
+                    crew.Department = DepartmentProcess.Instance.Get(crew.DepartmentID ?? 0);
+                    crew.Position = PositionProcess.Instance.Get(crew.PositionID);
                 }
             }
 
