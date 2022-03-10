@@ -264,7 +264,6 @@
     <Compile Include="Helpers\ObjectParameter\Vessel\VesselCrewMovement\CrewMovementParameters.cs" />
     <Compile Include="Helpers\ObjectParameter\Vessel\VesselCrewMovement\CrewMovementParameters_Old.cs" />
     <Compile Include="Helpers\ObjectParameter\Vessel\VesselCrewMovement\CrewMovementProcedures.cs" />
-    <Compile Include="Helpers\ObjectParameter\Vessel\VesselCrewMovement\VesselMovementFields.cs" />
     <Compile Include="Helpers\ObjectParameter\Vessel\VesselCrewMovement\VesselMovementParameters.cs" />
     <Compile Include="Helpers\ObjectParameter\Vessel\VesselCrewMovement\VesselMovementProcedures.cs" />
     <Compile Include="Helpers\ObjectParameter\Vessel\Crew\CrewFields.cs" />
