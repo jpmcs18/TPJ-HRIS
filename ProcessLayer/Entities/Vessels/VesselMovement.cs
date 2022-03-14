@@ -22,6 +22,7 @@ namespace ProcessLayer.Entities
         public string VoyageDetails { get; set; }
         public Vessel _Vessel { get; set; } = new Vessel();
         //public Lookup _VesselMovementType { get; set; } = new Lookup();
+        public int MovementStatusID { get; set; }
 
         public int CreatedBy { get; set; }
         public string Creator { get; set; }

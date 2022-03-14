@@ -14,19 +14,47 @@ namespace ProcessLayer.Processes
     {
         private static PositionSalary Converter(DataRow dr, bool WithLookup = false)
         {
+            var ps = Converter(dr);
+
+            try {
+
+                ps.Position = WithLookup
+                    ? new Position()
+                    {
+                        ID = dr["Position ID"].ToInt(),
+                        Description = dr["Position Description"].ToString()
+                    }
+                    : null;
+            }
+            catch { }
+
+            return ps;
+        }
+
+        private static PositionSalary Converter(DataRow dr)
+        {
             return new PositionSalary()
             {
                 ID = dr["ID"].ToInt(),
                 PositionID = dr["Position ID"].ToInt(),
-                Salary = dr["Salary"].ToDouble(),
-                Position = WithLookup
-                    ? new Position()
-                        {
-                            ID = dr["Position ID"].ToInt(),
-                            Description = dr["Position Description"].ToString()
-                        }
-                    : null
+                Salary = dr["Salary"].ToDouble()
             };
+        }
+
+        public static PositionSalary GetByPositionId(int positionId)
+        {
+            Dictionary<string, object> Parameters = new Dictionary<string, object>()
+            {
+                { "@PositionID", positionId },
+            };
+
+            using (DBTools db = new DBTools())
+            {
+                using (var ds = db.ExecuteReader("lookup.GetPositionSalary"))
+                {
+                    return ds.Get(Converter);
+                }
+            }
         }
 
         public static PositionSalary GetByID(int id)

@@ -30,11 +30,12 @@ namespace ProcessLayer.Processes
                 DestinationLocationID = dr["Destination Location ID"].ToNullableInt(),
                 ETA = dr["ETA"].ToDateTime(),
                 ETD = dr["ETD"].ToNullableDateTime(),
-                VoyageDetails = dr["Voyage Details"].ToString()
+                VoyageDetails = dr["Voyage Details"].ToString(),
+                MovementStatusID = dr["Movement Status ID"].ToNullableInt() ?? 0 //1: Cancel, 2: Pending, 3: Checked, 4: Approved
             };
 
             if(!IsVesselMovementOnly)
-            {
+            { 
                 v._Vessel = VesselProcess.Instance.Get(v.VesselID);
                 v.OriginLocation = LocationProcess.Instance.Get(v.OriginLocationID);
                 v.DestinationLocation = LocationProcess.Instance.Get(v.DestinationLocationID);
@@ -43,8 +44,6 @@ namespace ProcessLayer.Processes
 
             return v;
         }
-
-
         internal static VesselMovementCrews CrewConverter(DataRow dr)
         {
             var v = new VesselMovementCrews
@@ -67,7 +66,6 @@ namespace ProcessLayer.Processes
 
             return v;
         }
-
         public static List<VesselMovementCrews> GetMovementCrews(long vesselMovementId)
         {
             var parameters = new Dictionary<string, object>
@@ -83,7 +81,6 @@ namespace ProcessLayer.Processes
                 }
             }
         }
-
         public static List<CrewDetails> GetCrewDetailList(int vesselid, DateTime? startingdate, DateTime? endingdate)
         {
             var crewlist = new List<CrewDetails>();
@@ -134,7 +131,6 @@ namespace ProcessLayer.Processes
             }
             return crewlist;
         }
-
         public static List<CrewMovement> GetCrewList(int vesselid, DateTime? startingdate, DateTime? endingdate)
         {
             var crews = new List<CrewMovement>();
@@ -157,8 +153,6 @@ namespace ProcessLayer.Processes
 
             return crews;
         }
-
-
         public static List<CrewMovement> GetCrewList(int vesselid, long personnelId, DateTime? startingdate, DateTime? endingdate)
         {
             var crews = new List<CrewMovement>();
@@ -182,7 +176,6 @@ namespace ProcessLayer.Processes
 
             return crews;
         }
-
         public static CrewMovement GetTransferredVessel (long previouscrewmovementid)
         {
             var crew = new CrewMovement();
@@ -203,7 +196,6 @@ namespace ProcessLayer.Processes
 
             return crew;
         }
-
         public static VesselMovement Get(long id, bool isVesselMovementOnly = false)
         {
             var vms = new VesselMovement();
@@ -221,7 +213,6 @@ namespace ProcessLayer.Processes
             }
             return vms;
         }
-
         public static List<VesselMovement> GetList(int vesselid, DateTime? startingdate = null, DateTime? endingdate = null, bool isVesselMovementOnly = false)
         {
             var vms = new List<VesselMovement>();
@@ -241,7 +232,6 @@ namespace ProcessLayer.Processes
             }
             return vms;
         }
-
         public static List<VesselMovement> GetLastTwoMovement(long vesselID)
         {
             using (var db = new DBTools())
@@ -254,8 +244,6 @@ namespace ProcessLayer.Processes
                 }
             }
         }
-
-
         public static VesselMovement CreateOrUpdate(VesselMovement vessel, int userid)
         {
             var parameters = new Dictionary<string, object> {
@@ -338,6 +326,30 @@ namespace ProcessLayer.Processes
                 db.ExecuteNonQuery(VesselMovementProcedures.Delete, parameters);
             }
         }
+        public static VesselMovement Checked(long id, int userid)
+        {
+            var parameters = new Dictionary<string, object> {
+                {"@ID", id}
+                , {"@LogBy", userid}
+            };
+            using (var db = new DBTools())
+            {
+                db.ExecuteNonQuery("vessel.CheckedVesselMovement", parameters);
+                return Get(id);
+            }
+        }
 
+        public static VesselMovement Approved(long id, int userid)
+        {
+            var parameters = new Dictionary<string, object> {
+                {"@ID", id}
+                , {"@LogBy", userid}
+            };
+            using (var db = new DBTools())
+            {
+                db.ExecuteNonQuery("vessel.ApprovedVesselMovement", parameters);
+                return Get(id);
+            }
+        }
     }
 }
