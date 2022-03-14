@@ -43,7 +43,7 @@ namespace WebTemplate.Controllers.Movement
                     VesselMovementProcess.GetList(model.VesselID, model.StartingDate, model.EndingDate);
 
                 ModelState.Clear();
-                return PartialViewCustom("/Voyage/_Management", model);
+                return PartialViewCustom("/Voyage/_List", model);
             }
             catch (Exception ex)
             {

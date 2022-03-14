@@ -11,7 +11,7 @@ namespace ProcessLayer.Entities
         public long ID { get; set; }
         public int VesselID { get; set; }
         //public int MovementTypeID { get; set; }
-        //public DateTime MovementDate { get; set; }
+        public DateTime MovementDate { get; set; }
         public DateTime VoyageStartDate { get; set; }
         public DateTime? VoyageEndDate { get; set; }
         public int VoyageStatusID { get; set; }
@@ -21,7 +21,7 @@ namespace ProcessLayer.Entities
         public DateTime? ETD { get; set; }
         public string VoyageDetails { get; set; }
         public Vessel _Vessel { get; set; } = new Vessel();
-        //public Lookup _VesselMovementType { get; set; } = new Lookup();
+        public Lookup _VesselMovementType { get; set; } = new Lookup();
 
         public int CreatedBy { get; set; }
         public string Creator { get; set; }
@@ -38,7 +38,7 @@ namespace ProcessLayer.Entities
         public Location OriginLocation { get; set; }
         public Location DestinationLocation { get; set; }
 
-        public List<VesselMovementCrews> VesselMovementCrewList { get; set; }
+        public List<VesselMovementCrews> VesselMovementCrewList { get; set; } = new List<VesselMovementCrews>();
         public List<VesselCrews> CrewList { get; set; } = new List<VesselCrews>();
     }  
 

@@ -14,11 +14,13 @@
                     <th>Rank</th>
                     <th>Destination</th>
                     <th>Employee No</th>
-                    <th>Employee Name</th>
-                    <th>Basic Rate</th>
+                    <th>Employee</th>
+                    @*<th>Department</th>
+                    <th>Position</th><th>Basic Rate</th>
                     <th>Date Embarked</th>
-                    <th>Date Disembarked</th>
-                    <th>Position</th>
+                    <th>Date Disembarked</th>*@
+                    <th>Daily Rate</th>
+                    <th>Remarks</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -27,16 +29,23 @@
                 {
                     foreach (var crew in Model)
                     {
-                        <tr>
+                        <tr id="@crew.ID">
                             <td></td>
                             <td></td>
                             <td></td>
                             <td>@crew.Personnel.EmployeeNo</td>
-                            <td>@crew.Personnel.FullName</td>
-                            <td>@crew.BasicRate.Value.ToString("#,###.00##")</td>
+                            <td>@crew.Personnel.FullName
+                            @crew.Department.Description
+                            @*@crew.Department.ShortDescription
+                            @crew.Department.Office*@
+                            @crew.Position.Description
+                            @*@crew.Position.Display
+                            @crew.Position.FullDisplay*@</td>
+                            @*<td>@crew.BasicRate.Value.ToString("#,###.00##")</td>
                             <td>@crew.DateEmbarked.CheckIfNull().ToString("MMM dd, yyyy")</td>
-                            <td>@crew.DateDisembarked.CheckIfNull().ToString("MMM dd, yyyy")</td>
-                            <td>@crew.Position.Description @crew.Position.Display @crew.Position.FullDisplay</td>
+                            <td>@crew.DateDisembarked.CheckIfNull().ToString("MMM dd, yyyy")</td>*@
+                            <td>@crew.DailyRate.ToString("#,###.00##")</td>
+                            <td>@crew.Remarks</td>
                             <td></td>
                         </tr>
                     }
