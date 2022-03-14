@@ -25,9 +25,12 @@ namespace ProcessLayer.Processes
                 GrossTon = dr[VesselFields.GrossTon].ToNullableDecimal(),
                 NetTon = dr[VesselFields.NetTon].ToNullableDecimal(),
                 HP = dr[VesselFields.HP].ToNullableDecimal(),
-                Email = dr[VesselFields.Email].ToString()
+                Email = dr[VesselFields.Email].ToString(),
+                ClassificationID = dr[VesselFields.ClassificationID].ToShort(),
             };
-            
+
+            c._Classification = LookupProcess.GetVeselClassification(c.ClassificationID);
+
             return c;
         }
         public Vessel Get(dynamic Id)

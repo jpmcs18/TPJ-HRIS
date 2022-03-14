@@ -28,12 +28,14 @@
     </div>
     <div class="" style="margin-top: 80px;">
         <div id="VesselList" class="col-xs-12 col-sm-12 col-md-4 col-lg-3">
-            @Html.Partial("~/Views/Movement/VesselMovement/_VesselMovementSearch.cshtml")
+            @Html.Partial("~/Views/Movement/VesselMovement/_Search.cshtml")
         </div>
         <div class="col-xs-12 col-sm-12 col-md-8 col-lg-9" style="overflow-y: auto; padding: .5em 0; border-left: 1px solid #ddd; ">
-            <div id="VesselMovement" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 animated fadeInRigh" style="">
+            <div id="VesselVoyage" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 animated fadeInRigh vessel-views" style="display: none;">
             </div>
-            <div id="VesselCrewList" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 animated fadeInRigh" style="display: none;">
+            <div id="VesselMovement" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 animated fadeInRigh vessel-views" style="display: none;">
+            </div>
+            <div id="VesselCrewList" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 animated fadeInRigh vessel-views" style="display: none;">
             </div>
         </div>
     </div>
@@ -204,7 +206,7 @@
                 },
                 success: function(response) {
                     if (response.msg == null) {
-                        $('#VesselCrewList').hide();
+                        $('.vessel-views').hide();
                         $('#VesselMovement').html(response).show();
                         $('#NewVesselMovement').off('click').on('click', SaveVesselMovement);
                         $('#VesselMovementsTable tr').removeClass("vessel-selected");
@@ -222,7 +224,7 @@
         }
 
         function SearchCrews() {
-            var params = $('#VesselCrewList *').serialize() +
+            var params = $('#VesselMovement *').serialize() +
                 '&VesselID=' + $(this).val() +
                 '&__RequestVerificationToken=' +
                 $('@Html.AntiForgeryToken()').val();
@@ -239,9 +241,8 @@
                 },
                 success: function(response) {
                     if (response.msg == null) {
-                        $('#VesselList').hide();
-                        $('#VesselCrewList').html(response);
-                        $('#VesselCrewList').show();
+                        $('.vessel-views').hide();
+                        $('#VesselCrewList').html(response).show();
 
                         $('#BackToVesselList').off('click').on('click', ViewVesselList);
                         $('#PrintVesselCrewList').off('click').on('click', PrintVesselCrewList);
@@ -288,7 +289,7 @@
                 },
                 success: function(response) {
                     if (response.msg == null) {
-                        $('#VesselMovement').hide();
+                        $('.vessel-views').hide();
                         $('#VesselCrewList').html(response).show();
                         $('#btn_search_vesselmovement').off('click').on('click', SearchCrews);
 
@@ -313,11 +314,9 @@
         function ViewVesselList() {
             $('#VesselList').show();
 
-            $('#VesselMovement').empty();
-            $('#VesselCrewList').empty();
-
-            $('#VesselMovement').hide();
-            $('#VesselCrewList').hide();
+            $('#VesselVoyage').empty().hide();
+            $('#VesselMovement').empty().hide();
+            $('#VesselCrewList').empty().hide();
         }
 
     function Search() {
@@ -685,5 +684,54 @@
             } else {
                 $clearBtn.show();
             }
-        }
+    }
+
+
+
+    $(document).ready(function (e) {
+        $("#VoyageCrewsModal").on("hidden.bs.modal",
+            function () {
+
+            });
+    });
+
+    function GetVesselCrews(id) {
+        var formdata = new FormData();
+        //formdata.append('VesselID', id);
+        $('#VesselMovementParameters *').each(function () {
+            if ($(this).attr('name'))
+                formdata.append($(this).attr('name'), $(this).val());
+        });
+        formdata.append('__RequestVerificationToken', $('@Html.AntiForgeryToken()').val());
+
+        $.ajax({
+            url: '@Url.Action("GetVesselCrews", "VesselMovement")',
+            data: formdata,
+            type: 'POST',
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                ShowLoadingScreen()
+            },
+            complete: function() {
+                RemoveLoadingScreen()
+            },
+            success: function(response) {
+                if (response.msg == null) {
+                    try {
+                        $("#VesselVoyage").html(response).show();
+                        //$('#VoyageCrewsModal .modal-body').html(response).appendTo("body").modal('show');
+                    } catch {
+                        $('body').replaceWith(response);
+                    }
+                } else {
+                    toastr.error(response.res);
+                }
+            },
+            error: function() {
+                toastr.error('AJAX backend error', 'An error has occured.');
+            }
+        });
+    }
 </script>

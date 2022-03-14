@@ -1,4 +1,4 @@
-﻿@model WebTemplate.Models.VesselMovement.VesselMovement
+﻿@model WebTemplate.Models.VesselMovement.VesselMovementList
 @using WebTemplate.Extension
 
 @{
@@ -52,7 +52,7 @@
                             <button type="button" value="@Model.VesselMovements[i].ID" id="DeleteVesselMovement" class="btn btn-outline btn-danger pull-right" title="Delete"><i class="fa fa-trash"></i></button>
                             <button type="button" value="@Model.VesselMovements[i].ID" id="EditVesselMovement" class="btn btn-outline btn-primary pull-right" title="Edit"><i class="fa fa-pencil"></i></button>
                         }
-                        <h2 style="margin: 0 0 .7em 0; ">@(String.IsNullOrEmpty(Model.VesselMovements[i]._VesselMovementType.ToString()) ? "" : Model.VesselMovements[i]._VesselMovementType.Description): <b>@(Model.VesselMovements[i].Place ?? "")</b></h2>
+                        <h2 style="margin: 0 0 .7em 0; ">@(String.IsNullOrEmpty(Model.VesselMovements[i]._VesselMovementType.ToString()) ? "" : Model.VesselMovements[i]._VesselMovementType.Description): </h2> @*<b>@(Model.VesselMovements[i].Place ?? "")</b>*@
                         <span class="vertical-date">
                             @Html.Raw(String.Format("{0}{1}", Model.VesselMovements[i].MovementDate.ToShortDateString() == DateTime.Now.ToShortDateString() ? "Today" : String.Format("<b>{0:MMM dd, yyyy}</b>", Model.VesselMovements[i].MovementDate), " @ " + String.Format("<b>{0:hh:mm tt}</b>", Model.VesselMovements[i].MovementDate)))
                         </span>
@@ -61,6 +61,6 @@
             }
         }
 
-        @Html.Partial("~/Views/Movement/VesselMovement/_VesselMovementNew.cshtml", new ProcessLayer.Entities.VesselMovement() { VesselID = Model.VesselID, MovementDate = DateTime.Now, MovementTypeID = lastMovementTypeID })
+        @Html.Partial("~/Views/Movement/VesselMovement/_New.cshtml", new ProcessLayer.Entities.VesselMovement() { VesselID = Model.VesselID, MovementDate = DateTime.Now, MovementTypeID = lastMovementTypeID })
     </div>
 </div>

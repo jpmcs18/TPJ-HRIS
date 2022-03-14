@@ -2,7 +2,7 @@
 @using WebTemplate.Extension
 
 @{
-    var CrewPageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("Movement/CrewMovement");
+    var PageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("Movement/CrewMovement");
 
     var deparments = ProcessLayer.Processes.Lookups.DepartmentProcess.Instance.GetList();
     var positions = ProcessLayer.Processes.PositionProcess.Instance.GetList();
@@ -101,7 +101,7 @@
                             <td class="text-left">
                                 @Html.Raw(String.Format("<b>{0}</b><br />{1:MM/dd/yyyy hh:mm tt}", Model.CrewMovements[i]._Cancelled ?? "N/A", Model.CrewMovements[i].CancelledDate))
                             </td>
-                            @if (CrewPageAccess.Update || CrewPageAccess.Delete || CrewPageAccess.View)
+                            @if (PageAccess.Update || PageAccess.Delete || PageAccess.View)
                             {
                                 <td style="" class="row-actions">
                                     <div class="btn-group">
@@ -109,11 +109,11 @@
         {*@
                                         @if (Model.CrewMovements[i].Status < 4)
                                         {
-                                            if (CrewPageAccess.Delete)
+                                            if (PageAccess.Delete)
                                             {
                                                 <button id="DeleteCrewMovement" tpj-isLast="false" type="button" name="DeleteCrewMovement" class="btn btn-outline btn-danger btn-sm btn-rounded DeleteCrewMovement" value="@Model.CrewMovements[i].ID" title="Delete Crew Movement" crew-movement-action=""><i class="fa fa-trash fa-1x"></i></button>
                                             }
-                                            if (CrewPageAccess.Update || CrewPageAccess.View)
+                                            if (PageAccess.Update || PageAccess.View)
                                             {
                                                 <button id="EditCrewMovement" tpj-isLast="false" type="button" name="ManageCrewMovement" class="btn btn-outline btn-success btn-sm btn-rounded ManageCrewMovement" value="@Model.CrewMovements[i].ID" title="Manage Crew Movement"><i class="fa fa-pencil fa-1x"></i></button>
                                             }

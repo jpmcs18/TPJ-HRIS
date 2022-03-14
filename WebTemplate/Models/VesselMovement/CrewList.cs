@@ -12,7 +12,8 @@ namespace WebTemplate.Models.VesselMovement
         public DateTime? StartingDate { get; set; }
         public DateTime? EndingDate { get; set; }
 
-        public ProcessLayer.Entities.Vessel Vessel = new ProcessLayer.Entities.Vessel();
-        public List<ProcessLayer.Helpers.CrewDetails> Crews = new List<ProcessLayer.Helpers.CrewDetails>();
+        public ProcessLayer.Entities.Vessel Vessel = new();
+
+        public List<ProcessLayer.Helpers.CrewDetails> Crews = new();
     }
 }
