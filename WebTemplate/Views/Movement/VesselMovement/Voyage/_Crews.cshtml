@@ -19,8 +19,8 @@
                     <th>Position</th><th>Basic Rate</th>
                     <th>Date Embarked</th>
                     <th>Date Disembarked</th>*@
-                    <th>Daily Rate</th>
-                    <th>Remarks</th>
+                    @*<th>Daily Rate</th>
+                    <th>Remarks</th>*@
                     <th>Action</th>
                 </tr>
             </thead>
@@ -29,13 +29,13 @@
                 {
                     foreach (var crew in Model)
                     {
-                        <tr id="@crew.ID">
+                        <tr id="@crew.Personnel.ID">
                             <td></td>
                             <td></td>
                             <td></td>
                             <td>@crew.Personnel.EmployeeNo</td>
                             <td>@crew.Personnel.FullName
-                            @crew.Department.Description
+                            @*@crew.Department.Description*@
                             @*@crew.Department.ShortDescription
                             @crew.Department.Office*@
                             @crew.Position.Description
@@ -44,8 +44,8 @@
                             @*<td>@crew.BasicRate.Value.ToString("#,###.00##")</td>
                             <td>@crew.DateEmbarked.CheckIfNull().ToString("MMM dd, yyyy")</td>
                             <td>@crew.DateDisembarked.CheckIfNull().ToString("MMM dd, yyyy")</td>*@
-                            <td>@crew.DailyRate.ToString("#,###.00##")</td>
-                            <td>@crew.Remarks</td>
+                            @*<td>@crew.DailyRate.ToString("#,###.00##")</td>
+                            <td>@crew.Remarks</td>*@
                             <td></td>
                         </tr>
                     }
