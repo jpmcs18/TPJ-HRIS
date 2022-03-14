@@ -127,6 +127,42 @@ namespace WebTemplate.Controllers.Movement
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        public ActionResult CheckedMovement(long id)
+        {
+            try
+            {
+                VesselMovement model = VesselMovementProcess.Checked(id, User.UserID);
+
+                ModelState.Clear();
+                return PartialViewCustom("_VesselMovement", model);
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { msg = false, res = ex.GetActualMessage() });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ApprovedMovement(long id)
+        {
+            try
+            {
+                VesselMovement model = VesselMovementProcess.Approved(id, User.UserID);
+
+                ModelState.Clear();
+                return PartialViewCustom("_VesselMovement", model);
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { msg = false, res = ex.GetActualMessage() });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public JsonResult DeleteMultiple(string ids)
         {
             if (ids.Length > 0)

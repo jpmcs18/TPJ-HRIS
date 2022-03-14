@@ -12,7 +12,7 @@ namespace ProcessLayer.Entities
         public int ID { get; set; }
         [Required]
         public int PositionID { get; set; }
-        public double Salary { get; set; }
+        public decimal? Salary { get; set; }
         public Position Position { get; set; }
     }
 }

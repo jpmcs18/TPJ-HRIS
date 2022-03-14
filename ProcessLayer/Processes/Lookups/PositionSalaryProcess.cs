@@ -37,7 +37,7 @@ namespace ProcessLayer.Processes
             {
                 ID = dr["ID"].ToInt(),
                 PositionID = dr["Position ID"].ToInt(),
-                Salary = dr["Salary"].ToDouble()
+                Salary = dr["Salary"].ToNullableDecimal()
             };
         }
 
@@ -90,7 +90,7 @@ namespace ProcessLayer.Processes
                 {
                     PositionSalaryList = ds.Tables[0].AsEnumerable().Select(r => Converter(r)).ToList();
                 }
-            }
+            }  
 
             return PositionSalaryList;
         }

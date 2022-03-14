@@ -53,7 +53,7 @@ namespace ProcessLayer.Processes
                 PersonnelID = dr["Personnel ID"].ToLong(),
                 DepartmentID = dr["Department ID"].ToNullableInt(),
                 PositionID = dr["Position ID"].ToInt(),
-                DailyRate = dr["Daily Rate"].ToDecimal(),
+                DailyRate = dr["Daily Rate"].ToNullableDecimal(),
                 Remarks = dr["Remarks"].ToString()
             };
 
@@ -62,6 +62,11 @@ namespace ProcessLayer.Processes
                 v.Position = PositionProcess.Instance.Get(v.PositionID);
                 v.Department = DepartmentProcess.Instance.Get(v.DepartmentID ?? 0);
                 v.Personnel = PersonnelProcess.Get(v.PersonnelID, true);
+            }
+
+            if(v.DailyRate == null)
+            {
+                v.DailyRate = PositionSalaryProcess.GetByPositionId(v.PositionID)?.Salary;
             }
 
             return v;
