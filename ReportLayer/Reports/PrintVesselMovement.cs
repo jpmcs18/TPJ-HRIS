@@ -22,13 +22,13 @@ namespace ReportLayer.Reports
 
             WriteToCell(PrintVesselMovementHelper.Instance.DateCell, StartDate.ToString("MMMM dd, yyyy") + " - " + EndDate.ToString("MMMM dd, yyyy"));
             WriteToCell(PrintVesselMovementHelper.Instance.VesselNameCell, Vessel.Description);
-            var startRow = PrintVesselMovementHelper.Instance.StartRow;
-            foreach(var movement in VesselMovements)
-            {
-                WriteToCell(startRow, PrintVesselMovementHelper.Instance.DateColumn, movement.MovementDate.ToString("MMMM dd, yyyy"));
-                WriteToCell(startRow, PrintVesselMovementHelper.Instance.MovementColumn, movement._VesselMovementType.Description);
-                startRow++;
-            }
+            //var startRow = PrintVesselMovementHelper.Instance.StartRow;
+            //foreach(var movement in VesselMovements)
+            //{
+            //    WriteToCell(startRow, PrintVesselMovementHelper.Instance.DateColumn, movement.MovementDate.ToString("MMMM dd, yyyy"));
+            //    WriteToCell(startRow, PrintVesselMovementHelper.Instance.MovementColumn, movement._VesselMovementType.Description);
+            //    startRow++;
+            //}
         }
     }
 }
