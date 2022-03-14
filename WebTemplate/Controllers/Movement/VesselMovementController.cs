@@ -59,6 +59,7 @@ namespace WebTemplate.Controllers.Movement
             {
                 VesselMovement model = VesselMovementProcess.Get(id ?? 0);
                 model.VesselID = vesselid ?? 0;
+                model._Vessel = VesselProcess.Instance.Get(vesselid);
 
                 ModelState.Clear();
                 return PartialViewCustom("_New", model);
