@@ -23,6 +23,20 @@ namespace ProcessLayer.Entities
         public Vessel _Vessel { get; set; } = new Vessel();
         //public Lookup _VesselMovementType { get; set; } = new Lookup();
         public int MovementStatusID { get; set; }
+        public string MovementStatus
+        {
+            get
+            {
+                switch (MovementStatusID)
+                {
+                    case 0: return "Cancel";
+                    case 1: return "Pending";
+                    case 2: return "Checked";
+                    case 3: return "Approved";
+                    default: return "";
+                }
+            }
+        }
 
         public int CreatedBy { get; set; }
         public string Creator { get; set; }
@@ -36,6 +50,7 @@ namespace ProcessLayer.Entities
         public int? CheckedBy { get; set; }
         public string Checker { get; set; }
         public DateTime? CheckedDate { get; set; }
+
         public Location OriginLocation { get; set; }
         public Location DestinationLocation { get; set; }
 

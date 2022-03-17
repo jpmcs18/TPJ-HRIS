@@ -6952,7 +6952,7 @@ body .md-stepper-horizontal .md-step:active .md-step-circle {
   background-color: #757575;
 }
 body .md-stepper-horizontal .md-step:active {
-  border-radius: 0.2%;
+  border-radius: 15% / 75%;
 }
 body .md-stepper-horizontal .md-step:first-child:active {
   border-top-left-radius: 0;
@@ -10439,7 +10439,8 @@ label.form-control {
 form.form-group,
 fieldset.form-group,
 div.form-group {
-  margin-bottom: 0.5em;
+  margin-top: 0.5em;
+  margin-bottom: 0;
 }
 form#form_search,
 fieldset#form_search,

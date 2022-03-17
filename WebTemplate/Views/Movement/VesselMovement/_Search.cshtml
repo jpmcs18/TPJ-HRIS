@@ -1,4 +1,4 @@
-﻿@model WebTemplate.Models.VesselMovement.Index
+﻿+@model WebTemplate.Models.VesselMovement.Index
 
 @{
     var PageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("Movement/VesselMovement");
@@ -127,7 +127,7 @@ else
                                             {
                                                 <button type="button" name="ViewCrews" class="btn btn-info btn-sm btn-rounded ViewCrews m-l-sm" value="@Model.VesselList[i].ID" onclick="ViewCrews('@Model.VesselList[i].ID');" title="View Crews"><i class="fa fa-group fa-1x"></i></button>
                                                 @*<button type="button" name="ViewVesselMovement" class="btn btn-outline btn-success btn-sm btn-rounded ViewVesselMovement" value="@Model.VesselList[i].ID" onclick="ViewVesselMovement('@Model.VesselList[i].ID');" title="View Vessel Movement"><i class="fa fa-ship fa-1x"></i></button>*@
-                                                <button type="button" name="ViewVesselMovement" class="btn btn-primary btn-sm btn-rounded ViewVesselMovement" value="@Model.VesselList[i].ID" onclick="ViewVesselMovement('@Model.VesselList[i].ID');" title="View Vessel Voyage"><i class="fa fa-anchor fa-1x"></i></button>
+                                                <button type="button" name="ViewVesselVoyage" class="btn btn-primary btn-sm btn-rounded ViewVesselVoyage" onclick="ViewVesselVoyage(@Model.VesselList[i].ID);" title="View Vessel Voyage"><i class="fa fa-anchor fa-1x"></i></button>
                                                 if (PageAccess.Update || PageAccess.Delete)
                                                 {
                                                 }

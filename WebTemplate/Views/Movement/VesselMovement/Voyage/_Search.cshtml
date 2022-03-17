@@ -24,17 +24,17 @@
     <fieldset>
         <legend>Vessel</legend>
         <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-            <label class="form-control" title="Code">@Model.Vessel.Code</label>
+            <label class="form-control" title="Code">@Model.Vessel.CheckIfNull().Code</label>
         </div>
         <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-            <label class="form-control">@Model.Vessel.Description</label>
+            <label class="form-control">@Model.Vessel.CheckIfNull().Description</label>
         </div>
         <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-            <label class="form-control">@Model.Vessel._Classification.Description</label>
+            <label class="form-control">@Model.Vessel.CheckIfNull()._Classification.CheckIfNull().Description</label>
         </div>
     </fieldset>
 
-    <form id="VesselMovementParameters" class="form-group">
+    <form id="VesselVoyageParameters" class="form-group">
         <fieldset>
             <legend>Search</legend>
             @Html.HiddenFor(m => m.VesselID)
@@ -62,25 +62,32 @@
                         <th>Start Date</th>
                         <th>End Date</th>
                         <th>Origin</th>
-                        <th>ETD</th>
                         <th>Destination</th>
+                        @*<th>ETD</th>
                         <th>ETA</th>
                         <th>Details</th>
                         <th>Created</th>
                         <th>Modified</th>
-                        <th>Approved</th>
+                        <th>Approved</th>*@
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td colspan="20" class="text-center">
-                            <div class="col-xs-12 col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6 col-lg-offset-4 col-lg-4">
-                                <button id="NewVoyageButton" type="button" class="btn btn-primary btn-w-m" style="width: 100%;" name="NewVoyageButton" value="0"><i class="fa fa-plus"></i> New Voyage</button>
-                            </div>
-                        </td>
-                    </tr>
-                    @if (Model.VesselMovements.Count() > 0)
+                    @if (ViewBag.IsAllowed ?? false || Model.VesselMovements.Count() == 0)
+                    {
+                        <tr>
+                            <td colspan="20" class="text-center">
+                                <div class="col-xs-12 col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6 col-lg-offset-4 col-lg-4">
+                                    <button id="EditOrNewVesselVoyage" type="button" class="btn btn-primary btn-w-m" style="width: 100%;" name="EditOrNewVesselVoyage" value="0"><i class="fa fa-plus"></i> New Voyage</button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    @if (Model.VesselMovements.Count() == 0)
+                    {
+                        <tr><td class="text-center" colspan="10">No records...</td></tr>
+                    }
+                    else
                     {
                         for (int i = 0; i < Model.VesselMovements.Count(); i++)
                         {
@@ -90,13 +97,13 @@
                                 <td>@movement.VoyageStartDate.CheckIfNull().ToString("MMM dd, yyyy")</td>
                                 <td>@movement.VoyageEndDate.CheckIfNull().ToString("MMM dd, yyyy")</td>
                                 <td>@movement.OriginLocation</td>
-                                <td>@movement.ETD</td>
                                 <td>@movement.DestinationLocation</td>
-                                <td>@movement.ETA</td>
-                                <td>@movement.VoyageDetails</td>
-                                <td>@movement.Creator<br />@movement.CreatedDate.CheckIfNull().ToString("MMM dd, yyyy hh:mm:ss")</td>
-                                <td>@movement.Modifier<br />@movement.ModifiedDate.CheckIfNull().ToString("MMM dd, yyyy hh:mm:ss")</td>
-                                <td>@movement.Approver<br />@movement.ApprovedDate.CheckIfNull().ToString("MMM dd, yyyy hh:mm:ss")</td>
+                                @*<td>@movement.ETD</td>
+                    <td>@movement.ETA</td>
+                    <td>@movement.VoyageDetails</td>
+                    <td>@movement.Creator<br />@movement.CreatedDate.CheckIfNull().ToString("MMM dd, yyyy hh:mm:ss")</td>
+                    <td>@movement.Modifier<br />@movement.ModifiedDate.CheckIfNull().ToString("MMM dd, yyyy hh:mm:ss")</td>
+                    <td>@movement.Approver<br />@movement.ApprovedDate.CheckIfNull().ToString("MMM dd, yyyy hh:mm:ss")</td>*@
                                 <td>
                                     <div class="btn-group">
                                         @if (PageAccess.Delete)
@@ -105,38 +112,11 @@
                                         @if (PageAccess.Update || PageAccess.View)
                                         {
                                         }
-                                        <button class="btn btn-primary" onclick="GetVesselVoyage('@movement.ID');"><i class="fa fa-group"></i> View Voyage Details</button>
+                                        <button id="ViewVoyageDetails" class="btn btn-primary ViewVoyageDetails" type="button" value="@movement.ID"><i class="fa fa-group"></i> View Voyage Details</button>
                                     </div>
                                 </td>
                             </tr>
                         }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>
-                                <div class="btn-group">
-                                    @if (PageAccess.Delete)
-                                    {
-                                    }
-                                    @if (PageAccess.Update || PageAccess.View)
-                                    {
-                                    }
-                                    <button class="btn btn-primary btn-rounded" type="button" onclick="GetVesselCrews(0);" title="View Vessel Crews"><i class="fa fa-group"></i></button>
-                                </div>
-                            </td>
-                        </tr>
-                        @*<tr><td class="text-center" colspan="10">No records...</td></tr>*@
                     }
                 </tbody>
             </table>
@@ -144,17 +124,8 @@
     </form>
 </div>
 
-<div id="VoyageCrewsModal" class="modal" data-backdrop="static" data-keyboard="false" tabindex="" role="dialog" aria-hidden="true">
-    <div class="modal-body">
-        @*@Html.Partial("~/Views/Movement/VesselMovement/Voyage/_Crews.cshtml")*@
-    </div>
-</div>
-
-<div id="ManageVoyageModal" class="modal" data-backdrop="static" data-keyboard="false" tabindex="" role="dialog" aria-hidden="true">
-    <div class="modal-body">
-        @*@Html.Partial("~/Views/Movement/VesselMovement/Voyage/_Crews.cshtml")*@
-    </div>
-</div>
-
 <script>
+    $(document).ready(function (e) {
+
+    });
 </script>

@@ -200,8 +200,7 @@
                         $('#CrewList').hide();
                         $('#CrewMovement').html(response).show();
 
-                        $('#BackToCrewListDiv')
-                            .append(
+                        $('#BackToCrewListDiv').append(
                                 '<i id="BackToCrewList" class="fa fa-arrow-left m-r-sm" style="cursor: pointer" title="Back"></i>');
                         $('#BackToCrewList').off('click').on('click', ViewCrewList);
                         $('#SaveCrewMovement').off('click').on('click', SaveCrewMovement);

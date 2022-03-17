@@ -41,9 +41,10 @@ namespace WebTemplate.Controllers.Movement
                 model.Vessel = VesselProcess.Instance.Get(model.VesselID);
                 model.VesselMovements =
                     VesselMovementProcess.GetList(model.VesselID, model.StartingDate, model.EndingDate);
+                ViewBag.AllowAdd = false;
 
                 ModelState.Clear();
-                return PartialViewCustom("/Voyage/_List", model);
+                return PartialViewCustom("/Voyage/_Search", model);
             }
             catch (Exception ex)
             {
@@ -53,20 +54,21 @@ namespace WebTemplate.Controllers.Movement
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditOrNewVesselMovement(long? id, short? vesselid)
+        public ActionResult EditOrNewVesselVoyage(long? ID, int? VesselID)
         {
             try
             {
-                VesselMovement model = VesselMovementProcess.Get(id ?? 0);
-                model.VesselID = vesselid ?? 0;
-                model._Vessel = VesselProcess.Instance.Get(vesselid);
+                VesselMovement model = VesselMovementProcess.Get(ID ?? 0) ?? new VesselMovement();
+                model.VesselID = VesselID ?? 0;
+                model._Vessel = VesselProcess.Instance.Get(VesselID);
+                model.VoyageStartDate = model.ID > 0 ? model.VoyageStartDate : DateTime.Now;
 
                 ModelState.Clear();
-                return PartialViewCustom("_New", model);
+                return PartialViewCustom("/Voyage/_Manage", model);
             }
             catch (Exception ex)
             {
-                return Json(new {msg = false, res = ex.GetActualMessage()});
+                return Json(new { msg = false, res = ex.GetActualMessage() });
             }
         }
 

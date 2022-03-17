@@ -70,6 +70,16 @@
     </div>
 </div>
 
+<div id="VoyageCrewsModal" class="modal" data-backdrop="static" data-keyboard="false" tabindex="" role="dialog" aria-hidden="true">
+    <div class="modal-body">
+        @*@Html.Partial("~/Views/Movement/VesselMovement/Voyage/_Crews.cshtml")*@
+    </div>
+</div>
+
+<div id="ManageVoyageModal" class="modal" data-backdrop="static" data-keyboard="false" tabindex="" role="dialog" aria-hidden="true">
+    @*@Html.Partial("~/Views/Movement/VesselMovement/Voyage/_Crews.cshtml")*@
+</div>
+
 <style>
     .image-crop {
         overflow: hidden;
@@ -222,6 +232,83 @@
                 }
             });
         }
+
+    function ViewVesselVoyage(vesselid) {
+        var formdata = new FormData();
+        formdata.append('VesselID', vesselid);
+        $('#VesselVoyageParameters *').each(function () {
+            if ($(this).attr('name'))
+                formdata.append($(this).attr('name'), $(this).val());
+        });
+        formdata.append('__RequestVerificationToken', $('@Html.AntiForgeryToken()').val());
+
+        $.ajax({
+            url: '@Url.Action("VesselMovementManagement", "VesselMovement")',
+            data: formdata,
+            type: 'POST',
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                ShowLoadingScreen()
+            },
+            complete: function() {
+                RemoveLoadingScreen()
+            },
+            success: function(response) {
+                if (response.msg == null) {
+                    try {
+                        $('.vessel-views').hide();
+                        $('#VesselVoyage').html(response).show();
+                        $('#VesselVoyage #EditOrNewVesselVoyage').off('click').on('click', EditOrNewVesselVoyage);
+                    } catch { }
+                } else {
+                    toastr.error(response.res);
+                }
+            },
+            error: function() {
+                toastr.error('AJAX backend error', 'An error has occured.');
+            }
+        });
+    }
+
+    function EditOrNewVesselVoyage() {
+        if ($('#VesselVoyage #NewVoyageDiv').length == 0) {
+            var formdata = new FormData();
+            formdata.append('ID', $(this).val());
+            $('#VesselVoyageParameters *').each(function () {
+                if ($(this).attr('name'))
+                    formdata.append($(this).attr('name'), $(this).val());
+            });
+            formdata.append('__RequestVerificationToken', $('@Html.AntiForgeryToken()').val());
+
+            $.ajax({
+                data: formdata,
+                type: 'POST',
+                url: '@Url.Action("EditOrNewVesselVoyage", "VesselMovement")',
+                cache: false,
+                contentType: false,
+                processData: false,
+                beforeSend: function() {},
+                complete: function() {},
+                success: function(response) {
+                    if (response.msg == null) {
+                        try {
+                            $('#ManageVoyageModal').html(response).appendTo("body").modal('show');
+                            //$('#ManageVoyageModal tbody tr button.ViewVoyageDetails').off('click').on('click', ViewVesselVoyage);
+                            $('#ManageVoyageModal select').select2();
+
+                        } catch {}
+                    } else {
+                        toastr.error(response.res);
+                    }
+                },
+                error: function(response) {
+                    toastr.error(response.res);
+                }
+            });
+        }
+    }
 
         function SearchCrews() {
             var params = $('#VesselMovement *').serialize() +
@@ -449,6 +536,66 @@
                 }
             });
         }
+
+    function SaveVesselVoyage() {
+        $('input.required').removeClass('input-incomplete');
+        var formData = new FormData();
+        var requiredFields = [];
+
+        $('#ManageVoyageModal .form-control').each(function (e) {
+            var label = ($(this).closest('label').text() || '').trim();
+            var name = $(this).attr('name');
+            var val = $(this).val();
+            var isRequired = $(this).hasClass('required');
+
+            if (name) {
+                if (isRequired) {
+                    if (!val) {
+                        requiredFields.push(label);
+                        $(this).addClass('input-incomplete');
+                        return;
+                    }
+
+                    formData.append(name, val);
+                }
+                else {
+                    formData.append(name, val);
+                }
+            }
+        });
+        formData.append('__RequestVerificationToken', $('@Html.AntiForgeryToken()').val());
+
+        if (requiredFields.length > 0) {
+            toastr.warning('Please fill up required fields!', 'Warning');
+            return;
+        }
+
+        $.ajax({
+            data: params,
+            type: 'POST',
+            url: '@Url.Action("CreateOrUpdateVesselMovement", "VesselMovement")',
+            cache: false,
+            beforeSend: function() {},
+            complete: function() {},
+            success: function(response) {
+                if (response.msg == null) {
+                    $divBlock.before(response);
+                    $divBlock.find('#Place').val('');
+                    if (isUpdate)
+                        $divBlock.remove();
+
+                    VesselManagementEvents();
+
+                    toastr.success('Vessel Voyage saved!');
+                } else {
+                    toastr.error(response.res);
+                }
+            },
+            error: function(response) {
+                toastr.error(response.res);
+            }
+        });
+    }
 
         function SaveVesselMovement() {
             $divBlock = $(this).closest('.vertical-timeline-block');
@@ -685,8 +832,6 @@
                 $clearBtn.show();
             }
     }
-
-
 
     $(document).ready(function (e) {
         $("#VoyageCrewsModal").on("hidden.bs.modal",
