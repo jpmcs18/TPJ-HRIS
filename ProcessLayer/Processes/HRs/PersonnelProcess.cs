@@ -168,6 +168,28 @@ namespace ProcessLayer.Processes
             return emp;
         }
 
+        public static IEnumerable<Personnel> SearchCrew(string filter)
+        {
+            var emp = new List<Personnel>();
+
+            var Parameters = new Dictionary<string, object>
+            {
+                { "@Key", filter }
+            };
+
+            using (var db = new DBTools())
+            {
+                using (var ds = db.ExecuteReader("hr.SearchCrew", Parameters))
+                {
+                    PersonnelOnly = true;
+                    emp = ds.GetList(Converter) ?? new List<Personnel>();
+                    PersonnelOnly = false;
+                }
+            }
+
+            return emp;
+        }
+
         public static List<Personnel> GetList(bool personnelOnly = false)
         {
             var emp = new List<Personnel>();

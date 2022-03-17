@@ -32,6 +32,7 @@ namespace WebTemplate.Controllers.Movement
             }
         }
 
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult VesselMovementManagement(VesselMovementList model)
@@ -68,6 +69,16 @@ namespace WebTemplate.Controllers.Movement
             {
                 return Json(new {msg = false, res = ex.GetActualMessage()});
             }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Search(string key)
+        {
+            var model = PersonnelProcess.SearchCrew(key);
+
+            ModelState.Clear();
+            return PartialViewCustom("_PersonnelSearch", model);
         }
 
         [HttpPost]
