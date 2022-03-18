@@ -8,6 +8,8 @@ using WebTemplate.Models.VesselMovement;
 using ReportLayer.Reports;
 using ReportLayer.Helpers;
 using System.Web.Script.Serialization;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace WebTemplate.Controllers.Movement
 {
@@ -41,7 +43,8 @@ namespace WebTemplate.Controllers.Movement
             {
                 model.Vessel = VesselProcess.Instance.Get(model.VesselID);
                 model.VesselMovements =
-                    VesselMovementProcess.GetList(model.VesselID, model.StartingDate, model.EndingDate);
+                    VesselMovementProcess.GetList(model.VesselID, model.StartingDate, model.EndingDate); 
+                //New vessel voyage addition validation
                 ViewBag.AllowAdd = false;
 
                 ModelState.Clear();
@@ -80,7 +83,7 @@ namespace WebTemplate.Controllers.Movement
             var model = PersonnelProcess.SearchCrew(key);
 
             ModelState.Clear();
-            return PartialViewCustom("_PersonnelSearch", model);
+            return PartialViewCustom("/Voyage/_PersonnelList", model);
         }
 
         [HttpPost]
@@ -101,14 +104,16 @@ namespace WebTemplate.Controllers.Movement
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateOrUpdateVesselMovement(VesselMovement model)
+        public ActionResult CreateOrUpdateVesselMovement(VesselMovement model, string crewlist)
         {
             try
             {
+                model.VesselMovementCrewList = (List<VesselMovementCrews>)JsonConvert.DeserializeObject(crewlist, typeof(List<VesselMovementCrews>));
                 model = VesselMovementProcess.CreateOrUpdate(model, User.UserID);
+                model.VesselMovementCrewList = VesselMovementProcess.GetMovementCrews(model.ID);
 
                 ModelState.Clear();
-                return PartialViewCustom("_Movement", model);
+                return PartialViewCustom("/Voyage/_Manage", model);
             }
             catch (Exception ex)
             {

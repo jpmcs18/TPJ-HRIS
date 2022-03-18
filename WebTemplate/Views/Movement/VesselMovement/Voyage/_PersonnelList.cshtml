@@ -1,0 +1,74 @@
+﻿@model List<ProcessLayer.Entities.Personnel>
+@using WebTemplate.Extension
+
+@{
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var PageAccess = credential.GetPage("Movement/VesselMovement") ?? new DataAccessLayer.System.Page();
+}
+
+
+<div class="table-responsive" style="max-height: 420px; overflow-y: auto; margin-bottom: 0">
+    <table id="PersonnelsTable" class="table table-stripped table-bordered" style="max-height: 500px;">
+        <thead>
+            <tr>
+                <th style="text-align: center;">Personnel</th>
+                @if (PageAccess.Update || PageAccess.Delete || PageAccess.View)
+                {
+                    <th style="text-align: center; min-width: 70px;" scope="col">Action</th>
+                }
+            </tr>
+        </thead>
+        <tbody id="PersonnelDiv">
+            <tr id="Row-Loading-Display" class="hidden">
+                <td style="text-align: center;" colspan="10">
+                    <i id="" class="fa fa-rotate-left rotate" style="padding: 8px; font-size: 20px; text-align: right;"></i>
+                </td>
+            </tr>
+            @if (Model.Count() > 0)
+            {
+                <tr id="No-Row-Display" class="hidden">
+                    <td style="text-align: center;" colspan="10">No Personnels found...</td>
+                </tr>
+                for (int i = 0; i < Model.Count(); i++)
+                {
+                    <tr id="@Model[i].ID" class="personnel Personnel-@Model[i].ID">
+                        <td class="hidden">
+                            <input class="ID" type="hidden" name="model.CrewList[@i].ID" value="0" />
+                            <input class="ApproverID" type="hidden" name="model.CrewList[@i].ApproverID" value="@Model[i].ID" />
+                            <input class="DepartmentID" type="hidden" name="model.CrewList[@i].DepartmentID" value="0" />
+                            <input class="PositionID" type="hidden" name="model.CrewList[@i].PositionID" value="0" /> @*@(Model[i]._Positions.CheckIfNull().Last().CheckIfNull().PositionID ?? Model[i]._Positions.CheckIfNull().Last()._Position.CheckIfNull().ID)*@
+                            @*<input class="Sequence" type="hidden" name="Sequence" value="@Model[i].Sequence" />*@
+                            <input class="Sequence" type="hidden" name="model.CrewList[@i].Sequence" value="0" />
+                            <input class="DailyRate" type="hidden" name="model.CrewList[@i].DailyRate" value="0.00" />
+                            <input class="Deleted" type="hidden" name="model.CrewList[@i].Deleted" value="false" />
+                            <input class="RowIndex" type="hidden" value="@i" />
+                        </td>
+                        <td style="text-align: left; text-transform: uppercase; white-space: nowrap; display: flex;">
+                            <img src="@(String.IsNullOrEmpty(Model[i].ImagePath) ? "\\Images\\default.jpg": Model[i].ImagePath)" style="height: 50px; width: 50px; min-height: 40px; min-width: 40px; border: 3px solid #eaeaea; margin-right: 10px; border-radius: 50px;" title="" />
+                            <div>
+                                <b class="text-primary">@String.Format("{0}, {1} {2}", Model[i].LastName, Model[i].FirstName, Model[i].MiddleName)</b>
+                                <br />
+                                <text class="" style="text-transform: none; font-weight: 700;">@Model[i]._Departments.Select(x => x._Department.Description).FirstOrDefault()</text>
+                                <br />
+                                <text class="" style="text-transform: none;">@Model[i]._Positions.Select(x => x._Position?.Description ?? "").FirstOrDefault()</text>
+                            </div>
+                        </td>
+                        <td style="text-align: center;">
+                            @if (PageAccess.View)
+                            {
+                                <button type="button" name="AddRemoveCrew" class="btn btn-outline btn-info btn-sm btn-rounded AddRemoveCrew" value="@Model[i].ID" title="Add as Crew"><i class="fa fa-plus"></i></button>
+                                <button type="button" name="UndoRemoveCrew" class="btn btn-default btn-sm btn-rounded UndoRemoveCrew hidden" value="@Model[i].ID" title="Undo remove Crew"><i class="fa fa-undo"></i></button>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr id="No-Row-Display">
+                    <td style="text-align: center;" colspan="10">No Personnels found...</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

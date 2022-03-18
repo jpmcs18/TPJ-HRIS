@@ -284,6 +284,7 @@ namespace ProcessLayer.Processes
 
                 var parameters = new Dictionary<string, object> {
                     {VesselMovementParameters.PersonnelID, crew.PersonnelID}
+                    , {VesselMovementParameters.VesselMovementID, crew.VesselMovementID}
                     , {VesselMovementParameters.DepartmentID, crew.DepartmentID}
                     , {VesselMovementParameters.PositionID, crew.PositionID}
                     , {VesselMovementParameters.DailyRate, crew.DailyRate}

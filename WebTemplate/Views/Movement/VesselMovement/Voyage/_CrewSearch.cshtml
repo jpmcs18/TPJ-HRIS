@@ -1,0 +1,85 @@
+﻿@model ProcessLayer.Entities.VesselMovement
+@using WebTemplate.Extension
+@using ProcessLayer.Entities
+
+@{
+}
+
+<form>
+    <fieldset>
+        <legend>Add Crews</legend>
+        <div class="row">
+            <div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-push-2 col-lg-4">
+                <div id="SearchPersonnelDiv" class="input-group" style="width: 100%;">
+                    @Html.TextBox("Personnel", "", new { @class = "form-control", @placeholder = "Search Personnel..." })
+                    <span class="input-group-addon" id="SearchPersonnel" style="cursor: pointer;"><i class="fa fa-search"></i></span>
+                </div>
+            </div>
+
+            <div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-push-2 col-lg-4">
+                <div id="SearchCrewDiv" class="input-group" style="width: 100%;">
+                    @Html.TextBox("Crew", "", new { @class = "form-control", @placeholder = "Search Crew..." })
+                    <span class="input-group-addon" id="SearchCrew" style="cursor: pointer;"><i class="fa fa-search"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div id="SearchPersonnelDivResult" class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-push-2 col-lg-4" style="padding-left: 0;">
+                @Html.Partial("~/Views/Movement/VesselMovement/Voyage/_PersonnelList.cshtml", new List<Personnel>())
+            </div>
+
+            <div id="SearchCrewDivResult" class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-push-2 col-lg-4" style="padding-right: 0;">
+                <div class="table-responsive" style="max-height: 420px; overflow-y: auto; margin-bottom: 0">
+                    <table id="CrewsTable" class="table table-stripped table-bordered" style="max-height: 500px;">
+                        <thead>
+                            <tr>
+                                <th style="text-align: center;">Crew</th>
+                                <th style="text-align: center; min-width: 70px;" scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="CrewDiv">
+                            <tr id="Row-Loading-Display" class="hidden">
+                                <td style="text-align: center;" colspan="10">
+                                    <i id="" class="fa fa-rotate-left rotate" style="padding: 8px; font-size: 20px; text-align: right;"></i>
+                                </td>
+                            </tr>
+                            <tr id="No-Row-Display">
+                                <td style="text-align: center;" colspan="10">No Crews found...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                @*@Html.Partial("~/Views/Movement/VesselMovement/Voyage/_CrewList.cshtml", Model.VesselMovementCrewList)*@
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-push-2 col-lg-8 m-t-md" style="padding-right: 0;">
+                <button id="SaveCrews" type="button" class="btn btn-primary pull-right" onclick="SaveVesselVoyage(@Model.VesselID)" title="Add crews to voyage" value="@Model.VesselID" disabled="disabled">
+                    @(Model.CrewList.Any() ? "Save Changes" : "Save")
+                </button>
+            </div>
+        </div>
+    </fieldset>
+</form>
+
+@*<form>
+        <fieldset>
+            <legend>Allowance</legend>
+            <table class="table table-stripped table-bordered" style="margin-bottom: 0px;">
+                <thead>
+                    <tr>
+                        <th>Allowance</th>
+                        <th>Description</th>
+                        <th>Amount</th>
+                        <th>Created By</th>
+                        <th>Date Created</th>
+                        <th>Created By</th>
+                        <th>Date Created</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="text-center" colspan="10">No records...</td></tr>
+                </tbody>
+            </table>
+        </fieldset>
+    </form>*@

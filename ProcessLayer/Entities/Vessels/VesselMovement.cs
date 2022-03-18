@@ -29,10 +29,10 @@ namespace ProcessLayer.Entities
             {
                 switch (MovementStatusID)
                 {
-                    case 0: return "Cancel";
-                    case 1: return "Pending";
-                    case 2: return "Checked";
-                    case 3: return "Approved";
+                    case 1: return "Cancel";
+                    case 2: return "Pending";
+                    case 3: return "Checked";
+                    case 4: return "Approved";
                     default: return "";
                 }
             }

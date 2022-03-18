@@ -2517,11 +2517,13 @@
     <Content Include="Views\CnB\CrewPayrollSheetA\Index.cshtml" />
     <Content Include="Views\Shared\_Pagination.cshtml" />
     <Content Include="Views\Movement\VesselMovement\Voyage\_Search.cshtml" />
-    <Content Include="Views\Movement\VesselMovement\Voyage\_Crews.cshtml" />
+    <Content Include="Views\Movement\VesselMovement\Voyage\_CrewList.cshtml" />
     <Content Include="Views\Movement\VesselMovement\Voyage\_Manage.cshtml" />
     <Content Include="Views\Movement\VesselMovement\Voyage\_Edit.cshtml" />
     <Content Include="Scripts\jquery-3.6.0.slim.min.map" />
     <Content Include="Scripts\jquery-3.6.0.min.map" />
+    <Content Include="Views\Movement\VesselMovement\Voyage\_CrewSearch.cshtml" />
+    <Content Include="Views\Movement\VesselMovement\Voyage\_PersonnelList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">

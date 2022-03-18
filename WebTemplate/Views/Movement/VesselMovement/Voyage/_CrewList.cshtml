@@ -1,14 +1,16 @@
-﻿@model List<ProcessLayer.Entities.VesselCrews>
+﻿@model List<ProcessLayer.Entities.VesselMovementCrews>
 @using WebTemplate.Extension
 
 @{
+    var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
+    var PageAccess = credential.GetPage("Movement/VesselMovement") ?? new DataAccessLayer.System.Page();
 }
 
-<div class="row">
-    <form>
-        <fieldset>
-            <legend>Crew</legend>
-            <table class="table table-stripped table-bordered" style="margin-bottom: 0px;">
+<form>
+    <fieldset>
+        <legend>Voyage Crews</legend>
+        <div class="table-responsive" style="max-height: 420px; overflow-y: auto; margin-bottom: 0">
+            <table id="VoyageCrewsTable" class="table table-stripped table-bordered" style="margin-bottom: 0px;">
                 <thead>
                     <tr>
                         <th>Seq No.</th>
@@ -25,12 +27,17 @@
                         <th>Action</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="VoyageCrewDiv">
+                    <tr id="Row-Loading-Display" class="hidden">
+                        <td style="text-align: center;" colspan="10">
+                            <i id="" class="fa fa-rotate-left rotate" style="padding: 8px; font-size: 20px; text-align: right;"></i>
+                        </td>
+                    </tr>
                     @if (Model.Count > 0)
                     {
                         foreach (var crew in Model)
                         {
-                            <tr id="@crew.Personnel.ID">
+                            <tr id="@crew.Personnel.ID" class="crew Crew-@crew.Personnel.ID">
                                 <td></td>
                                 <td></td>
                                 <td></td>
@@ -40,7 +47,7 @@
                                     @*@crew.Department.Description*@
                                     @*@crew.Department.ShortDescription
                                         @crew.Department.Office*@
-                                    @crew.Position.Description
+                                    @(crew.Position.CheckIfNull().Description ?? "")
                                     @*@crew.Position.Display
                                         @crew.Position.FullDisplay*@
                                 </td>
@@ -49,38 +56,22 @@
                                     <td>@crew.DateDisembarked.CheckIfNull().ToString("MMM dd, yyyy")</td>*@
                                 @*<td>@crew.DailyRate.ToString("#,###.00##")</td>
                                     <td>@crew.Remarks</td>*@
-                                <td></td>
+                                <td style="text-align: center;">
+                                    @if (PageAccess.View)
+                                    {
+                                        <button type="button" name="AddRemoveCrew" class="btn btn-outline btn-info btn-sm btn-rounded AddRemoveCrew" value="@crew.ID" title="Add as approver"><i class="fa fa-plus"></i></button>
+                                        <button type="button" name="UndoRemoveCrew" class="btn btn-default btn-sm btn-rounded UndoRemoveCrew hidden" value="@crew.ID" title="Undo remove as approver"><i class="fa fa-undo"></i></button>
+                                    }
+                                </td>
                             </tr>
                         }
                     }
                     else
                     {
-                        <tr><td class="text-center" colspan="10">No records...</td></tr>
+                        <tr id="No-Row-Display"><td class="text-center" colspan="10">No Crews yet...</td></tr>
                     }
                 </tbody>
             </table>
-        </fieldset>
-    </form>
-</div>
-
-@*<form>
-        <fieldset>
-            <legend>Allowance</legend>
-            <table class="table table-stripped table-bordered" style="margin-bottom: 0px;">
-                <thead>
-                    <tr>
-                        <th>Allowance</th>
-                        <th>Description</th>
-                        <th>Amount</th>
-                        <th>Created By</th>
-                        <th>Date Created</th>
-                        <th>Created By</th>
-                        <th>Date Created</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr><td class="text-center" colspan="10">No records...</td></tr>
-                </tbody>
-            </table>
-        </fieldset>
-    </form>*@
+        </div>
+    </fieldset>
+</form>

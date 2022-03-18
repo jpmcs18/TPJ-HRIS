@@ -13,6 +13,7 @@
         public const string VoyageDetails = "@VoyageDetails";
         
         public const string PersonnelID = "@PersonnelID";
+        public const string VesselMovementID = "@VesselMovementID";        
         public const string DepartmentID = "@DepartmentID";
         public const string PositionID = "@PositionID";
         public const string DailyRate = "@DailyRate";
