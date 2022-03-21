@@ -110,6 +110,12 @@ namespace WebTemplate.Controllers.Movement
             {
                 model.VesselMovementCrewList = (List<VesselMovementCrews>)JsonConvert.DeserializeObject(crewlist, typeof(List<VesselMovementCrews>));
                 model = VesselMovementProcess.CreateOrUpdate(model, User.UserID);
+
+                foreach (var crew in model.VesselMovementCrewList.Where(m => m.Deleted))
+                {
+                    VesselMovementProcess.DeleteCrew(crew.ID, User.UserID);
+                }
+
                 model.VesselMovementCrewList = VesselMovementProcess.GetMovementCrews(model.ID);
 
                 ModelState.Clear();

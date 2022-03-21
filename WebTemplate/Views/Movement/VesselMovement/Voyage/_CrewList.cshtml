@@ -9,21 +9,20 @@
 <form>
     <fieldset>
         <legend>Voyage Crews</legend>
-        <div class="table-responsive" style="max-height: 420px; overflow-y: auto; margin-bottom: 0">
+        <div class="table-responsive" style="max-height: 300px; overflow-y: auto; margin-bottom: 0">
             <table id="VoyageCrewsTable" class="table table-stripped table-bordered" style="margin-bottom: 0px;">
                 <thead>
                     <tr>
-                        <th>Seq No.</th>
+                        @*<th>Seq No.</th>*@
                         <th>Rank</th>
                         <th>Destination</th>
                         <th>Employee No</th>
                         <th>Employee</th>
-                        @*<th>Department</th>
-                            <th>Position</th><th>Basic Rate</th>
-                            <th>Date Embarked</th>
-                            <th>Date Disembarked</th>*@
+                        <th>Date Embarked</th>
+                        <th>Date Disembarked</th>
+                        @*<th>Basic Rate</th>*@
                         @*<th>Daily Rate</th>
-                            <th>Remarks</th>*@
+                        <th>Remarks</th>*@
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -35,32 +34,34 @@
                     </tr>
                     @if (Model.Count > 0)
                     {
-                        foreach (var crew in Model)
+                        for (var i = 0; i < Model.Count(); i++)
                         {
-                            <tr id="@crew.Personnel.ID" class="crew Crew-@crew.Personnel.ID">
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td>@crew.Personnel.EmployeeNo</td>
+                            <tr id="@Model[i].Personnel.ID" class="crew Crew-@Model[i].Personnel.ID">
                                 <td>
-                                    @crew.Personnel.FullName
-                                    @*@crew.Department.Description*@
-                                    @*@crew.Department.ShortDescription
-                                        @crew.Department.Office*@
-                                    @(crew.Position.CheckIfNull().Description ?? "")
-                                    @*@crew.Position.Display
-                                        @crew.Position.FullDisplay*@
+                                    <input class="Deleted" type="hidden" name="model.CrewList[@i].Deleted" value="false" />
                                 </td>
-                                @*<td>@crew.BasicRate.Value.ToString("#,###.00##")</td>
-                                    <td>@crew.DateEmbarked.CheckIfNull().ToString("MMM dd, yyyy")</td>
-                                    <td>@crew.DateDisembarked.CheckIfNull().ToString("MMM dd, yyyy")</td>*@
-                                @*<td>@crew.DailyRate.ToString("#,###.00##")</td>
-                                    <td>@crew.Remarks</td>*@
+                                <td></td>
+                                <td>@Model[i].Personnel.EmployeeNo</td>
+                                <td style="text-align: left; text-transform: uppercase; display: flex;">
+                                    <img src="@(String.IsNullOrEmpty(Model[i].Personnel.ImagePath) ? "\\Images\\default.jpg": Model[i].Personnel.ImagePath)" style="height: 50px; width: 50px; min-height: 40px; max-w: 40px; border: 3px solid #eaeaea; margin-right: 10px; border-radius: 50px;" title="" />
+                                    <div>
+                                        <b class="text-primary">@Model[i].Personnel.FullName</b>
+                                        @Html.Raw(!String.IsNullOrEmpty(Model[i].Department.CheckIfNull().ShortDescription) ? $"<br /><text style='text-transform: uppercase; font-weight: 700;'>{Model[i].Department.CheckIfNull().ShortDescription}</text>" : "")
+                                        @Html.Raw(!String.IsNullOrEmpty(Model[i].Position.CheckIfNull().Description) ? $"<br /><text style='text-transform: uppercase; font-weight: 700;'>{Model[i].Position.CheckIfNull().Description}</text>" : "")
+                                        @Html.Raw(!String.IsNullOrEmpty(Model[i].Personnel.Email) ? $"<br /><text style='text-transform: uppercase;'><i class='fa fa-envelope'></i> {Model[i].Personnel.Email}</text>" : "")
+                                        @Html.Raw(!String.IsNullOrEmpty(Model[i].Personnel.Address) ? $"<br /><text style='text-transform: uppercase;'><i class='fa fa-map-marker'></i> {Model[i].Personnel.Address}</text>" : "")
+                                    </div>
+                                </td>
+                                    <td>@Model[i].DateEmbarked.CheckIfNull().ToString("MMM dd, yyyy")</td>
+                                    <td>@Model[i].DateDisembarked.CheckIfNull().ToString("MMM dd, yyyy")</td>
+                                @*<td>@Model[i].BasicRate.Value.ToString("#,###.00##")</td>*@
+                                @*<td>@Model[i].DailyRate.ToString("#,###.00##")</td>
+                                    <td>@Model[i].Remarks</td>*@
                                 <td style="text-align: center;">
                                     @if (PageAccess.View)
                                     {
-                                        <button type="button" name="AddRemoveCrew" class="btn btn-outline btn-info btn-sm btn-rounded AddRemoveCrew" value="@crew.ID" title="Add as approver"><i class="fa fa-plus"></i></button>
-                                        <button type="button" name="UndoRemoveCrew" class="btn btn-default btn-sm btn-rounded UndoRemoveCrew hidden" value="@crew.ID" title="Undo remove as approver"><i class="fa fa-undo"></i></button>
+                                        <button type="button" name="RemoveCrew" class="btn btn-outline btn-danger btn-sm btn-rounded RemoveCrew" value="@Model[i].ID" title="Remove crew"><i class="fa fa-times"></i></button>
+                                        <button type="button" name="AddCrew" class="btn btn-default btn-sm btn-rounded AddCrew hidden" value="@Model[i].ID" title="Undo remove crew"><i class="fa fa-undo"></i></button>
                                     }
                                 </td>
                             </tr>

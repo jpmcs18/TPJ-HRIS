@@ -7,7 +7,7 @@
 }
 
 
-<div class="table-responsive" style="max-height: 420px; overflow-y: auto; margin-bottom: 0">
+<div class="table-responsive" style="max-height: 300px; overflow-y: auto; margin-bottom: 0">
     <table id="PersonnelsTable" class="table table-stripped table-bordered" style="max-height: 500px;">
         <thead>
             <tr>
@@ -43,21 +43,21 @@
                             <input class="Deleted" type="hidden" name="model.CrewList[@i].Deleted" value="false" />
                             <input class="RowIndex" type="hidden" value="@i" />
                         </td>
-                        <td style="text-align: left; text-transform: uppercase; white-space: nowrap; display: flex;">
-                            <img src="@(String.IsNullOrEmpty(Model[i].ImagePath) ? "\\Images\\default.jpg": Model[i].ImagePath)" style="height: 50px; width: 50px; min-height: 40px; min-width: 40px; border: 3px solid #eaeaea; margin-right: 10px; border-radius: 50px;" title="" />
+                        <td style="text-align: left; text-transform: uppercase; display: flex;">
+                            <img src="@(String.IsNullOrEmpty(Model[i].ImagePath) ? "\\Images\\default.jpg": Model[i].ImagePath)" style="height: 50px; width: 50px; min-height: 40px; max-w: 40px; border: 3px solid #eaeaea; margin-right: 10px; border-radius: 50px;" title="" />
                             <div>
                                 <b class="text-primary">@String.Format("{0}, {1} {2}", Model[i].LastName, Model[i].FirstName, Model[i].MiddleName)</b>
-                                <br />
-                                <text class="" style="text-transform: none; font-weight: 700;">@Model[i]._Departments.Select(x => x._Department.Description).FirstOrDefault()</text>
-                                <br />
-                                <text class="" style="text-transform: none;">@Model[i]._Positions.Select(x => x._Position?.Description ?? "").FirstOrDefault()</text>
+                                @Html.Raw(Model[i]._Departments.Any() ? $"<br /><text style='text-transform: uppercase; font-weight: 700;'>{Model[i]._Departments.Select(x => x._Department.Description).FirstOrDefault()}</text>" : "")
+                                @Html.Raw(Model[i]._Positions.Any() ? $"<br /><text style='text-transform: uppercase; font-weight: 700;'>{Model[i]._Positions.Select(x => x._Position.Description).FirstOrDefault()}</text>" : "")
+                                @Html.Raw(!String.IsNullOrEmpty(Model[i].Email) ? $"<br /><text style='text-transform: uppercase;'><i class='fa fa-envelope'></i> {Model[i].Email}</text>" : "")
+                                @Html.Raw(!String.IsNullOrEmpty(Model[i].Address) ? $"<br /><text style='text-transform: uppercase;'><i class='fa fa-map-marker'></i> {Model[i].Address}</text>" : "")
                             </div>
                         </td>
                         <td style="text-align: center;">
-                            @if (PageAccess.View)
+                            @if (PageAccess.View && PageAccess.Update && PageAccess.Insert)
                             {
-                                <button type="button" name="AddRemoveCrew" class="btn btn-outline btn-info btn-sm btn-rounded AddRemoveCrew" value="@Model[i].ID" title="Add as Crew"><i class="fa fa-plus"></i></button>
-                                <button type="button" name="UndoRemoveCrew" class="btn btn-default btn-sm btn-rounded UndoRemoveCrew hidden" value="@Model[i].ID" title="Undo remove Crew"><i class="fa fa-undo"></i></button>
+                                <button type="button" name="AddCrew" class="btn btn-outline btn-info btn-sm btn-rounded AddCrew" value="@Model[i].ID" title="Add as crew"><i class="fa fa-plus"></i></button>
+                                @*<button type="button" name="RemoveCrew" class="btn btn-default btn-sm btn-rounded RemoveCrew hidden" value="@Model[i].ID" title="Undo remove crew"><i class="fa fa-undo"></i></button>*@
                             }
                         </td>
                     </tr>

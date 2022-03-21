@@ -298,47 +298,54 @@
             dailyRate = $(this).closest('tr').find('.DailyRate').val(),
             tableName = $(this).closest('table').attr('id'),
             rowName = tableName.replace('sTable', ''),
-            action = rowName == 'Personnel' ? 'Add' : 'Remove',
+            action = $(this).attr('Name').replace('Crew', ''); //rowName == 'Personnel' ? 'Add' : 'Remove'; //(rowName == 'Crew' ? 'Remove' : 'Undo'),
             id = parseInt($(this).closest('tr').attr('id'));
 
         if (action == 'Add') {
-            if ($('#CrewsTable tbody tr#' + id).length > 0 || $('#VoyageCrewsTable tbody tr#' + id).length > 0) {
-                toastr.warning('Personnel already selected!');
+            if (rowName == 'Personnel') {
+                if ($('#CrewsTable tbody tr#' + id).length > 0 || $('#VoyageCrewsTable tbody tr#' + id).length > 0) {
+                    toastr.warning('Personnel already selected!');
+                    $(this).closest('tr').addClass('hidden');
+                    return;
+                }
+
+                $personnelToAdd = $(this).closest('tr').clone();
+                $personnelToAdd.removeClass().addClass('crew Crew-' + personnelID);
+                $personnelToAdd.find('.AddCrew').attr('title', 'Remove as crew');
+                $personnelToAdd.find('.AddCrew').removeClass('btn-info').addClass('btn-danger');
+                $personnelToAdd.find('.AddCrew').find('i').removeClass().addClass('fa fa-times');
+                $('#CrewsTable tbody').append($personnelToAdd);
                 $(this).closest('tr').addClass('hidden');
-                return;
+                $('#ManageVoyageModal #VoyageCrewsTable').find('.AddCrew, .RemoveCrew').off('click').on('click', AddRemoveCrew);
+
+                $_crewIdsArr.push({ PersonnelID: personnelID, PositionID: positionID, DailyRate: dailyRate, VesselMovementID: vesselVoyageID });
+                $_personnelIDsArr = $.grep($_personnelIDsArr, function (a) { return a.PersonnelID !== personnelID; });
+            } else { //if (rowName == 'VoyageCrew') {
+                $(this).addClass('hidden');
+                $(this).closest('tr').removeClass('deleted');
+                $(this).closest('tr').find('img').css('opacity', '0');
+                $(this).closest('tr').find('.RemoveCrew').removeClass('hidden');
+                $(this).closest('tr').removeClass('text-muted bg-muted').find('b').addClass('text-primary');
             }
-
-            $personnelToAdd = $(this).closest('tr').clone();
-            $personnelToAdd.removeClass().addClass('crew Crew-' + personnelID);
-            $personnelToAdd.find('.AddRemoveCrew').attr('title', 'Remove as crew');
-            $personnelToAdd.find('.AddRemoveCrew').removeClass('btn-info').addClass('btn-danger');
-            $personnelToAdd.find('.AddRemoveCrew').find('i').removeClass().addClass('fa fa-times');
-            $('#CrewsTable tbody').append($personnelToAdd);
-            $(this).closest('tr').addClass('hidden');
-            $('#ManageVoyageModal .AddRemoveCrew').off('click').on('click', AddRemoveCrew);
-
-            //VesselMovementID: vesselVoyageID, 
-            $_crewIdsArr.push({ PersonnelID: personnelID, PositionID: positionID, DailyRate: dailyRate, VesselMovementID: vesselVoyageID });
-            $_personnelIDsArr = $.grep($_personnelIDsArr, function (a) { return a.PersonnelID !== personnelID; });
         }
-        else {
-            //$(this).addClass('hidden');
-            //$(this).closest('tr').addClass('deleted');
-            //$(this).closest('tr').find('img').css('opacity', '0.5');
-            //$(this).closest('tr').find('.UndoRemoveCrew').removeClass('hidden');
-            //$(this).closest('tr').addClass('text-muted bg-muted').find('b').removeClass('text-primary');
-            $(this).closest('tr').remove();
-            $('#PersonnelsTable tr.Personnel-' + personnelID).removeClass('hidden');
-            $_personnelIDsArr.push(personnelID);
-            $_crewIdsArr = $.grep($_crewIdsArr, function (a) { return a.PersonnelID !== personnelID; });
+        else if (action == 'Remove') {
+            if (rowName == 'Crew') {
+                $(this).closest('tr').remove();
+                $('#PersonnelsTable tr.Personnel-' + personnelID).removeClass('hidden');
+                $_personnelIDsArr.push(personnelID);
+                $_crewIdsArr = $.grep($_crewIdsArr, function (a) { return a.PersonnelID !== personnelID; });
+            }
+            else {
+                $(this).addClass('hidden');
+                $(this).closest('tr').addClass('deleted');
+                $(this).closest('tr').find('img').css('opacity', '0.5');
+                $(this).closest('tr').find('.AddCrew').removeClass('hidden');
+                $(this).closest('tr').addClass('text-muted bg-muted').find('b').removeClass('text-primary');
+            }
         }
 
         CheckTableRowCount();
         UpdateTableRowIndex();
-        DetectChanges();
-    }
-
-    function UndoRemoveCrew() {
         DetectChanges();
     }
 
@@ -410,6 +417,7 @@
                             $('#ManageVoyageModal input#Personnel').off('keyup').on('keyup', function (e) {
                                 SearchPersonnelAction(e);
                             });
+                            $('#ManageVoyageModal #VoyageCrewsTable').find('.AddCrew, .RemoveCrew').off('click').on('click', AddRemoveCrew);
                         } catch {}
                     } else {
                         toastr.error(response.res);
@@ -551,9 +559,9 @@
                             $('#ManageVoyageModal input#Personnel').off('keyup').on('keyup', function (e) {
                                 SearchPersonnelAction(e);
                             });
-                            //$('#ManageVoyageModal .AddRemoveApprover').off('click').on('click', SearchPersonnel);
-                            $('#ManageVoyageModal .AddRemoveCrew').off('click').on('click', AddRemoveCrew);
-                            $('#ManageVoyageModal .UndoRemoveCrew').off('click').on('click', UndoRemoveCrew);
+                            $('#ManageVoyageModal #PersonnelsTable').find('.AddCrew, .RemoveCrew').off('click').on('click', AddRemoveCrew);
+
+                            BoldMatch();
                         } catch { }
                     } else {
                         toastr.error(response.res);
@@ -563,6 +571,22 @@
                     toastr.error('AJAX backend error', 'An error has occured.');
                 }
             });
+    }
+
+    function BoldMatch() {
+        var key = $('#ManageVoyageModal #Personnel').val().trim().toLowerCase();
+        $('#ManageVoyageModal #SearchPersonnelDivResult tbody tr.personnel td').each(function (e) {
+            var text = $(this).html().toString().toLowerCase();
+            var idx1 = text.indexOf(key);
+            var idx2 = text.substring(text.indexOf(key) + 1);
+
+            if (idx1 == -1) return;
+
+            //var textStart = text.substring(0, idx1);
+            //var textEnd = text.substring(idx1, key.Length);
+            var html = text.substring(0, idx1) + "<b class='text-danger' style='font-weight: 800;'>" + key + "</b>" + text.substring(idx1 + key.length, text.length);
+            $(this).html(html);
+        });
     }
 
     function Search() {
@@ -631,52 +655,21 @@
         });
     }
 
-        function EditOrNewVesselMovement() {
-            if ($('#VesselMovement #NewMovementDiv').length == 1) {
-                $divBlock = $(this).closest('div.vertical-timeline-block');
-
-                var params = 'id=' +
-                    $(this).val() +
-                    '&vesselid=' +
-                    $('#NewVesselMovement').val() +
-                    '&__RequestVerificationToken=' +
-                    $('@Html.AntiForgeryToken()').val();
-
-                $.ajax({
-                    data: params,
-                    type: 'POST',
-                    url: '@Url.Action("EditOrNewVesselMovement", "VesselMovement")',
-                    cache: false,
-                    beforeSend: function() {},
-                    complete: function() {},
-                    success: function(response) {
-                        if (response.msg == null) {
-                            $divBlock.before(response);
-                            $divBlock.remove();
-
-                            $('#VesselMovement #CancelVesselMovement').off('click').on('click', CancelVesselMovement);
-                            $('#VesselMovement #SaveVesselMovement').off('click').on('click', SaveVesselMovement);
-
-                            VesselManagementEvents();
-                        } else {
-                            toastr.error(response.res);
-                        }
-                    },
-                    error: function(response) {
-                        toastr.error(response.res);
-                    }
-                });
-            }
-        }
-
-        function CancelVesselMovement() {
+    function EditOrNewVesselMovement() {
+        if ($('#VesselMovement #NewMovementDiv').length == 1) {
             $divBlock = $(this).closest('div.vertical-timeline-block');
 
-            var params = 'id=' + $(this).val() + '&__RequestVerificationToken=' + $('@Html.AntiForgeryToken()').val();
+            var params = 'id=' +
+                $(this).val() +
+                '&vesselid=' +
+                $('#NewVesselMovement').val() +
+                '&__RequestVerificationToken=' +
+                $('@Html.AntiForgeryToken()').val();
+
             $.ajax({
                 data: params,
                 type: 'POST',
-                url: '@Url.Action("CancelVesselMovement", "VesselMovement")',
+                url: '@Url.Action("EditOrNewVesselMovement", "VesselMovement")',
                 cache: false,
                 beforeSend: function() {},
                 complete: function() {},
@@ -684,6 +677,9 @@
                     if (response.msg == null) {
                         $divBlock.before(response);
                         $divBlock.remove();
+
+                        $('#VesselMovement #CancelVesselMovement').off('click').on('click', CancelVesselMovement);
+                        $('#VesselMovement #SaveVesselMovement').off('click').on('click', SaveVesselMovement);
 
                         VesselManagementEvents();
                     } else {
@@ -695,6 +691,34 @@
                 }
             });
         }
+    }
+
+    function CancelVesselMovement() {
+        $divBlock = $(this).closest('div.vertical-timeline-block');
+
+        var params = 'id=' + $(this).val() + '&__RequestVerificationToken=' + $('@Html.AntiForgeryToken()').val();
+        $.ajax({
+            data: params,
+            type: 'POST',
+            url: '@Url.Action("CancelVesselMovement", "VesselMovement")',
+            cache: false,
+            beforeSend: function() {},
+            complete: function() {},
+            success: function(response) {
+                if (response.msg == null) {
+                    $divBlock.before(response);
+                    $divBlock.remove();
+
+                    VesselManagementEvents();
+                } else {
+                    toastr.error(response.res);
+                }
+            },
+            error: function(response) {
+                toastr.error(response.res);
+            }
+        });
+    }
 
     function SaveVesselVoyage(vesselid) {
         $('input.required').removeClass('input-incomplete');
@@ -751,8 +775,8 @@
                 if (response.msg == null) {
                     $('#ManageVoyageModal').html(response).appendTo("body").modal('show');
                     $('#ManageVoyageModal select').select2();
-                    $('#ManageVoyageModal .AddRemoveCrew').off('click').on('click', AddRemoveCrew);
-                    $('#ManageVoyageModal .UndoRemoveCrew').off('click').on('click', UndoRemoveCrew);
+                    $('#ManageVoyageModal #CrewsTable').find('.AddCrew, .RemoveCrew').off('click').on('click', AddRemoveCrew);
+                    $('#ManageVoyageModal #VoyageCrewsTable').find('.AddCrew, .RemoveCrew').off('click').on('click', AddRemoveCrew);
                     $('#ManageVoyageModal #SearchPersonnelDiv span').off('click').on('click', SearchPersonnel);
                     $('#ManageVoyageModal input#Personnel').off('keyup').on('keyup', function (e) {
                         SearchPersonnelAction(e);

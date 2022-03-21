@@ -7,27 +7,28 @@
 }
 
 @functions {
-    string BoldMatch(string value, string search)
+    string BoldMatch(string text, string key)
     {
-        value = value.ToLower();
+        text = text.ToLower();
 
-        if (String.IsNullOrEmpty(search))
+        if (String.IsNullOrEmpty(key))
         {
-            return value;
+            return text;
         }
 
-        var idx1 = value.IndexOf(search);
-        var idx2 = value.Substring(value.IndexOf(search) + 1);
+        var idx1 = text.IndexOf(key);
+        var idx2 = text.Substring(text.IndexOf(key) + 1);
         if (idx1 == -1)
         {
-            return value;
+            return text;
         }
 
-        value = value.Remove(idx1, search.Length);
-        return value.Insert(idx1, $"<b style='font-weight: 800; color: #009688;'>{search}</b>");
-        //ret += value.ToLower().Replace(search.ToLower(), $"<b style='font-weight: 800;'>{search.ToLower()}</b>");
+        text = text.Remove(idx1, key.Length);
+        return text.Insert(idx1, $"<b style='font-weight: 800; color: #009688;'>{key}</b>");
+        //ret += text.ToLower().Replace(key.ToLower(), $"<b style='font-weight: 800;'>{key.ToLower()}</b>");
     }
 }
+
 <div style=" display: flex;">
     <div class="to-be-hidden">
         <div id="form_search_params" class="row" style="padding: 0px;">

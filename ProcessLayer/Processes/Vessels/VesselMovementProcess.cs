@@ -308,6 +308,7 @@ namespace ProcessLayer.Processes
 
             return crews;
         }
+
         public static void DeleteCrew(long vesselmovementcrewid, int userid)
         {
             var parameters = new Dictionary<string, object> {
@@ -320,6 +321,7 @@ namespace ProcessLayer.Processes
                 db.ExecuteNonQuery(VesselMovementProcedures.CreateOrUpdateCrew, parameters);
             }
         }
+
         public static void Delete(long vesselmovementid, int userid)
         {
             var parameters = new Dictionary<string, object> {
@@ -331,6 +333,7 @@ namespace ProcessLayer.Processes
                 db.ExecuteNonQuery(VesselMovementProcedures.Delete, parameters);
             }
         }
+
         public static VesselMovement Checked(long id, int userid)
         {
             var parameters = new Dictionary<string, object> {
