@@ -18,9 +18,9 @@
                         <th>Destination</th>
                         <th>Employee No</th>
                         <th>Employee</th>
-                        <th>Date Embarked</th>
+                        @*<th>Date Embarked</th>
                         <th>Date Disembarked</th>
-                        @*<th>Basic Rate</th>*@
+                        <th>Basic Rate</th>*@
                         @*<th>Daily Rate</th>
                         <th>Remarks</th>*@
                         <th>Action</th>
@@ -36,9 +36,10 @@
                     {
                         for (var i = 0; i < Model.Count(); i++)
                         {
-                            <tr id="@Model[i].Personnel.ID" class="crew Crew-@Model[i].Personnel.ID">
+                            <tr id="@Model[i].ID" class="voyageCrew Voyage-Crew-@Model[i].ID">
                                 <td>
-                                    <input class="Deleted" type="hidden" name="model.CrewList[@i].Deleted" value="false" />
+                                    <input class="Personnel" type="hidden" name="model.VesselMovementCrewList[@i].PersonnelID" value="@Model[i].Personnel.ID" />
+                                    <input class="Deleted" type="hidden" name="model.VesselMovementCrewList[@i].Deleted" value="false" />
                                 </td>
                                 <td></td>
                                 <td>@Model[i].Personnel.EmployeeNo</td>
@@ -52,16 +53,16 @@
                                         @Html.Raw(!String.IsNullOrEmpty(Model[i].Personnel.Address) ? $"<br /><text style='text-transform: uppercase;'><i class='fa fa-map-marker'></i> {Model[i].Personnel.Address}</text>" : "")
                                     </div>
                                 </td>
-                                    <td>@Model[i].DateEmbarked.CheckIfNull().ToString("MMM dd, yyyy")</td>
+                                    @*<td>@Model[i].DateEmbarked.CheckIfNull().ToString("MMM dd, yyyy")</td>
                                     <td>@Model[i].DateDisembarked.CheckIfNull().ToString("MMM dd, yyyy")</td>
-                                @*<td>@Model[i].BasicRate.Value.ToString("#,###.00##")</td>*@
+                                <td>@Model[i].BasicRate.Value.ToString("#,###.00##")</td>*@
                                 @*<td>@Model[i].DailyRate.ToString("#,###.00##")</td>
                                     <td>@Model[i].Remarks</td>*@
                                 <td style="text-align: center;">
                                     @if (PageAccess.View)
                                     {
-                                        <button type="button" name="RemoveCrew" class="btn btn-outline btn-danger btn-sm btn-rounded RemoveCrew" value="@Model[i].ID" title="Remove crew"><i class="fa fa-times"></i></button>
-                                        <button type="button" name="AddCrew" class="btn btn-default btn-sm btn-rounded AddCrew hidden" value="@Model[i].ID" title="Undo remove crew"><i class="fa fa-undo"></i></button>
+                                        <button type="button" name="RemoveCrew" class="btn btn-outline btn-danger btn-sm btn-rounded RemoveCrew" value="@Model[i].PersonnelID" title="Remove crew"><i class="fa fa-times"></i></button>
+                                        <button type="button" name="AddCrew" class="btn btn-default btn-sm btn-rounded AddCrew hidden" value="@Model[i].PersonnelID" title="Undo remove crew"><i class="fa fa-undo"></i></button>
                                     }
                                 </td>
                             </tr>

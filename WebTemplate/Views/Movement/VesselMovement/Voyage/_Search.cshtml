@@ -95,7 +95,7 @@
                         {
                             var movement = Model.VesselMovements[i];
 
-                            <tr>
+                            <tr id="@movement.ID">
                                 <td>@movement.VoyageStartDate.CheckIfNull().ToString("MMM dd, yyyy")</td>
                                 <td>@movement.VoyageEndDate.CheckIfNull().ToString("MMM dd, yyyy")</td>
                                 <td>@movement.OriginLocation.CheckIfNull().Description</td>

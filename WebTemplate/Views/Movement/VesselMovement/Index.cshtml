@@ -318,7 +318,7 @@
                 $(this).closest('tr').addClass('hidden');
                 $('#ManageVoyageModal #VoyageCrewsTable').find('.AddCrew, .RemoveCrew').off('click').on('click', AddRemoveCrew);
 
-                $_crewIdsArr.push({ PersonnelID: personnelID, PositionID: positionID, DailyRate: dailyRate, VesselMovementID: vesselVoyageID });
+                $_crewIdsArr.push({ PersonnelID: personnelID, PositionID: positionID, DailyRate: dailyRate, VesselMovementID: vesselVoyageID, Deleted: false });
                 $_personnelIDsArr = $.grep($_personnelIDsArr, function (a) { return a.PersonnelID !== personnelID; });
             } else { //if (rowName == 'VoyageCrew') {
                 $(this).addClass('hidden');
@@ -326,6 +326,7 @@
                 $(this).closest('tr').find('img').css('opacity', '0');
                 $(this).closest('tr').find('.RemoveCrew').removeClass('hidden');
                 $(this).closest('tr').removeClass('text-muted bg-muted').find('b').addClass('text-primary');
+                $_crewIdsArr = $.grep($_crewIdsArr, function (a) { return a.PersonnelID !== personnelID; });
             }
         }
         else if (action == 'Remove') {
@@ -341,6 +342,7 @@
                 $(this).closest('tr').find('img').css('opacity', '0.5');
                 $(this).closest('tr').find('.AddCrew').removeClass('hidden');
                 $(this).closest('tr').addClass('text-muted bg-muted').find('b').removeClass('text-primary');
+                $_crewIdsArr.push({ ID: id, PersonnelID: personnelID, Deleted: true });
             }
         }
 
