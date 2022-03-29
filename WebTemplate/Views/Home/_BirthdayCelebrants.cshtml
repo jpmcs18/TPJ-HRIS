@@ -26,7 +26,8 @@
             {
                 String fullname = String.Format("{0}, {1} {2}", person.LastName, person.FirstName, person.MiddleName);
                 String searchName = String.Format("{0}{1}{2}", person.FirstName, person.MiddleName, person.LastName);
-                String birthday = $"<tr class='list-title' style='background-color: #ddd;'><td>{person.BirthDate.Value.ToString("dddd, MMMM dd")}</td></tr>";
+                DateTime DateOfBirth = new DateTime(DateTime.Now.Year, person.BirthDate.Value.Month, person.BirthDate.Value.Day);
+                String birthday = $"<tr class='list-title' style='background-color: #ddd;'><td>{DateOfBirth.ToString("dddd, MMMM dd")}</td></tr>";
                 //String month = person.BirthDate.Value.ToString("MMMM");
                 int age = person.BirthDate.Value != null ? GetAge(person.BirthDate.Value) : 0;
 

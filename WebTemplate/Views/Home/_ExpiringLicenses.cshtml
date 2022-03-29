@@ -18,17 +18,18 @@
                 String fullname = String.Format("{0}, {1} {2}", person.LastName, person.FirstName, person.MiddleName);
                 String searchName = String.Format("{0}{1}{2}", person.FirstName, person.MiddleName, person.LastName);
                 String month = item.ExpirationDate.Value.ToString("MMMM");
+                var itemCount = licenseList.Where(m => m.ExpirationDate.Value.ToString("MMMM") == month).Count();
                 monthCounter += lastMonth != "" && month != lastMonth ? 1 : 0;
                 String expiration = $"<tr class='list-title month-body month-{monthCounter}' style='background-color: #ddd;{(monthCounter > 0 ? " display: none;" : "")}'><td>{item.ExpirationDate.Value.ToString("MMMM dd")}</td></tr>";
 
-                element += $"{(month != lastMonth ? $"<tr class='month-header{(monthCounter == 0 ? " open" : "")}' id='{monthCounter}'><td class='text-transform-uppercase'><span class='pull-left'>{month}</span><i class='fa fa-chevron-down pull-right'></i><i class='fa fa-chevron-up pull-right'></i></td></tr>" : "")}";
+                element += $"{(month != lastMonth ? $"<tr class='month-header{(monthCounter == 0 ? " open" : "")}' id='{monthCounter}'><td class='text-transform-uppercase'><span class='pull-left'>{month} ({itemCount} <i class='fa fa-user-o'></i>)</span><i class='fa fa-chevron-down pull-right'></i><i class='fa fa-chevron-up pull-right'></i></td></tr>" : "")}";
                 element += counter > 0 ? (prevExp.ToString() != item.ExpirationDate.ToString() ? expiration : "") : expiration;
 
                 element += $"<tr title='{fullname}' class='month-body month-{monthCounter}' style='{(monthCounter > 0 ? "display: none;" : "")}' onclick='";
                 //element += "window.open(" + '"' + ""{Url.Action("Personnel", "Index", new { Filter = searchName })}', '_blank');";
                 element += $"'><td><a href='/HumanResource/Personnel/Index?Filter={searchName}' target='_blank'><div style='float: left; text-transform: uppercase;'>";
                 element += $"<img src='{(String.IsNullOrEmpty(person.ImagePath) ? "\\Images\\default.jpg" : person.ImagePath)}' style='height: 35px; width: 35px; min-height: 35px; min-width: 35px; border: 3px solid #eaeaea; margin-right: 10px; border-radius: 50px;' />";
-                element += $"</div><div style='white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'><b>{fullname}</b><br />{(!String.IsNullOrEmpty(item.LicenseNo) ? item._LicenseType.Description + ": " + item.LicenseNo : "")}</div></a></td></tr>";
+                element += $"</div><div style='white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'><b style='color: #333;'>{fullname}</b><br /><span class='text-{(tabNo == 1 ? "danger" : "primary")}'>{(!String.IsNullOrEmpty(item.LicenseNo) ? item._LicenseType.Description + ": " + item.LicenseNo : "")}</span></div></a></td></tr>";
 
                 prevExp = item.ExpirationDate.Value;
                 lastMonth = month;

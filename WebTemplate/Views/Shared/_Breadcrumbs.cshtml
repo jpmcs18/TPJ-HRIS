@@ -1,7 +1,7 @@
 ﻿@model DataAccessLayer.System.Page
 
 @{
-    var breadcrumbs = Model.URL.IndexOf("/") > -1 ? Model.URL.Split('/').ToList() : new List<string> { Model.URL };
+    var breadcrumbs = Model.URL.Contains("/") ? Model.URL.Split('/').ToList() : new List<string> { Model.URL };
 }
 
 <h1>@Html.Raw(Model.PageName ?? "&nbsp;")</h1>
