@@ -179,6 +179,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Files\UploadedImages\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
@@ -620,6 +621,10 @@
       <DependentUpon>style.css</DependentUpon>
     </Content>
     <Content Include="favicon.ico" />
+    <Content Include="Files\UploadedLeaveFiles\77DE68DAECD823BABBB58EDB1C8E14D7106E83BB07142021180854BLANK.png" />
+    <Content Include="Files\UploadedLeaveFiles\B1D5781111D84F7B3FE45A0852E59758CD7A87E509102021183043219064272_2124072481080176_1260930658492739798_n.jpg" />
+    <Content Include="Files\UploadedLeaveFiles\DA4B9237BACCCDF19C0760CAB7AEC4A8359010B00714202113513520210528_105138.jpg" />
+    <Content Include="Files\UploadedMemos\0000201132022104936.png" />
     <Content Include="fonts\font-awesome\css\font-awesome-v4.css" />
     <Content Include="fonts\font-awesome\css\font-awesome.css" />
     <Content Include="fonts\font-awesome\css\font-awesome.min.css" />
@@ -836,6 +841,36 @@
     <Content Include="Content\memo-archive.scss" />
     <Content Include="Content\plugins\main.scss" />
     <Content Include="Content\layout.scss" />
+    <Content Include="Files\TimelogFiles\4009172021153853Kids-height-chart.pdf" />
+    <Content Include="Files\UploadedLeaveFiles\0ADE7C2CF97F75D009975F4D720D1FA6C19F489709022021172349COMMERCIAL BACK.pdf" />
+    <Content Include="Files\UploadedLeaveFiles\0ADE7C2CF97F75D009975F4D720D1FA6C19F489709022021223616COMMERCIAL BACK.pdf" />
+    <Content Include="Files\UploadedLeaveFiles\17BA0791499DB908433B80F37C5FBC89B870084B09022021181142Luca %282021%29 [1080p] [BluRay] [5.1] [YTS.MX].torrent" />
+    <Content Include="Files\UploadedLeaveFiles\17BA0791499DB908433B80F37C5FBC89B870084B09052021053855COMMERCIAL BACK.pdf" />
+    <Content Include="Files\UploadedLeaveFiles\1B6453892473A467D07372D45EB05ABC2031647A09022021152042COMMERCIAL BACK.pdf" />
+    <Content Include="Files\UploadedLeaveFiles\1B6453892473A467D07372D45EB05ABC2031647A09022021221511Snake Eyes %282021%29 [1080p] [WEBRip] [5.1] [YTS.MX].torrent" />
+    <Content Include="Files\UploadedLeaveFiles\1B6453892473A467D07372D45EB05ABC2031647A09022021222515COMMERCIAL BACK.pdf" />
+    <Content Include="Files\UploadedLeaveFiles\356A192B7913B04C54574D18C28D46E6395428AB08282021152419COMMERCIAL BACK.pdf" />
+    <Content Include="Files\UploadedLeaveFiles\356A192B7913B04C54574D18C28D46E6395428AB08282021153742Snake Eyes %282021%29 [1080p] [WEBRip] [5.1] [YTS.MX].torrent" />
+    <Content Include="Files\UploadedLeaveFiles\3C26DFFC8A2E8804DFE2C8A1195CFAA5EF6D001401242022172342RAFF-PDS p2.xlsx" />
+    <Content Include="Files\UploadedLeaveFiles\77DE68DAECD823BABBB58EDB1C8E14D7106E83BB08282021153707COMMERCIAL BACK.pdf" />
+    <Content Include="Files\UploadedLeaveFiles\7B52009B64FD0A2A49E6D8A939753077792B055409022021182952COMMERCIAL BACK.pdf" />
+    <Content Include="Files\UploadedLeaveFiles\902BA3CDA1883801594B6E1B452790CC53948FDA09022021222852COMMERCIAL BACK.pdf" />
+    <Content Include="Files\UploadedLeaveFiles\902BA3CDA1883801594B6E1B452790CC53948FDA09102021165013Year-Picker-Text-Input.zip" />
+    <Content Include="Files\UploadedLeaveFiles\902BA3CDA1883801594B6E1B452790CC53948FDA09102021173118Year-Picker-Text-Input.zip" />
+    <Content Include="Files\UploadedLeaveFiles\B1D5781111D84F7B3FE45A0852E59758CD7A87E509022021180835Snake Eyes %282021%29 [1080p] [WEBRip] [5.1] [YTS.MX].torrent" />
+    <Content Include="Files\UploadedLeaveFiles\B1D5781111D84F7B3FE45A0852E59758CD7A87E509022021224142COMMERCIAL BACK.pdf" />
+    <Content Include="Files\UploadedLeaveFiles\B1D5781111D84F7B3FE45A0852E59758CD7A87E509022021224259tax_dec_front_template_old.xlsx" />
+    <Content Include="Files\UploadedLeaveFiles\C1DFD96EEA8CC2B62785275BCA38AC261256E27809022021154708COMMERCIAL BACK.pdf" />
+    <Content Include="Files\UploadedLeaveFiles\DA4B9237BACCCDF19C0760CAB7AEC4A8359010B007142021144606Akudama Drive S01 1080p Dual Audio WEBRip 10 bits x265-EMBER.torrent" />
+    <Content Include="Files\UploadedLeaveFiles\DA4B9237BACCCDF19C0760CAB7AEC4A8359010B009092021173753Year-Picker-Text-Input.zip" />
+    <Content Include="Files\UploadedLeaveFiles\FE5DBBCEA5CE7E2988B8C69BCFDFDE8904AABC1F09102021170109Snake Eyes %282021%29 [1080p] [WEBRip] [5.1] [YTS.MX].torrent" />
+    <Content Include="Files\UploadedMemos\0000101132022094507.pdf" />
+    <Content Include="Files\UploadedMemos\0000301132022093533.pdf" />
+    <Content Include="Files\UploadedMemos\0007601132022093843.pdf" />
+    <Content Include="Files\UploadedMemos\asd01132022110343.pdf" />
+    <Content Include="Files\UploadedMemos\kjanskjdbnk01132022154220.pdf" />
+    <Content Include="Files\UploadedMemos\nbxkjdcbskjdbk01132022154058.pdf" />
+    <Content Include="Files\UploadedMemos\sample01132022155412.pdf" />
     <None Include="Properties\PublishProfiles\Inspinia.pubxml" />
     <Content Include="Resources\Template\Crewlist.xlsx" />
     <Content Include="Resources\Template\Crewmovementform.xlsx" />
@@ -1688,6 +1723,7 @@
     <Content Include="Resources\Template\PayrollSheetB.xlsx" />
     <Content Include="Scripts\custom\calendar.js" />
     <Content Include="Scripts\custom\calendar.min.js" />
+    <Content Include="Scripts\custom\currency.js" />
     <Content Include="Scripts\custom\custom-autonumeric.js" />
     <Content Include="Scripts\custom\default-toastr-setting.js" />
     <Content Include="Scripts\custom\datetimepicker-custom.js" />
@@ -2524,6 +2560,7 @@
     <Content Include="Scripts\jquery-3.6.0.min.map" />
     <Content Include="Views\Movement\VesselMovement\Voyage\_CrewSearch.cshtml" />
     <Content Include="Views\Movement\VesselMovement\Voyage\_PersonnelList.cshtml" />
+    <Content Include="Views\Movement\VesselMovement\Voyage\_VesselMovement.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">

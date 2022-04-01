@@ -17,5 +17,7 @@ namespace ProcessLayer.Entities
         public Position Position { get; set; }
         public Personnel Personnel { get; set; }
         public CrewMovement CrewMovement { get; set; }
+
+        public bool Deleted { get; set; } = false;
     }
 }

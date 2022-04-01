@@ -45,7 +45,7 @@ namespace WebTemplate.Controllers.Movement
                 model.VesselMovements =
                     VesselMovementProcess.GetList(model.VesselID, model.StartingDate, model.EndingDate); 
                 //New vessel voyage addition validation
-                ViewBag.AllowAdd = false;
+                ViewBag.AllowAdd = true;
 
                 ModelState.Clear();
                 return PartialViewCustom("/Voyage/_Search", model);
@@ -62,10 +62,11 @@ namespace WebTemplate.Controllers.Movement
         {
             try
             {
-                VesselMovement model = VesselMovementProcess.Get(ID ?? 0) ?? new VesselMovement();
+                VesselMovement model = VesselMovementProcess.Get(ID ?? 0, true) ?? new VesselMovement();
                 model.VesselID = VesselID ?? 0;
                 model._Vessel = VesselProcess.Instance.Get(VesselID);
                 model.VoyageStartDate = model.ID > 0 ? model.VoyageStartDate : DateTime.Now;
+                model.VesselMovementCrewList = VesselMovementProcess.GetMovementCrews(model.ID);
 
                 ModelState.Clear();
                 return PartialViewCustom("/Voyage/_Manage", model);
@@ -104,11 +105,10 @@ namespace WebTemplate.Controllers.Movement
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateOrUpdateVesselMovement(VesselMovement model, string crewlist)
+        public ActionResult CreateOrUpdateVesselMovement(VesselMovement model)
         {
             try
             {
-                model.VesselMovementCrewList = (List<VesselMovementCrews>)JsonConvert.DeserializeObject(crewlist, typeof(List<VesselMovementCrews>));
                 model = VesselMovementProcess.CreateOrUpdate(model, User.UserID);
 
                 foreach (var crew in model.VesselMovementCrewList.Where(m => m.Deleted))

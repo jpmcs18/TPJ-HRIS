@@ -31,7 +31,9 @@ namespace ProcessLayer.Processes
                 ETA = dr["ETA"].ToDateTime(),
                 ETD = dr["ETD"].ToNullableDateTime(),
                 VoyageDetails = dr["Voyage Details"].ToString(),
-                MovementStatusID = dr["Movement Status ID"].ToNullableInt() ?? 0 //1: Cancel, 2: Pending, 3: Checked, 4: Approved
+                MovementStatusID = dr["Movement Status ID"].ToNullableInt() ?? 0, //1: Cancel, 2: Pending, 3: Checked, 4: Approved
+                CreatedDate = dr["Created Date"].ToDateTime(),
+                ModifiedDate = dr["Modified Date"].ToNullableDateTime(),
             };
             if(!IsVesselMovementOnly)
             { 

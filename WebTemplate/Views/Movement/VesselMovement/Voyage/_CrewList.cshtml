@@ -1,4 +1,4 @@
-﻿@model List<ProcessLayer.Entities.VesselMovementCrews>
+﻿@model List<ProcessLayer.Entities.VesselCrews>
 @using WebTemplate.Extension
 
 @{
@@ -13,17 +13,16 @@
             <table id="VoyageCrewsTable" class="table table-stripped table-bordered" style="margin-bottom: 0px;">
                 <thead>
                     <tr>
-                        @*<th>Seq No.</th>*@
+                        @*<th>Seq No.</th>
                         <th>Rank</th>
-                        <th>Destination</th>
-                        <th>Employee No</th>
-                        <th>Employee</th>
-                        @*<th>Date Embarked</th>
-                        <th>Date Disembarked</th>
-                        <th>Basic Rate</th>*@
-                        @*<th>Daily Rate</th>
-                        <th>Remarks</th>*@
-                        <th>Action</th>
+                        <th>Designation</th>*@
+                        <th class="text-center">Employee No</th>
+                        <th class="text-left">Employee</th>
+                        <th class="text-right">Daily Rate</th>
+                        <th class="text-center">Date Embarked</th>
+                        <th class="text-center">Date Disembarked</th>
+                        @*<th>Remarks</th>*@
+                        <th class="text-center">Action</th>
                     </tr>
                 </thead>
                 <tbody id="VoyageCrewDiv">
@@ -36,28 +35,27 @@
                     {
                         for (var i = 0; i < Model.Count(); i++)
                         {
-                            <tr id="@Model[i].ID" class="voyageCrew Voyage-Crew-@Model[i].ID">
-                                <td>
+                            <tr id="@Model[i].CrewMovementID" class="voyageCrew Voyage-Crew-@Model[i].CrewMovementID">
+                                @*<td></td>
+                                <td></td>*@
+                                <td class="text-center">
                                     <input class="Personnel" type="hidden" name="model.VesselMovementCrewList[@i].PersonnelID" value="@Model[i].Personnel.ID" />
-                                    <input class="Deleted" type="hidden" name="model.VesselMovementCrewList[@i].Deleted" value="false" />
-                                </td>
-                                <td></td>
-                                <td>@Model[i].Personnel.EmployeeNo</td>
-                                <td style="text-align: left; text-transform: uppercase; display: flex;">
+                                    <input class="Deleted" type="hidden" name="model.VesselMovementCrewList[@i].Deleted" value="false" />@Model[i].Personnel.EmployeeNo</td>
+                                <td class="text-left" style="text-transform: uppercase; display: flex;">
                                     <img src="@(String.IsNullOrEmpty(Model[i].Personnel.ImagePath) ? "\\Images\\default.jpg": Model[i].Personnel.ImagePath)" style="height: 50px; width: 50px; min-height: 40px; max-w: 40px; border: 3px solid #eaeaea; margin-right: 10px; border-radius: 50px;" title="" />
                                     <div>
                                         <b class="text-primary">@Model[i].Personnel.FullName</b>
-                                        @Html.Raw(!String.IsNullOrEmpty(Model[i].Department.CheckIfNull().ShortDescription) ? $"<br /><text style='text-transform: uppercase; font-weight: 700;'>{Model[i].Department.CheckIfNull().ShortDescription}</text>" : "")
+                                        @*@Html.Raw(!String.IsNullOrEmpty(Model[i].Department.CheckIfNull().ShortDescription) ? $"<br /><text style='text-transform: uppercase; font-weight: 700;'>{Model[i].Department.CheckIfNull().ShortDescription}</text>" : "")*@
                                         @Html.Raw(!String.IsNullOrEmpty(Model[i].Position.CheckIfNull().Description) ? $"<br /><text style='text-transform: uppercase; font-weight: 700;'>{Model[i].Position.CheckIfNull().Description}</text>" : "")
                                         @Html.Raw(!String.IsNullOrEmpty(Model[i].Personnel.Email) ? $"<br /><text style='text-transform: uppercase;'><i class='fa fa-envelope'></i> {Model[i].Personnel.Email}</text>" : "")
                                         @Html.Raw(!String.IsNullOrEmpty(Model[i].Personnel.Address) ? $"<br /><text style='text-transform: uppercase;'><i class='fa fa-map-marker'></i> {Model[i].Personnel.Address}</text>" : "")
                                     </div>
                                 </td>
-                                    @*<td>@Model[i].DateEmbarked.CheckIfNull().ToString("MMM dd, yyyy")</td>
-                                    <td>@Model[i].DateDisembarked.CheckIfNull().ToString("MMM dd, yyyy")</td>
-                                <td>@Model[i].BasicRate.Value.ToString("#,###.00##")</td>*@
-                                @*<td>@Model[i].DailyRate.ToString("#,###.00##")</td>
-                                    <td>@Model[i].Remarks</td>*@
+                                <td class="text-right">@((Model[i].BasicRate ?? 0).ToString("#,###.00##"))</td>
+                                <td class="text-center">@Model[i].DateEmbarked.CheckIfNull().ToString("MMM dd, yyyy")</td>
+                                <td class="text-center">@Model[i].DateDisembarked.CheckIfNull().ToString("MMM dd, yyyy")</td>                                
+                                @*<td>@Model[i].BasicRate.Value.ToString("#,###.00##")</td>
+                                <td>@Model[i].Remarks</td>*@
                                 <td style="text-align: center;">
                                     @if (PageAccess.View)
                                     {

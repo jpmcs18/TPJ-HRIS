@@ -14,8 +14,9 @@ namespace WebTemplate
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                 "~/Scripts/jquery-3.5.1.min.js"
                 ,"~/Scripts/bootstrap.min.js"
-                ,"~/Scripts/app/inspinia.js"
-                ,"~/Scripts/custom/datetimepicker-custom.js"
+                , "~/Scripts/app/inspinia.js"
+                , "~/Scripts/custom/currency.js"
+                , "~/Scripts/custom/datetimepicker-custom.js"
                 ,"~/Scripts/plugins/autoNumeric/autoNumeric.js"
                 ,"~/Scripts/custom/custom-autonumeric.js"
                 ,"~/Scripts/custom/jquery_global_custom.js"

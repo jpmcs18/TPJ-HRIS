@@ -1,4 +1,5 @@
 ﻿@model ProcessLayer.Entities.VesselMovement
+@using WebTemplate.Extension
 
 @{
     var PageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("HumanResource/VesselMovement");
@@ -12,7 +13,7 @@
     <div class="modal-center vertical-align-center" style="margin: 0;">
         <div class="modal-content modal-width-100" style="height: 100%;">
             <div class="modal-header">
-                <h5 class="modal-title">@(Model.ID == 0 ? "New " : "Edit ") @Model._Vessel.Description Voyage</h5>
+                <h5 class="modal-title">@(Model.ID == 0 ? "New " : "Edit ") @Model._Vessel.CheckIfNull().Description Voyage</h5>
             </div>
             <div class="modal-body" style="height: inherit;">
                 @if (Model.ID > 0)
@@ -20,14 +21,14 @@
                     if (Model.MovementStatusID == 1)
                     {
                         @*<div class="md-stepper-horizontal orange">
-                    <div class="md-step active done5">
-                        <div class="md-step-circle">
-                        </div>
-                        <div class="md-step-title">Cancelled</div>
-                        <div class='md-step-optional'>@Model.Moveme, @String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.CancelledDate)</div>
-                        <div class="md-step-bar-left"></div>
-                    </div>
-                </div>*@
+                                <div class="md-step active done5">
+                                    <div class="md-step-circle">
+                                    </div>
+                                    <div class="md-step-title">Cancelled</div>
+                                    <div class='md-step-optional'>@Model.Moveme, @String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.CancelledDate)</div>
+                                    <div class="md-step-bar-left"></div>
+                                </div>
+                            </div>*@
                     }
                     else
                     {
@@ -56,50 +57,54 @@
                         </div>
                     }
                 }
-                <fieldset>
+                <fieldset id="VesselVoyageFieldSet">
                     <legend>Ruote</legend>
-                    @Html.HiddenFor(m => m.ID)
+                    @Html.Hidden("model.ID", Model.ID, new { @class = "form-control" })
+                    @Html.Hidden("model.VesselID", Model.VesselID, new { @class = "form-control" })
+                    @Html.Hidden("model.CreatedDate", Model.CreatedDate, new { @class = "form-control" })
+                    @Html.Hidden("model.CheckedDate", Model.CheckedDate, new { @class = "form-control" })
+                    @Html.Hidden("model.ApprovedDate", Model.ApprovedDate, new { @class = "form-control" })
                     <div class="row">
                         <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-3">
                             <label class="control-label">Start Date</label>
-                            @Html.TextBoxFor(m => m.VoyageStartDate, String.Format("{0:yyyy'-'MM'-'dd}", Model.VoyageStartDate), new { @type = "date", @class = "form-control voyage-main required" })
+                            @Html.TextBox("model.VoyageStartDate", $"{Model.VoyageStartDate:yyyy'-'MM'-'dd}", new { @type = "date", @class = "form-control voyage-main required" })
                         </div>
                         <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-3">
                             <label class="control-label">End Date</label>
-                            @Html.TextBoxFor(m => m.VoyageEndDate, String.Format("{0:yyyy'-'MM'-'dd}", Model.VoyageEndDate ?? DateTime.Now), new { @type = "date", @class = "form-control voyage-main" })
+                            @Html.TextBox("model.VoyageEndDate", $"{Model.VoyageEndDate ?? DateTime.Now:yyyy'-'MM'-'dd}", new { @type = "date", @class = "form-control voyage-main" })
                         </div>
                         @*<div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-3">
-                    <label class="control-label"></label>
-                    @Html.DropDownList("VoyageStatusID", new SelectList(absenceSubTypes, "Key", "Value", 1), new { @class = "form-control" })
-                </div>*@
+                                <label class="control-label"></label>
+                                @Html.DropDownList("VoyageStatusID", new SelectList(absenceSubTypes, "Key", "Value", 1), new { @class = "form-control" })
+                            </div>*@
                         <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-3">
                             <label class="control-label">Origin</label>
-                            @Html.DropDownListFor(m => m.OriginLocationID, new SelectList(locations, "ID", "Description", Model.OriginLocationID), new { @class = "form-control required" })
+                            @Html.DropDownList("model.OriginLocationID", new SelectList(locations, "ID", "Description", Model.OriginLocationID), new { @class = "form-control required" })
                         </div>
                         <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-3">
                             <label class="control-label">ETD</label>
-                            @Html.TextBoxFor(m => m.ETD, String.Format("{0:yyyy'-'MM'-'dd}", Model.ETD ?? DateTime.Now), new { @type = "date", @class = "form-control voyage-main" })
+                            @Html.TextBox("model.ETD", $"{Model.ETD:yyyy'-'MM'-'dd}", new { @type = "date", @class = "form-control voyage-main required" })
                         </div>
                         <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-3">
                             <label class="control-label">Destination</label>
-                            @Html.DropDownListFor(m => m.DestinationLocationID, new SelectList(locations, "ID", "Description", Model.DestinationLocationID), new { @class = "form-control" })
+                            @Html.DropDownList("model.DestinationLocationID", new SelectList(locations, "ID", "Description", Model.DestinationLocationID), new { @class = "form-control" })
                         </div>
                         <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-3">
                             <label class="control-label">ETA</label>
-                            @Html.TextBoxFor(m => m.ETA, String.Format("{0:yyyy'-'MM'-'dd}", Model.ETA ?? DateTime.Now), new { @type = "date", @class = "form-control voyage-main required" })
+                            @Html.TextBox("model.ETA", $"{Model.ETA:yyyy'-'MM'-'dd}", new { @type = "date", @class = "form-control voyage-main required" })
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <label class="control-label">Details</label>
-                            @Html.TextAreaFor(m => m.VoyageDetails, new { @class = "form-control voyage-main", @rows = "4", @placeholder = "Details..." })
+                            @Html.TextArea("model.VoyageDetails", new { @class = "form-control voyage-main", @rows = "4", @placeholder = "Details..." })
                         </div>
                     </div>
-            </fieldset>
+                </fieldset>
                 @if (Model.ID > 0)
                 {
                     @Html.Partial("~/Views/Movement/VesselMovement/Voyage/_CrewSearch.cshtml", Model)
-                    @Html.Partial("~/Views/Movement/VesselMovement/Voyage/_CrewList.cshtml", Model.VesselMovementCrewList)
+                    @Html.Partial("~/Views/Movement/VesselMovement/Voyage/_VesselMovement.cshtml", Model.VesselMovementCrewList)
                 }
             </div>
             <div class="modal-footer" style=" bottom: 0; position: absolute; width: 100%;">

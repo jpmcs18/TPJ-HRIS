@@ -10450,6 +10450,30 @@ div#form_search {
 table.table-striped thead tr th {
   background-color: #f9f9f9 !important;
 }
+#VoyageCrewsTable tbody tr td input.form-control {
+  /* Chrome, Safari, Edge, Opera */
+  /* Firefox */
+}
+#VoyageCrewsTable tbody tr td input.form-control::-webkit-outer-spin-button,
+#VoyageCrewsTable tbody tr td input.form-control::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+#VoyageCrewsTable tbody tr td input.form-control[type=number] {
+  -moz-appearance: textfield;
+}
+#VoyageCrewsTable tbody tr td input.form-control.display[disabled="disabled"] {
+  cursor: text;
+  border: 0 !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  background-color: transparent !important;
+  /*padding: 0px;*/
+}
+#VoyageCrewsTable tbody tr td.rate .rate-group {
+  display: flex;
+  gap: 0.5em;
+}
 body > .sk-spinner {
   display: none;
 }

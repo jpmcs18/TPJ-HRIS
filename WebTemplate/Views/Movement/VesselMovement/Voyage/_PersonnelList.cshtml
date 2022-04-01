@@ -33,18 +33,19 @@
                 {
                     <tr id="@Model[i].ID" class="personnel Personnel-@Model[i].ID">
                         <td class="hidden">
-                            <input class="ID" type="hidden" name="model.CrewList[@i].ID" value="0" />
-                            <input class="ApproverID" type="hidden" name="model.CrewList[@i].ApproverID" value="@Model[i].ID" />
-                            <input class="DepartmentID" type="hidden" name="model.CrewList[@i].DepartmentID" value="0" />
-                            <input class="PositionID" type="hidden" name="model.CrewList[@i].PositionID" value="0" /> @*@(Model[i]._Positions.CheckIfNull().Last().CheckIfNull().PositionID ?? Model[i]._Positions.CheckIfNull().Last()._Position.CheckIfNull().ID)*@
-                            @*<input class="Sequence" type="hidden" name="Sequence" value="@Model[i].Sequence" />*@
-                            <input class="Sequence" type="hidden" name="model.CrewList[@i].Sequence" value="0" />
-                            <input class="DailyRate" type="hidden" name="model.CrewList[@i].DailyRate" value="0.00" />
-                            <input class="Deleted" type="hidden" name="model.CrewList[@i].Deleted" value="false" />
-                            <input class="RowIndex" type="hidden" value="@i" />
+                            <input class="form-control ID" type="hidden" name="ID" value="0" />
+                            <input class="form-control" type="hidden" name="PersonnelID" value="@Model[i].ID" />
+                            <input class="form-control" type="hidden" name="ApproverID" value="@Model[i].ID" />
+                            <input class="form-control" type="hidden" name="DepartmentID" value="0" />
+                            <input class="form-control" type="hidden" name="PositionID" value="0" /> @*@(Model[i]._Positions.CheckIfNull().Last().CheckIfNull().PositionID ?? Model[i]._Positions.CheckIfNull().Last()._Position.CheckIfNull().ID)*@
+                            @*<input class="form-control" type="hidden" name="Sequence" value="@Model[i].Sequence" />*@
+                            <input class="form-control" type="hidden" name="Sequence" value="0" />
+                            <input class="form-control" type="hidden" name="DailyRate" value="0.00" />
+                            <input class="form-control Deleted" type="hidden" name="Deleted" value="false" />
+                            <input class="form-control" type="hidden" value="@i" />
                         </td>
                         <td style="text-align: left; text-transform: uppercase; display: flex;">
-                            <img src="@(String.IsNullOrEmpty(Model[i].ImagePath) ? "\\Images\\default.jpg": Model[i].ImagePath)" style="height: 50px; width: 50px; min-height: 40px; max-w: 40px; border: 3px solid #eaeaea; margin-right: 10px; border-radius: 50px;" title="" />
+                            <img src="@(String.IsNullOrEmpty(Model[i].ImagePath) ? "\\Images\\default.jpg": Model[i].ImagePath)" style="height: 50px; width: 50px; min-height: 40px; max-width: 40px; border: 3px solid #eaeaea; margin-right: 10px; border-radius: 50px;" title="" />
                             <div>
                                 <b class="text-primary">@String.Format("{0}, {1} {2}", Model[i].LastName, Model[i].FirstName, Model[i].MiddleName)</b>
                                 @Html.Raw(Model[i]._Departments.Any() ? $"<br /><text style='text-transform: uppercase; font-weight: 700;'>{Model[i]._Departments.Select(x => x._Department.Description).FirstOrDefault()}</text>" : "")

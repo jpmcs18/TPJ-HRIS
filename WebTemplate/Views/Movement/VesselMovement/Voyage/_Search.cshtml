@@ -75,16 +75,16 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if (ViewBag.AllowAdd ?? false || Model.VesselMovements.Count() == 0)
+                    @if (ViewBag.AllowAdd ?? false)
                     {
+                        <tr>
+                            <td colspan="20" class="text-center">
+                                <div class="col-xs-12 col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6 col-lg-offset-4 col-lg-4">
+                                    <button id="EditOrNewVesselVoyage" type="button" class="btn btn-primary btn-w-m" style="width: 100%;" name="EditOrNewVesselVoyage" value="0"><i class="fa fa-plus"></i> New Voyage</button>
+                                </div>
+                            </td>
+                        </tr>
                     }
-                    <tr>
-                        <td colspan="20" class="text-center">
-                            <div class="col-xs-12 col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6 col-lg-offset-4 col-lg-4">
-                                <button id="EditOrNewVesselVoyage" type="button" class="btn btn-primary btn-w-m" style="width: 100%;" name="EditOrNewVesselVoyage" value="0"><i class="fa fa-plus"></i> New Voyage</button>
-                            </div>
-                        </td>
-                    </tr>
                     @if (Model.VesselMovements.Count() == 0)
                     {
                         <tr><td class="text-center" colspan="10">No records...</td></tr>
