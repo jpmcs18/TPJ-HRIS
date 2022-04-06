@@ -36,6 +36,7 @@ namespace ProcessLayer.Processes
                 ModifiedDate = dr["Modified Date"].ToNullableDateTime(),
 
                 CreatedBy = dr["Created By"].ToInt(),
+                ModifiedBy = dr["Created By"].ToInt(),
                 //Checker = dr["Checker"].ToString(),
                 CheckedDate = dr["Checked Date"].ToNullableDateTime(),
                 CheckedBy = dr["Checked By"].ToNullableInt(),
@@ -51,6 +52,7 @@ namespace ProcessLayer.Processes
                 v.VesselMovementCrewList = GetMovementCrews(v.ID);
             }
             v.Creator = LookupProcess.GetUser(v.CreatedBy);
+            v.Modifier = LookupProcess.GetUser(v.ModifiedBy);
             v.Checker = LookupProcess.GetUser(v.CheckedBy);
             v.Approver = LookupProcess.GetUser(v.ApprovedBy);
 

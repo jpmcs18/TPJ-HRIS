@@ -55,7 +55,7 @@
     </form>
 
     <form class="">
-        <fieldset>
+        <fieldset style="max-height: 500px; overflow-y: auto;">
             <legend>Voyages</legend>
             <table class="table table-stripped table-hover table-bordered" style="margin-bottom: 0px;">
                 <thead>
@@ -70,7 +70,9 @@
                         <th>Details</th>
                         <th>Created</th>
                         <th>Modified</th>
+                        <th>Checker</th>
                         <th>Approved</th>*@
+                        <th>Last Modified</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -104,9 +106,41 @@
                                 <td>@movement.VesselMovementCrewList.Count()</td><td>@movement.ETD</td>
                     <td>@movement.ETA</td>
                     <td>@movement.VoyageDetails</td>
-                    <td>@movement.Creator<br />@movement.CreatedDate.CheckIfNull().ToString("MMM dd, yyyy hh:mm:ss")</td>
-                    <td>@movement.Modifier<br />@movement.ModifiedDate.CheckIfNull().ToString("MMM dd, yyyy hh:mm:ss")</td>
-                    <td>@movement.Approver<br />@movement.ApprovedDate.CheckIfNull().ToString("MMM dd, yyyy hh:mm:ss")</td>*@
+                                <td>@Html.Raw(movement.CreatedDate != null ? $"{movement.Creator}<br />{movement.CreatedDate.CheckIfNull().ToString("MMM dd, yyyy hh:mm:ss")}" : "")</td>
+                                <td>@Html.Raw(movement.ModifiedDate != null ? $"{movement.Modifier}<br />{movement.ModifiedDate.CheckIfNull().ToString("MMM dd, yyyy hh:mm:ss")}" : "")</td>
+                                <td>@Html.Raw(movement.CheckedDate != null ? $"{movement.Checker}<br />{movement.CheckedDate.CheckIfNull().ToString("MMM dd, yyyy hh:mm:ss")}" : "")</td>
+                                <td>@Html.Raw(movement.ApprovedDate != null ? $"{movement.Approver}<br />{movement.ApprovedDate.CheckIfNull().ToString("MMM dd, yyyy hh:mm:ss")}" : "")</td>*@
+                                <td>
+                                    @{
+                                        if (movement.ApprovedDate != null)
+                                        {
+                                            <span class="label label-primary">Approved</span><br />
+                                            @movement.Approver<br />
+                                            @movement.ApprovedDate.CheckIfNull().ToString("MMM dd, yyyy hh:mm:ss");
+                                        }
+                                        else if (movement.CheckedDate != null)
+                                        {
+                                            <span class="label label-info">Checked</span><br />
+                                            @movement.Checker<br />
+                                            @movement.CheckedDate.CheckIfNull().ToString("MMM dd, yyyy hh:mm:ss");
+                                        }
+                                        else {
+                                            if (movement.ModifiedDate != null)
+                                            {
+                                                <span class="label label-default">Modified</span><br />
+                                                @movement.Modifier<br />
+                                                @movement.ModifiedDate.CheckIfNull().ToString("MMM dd, yyyy hh:mm:ss");
+                                            }
+                                            else
+                                            {
+                                                <span class="label label-default">Created</span><br />
+                                                @movement.Creator<br />
+                                                @movement.CreatedDate.CheckIfNull().ToString("MMM dd, yyyy hh:mm:ss");
+                                            }
+                                        }
+
+                                    }
+                                </td>
                                 <td>
                                     <div class="btn-group">
                                         @if (PageAccess.Delete)
