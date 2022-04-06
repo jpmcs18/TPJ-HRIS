@@ -4,7 +4,7 @@
 @functions{
     string getTab(int tabNo, List<PersonnelLicense> licenseList, bool isActive = false)
     {
-        string element = $"<div id='license-tab-{tabNo}' class='tab-pane{(isActive ? " active" : "")}'><div class='panel-body' style='padding: 0px; '><table class='table table-stripped table-bordered' style='margin-bottom: 0px;'><tbody>";
+        string element = $"<div id='license-tab-{tabNo}' class='tab-pane{(isActive ? " active" : "")} license-tab'><div class='panel-body' style='padding: 0px; '><table class='table table-stripped table-bordered' style='margin-bottom: 0px;'><tbody>";
 
         if (licenseList.Count() > 0)
         {
@@ -51,51 +51,54 @@
         border: .1em solid #00c9b6 !important;
         cursor: pointer;
     }
-    .month-header i.fa-chevron-up {
-        display: none;
-    }
-    .month-header i.fa-chevron-down {
-        display: block;
-    }
 
-    .month-header.open {
-        border-bottom: 0 !important;
-    }
-    .month-header.open i.fa-chevron-up {
-        display: block !important;
-    }
-    .month-header.open i.fa-chevron-down {
-        display: none !important;
-    }
+        .month-header i.fa-chevron-up {
+            display: none;
+        }
+
+        .month-header i.fa-chevron-down {
+            display: block;
+        }
+
+        .month-header.open {
+            border-bottom: 0 !important;
+        }
+
+            .month-header.open i.fa-chevron-up {
+                display: block !important;
+            }
+
+            .month-header.open i.fa-chevron-down {
+                display: none !important;
+            }
 
     tr.month-body {
         border-left: .1em solid #00c9b6 !important;
         border-right: .1em solid #00c9b6 !important;
     }
-    tr.month-body:hover {
-        background-color: #eee !important;
-    }
 
-    tr.month-body td {
-        text-align: left;
-        padding: 5px;
-        border: 1px solid #eee;
-    }
+        tr.month-body:hover {
+            background-color: #eee !important;
+        }
+
+        tr.month-body td {
+            text-align: left;
+            padding: 5px;
+            border: 1px solid #eee;
+        }
 </style>
 
-<div class="license-container">
-    <div class="tabs-container">
-        <ul class="nav nav-tabs">
-            @*<li class=""><a data-toggle="tab" href="#license-tab-1">Recent</a></li>*@
-            <li class=""><a data-toggle="tab" href="#license-tab-1">Expired</a></li>
-            <li class="active"><a data-toggle="tab" href="#license-tab-2">Upcoming</a></li>
-            <li class=""><a data-toggle="tab" href="#license-tab-3">@(DateTime.Now.Year + 1)</a></li>
-        </ul>
-        <div class="tab-content">
-            @Html.Raw(getTab(1, Model.ExpiringLicensesRecent))
-            @Html.Raw(getTab(2, Model.ExpiringLicensesToday, true))
-            @Html.Raw(getTab(3, Model.ExpiringLicensesUpcoming))
-        </div>
+<div class="tabs-container license-container">
+    <ul class="nav nav-tabs license-tabs">
+        @*<li class=""><a data-toggle="tab" href="#license-tab-1">Recent</a></li>*@
+        <li class=""><a data-toggle="tab" href="#license-tab-1">Expired</a></li>
+        <li class="active"><a data-toggle="tab" href="#license-tab-2">Upcoming</a></li>
+        <li class=""><a data-toggle="tab" href="#license-tab-3">@(DateTime.Now.Year + 1)</a></li>
+    </ul>
+    <div class="tab-content license-tab-content">
+        @Html.Raw(getTab(1, Model.ExpiringLicensesRecent))
+        @Html.Raw(getTab(2, Model.ExpiringLicensesToday, true))
+        @Html.Raw(getTab(3, Model.ExpiringLicensesUpcoming))
     </div>
 </div>
 

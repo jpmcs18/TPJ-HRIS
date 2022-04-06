@@ -1,5 +1,12 @@
 ﻿@model WebTemplate.Models.Personnel.Index
+@using ProcessLayer.Processes;
 @using ProcessLayer.Entities;
+
+@*@{ 
+    var BirthdayCelebrantsRecent = PersonnelProcess.GetBirthdayCelebrantsThisMonthRecent().ToList();
+    var BirthdayCelebrantsToday = PersonnelProcess.GetBirthdayCelebrantsThisDay().ToList();
+    var BirthdayCelebrantsUpcoming = PersonnelProcess.GetBirthdayCelebrantsThisMonthUpcoming().ToList();
+}*@
 
 @functions{
     public static Int32 GetAge(DateTime birthdate)
@@ -15,7 +22,7 @@
 
     string getTab(int tabNo, List<Personnel> licenseList, bool isActive = false)
     {
-        string element = $"<div id='bday-tab-{tabNo}' class='tab-pane{(isActive ? " active" : "")}'><div class='panel-body' style='padding: 0px; '><table class='table table-stripped table-bordered' style='margin-bottom: 0px;'><tbody>";
+        string element = $"<div id='bday-tab-{tabNo}' class='tab-pane{(isActive ? " active" : "")} bday-tab'><div class='panel-body' style='padding: 0px; '><table class='table table-stripped table-bordered' style='margin-bottom: 0px;'><tbody>";
 
         if (licenseList.Count() > 0)
         {
@@ -60,143 +67,15 @@
             <h3 class="" style="text-align: center; margin: 0px -15px;"><i class="fa fa-birthday-cake" style="font-size: 20px;"></i>&nbsp;&nbsp;&nbsp;Birthday Celebrants</h3>
         </a>
     </div>*@
-<div class="tabs-container">
-    <ul class="nav nav-tabs">
+<div class="tabs-container bday-container">
+    <ul class="nav nav-tabs bday-tabs">
         <li class="active"><a data-toggle="tab" href="#bday-tab-1">Today</a></li>
         <li class=""><a data-toggle="tab" href="#bday-tab-2">Recent</a></li>
         <li class=""><a data-toggle="tab" href="#bday-tab-3">Upcoming</a></li>
     </ul>
-    <div class="tab-content">
+    <div class="tab-content bday-tab-content">
         @Html.Raw(getTab(1, Model.BirthdayCelebrantsToday, true))
         @Html.Raw(getTab(2, Model.BirthdayCelebrantsRecent))
         @Html.Raw(getTab(3, Model.BirthdayCelebrantsUpcoming))
-        @*<div id="bday-tab-1" class="tab-pane active">
-            <div class="panel-body" style="padding: 0px !important ">
-                <table class="table table-stripped table-bordered" style="margin-bottom: 0px;">
-                    <tbody>
-                        @if (Model.BirthdayCelebrantsToday.Count() > 0)
-                        {
-                            for (int i = 0; i < Model.BirthdayCelebrantsToday.Count(); i++)
-                            {
-                                String fullname = String.Format("{0}, {1} {2}", Model.BirthdayCelebrantsToday[i].LastName, Model.BirthdayCelebrantsToday[i].FirstName, Model.BirthdayCelebrantsToday[i].MiddleName);
-                                String searchName = String.Format("{0}{1}{2}", Model.BirthdayCelebrantsToday[i].FirstName, Model.BirthdayCelebrantsToday[i].MiddleName, Model.BirthdayCelebrantsToday[i].LastName);
-
-                                if (i > 0)
-                                {
-                                    if (Model.BirthdayCelebrantsToday[i - 1].BirthDate.Value.Day != Model.BirthdayCelebrantsToday[i].BirthDate.Value.Day)
-                                    {
-                                        <tr class="list-title" style=" background-color: #ddd;"><td>@(new DateTime(DateTime.Now.Year, Model.BirthdayCelebrantsToday[i].BirthDate.Value.Month, Model.BirthdayCelebrantsToday[i].BirthDate.Value.Day).ToString("dddd, MMMM dd"))</td></tr>
-                                    }
-                                }
-                                else
-                                {
-                                    <tr class="list-title" style=" background-color: #ddd;"><td>@(new DateTime(DateTime.Now.Year, Model.BirthdayCelebrantsToday[i].BirthDate.Value.Month, Model.BirthdayCelebrantsToday[i].BirthDate.Value.Day).ToString("dddd, MMMM dd"))</td></tr>
-                                }
-
-                                <tr title="@fullname" onclick="window.open('/HumanResource/Personnel/Index?Filter=@searchName', '_blank')" style="">
-                                    <td style="text-align: left; padding: 5px; border: 1px solid #eee;">
-                                        <input type="hidden" name="PersonnelID" value="@Model.BirthdayCelebrantsToday[i].ID" />
-                                        <div style="float: left; text-transform: uppercase;">
-                                            <img src="@(String.IsNullOrEmpty(Model.BirthdayCelebrantsToday[i].ImagePath) ? "\\Images\\default.jpg" : Model.BirthdayCelebrantsToday[i].ImagePath)" style="height: 35px; width: 35px; min-height: 35px; min-width: 35px; border: 3px solid #eaeaea; margin-right: 10px; border-radius: 50px;" />
-                                        </div>
-                                        <div style="line-height: 35px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                            @fullname
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
-                        }
-                        else
-                        {
-                            <tr><td style="text-align: center;">No celebrants today...</td></tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div id="bday-tab-2" class="tab-pane">
-            <div class="panel-body" style="padding: 0px !important ">
-                <table class="table table-stripped table-bordered" style="margin-bottom: 0px;">
-                    <tbody>
-                        @if (Model.BirthdayCelebrantsRecent.Count() > 0)
-                        {
-                            for (int i = 0; i < Model.BirthdayCelebrantsRecent.Count(); i++)
-                            {
-                                String fullname = String.Format("{0}, {1} {2}", Model.BirthdayCelebrantsRecent[i].LastName, Model.BirthdayCelebrantsRecent[i].FirstName, Model.BirthdayCelebrantsRecent[i].MiddleName);
-                                String searchName = String.Format("{0}{1}{2}", Model.BirthdayCelebrantsRecent[i].FirstName, Model.BirthdayCelebrantsRecent[i].MiddleName, Model.BirthdayCelebrantsRecent[i].LastName);
-
-                                if (i > 0)
-                                {
-                                    if (Model.BirthdayCelebrantsRecent[i - 1].BirthDate.Value.Day != Model.BirthdayCelebrantsRecent[i].BirthDate.Value.Day)
-                                    {
-                                        <tr style=" background-color: #ddd;"><td>@(new DateTime(DateTime.Now.Year, Model.BirthdayCelebrantsRecent[i].BirthDate.Value.Month, Model.BirthdayCelebrantsRecent[i].BirthDate.Value.Day).ToString("dddd, MMMM dd"))</td></tr>
-                                    }
-                                }
-                                else
-                                {
-                                    <tr style=" background-color: #ddd;"><td>@(new DateTime(DateTime.Now.Year, Model.BirthdayCelebrantsRecent[i].BirthDate.Value.Month, Model.BirthdayCelebrantsRecent[i].BirthDate.Value.Day).ToString("dddd, MMMM dd"))</td></tr>
-                                }
-                                <tr title="@fullname" onclick="window.open('/HumanResource/Personnel/Index?Filter=@searchName', '_blank')">
-                                    <td style="text-align: left; padding: 5px; border: 1px solid #eee; text-transform: uppercase;">
-                                        <div style="float: left;">
-                                            <img src="@(String.IsNullOrEmpty(Model.BirthdayCelebrantsRecent[i].ImagePath) ? "\\Images\\default.jpg" : Model.BirthdayCelebrantsRecent[i].ImagePath)" style="height: 35px; width: 35px; min-height: 35px; min-width: 35px; border: 3px solid #eaeaea; margin-right: 10px; border-radius: 50px;" />
-                                        </div>
-                                        <div style="line-height: 35px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                            @fullname
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
-                        }
-                        else
-                        {
-                            <tr><td style="text-align: center;">No recent celebrants...</td></tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div id="bday-tab-3" class="tab-pane">
-            <div class="panel-body" style="padding: 0px !important ">
-                <table class="table table-stripped table-bordered" style="margin-bottom: 0px;">
-                    <tbody>
-                        @if (Model.BirthdayCelebrantsUpcoming.Count() > 0)
-                        {
-                            for (int i = 0; i < Model.BirthdayCelebrantsUpcoming.Count(); i++)
-                            {
-                                String fullname = String.Format("{0}, {1} {2}", Model.BirthdayCelebrantsUpcoming[i].LastName, Model.BirthdayCelebrantsUpcoming[i].FirstName, Model.BirthdayCelebrantsUpcoming[i].MiddleName);
-                                String searchName = String.Format("{0}{1}{2}", Model.BirthdayCelebrantsUpcoming[i].FirstName, Model.BirthdayCelebrantsUpcoming[i].MiddleName, Model.BirthdayCelebrantsUpcoming[i].LastName);
-
-                                if (i > 0)
-                                {
-                                    if (Model.BirthdayCelebrantsUpcoming[i - 1].BirthDate.Value.Day != Model.BirthdayCelebrantsUpcoming[i].BirthDate.Value.Day)
-                                    {
-                                        <tr style=" background-color: #ddd;"><td>@(new DateTime(DateTime.Now.Year, Model.BirthdayCelebrantsUpcoming[i].BirthDate.Value.Month, Model.BirthdayCelebrantsUpcoming[i].BirthDate.Value.Day).ToString("dddd, MMMM dd"))</td></tr>
-                                    }
-                                }
-                                else
-                                {
-                                    <tr style=" background-color: #ddd;"><td>@(new DateTime(DateTime.Now.Year, Model.BirthdayCelebrantsUpcoming[i].BirthDate.Value.Month, Model.BirthdayCelebrantsUpcoming[i].BirthDate.Value.Day).ToString("dddd, MMMM dd"))</td></tr>
-                                }
-                                <tr title="@fullname" onclick="window.open('/HumanResource/Personnel/Index?Filter=@searchName', '_blank')">
-                                    <td style="text-align: left; padding: 5px; border: 1px solid #eee; text-transform: uppercase;">
-                                        <div style="float: left;">
-                                            <img src="@(String.IsNullOrEmpty(Model.BirthdayCelebrantsUpcoming[i].ImagePath) ? "\\Images\\default.jpg" : Model.BirthdayCelebrantsUpcoming[i].ImagePath)" style="height: 35px; width: 35px; min-height: 35px; min-width: 35px; border: 3px solid #eaeaea; margin-right: 10px; border-radius: 50px;" />
-                                        </div>
-                                        <div style="line-height: 35px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                            @fullname
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
-                        }
-                        else
-                        {
-                            <tr><td style="text-align: center;">No upcoming celebrants...</td></tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>*@
     </div>
 </div>

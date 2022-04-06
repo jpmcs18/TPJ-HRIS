@@ -3,6 +3,8 @@
 
 @{
     var PageAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("HumanResource/VesselMovement");
+    var CheckAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("HumanResource/VesselMovement");
+    var ApproveAccess = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages).GetPage("HumanResource/VesselMovement");
 
     var movementTypes = ProcessLayer.Processes.LookupProcess.GetVesselMovementType().Where(m => m.ID != Model.MovementStatusID);
     //var voyageTypes = ProcessLayer.Processes.LookupProcess.GetVesse
@@ -40,20 +42,29 @@
                                 <div class="md-step-bar-left"></div>
                                 <div class="md-step-bar-right"></div>
                             </div>
-                            <div class="md-step @(Model.MovementStatusID >= 3 ? "active " : "")done2">
-                                <div class="md-step-circle"></div>
-                                <div class="md-step-title">Checked</div>
-                                <div class='md-step-optional'>@Html.Raw(Model.MovementStatusID >= 2 ? Model.Checker : "&nbsp;"), @Html.Raw(Model.MovementStatusID >= 2 ? String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.CheckedDate) + "" : "&nbsp;")</div>
-                                <div class="md-step-bar-left"></div>
-                                <div class="md-step-bar-right"></div>
-                            </div>
-                            <div class="md-step @(Model.MovementStatusID >= 4 ? "active " : "")done4">
-                                <div class="md-step-circle"></div>
-                                <div class="md-step-title">Approved</div>
-                                <div class='md-step-optional'>@Html.Raw(Model.MovementStatusID >= 4 ? Model.Approver : "&nbsp;"), @Html.Raw(Model.MovementStatusID >= 4 ? String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.ApprovedDate) + "" : "&nbsp;")</div>
-                                <div class="md-step-bar-left"></div>
-                                <div class="md-step-bar-right"></div>
-                            </div>
+                            @if (CheckAccess.Approve && Model.CheckedDate.CheckIfNull() != null) { 
+                                <div class="md-step @(Model.MovementStatusID >= 3 ? "active " : "")done2">
+                                    <div class="md-step-circle"></div>
+                                    <div class="md-step-title">Checked</div>
+                                    <div class='md-step-optional'>@Html.Raw(Model.MovementStatusID >= 2 ? Model.Checker : "&nbsp;"), @Html.Raw(Model.MovementStatusID >= 2 ? String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.CheckedDate) + "" : "&nbsp;")</div>
+                                    <div class="md-step-bar-left"></div>
+                                    <div class="md-step-bar-right"></div>
+                                </div>
+                            }
+                            else
+                            {
+                                <button type="button">Check</button>
+                            }
+                            @if (ApproveAccess.Approve || Model.ApprovedDate.CheckIfNull() != null)
+                            {
+                                <div class="md-step @(Model.MovementStatusID >= 4 ? "active " : "")done4">
+                                    <div class="md-step-circle"></div>
+                                    <div class="md-step-title">Approved</div>
+                                    <div class='md-step-optional'>@Html.Raw(Model.MovementStatusID >= 4 ? Model.Approver : "&nbsp;"), @Html.Raw(Model.MovementStatusID >= 4 ? String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.ApprovedDate) + "" : "&nbsp;")</div>
+                                    <div class="md-step-bar-left"></div>
+                                    <div class="md-step-bar-right"></div>
+                                </div>
+                            }
                         </div>
                     }
                 }
