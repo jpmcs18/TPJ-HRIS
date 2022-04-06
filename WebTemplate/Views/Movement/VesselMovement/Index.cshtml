@@ -208,17 +208,17 @@
         }
 
         function ViewVesselMovement(vesselid) {
-            var formdata = new FormData();
-            formdata.append('VesselID', vesselid);
+            var formData = new FormData();
+            formData.append('VesselID', vesselid);
             $('#VesselMovementParameters *').each(function () {
                 if ($(this).attr('name'))
-                    formdata.append($(this).attr('name'), $(this).val());
+                    formData.append($(this).attr('name'), $(this).val());
             });
-            formdata.append('__RequestVerificationToken', $('@Html.AntiForgeryToken()').val());
+            formData.append('__RequestVerificationToken', $('@Html.AntiForgeryToken()').val());
 
             $.ajax({
                 url: '@Url.Action("VesselMovementManagement", "VesselMovement")',
-                data: formdata,
+                data: formData,
                 type: 'POST',
                 cache: false,
                 contentType: false,
@@ -249,20 +249,20 @@
         }
 
     function ViewVesselVoyage(vesselid) {
-        var formdata = new FormData();
-        formdata.append('VesselID', vesselid);
+        var formData = new FormData();
+        formData.append('VesselID', vesselid);
         if ($('#VesselVoyageParameters').is(':visible')) {
             $('#VesselVoyageParameters *').each(function () {
                 if ($(this).attr('name'))
-                    formdata.append($(this).attr('name'), $(this).val());
+                    formData.append($(this).attr('name'), $(this).val());
             });
         } else {
-            formdata.append('__RequestVerificationToken', $('@Html.AntiForgeryToken()').val());
+            formData.append('__RequestVerificationToken', $('@Html.AntiForgeryToken()').val());
         }
 
         $.ajax({
             url: '@Url.Action("VesselMovementManagement", "VesselMovement")',
-            data: formdata,
+            data: formData,
             type: 'POST',
             cache: false,
             contentType: false,
@@ -280,6 +280,46 @@
                         $('#VesselVoyage').html(response).show();
                         $('#VesselVoyage #EditOrNewVesselVoyage').off('click').on('click', EditOrNewVesselVoyage);
                         $('#VesselVoyage #ViewVoyageDetails').off('click').on('click', EditOrNewVesselVoyage);
+                    } catch { }
+                } else {
+                    toastr.error(response.res);
+                }
+            },
+            error: function() {
+                toastr.error('AJAX backend error', 'An error has occured.');
+            }
+        });
+    }
+
+    function CheckApproveVoyage(action) {
+        //var action = $(this).attr('action');
+        var url = action == 0 ? '@Url.Action("ApprovedMovement", "VesselMovement")' : '@Url.Action("CheckedMovement", "VesselMovement")';
+        var id = $('#VesselVoyageFieldSet input[id="model_ID"]').val();
+        var formData = new FormData();
+        formData.append('id', id);
+        formData.append('__RequestVerificationToken', $('@Html.AntiForgeryToken()').val());
+
+        $.ajax({
+            url: url,
+            data: formData,
+            type: 'POST',
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                ShowLoadingScreen();
+            },
+            complete: function() {
+                RemoveLoadingScreen();
+            },
+            success: function (response) {
+                if (response.msg == null) {
+                    try {
+                        $('#ManageVoyageModal').html(response).appendTo("body").modal('show');
+                        ManageVoyageEvents();
+
+                        $_crewIdsArr = [];
+                        toastr.success('Success!', (action == 0 ? 'Approve' : 'Check') + ' Voyage');
                     } catch { }
                 } else {
                     toastr.error(response.res);
@@ -393,15 +433,15 @@
 
     function EditOrNewVesselVoyage() {
         if ($('#VesselVoyage #NewVoyageDiv').length == 0) {
-            var formdata = new FormData();
-            formdata.append('ID', $(this).val());
+            var formData = new FormData();
+            formData.append('ID', $(this).val());
             $('#VesselVoyageParameters *').each(function () {
                 if ($(this).attr('name'))
-                    formdata.append($(this).attr('name'), $(this).val());
+                    formData.append($(this).attr('name'), $(this).val());
             });
 
             $.ajax({
-                data: formdata,
+                data: formData,
                 type: 'POST',
                 url: '@Url.Action("EditOrNewVesselVoyage", "VesselMovement")',
                 cache: false,
@@ -521,13 +561,13 @@
         function ViewCrews(vesselID) {
             event.stopPropagation();
 
-            var formdata = new FormData();
-            formdata.append('VesselID', vesselID);
-            formdata.append('__RequestVerificationToken', $('@Html.AntiForgeryToken()').val());
+            var formData = new FormData();
+            formData.append('VesselID', vesselID);
+            formData.append('__RequestVerificationToken', $('@Html.AntiForgeryToken()').val());
 
             $.ajax({
                 url: '@Url.Action("GetVesselCrews", "VesselMovement")',
-                data: formdata,
+                data: formData,
                 type: 'POST',
                 cache: false,
                 contentType: false,
@@ -587,12 +627,12 @@
         var personnel = $('#ManageVoyageModal #Personnel').val();
         if (!personnel) return
 
-        var formdata = new FormData();
-        formdata.append('key', personnel);
-        formdata.append('__RequestVerificationToken', $('@Html.AntiForgeryToken()').val());
+        var formData = new FormData();
+        formData.append('key', personnel);
+        formData.append('__RequestVerificationToken', $('@Html.AntiForgeryToken()').val());
             $.ajax({
                 url: '@Url.Action("Search", "VesselMovement")',
-                data: formdata,
+                data: formData,
                 type: 'POST',
                 cache: false,
                 contentType: false,
@@ -1112,17 +1152,17 @@
     });
 
     function GetVesselCrews(id) {
-        var formdata = new FormData();
-        //formdata.append('VesselID', id);
+        var formData = new FormData();
+        //formData.append('VesselID', id);
         $('#VesselMovementParameters *').each(function () {
             if ($(this).attr('name'))
-                formdata.append($(this).attr('name'), $(this).val());
+                formData.append($(this).attr('name'), $(this).val());
         });
-        formdata.append('__RequestVerificationToken', $('@Html.AntiForgeryToken()').val());
+        formData.append('__RequestVerificationToken', $('@Html.AntiForgeryToken()').val());
 
         $.ajax({
             url: '@Url.Action("GetVesselCrews", "VesselMovement")',
-            data: formdata,
+            data: formData,
             type: 'POST',
             cache: false,
             contentType: false,

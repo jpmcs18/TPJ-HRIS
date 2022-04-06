@@ -620,6 +620,8 @@
     <Content Include="Content\style.min.css">
       <DependentUpon>style.css</DependentUpon>
     </Content>
+    <Content Include="Database Scripts\20220406\ALTER PROC [vessel].[ApprovedVesselMovement].sql" />
+    <Content Include="Database Scripts\20220406\ALTER PROC [vessel].[CheckedVesselMovement].sql" />
     <Content Include="favicon.ico" />
     <Content Include="Files\UploadedLeaveFiles\77DE68DAECD823BABBB58EDB1C8E14D7106E83BB07142021180854BLANK.png" />
     <Content Include="Files\UploadedLeaveFiles\B1D5781111D84F7B3FE45A0852E59758CD7A87E509102021183043219064272_2124072481080176_1260930658492739798_n.jpg" />

@@ -64,8 +64,8 @@
                         <th>End Date</th>
                         <th>Origin</th>
                         <th>Destination</th>
-                        <th>Crew Count</th>
-                        @*<th>ETD</th>
+                        @*
+                        <th>Crew Count</th><th>ETD</th>
                         <th>ETA</th>
                         <th>Details</th>
                         <th>Created</th>
@@ -100,8 +100,8 @@
                                 <td>@movement.VoyageEndDate.CheckIfNull().ToString("MMM dd, yyyy")</td>
                                 <td>@movement.OriginLocation.CheckIfNull().Description</td>
                                 <td>@movement.DestinationLocation.CheckIfNull().Description</td>
-                                <td>@movement.VesselMovementCrewList.Count()</td>
-                                @*<td>@movement.ETD</td>
+                                @*
+                                <td>@movement.VesselMovementCrewList.Count()</td><td>@movement.ETD</td>
                     <td>@movement.ETA</td>
                     <td>@movement.VoyageDetails</td>
                     <td>@movement.Creator<br />@movement.CreatedDate.CheckIfNull().ToString("MMM dd, yyyy hh:mm:ss")</td>

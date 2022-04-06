@@ -34,6 +34,14 @@ namespace ProcessLayer.Processes
                 MovementStatusID = dr["Movement Status ID"].ToNullableInt() ?? 0, //1: Cancel, 2: Pending, 3: Checked, 4: Approved
                 CreatedDate = dr["Created Date"].ToDateTime(),
                 ModifiedDate = dr["Modified Date"].ToNullableDateTime(),
+
+                CreatedBy = dr["Created By"].ToInt(),
+                //Checker = dr["Checker"].ToString(),
+                CheckedDate = dr["Checked Date"].ToNullableDateTime(),
+                CheckedBy = dr["Checked By"].ToNullableInt(),
+                //Approver = dr["Approver"].ToString(),
+                ApprovedDate = dr["Approved Date"].ToNullableDateTime(),
+                ApprovedBy = dr["Approved By"].ToNullableInt(),
             };
             if(!IsVesselMovementOnly)
             { 
@@ -42,6 +50,9 @@ namespace ProcessLayer.Processes
                 v.DestinationLocation = LocationProcess.Instance.Get(v.DestinationLocationID);
                 v.VesselMovementCrewList = GetMovementCrews(v.ID);
             }
+            v.Creator = LookupProcess.GetUser(v.CreatedBy);
+            v.Checker = LookupProcess.GetUser(v.CheckedBy);
+            v.Approver = LookupProcess.GetUser(v.ApprovedBy);
 
             return v;
         }

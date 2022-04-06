@@ -34,7 +34,6 @@ namespace WebTemplate.Controllers.Movement
             }
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult VesselMovementManagement(VesselMovementList model)
@@ -157,9 +156,11 @@ namespace WebTemplate.Controllers.Movement
             try
             {
                 VesselMovement model = VesselMovementProcess.Checked(id, User.UserID);
+                model = VesselMovementProcess.Get(id, true) ?? new VesselMovement();
+                model.VesselMovementCrewList = VesselMovementProcess.GetMovementCrews(model.ID);
 
                 ModelState.Clear();
-                return PartialViewCustom("_VesselMovement", model);
+                return PartialViewCustom("/Voyage/_Manage", model);
 
             }
             catch (Exception ex)
@@ -175,9 +176,11 @@ namespace WebTemplate.Controllers.Movement
             try
             {
                 VesselMovement model = VesselMovementProcess.Approved(id, User.UserID);
+                model = VesselMovementProcess.Get(id, true) ?? new VesselMovement();
+                model.VesselMovementCrewList = VesselMovementProcess.GetMovementCrews(model.ID);
 
                 ModelState.Clear();
-                return PartialViewCustom("_VesselMovement", model);
+                return PartialViewCustom("/Voyage/_Manage", model);
 
             }
             catch (Exception ex)
