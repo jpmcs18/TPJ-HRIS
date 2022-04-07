@@ -33,12 +33,17 @@ namespace ProcessLayer.Processes
                 VoyageDetails = dr["Voyage Details"].ToString(),
                 MovementStatusID = dr["Movement Status ID"].ToNullableInt() ?? 0 //1: Cancel, 2: Pending, 3: Checked, 4: Approved
             };
+              
             if(!IsVesselMovementOnly)
             { 
                 v._Vessel = VesselProcess.Instance.Get(v.VesselID);
                 v.OriginLocation = LocationProcess.Instance.Get(v.OriginLocationID);
                 v.DestinationLocation = LocationProcess.Instance.Get(v.DestinationLocationID);
                 v.VesselMovementCrewList = GetMovementCrews(v.ID);
+                if (v.MovementStatusID == 4)
+                {
+                    v.CrewList = GetCrewDetailList(v.VesselID, v.VoyageStartDate, null);
+                }
             }
 
             return v;
