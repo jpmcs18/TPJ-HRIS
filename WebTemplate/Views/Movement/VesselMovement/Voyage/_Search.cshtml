@@ -23,13 +23,13 @@
 
     <fieldset>
         <legend>Vessel</legend>
-        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+        <div class="form-group col-xs-12 col-sm-4 col-md-4 col-lg-4">
             <label class="form-control" title="Code">@Model.Vessel.CheckIfNull().Code</label>
         </div>
-        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+        <div class="form-group col-xs-12 col-sm-4 col-md-4 col-lg-4">
             <label class="form-control">@Model.Vessel.CheckIfNull().Description</label>
         </div>
-        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+        <div class="form-group col-xs-12 col-sm-4 col-md-4 col-lg-4">
             <label class="form-control">@Model.Vessel.CheckIfNull()._Classification.CheckIfNull().Description</label>
         </div>
     </fieldset>
@@ -39,15 +39,15 @@
             <legend>Search</legend>
             @Html.HiddenFor(m => m.VesselID)
             @Html.AntiForgeryToken()
-            <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+            <div class="form-group col-xs-12 col-sm-4 col-md-4 col-lg-4">
                 Starting Date
                 @Html.TextBox("StartingDate", String.Format("{0:yyyy'-'MM'-'dd}", Model.StartingDate), new { @class = "form-control", @type = "date", @placeholder = "" })
             </div>
-            <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+            <div class="form-group col-xs-12 col-sm-4 col-md-4 col-lg-4">
                 Ending Date
                 @Html.TextBox("EndingDate", String.Format("{0:yyyy'-'MM'-'dd}", Model.EndingDate), new { @class = "form-control", @type = "date", @placeholder = "" })
             </div>
-            <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+            <div class="form-group col-xs-12 col-sm-4 col-md-4 col-lg-4">
                 <label class="control-label" style="width: 100%; color: transparent;">Search</label>
                 <button type="button" class="btn btn-primary font-bold pull-left" onclick="ViewVesselVoyage(@Model.VesselID)"><i class="fa fa-search"></i> Search</button>
             </div>
@@ -55,7 +55,7 @@
     </form>
 
     <form class="">
-        <fieldset style="max-height: 500px; overflow-y: auto;">
+        <fieldset class="padded" style="max-height: 500px; overflow-y: auto;">
             <legend>Voyages</legend>
             <table class="table table-stripped table-hover table-bordered" style="margin-bottom: 0px;">
                 <thead>
@@ -80,9 +80,11 @@
                     @if (ViewBag.AllowAdd ?? false)
                     {
                         <tr>
-                            <td colspan="20" class="text-center">
-                                <div class="col-xs-12 col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6 col-lg-offset-4 col-lg-4">
-                                    <button id="EditOrNewVesselVoyage" type="button" class="btn btn-primary btn-w-m" style="width: 100%;" name="EditOrNewVesselVoyage" value="0"><i class="fa fa-plus"></i> New Voyage</button>
+                            <td colspan="20" class="text-center not-padded">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <button id="EditOrNewVesselVoyage" type="button" class="btn btn-primary btn-w-m" style="width: 100%;" name="EditOrNewVesselVoyage" value="0"><i class="fa fa-plus"></i> New Voyage</button>
+                                    </div>
                                 </div>
                             </td>
                         </tr>

@@ -287,6 +287,7 @@ namespace ProcessLayer.Processes
             }
 
             CreateOrUpdateCrew(vessel.VesselMovementCrewList, userid);
+            //vessel = Get(vessel.ID, true) ?? new VesselMovement();
 
             return vessel;
         }

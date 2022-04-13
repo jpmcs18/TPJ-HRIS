@@ -4,7 +4,7 @@
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
     var PageAccess = credential.GetPage("Kiosk/LeaveRequest") ?? new DataAccessLayer.System.Page();
     var CreatorAccess = credential.GetPage("Creator Leave Request") ?? new DataAccessLayer.System.Page();
-    //var UploadDocumentAccess = credential.GetPage("Kiosk Upload Document") ?? new DataAccessLayer.System.Page();
+    var UploadDocumentAccess = credential.GetPage("Kiosk Upload Document") ?? new DataAccessLayer.System.Page();
     var IsBulkUse = Model.LeaveTypes.Where(m => m.ID == Model.LeaveTypeID).Select(m => m.BulkUse).FirstOrDefault() ?? false;
 }
 
@@ -195,7 +195,7 @@
                                 </text>
                             </td>
                             <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
-                                @*@if (UploadDocumentAccess.View)
+                                @if (UploadDocumentAccess.View)
                                 {
                                     if (Approved && (Model.LeaveRequests[i]._LeaveType.HasDocumentNeeded ?? false))
                                     {
@@ -205,7 +205,7 @@
                                     {
                                         <span class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@(filename)">@Html.Raw(filename)</span>
                                     }
-                                }*@
+                                }
                                 @if (Model.LeaveRequests[i].ApprovedLeaveCredits > 0)
                                 {
                                     <span class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@(filename)">@Html.Raw(filename)</span>

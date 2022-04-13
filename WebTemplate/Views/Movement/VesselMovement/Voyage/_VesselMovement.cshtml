@@ -1,90 +1,102 @@
-﻿@model List<ProcessLayer.Entities.VesselMovementCrews>
+﻿@model ProcessLayer.Entities.VesselMovement
 @using WebTemplate.Extension
 
 @{
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
     var PageAccess = credential.GetPage("Movement/VesselMovement") ?? new DataAccessLayer.System.Page();
+    var CheckAccess = credential.GetPage("Movement/VesselMovement") ?? new DataAccessLayer.System.Page();
+    var ApproveAccess = credential.GetPage("Movement/VesselMovement") ?? new DataAccessLayer.System.Page();
+
+    var crews = Model.VesselMovementCrewList ?? new List<ProcessLayer.Entities.VesselMovementCrews>();
+    var isForChecking = CheckAccess.Approve && Model.MovementStatusID < 3 && Model.VesselMovementCrewList.Count() > 0;// Model.CheckedBy == null && Model.ApprovedBy == null;
+    var isForApproving = ApproveAccess.Approve && Model.MovementStatusID < 4 && !isForChecking && Model.VesselMovementCrewList.Count() > 0;//  && Model.ApprovedBy == null && !isForChecking;
 }
 
-<form>
-    <fieldset>
-        <legend>Voyage Crews</legend>
-        <div class="table-responsive" style="max-height: 300px; overflow-y: auto; margin-bottom: 0">
-            <table id="VoyageCrewsTable" class="table table-stripped table-bordered" style="margin-bottom: 0px;">
-                <thead>
-                    <tr>
-                        @*<th>Seq No.</th>
-                            <th>Rank</th>
-                            <th>Designation</th>*@
-                        <th class="text-center">Employee No</th>
-                        <th class="text-left">Employee</th>
-                        <th class="text-right">Daily Rate</th>
-                        @*<th>Date Embarked</th>
-                            <th>Date Disembarked</th>*@
+@if (crews.Count > 0)
+{
+    <form>
+        <fieldset>
+            <legend>Voyage Crews</legend>
+            <div class="table-responsive" style="max-height: 300px; overflow-y: auto; margin-bottom: 0">
+                <table id="VoyageCrewsTable" class="table table-stripped table-bordered" style="margin-bottom: 0px;">
+                    <thead>
+                        <tr>
+                            @*<th>Seq No.</th>
+        <th>Rank</th>
+        <th>Designation</th>*@
+                            <th class="text-center">Employee No</th>
+                            <th class="text-left">Employee</th>
+                            <th class="text-right">Daily Rate</th>
+                            @*<th>Date Embarked</th>
+        <th>Date Disembarked</th>*@
                             <th>Remarks</th>
-                        <th class="text-center">Action</th>
-                    </tr>
-                </thead>
-                <tbody id="VoyageCrewDiv">
-                    <tr id="Row-Loading-Display" class="hidden">
-                        <td style="text-align: center;" colspan="10">
-                            <i id="" class="fa fa-rotate-left rotate" style="padding: 8px; font-size: 20px; text-align: right;"></i>
-                        </td>
-                    </tr>
-                    @if (Model.Count > 0)
-                    {
-                        for (var i = 0; i < Model.Count(); i++)
+                            @if (PageAccess.View && PageAccess.Update && PageAccess.Insert && !isForApproving)
+                            {
+                                <th class="text-center">Action</th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody id="VoyageCrewDiv">
+                        <tr id="Row-Loading-Display" class="hidden">
+                            <td style="text-align: center;" colspan="10">
+                                <i id="" class="fa fa-rotate-left rotate" style="padding: 8px; font-size: 20px; text-align: right;"></i>
+                            </td>
+                        </tr>
+                        @for (var i = 0; i < crews.Count(); i++)
                         {
-                            <tr id="@Model[i].ID" class="voyageCrew Voyage-Crew-@Model[i].ID">
+                            <tr id="@crews[i].ID" class="voyageCrew Voyage-Crew-@crews[i].ID">
                                 @*<td></td>
                                     <td></td>*@
                                 <td class="text-center">
-                                    <input class="form-control" type="hidden" name="ID" value="@Model[i].ID" />
-                                    <input class="form-control" type="hidden" name="VesselMovementID" value="@Model[i].VesselMovementID" />
-                                    <input class="form-control" type="hidden" name="PersonnelID" value="@Model[i].Personnel.ID" />
-                                    <input class="form-control" type="hidden" name="Deleted" value="false" />@Model[i].Personnel.EmployeeNo
-                                    <input class="form-control" type="hidden" name="DepartmentID" value="@Model[i].DepartmentID" />
-                                    <input class="form-control" type="hidden" name="PositionID" value="@Model[i].PositionID" />
+                                    <input class="form-control" type="hidden" name="ID" value="@crews[i].ID" />
+                                    <input class="form-control" type="hidden" name="VesselMovementID" value="@crews[i].VesselMovementID" />
+                                    <input class="form-control" type="hidden" name="PersonnelID" value="@crews[i].Personnel.ID" />
+                                    <input class="form-control" type="hidden" name="Deleted" value="false" />@crews[i].Personnel.EmployeeNo
+                                    <input class="form-control" type="hidden" name="DepartmentID" value="@crews[i].DepartmentID" />
+                                    <input class="form-control" type="hidden" name="PositionID" value="@crews[i].PositionID" />
                                 </td>
                                 <td class="text-left" style="text-transform: uppercase; display: flex;">
-                                    <img src="@(String.IsNullOrEmpty(Model[i].Personnel.ImagePath) ? "\\Images\\default.jpg": Model[i].Personnel.ImagePath)" style="height: 50px; width: 50px; min-height: 40px; max-w: 40px; border: 3px solid #eaeaea; margin-right: 10px; border-radius: 50px;" title="" />
+                                    <img src="@(String.IsNullOrEmpty(crews[i].Personnel.ImagePath) ? "\\Images\\default.jpg": crews[i].Personnel.ImagePath)" style="height: 50px; width: 50px; min-height: 40px; max-w: 40px; border: 3px solid #eaeaea; margin-right: 10px; border-radius: 50px;" title="" />
                                     <div>
-                                        <b class="text-primary">@Model[i].Personnel.FullName</b>
-                                        @Html.Raw(!String.IsNullOrEmpty(Model[i].Department.CheckIfNull().Description) ? $"<br /><text style='text-transform: uppercase; font-weight: 700;'>{Model[i].Department.CheckIfNull().Description}</text>" : "")
-                                        @Html.Raw(!String.IsNullOrEmpty(Model[i].Position.CheckIfNull().Description) ? $"<br /><text style='text-transform: uppercase; font-weight: 700;'>{Model[i].Position.CheckIfNull().Description}</text>" : "")
-                                        @*@Html.Raw(!String.IsNullOrEmpty(Model[i].Personnel.Email) ? $"<br /><text style='text-transform: uppercase;'><i class='fa fa-envelope'></i> {Model[i].Personnel.Email}</text>" : "")*@
-                                        @*@Html.Raw(!String.IsNullOrEmpty(Model[i].Personnel.Address) ? $"<br /><text style='text-transform: uppercase;'><i class='fa fa-map-marker'></i> {Model[i].Personnel.Address}</text>" : "")*@
+                                        <b class="text-primary">@crews[i].Personnel.FullName</b>
+                                        @Html.Raw(!String.IsNullOrEmpty(crews[i].Department.CheckIfNull().Description) ? $"<br /><text style='text-transform: uppercase; font-weight: 700;'>{crews[i].Department.CheckIfNull().Description}</text>" : "")
+                                        @Html.Raw(!String.IsNullOrEmpty(crews[i].Position.CheckIfNull().Description) ? $"<br /><text style='text-transform: uppercase; font-weight: 700;'>{crews[i].Position.CheckIfNull().Description}</text>" : "")
+                                        @*@Html.Raw(!String.IsNullOrEmpty(crews[i].Personnel.Email) ? $"<br /><text style='text-transform: uppercase;'><i class='fa fa-envelope'></i> {crews[i].Personnel.Email}</text>" : "")*@
+                                        @*@Html.Raw(!String.IsNullOrEmpty(crews[i].Personnel.Address) ? $"<br /><text style='text-transform: uppercase;'><i class='fa fa-map-marker'></i> {crews[i].Personnel.Address}</text>" : "")*@
                                     </div>
                                 </td>
                                 <td class="text-right rate">
                                     <div class="rate-group">
-                                        @*@((Model[i].DailyRate ?? 0).ToString("#,##0.00##"))*@
-                                        @Html.TextBox($"DailyRate", (Model[i].DailyRate ?? 0).ToString("#,##0.00##"), new { @class = "form-control display text-right", @type = "currency", @disabled = "disabled" })
-                                        <button id="" class="btn btn-outline btn-info EditDailyRate edit" type="button" action="Edit" title="Edit Daily Rate"><i class="fa fa-pencil"></i></button>
-                                        <button id="" class="btn btn-outline btn-warning CancelDailyRate save" type="button" action="Cancel" style="display: none;" title="Cancel editing"><i class="fa fa-ban"></i></button>
-                                        <button id="" class="btn btn-outline btn-primary SaveDailyRate save" type="button" action="Save" style="display: none;" title="Ok"><i class="fa fa-thumbs-up"></i></button>
+                                        @*@((crews[i].DailyRate ?? 0).ToString("#,##0.00##"))*@
+                                        @Html.TextBox($"DailyRate", (crews[i].DailyRate ?? 0).ToString("#,##0.00##"), new { @class = "form-control display text-right", @type = "currency", @disabled = "disabled" })
+                                        @if (Model.MovementStatusID < 3)
+                                        {
+                                            <button id="" class="btn btn-outline btn-info EditDailyRate edit" type="button" action="Edit" title="Edit Daily Rate"><i class="fa fa-pencil"></i></button>
+                                            <button id="" class="btn btn-outline btn-warning CancelDailyRate save" type="button" action="Cancel" style="display: none;" title="Cancel editing"><i class="fa fa-ban"></i></button>
+                                            <button id="" class="btn btn-outline btn-primary SaveDailyRate save" type="button" action="Save" style="display: none;" title="Ok"><i class="fa fa-thumbs-up"></i></button>
+                                        }
                                     </div>
                                 </td>
-                                @*<td>@Model[i].DateEmbarked.CheckIfNull().ToString("MMM dd, yyyy")</td>
-                                    <td>@Model[i].DateDisembarked.CheckIfNull().ToString("MMM dd, yyyy")</td>
-                                    <td>@Model[i].BasicRate.Value.ToString("#,###.00##")</td>*@
-                                    <td>@Model[i].Remarks</td>
-                                <td style="text-align: center;">
-                                    @if (PageAccess.View)
-                                    {
-                                        <button type="button" name="RemoveCrew" class="btn btn-outline btn-danger btn-sm btn-rounded RemoveCrew" value="@Model[i].PersonnelID" title="Remove crew"><i class="fa fa-times"></i></button>
-                                        <button type="button" name="AddCrew" class="btn btn-default btn-sm btn-rounded AddCrew hidden" value="@Model[i].PersonnelID" title="Undo remove crew"><i class="fa fa-undo"></i></button>
-                                    }
-                                </td>
+                                @*<td>@crews[i].DateEmbarked.CheckIfNull().ToString("MMM dd, yyyy")</td>
+                                    <td>@crews[i].DateDisembarked.CheckIfNull().ToString("MMM dd, yyyy")</td>
+                                    <td>@crews[i].BasicRate.Value.ToString("#,###.00##")</td>*@
+                                <td>@crews[i].Remarks</td>
+                                @if (PageAccess.View && PageAccess.Update && PageAccess.Insert && !isForApproving)
+                                {
+                                    <td style="text-align: center;">
+                                    <button type="button" name="RemoveCrew" class="btn btn-outline btn-danger btn-sm btn-rounded RemoveCrew" value="@crews[i].PersonnelID" title="Remove crew"><i class="fa fa-times"></i></button>
+                                    <button type="button" name="AddCrew" class="btn btn-default btn-sm btn-rounded AddCrew hidden" value="@crews[i].PersonnelID" title="Undo remove crew"><i class="fa fa-undo"></i></button>
+                                    </td>
+                                }
                             </tr>
                         }
-                    }
-                    else
-                    {
-                        <tr id="No-Row-Display"><td class="text-center" colspan="10">No Crews yet...</td></tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    </fieldset>
-</form>
+                    </tbody>
+                </table>
+            </div>
+        </fieldset>
+    </form>
+}
+else
+{
+    @*<tr    id="No-Row-Display"><td class="text-center" colspan="10">No Crews yet...</td></tr>*@
+}
