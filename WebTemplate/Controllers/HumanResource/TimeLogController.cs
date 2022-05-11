@@ -1,5 +1,4 @@
-﻿using LumenWorks.Framework.IO.Csv;
-using ProcessLayer.Entities;
+﻿using ProcessLayer.Entities;
 using ProcessLayer.Helpers;
 using ProcessLayer.Processes;
 using ProcessLayer.Processes.Lookups;
@@ -14,7 +13,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using WebTemplate.Models.Groups;
 using WebTemplate.Models.TimeLog;
 
 namespace WebTemplate.Controllers.HumanResource
@@ -236,7 +234,7 @@ namespace WebTemplate.Controllers.HumanResource
                             List<TimeLogTemplate> lsts = group.OrderBy(x => x.Date).ToList();
                             
                             //initialize timelog
-                            TimeLog timeLog = new TimeLog()
+                            TimeLog timeLog = new()
                             {
                                 PersonnelID = personnel.ID,
                                 _Personnel = personnel,

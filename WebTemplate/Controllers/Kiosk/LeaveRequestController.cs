@@ -98,8 +98,9 @@ namespace WebTemplate.Controllers.Kiosk
                     LeaveRequest = new LeaveRequest(),
                 };
 
-                model.LeaveTypes = PersonnelLeaveCreditProcess.Instance.GetLeaveWithCredits(model.Personnel?.ID ?? 0, DateTime.Now);
-
+                model.LeaveTypes = PersonnelLeaveCreditProcess.Instance.GetLeaveWithCredits(model.Personnel?.ID ?? 0, DateTime.Now) ?? new System.Collections.Generic.List<LeaveType>();
+                if(model.LeaveTypes.Count == 0)
+                    return Json(new { msg = false, res = "No Leave Credits" });
                 return PartialViewCustom("_LeaveRequestNew", model);
             }
             catch (Exception ex)

@@ -4,7 +4,7 @@
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
     var PageAccess = credential.GetPage("RequestsApproval/LeaveRequests") ?? new DataAccessLayer.System.Page();
     var ApproverAccess = credential.GetPage("Approver Leave Request") ?? new DataAccessLayer.System.Page();
-    //var UploadDocumentAccess = credential.GetPage("Kiosk Upload Document") ?? new DataAccessLayer.System.Page();
+    var UploadDocumentAccess = credential.GetPage("Kiosk Upload Document") ?? new DataAccessLayer.System.Page();
     var IsBulkUse = Model.LeaveTypes.Where(m => m.ID == Model.LeaveTypeID).Select(m => m.BulkUse).FirstOrDefault() ?? false;
 }
 
@@ -199,6 +199,17 @@
                                 </text>
                             </td>
                             <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
+                                @if (UploadDocumentAccess.View)
+                                {
+                                    if (Approved && (Model.LeaveRequests[i]._LeaveType.HasDocumentNeeded ?? false))
+                                    {
+                                        <button type="button" name="" class="btn btn-default btn-md" onclick="UploadDocument(@Model.LeaveRequests[i].ID, '')" title="@(!string.IsNullOrEmpty(filename) ? filename : "Upload Document")" value="@filename"><i class="fa fa-paperclip"></i>@Html.Raw(!string.IsNullOrEmpty(filename) ? " <span class='label label-info'>1</span>" : "")</button>
+                                    }
+                                    else if (Model.LeaveRequests[i].ApprovedLeaveCredits > 0)
+                                    {
+                                        <span class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@(filename)">@Html.Raw(filename)</span>
+                                    }
+                                }
                                 @if (Model.LeaveRequests[i].ApprovedLeaveCredits > 0)
                                 {
                                     <span class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@(filename)">@Html.Raw(filename)</span>
