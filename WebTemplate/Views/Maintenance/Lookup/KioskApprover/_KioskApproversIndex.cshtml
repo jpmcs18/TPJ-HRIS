@@ -201,6 +201,7 @@
             $(this).closest('tr').find('img').css('opacity', '0.5');
             $(this).closest('tr').find('.UndoRemoveApprover').removeClass('hidden');
             $(this).closest('tr').addClass('text-muted bg-muted').find('b').removeClass('text-primary');
+            $_approverIDsArr = $.grep($_approverIDsArr, function (a) { return a !== personnelID; });
 
             if (approverDeptID == 0) {
                 $(this).closest('tr').remove();
@@ -209,8 +210,6 @@
                 $_personnelIDsArr.push(personnelID);
                 $_approverIDsArr = $.grep($_approverIDsArr, function (a) { return a !== personnelID; });
             }
-
-            $_approverIDsArr = $.grep($_approverIDsArr, function (a) { return a !== personnelID; });
         }
 
         CheckTableRowCount();

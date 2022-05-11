@@ -4,7 +4,7 @@
 @functions{
     string getTab(int tabNo, List<PersonnelLicense> licenseList, bool isActive = false)
     {
-        string element = $"<div id='license-tab-{tabNo}' class='tab-pane{(isActive ? " active" : "")}'><div class='panel-body' style='padding: 0px; '><table class='table table-stripped table-bordered' style='margin-bottom: 0px;'><tbody>";
+        string element = $"<div id='license-tab-{tabNo}' class='tab-pane{(isActive ? " active" : "")} license-tab'><div class='panel-body' style='padding: 0px; '><table class='table table-stripped table-bordered' style='margin-bottom: 0px;'><tbody>";
 
         if (licenseList.Count() > 0)
         {
@@ -18,17 +18,18 @@
                 String fullname = String.Format("{0}, {1} {2}", person.LastName, person.FirstName, person.MiddleName);
                 String searchName = String.Format("{0}{1}{2}", person.FirstName, person.MiddleName, person.LastName);
                 String month = item.ExpirationDate.Value.ToString("MMMM");
+                var itemCount = licenseList.Where(m => m.ExpirationDate.Value.ToString("MMMM") == month).Count();
                 monthCounter += lastMonth != "" && month != lastMonth ? 1 : 0;
                 String expiration = $"<tr class='list-title month-body month-{monthCounter}' style='background-color: #ddd;{(monthCounter > 0 ? " display: none;" : "")}'><td>{item.ExpirationDate.Value.ToString("MMMM dd")}</td></tr>";
 
-                element += $"{(month != lastMonth ? $"<tr class='month-header{(monthCounter == 0 ? " open" : "")}' id='{monthCounter}'><td class='text-transform-uppercase'><span class='pull-left'>{month}</span><i class='fa fa-chevron-down pull-right'></i><i class='fa fa-chevron-up pull-right'></i></td></tr>" : "")}";
+                element += $"{(month != lastMonth ? $"<tr class='month-header{(monthCounter == 0 ? " open" : "")}' id='{monthCounter}'><td class='text-transform-uppercase'><span class='pull-left'>{month} ({itemCount} <i class='fa fa-user-o'></i>)</span><i class='fa fa-chevron-down pull-right'></i><i class='fa fa-chevron-up pull-right'></i></td></tr>" : "")}";
                 element += counter > 0 ? (prevExp.ToString() != item.ExpirationDate.ToString() ? expiration : "") : expiration;
 
                 element += $"<tr title='{fullname}' class='month-body month-{monthCounter}' style='{(monthCounter > 0 ? "display: none;" : "")}' onclick='";
                 //element += "window.open(" + '"' + ""{Url.Action("Personnel", "Index", new { Filter = searchName })}', '_blank');";
                 element += $"'><td><a href='/HumanResource/Personnel/Index?Filter={searchName}' target='_blank'><div style='float: left; text-transform: uppercase;'>";
                 element += $"<img src='{(String.IsNullOrEmpty(person.ImagePath) ? "\\Images\\default.jpg" : person.ImagePath)}' style='height: 35px; width: 35px; min-height: 35px; min-width: 35px; border: 3px solid #eaeaea; margin-right: 10px; border-radius: 50px;' />";
-                element += $"</div><div style='white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'><b>{fullname}</b><br />{(!String.IsNullOrEmpty(item.LicenseNo) ? item._LicenseType.Description + ": " + item.LicenseNo : "")}</div></a></td></tr>";
+                element += $"</div><div style='white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'><b style='color: #333;'>{fullname}</b><br /><span class='text-{(tabNo == 1 ? "danger" : "primary")}'>{(!String.IsNullOrEmpty(item.LicenseNo) ? item._LicenseType.Description + ": " + item.LicenseNo : "")}</span></div></a></td></tr>";
 
                 prevExp = item.ExpirationDate.Value;
                 lastMonth = month;
@@ -50,51 +51,54 @@
         border: .1em solid #00c9b6 !important;
         cursor: pointer;
     }
-    .month-header i.fa-chevron-up {
-        display: none;
-    }
-    .month-header i.fa-chevron-down {
-        display: block;
-    }
 
-    .month-header.open {
-        border-bottom: 0 !important;
-    }
-    .month-header.open i.fa-chevron-up {
-        display: block !important;
-    }
-    .month-header.open i.fa-chevron-down {
-        display: none !important;
-    }
+        .month-header i.fa-chevron-up {
+            display: none;
+        }
+
+        .month-header i.fa-chevron-down {
+            display: block;
+        }
+
+        .month-header.open {
+            border-bottom: 0 !important;
+        }
+
+            .month-header.open i.fa-chevron-up {
+                display: block !important;
+            }
+
+            .month-header.open i.fa-chevron-down {
+                display: none !important;
+            }
 
     tr.month-body {
         border-left: .1em solid #00c9b6 !important;
         border-right: .1em solid #00c9b6 !important;
     }
-    tr.month-body:hover {
-        background-color: #eee !important;
-    }
 
-    tr.month-body td {
-        text-align: left;
-        padding: 5px;
-        border: 1px solid #eee;
-    }
+        tr.month-body:hover {
+            background-color: #eee !important;
+        }
+
+        tr.month-body td {
+            text-align: left;
+            padding: 5px;
+            border: 1px solid #eee;
+        }
 </style>
 
-<div class="license-container">
-    <div class="tabs-container">
-        <ul class="nav nav-tabs">
-            @*<li class=""><a data-toggle="tab" href="#license-tab-1">Recent</a></li>*@
-            <li class=""><a data-toggle="tab" href="#license-tab-1">Expired</a></li>
-            <li class="active"><a data-toggle="tab" href="#license-tab-2">Upcoming</a></li>
-            <li class=""><a data-toggle="tab" href="#license-tab-3">@(DateTime.Now.Year + 1)</a></li>
-        </ul>
-        <div class="tab-content">
-            @Html.Raw(getTab(1, Model.ExpiringLicensesRecent))
-            @Html.Raw(getTab(2, Model.ExpiringLicensesToday, true))
-            @Html.Raw(getTab(3, Model.ExpiringLicensesUpcoming))
-        </div>
+<div class="tabs-container license-container">
+    <ul class="nav nav-tabs license-tabs">
+        @*<li class=""><a data-toggle="tab" href="#license-tab-1">Recent</a></li>*@
+        <li class=""><a data-toggle="tab" href="#license-tab-1">Expired</a></li>
+        <li class="active"><a data-toggle="tab" href="#license-tab-2">Upcoming</a></li>
+        <li class=""><a data-toggle="tab" href="#license-tab-3">@(DateTime.Now.Year + 1)</a></li>
+    </ul>
+    <div class="tab-content license-tab-content">
+        @Html.Raw(getTab(1, Model.ExpiringLicensesRecent))
+        @Html.Raw(getTab(2, Model.ExpiringLicensesToday, true))
+        @Html.Raw(getTab(3, Model.ExpiringLicensesUpcoming))
     </div>
 </div>
 

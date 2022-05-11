@@ -8,6 +8,8 @@ using WebTemplate.Models.VesselMovement;
 using ReportLayer.Reports;
 using ReportLayer.Helpers;
 using System.Web.Script.Serialization;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace WebTemplate.Controllers.Movement
 {
@@ -32,7 +34,6 @@ namespace WebTemplate.Controllers.Movement
             }
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult VesselMovementManagement(VesselMovementList model)
@@ -41,10 +42,12 @@ namespace WebTemplate.Controllers.Movement
             {
                 model.Vessel = VesselProcess.Instance.Get(model.VesselID);
                 model.VesselMovements =
-                    VesselMovementProcess.GetList(model.VesselID, model.StartingDate, model.EndingDate);
+                    VesselMovementProcess.GetList(model.VesselID, model.StartingDate, model.EndingDate); 
+                //New vessel voyage addition validation
+                ViewBag.AllowAdd = true;
 
                 ModelState.Clear();
-                return PartialViewCustom("/Voyage/_List", model);
+                return PartialViewCustom("/Voyage/_Search", model);
             }
             catch (Exception ex)
             {
@@ -54,20 +57,22 @@ namespace WebTemplate.Controllers.Movement
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditOrNewVesselMovement(long? id, short? vesselid)
+        public ActionResult EditOrNewVesselVoyage(long? ID, int? VesselID)
         {
             try
             {
-                VesselMovement model = VesselMovementProcess.Get(id ?? 0);
-                model.VesselID = vesselid ?? 0;
-                model._Vessel = VesselProcess.Instance.Get(vesselid);
+                VesselMovement model = VesselMovementProcess.Get(ID ?? 0, true) ?? new VesselMovement();
+                model.VesselID = VesselID ?? 0;
+                model._Vessel = VesselProcess.Instance.Get(VesselID);
+                model.VoyageStartDate = model.ID > 0 ? model.VoyageStartDate : DateTime.Now;
+                model.VesselMovementCrewList = VesselMovementProcess.GetMovementCrews(model.ID);
 
                 ModelState.Clear();
-                return PartialViewCustom("_New", model);
+                return PartialViewCustom("/Voyage/_Manage", model);
             }
             catch (Exception ex)
             {
-                return Json(new {msg = false, res = ex.GetActualMessage()});
+                return Json(new { msg = false, res = ex.GetActualMessage() });
             }
         }
 
@@ -78,7 +83,7 @@ namespace WebTemplate.Controllers.Movement
             var model = PersonnelProcess.SearchCrew(key);
 
             ModelState.Clear();
-            return PartialViewCustom("_PersonnelSearch", model);
+            return PartialViewCustom("/Voyage/_PersonnelList", model);
         }
 
         [HttpPost]
@@ -105,8 +110,15 @@ namespace WebTemplate.Controllers.Movement
             {
                 model = VesselMovementProcess.CreateOrUpdate(model, User.UserID);
 
+                foreach (var crew in model.VesselMovementCrewList.Where(m => m.Deleted))
+                {
+                    VesselMovementProcess.DeleteCrew(crew.ID, User.UserID);
+                }
+
+                model.VesselMovementCrewList = VesselMovementProcess.GetMovementCrews(model.ID);
+
                 ModelState.Clear();
-                return PartialViewCustom("_Movement", model);
+                return PartialViewCustom("/Voyage/_Manage", model);
             }
             catch (Exception ex)
             {
@@ -144,9 +156,11 @@ namespace WebTemplate.Controllers.Movement
             try
             {
                 VesselMovement model = VesselMovementProcess.Checked(id, User.UserID);
+                model = VesselMovementProcess.Get(id, true) ?? new VesselMovement();
+                model.VesselMovementCrewList = VesselMovementProcess.GetMovementCrews(model.ID);
 
                 ModelState.Clear();
-                return PartialViewCustom("_VesselMovement", model);
+                return PartialViewCustom("/Voyage/_Manage", model);
 
             }
             catch (Exception ex)
@@ -162,9 +176,11 @@ namespace WebTemplate.Controllers.Movement
             try
             {
                 VesselMovement model = VesselMovementProcess.Approved(id, User.UserID);
+                model = VesselMovementProcess.Get(id, true) ?? new VesselMovement();
+                model.VesselMovementCrewList = VesselMovementProcess.GetMovementCrews(model.ID);
 
                 ModelState.Clear();
-                return PartialViewCustom("_VesselMovement", model);
+                return PartialViewCustom("/Voyage/_Manage", model);
 
             }
             catch (Exception ex)

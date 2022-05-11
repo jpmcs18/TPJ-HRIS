@@ -2236,7 +2236,8 @@ label.form-control {
 
 form, fieldset, div {
     &.form-group {
-        margin-bottom: 0.5em;
+        margin-top: 0.5em;
+        margin-bottom: 0;
     }
 
     &#form_search {
@@ -2247,5 +2248,42 @@ form, fieldset, div {
 table.table-striped {
     thead tr th {
         background-color: #f9f9f9 !important;
+    }
+}
+
+#VoyageCrewsTable {
+    tbody {
+        tr {
+            td {
+                input.form-control {
+                    /* Chrome, Safari, Edge, Opera */
+                    &::-webkit-outer-spin-button,
+                    &::-webkit-inner-spin-button {
+                        -webkit-appearance: none;
+                        margin: 0;
+                    }
+                    /* Firefox */
+                    &[type=number] {
+                        -moz-appearance: textfield;
+                    }
+
+                    &.display[disabled="disabled"] {
+                        cursor: text;
+                        border: 0 !important;
+                        -webkit-appearance: none !important;
+                        -moz-appearance: none !important;
+                        background-color: transparent !important;
+                        /*padding: 0px;*/
+                    }
+                }
+
+                &.rate {
+                    .rate-group {
+                        display: flex;
+                        gap: 0.5em;
+                    }
+                }
+            }
+        }
     }
 }

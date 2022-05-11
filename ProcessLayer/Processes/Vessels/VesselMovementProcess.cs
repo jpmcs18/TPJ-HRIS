@@ -31,7 +31,18 @@ namespace ProcessLayer.Processes
                 ETA = dr["ETA"].ToDateTime(),
                 ETD = dr["ETD"].ToNullableDateTime(),
                 VoyageDetails = dr["Voyage Details"].ToString(),
-                MovementStatusID = dr["Movement Status ID"].ToNullableInt() ?? 0 //1: Cancel, 2: Pending, 3: Checked, 4: Approved
+                MovementStatusID = dr["Movement Status ID"].ToNullableInt() ?? 0, //1: Cancel, 2: Pending, 3: Checked, 4: Approved
+                CreatedDate = dr["Created Date"].ToDateTime(),
+                ModifiedDate = dr["Modified Date"].ToNullableDateTime(),
+
+                CreatedBy = dr["Created By"].ToInt(),
+                ModifiedBy = dr["Created By"].ToInt(),
+                //Checker = dr["Checker"].ToString(),
+                CheckedDate = dr["Checked Date"].ToNullableDateTime(),
+                CheckedBy = dr["Checked By"].ToNullableInt(),
+                //Approver = dr["Approver"].ToString(),
+                ApprovedDate = dr["Approved Date"].ToNullableDateTime(),
+                ApprovedBy = dr["Approved By"].ToNullableInt(),
             };
               
             if(!IsVesselMovementOnly)
@@ -45,6 +56,10 @@ namespace ProcessLayer.Processes
                     v.CrewList = GetCrewDetailList(v.VesselID, v.VoyageStartDate, null);
                 }
             }
+            v.Creator = LookupProcess.GetUser(v.CreatedBy);
+            v.Modifier = LookupProcess.GetUser(v.ModifiedBy);
+            v.Checker = LookupProcess.GetUser(v.CheckedBy);
+            v.Approver = LookupProcess.GetUser(v.ApprovedBy);
 
             return v;
         }
@@ -289,6 +304,7 @@ namespace ProcessLayer.Processes
 
                 var parameters = new Dictionary<string, object> {
                     {VesselMovementParameters.PersonnelID, crew.PersonnelID}
+                    , {VesselMovementParameters.VesselMovementID, crew.VesselMovementID}
                     , {VesselMovementParameters.DepartmentID, crew.DepartmentID}
                     , {VesselMovementParameters.PositionID, crew.PositionID}
                     , {VesselMovementParameters.DailyRate, crew.DailyRate}
@@ -312,6 +328,7 @@ namespace ProcessLayer.Processes
 
             return crews;
         }
+
         public static void DeleteCrew(long vesselmovementcrewid, int userid)
         {
             var parameters = new Dictionary<string, object> {
@@ -324,6 +341,7 @@ namespace ProcessLayer.Processes
                 db.ExecuteNonQuery(VesselMovementProcedures.CreateOrUpdateCrew, parameters);
             }
         }
+
         public static void Delete(long vesselmovementid, int userid)
         {
             var parameters = new Dictionary<string, object> {
@@ -335,6 +353,7 @@ namespace ProcessLayer.Processes
                 db.ExecuteNonQuery(VesselMovementProcedures.Delete, parameters);
             }
         }
+
         public static VesselMovement Checked(long id, int userid)
         {
             var parameters = new Dictionary<string, object> {
