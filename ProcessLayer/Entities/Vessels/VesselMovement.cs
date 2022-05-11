@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ProcessLayer.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -55,7 +56,7 @@ namespace ProcessLayer.Entities
         public Location DestinationLocation { get; set; }
 
         public List<VesselMovementCrews> VesselMovementCrewList { get; set; } = new List<VesselMovementCrews>();
-        public List<VesselCrews> CrewList { get; set; } = new List<VesselCrews>();
+        public List<CrewDetails> CrewList { get; set; } = new List<CrewDetails>();
     }  
 
 }

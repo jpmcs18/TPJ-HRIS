@@ -44,12 +44,17 @@ namespace ProcessLayer.Processes
                 ApprovedDate = dr["Approved Date"].ToNullableDateTime(),
                 ApprovedBy = dr["Approved By"].ToNullableInt(),
             };
+              
             if(!IsVesselMovementOnly)
             { 
                 v._Vessel = VesselProcess.Instance.Get(v.VesselID);
                 v.OriginLocation = LocationProcess.Instance.Get(v.OriginLocationID);
                 v.DestinationLocation = LocationProcess.Instance.Get(v.DestinationLocationID);
                 v.VesselMovementCrewList = GetMovementCrews(v.ID);
+                if (v.MovementStatusID == 4)
+                {
+                    v.CrewList = GetCrewDetailList(v.VesselID, v.VoyageStartDate, null);
+                }
             }
             v.Creator = LookupProcess.GetUser(v.CreatedBy);
             v.Modifier = LookupProcess.GetUser(v.ModifiedBy);

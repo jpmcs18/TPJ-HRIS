@@ -140,9 +140,11 @@
         }
 
     function search_personnel() {
+        $('#form_search_personnel #hid_search_personnel').val($('#Filter_personnel').val());
+        
         $.ajax({
             url: '@Url.Action("SearchPersonnel", "Maintenance/Systems/User")',
-            data: $('#form_search_personnel').serializeArray(),
+            data: $('#form_search_personnel *').serialize(),
             type: "GET",
             cache: false,
             beforeSend: function () {

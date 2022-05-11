@@ -6952,7 +6952,7 @@ body .md-stepper-horizontal .md-step:active .md-step-circle {
   background-color: #757575;
 }
 body .md-stepper-horizontal .md-step:active {
-  border-radius: 15% / 75%;
+  border-radius: 0.2%;
 }
 body .md-stepper-horizontal .md-step:first-child:active {
   border-top-left-radius: 0;
