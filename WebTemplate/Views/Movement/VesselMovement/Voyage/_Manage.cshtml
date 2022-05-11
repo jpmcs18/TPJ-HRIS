@@ -10,6 +10,9 @@
     var movementTypes = ProcessLayer.Processes.LookupProcess.GetVesselMovementType().Where(m => m.ID != Model.MovementStatusID);
     //var voyageTypes = ProcessLayer.Processes.LookupProcess.GetVesse
     var locations = ProcessLayer.Processes.LocationProcess.Instance.GetList();
+
+    var isForChecking = CheckAccess.Approve && Model.MovementStatusID < 3 && Model.VesselMovementCrewList.Count() > 0;// Model.CheckedBy == null && Model.ApprovedBy == null;
+    var isForApproving = ApproveAccess.Approve && Model.MovementStatusID < 4 && !isForChecking && Model.VesselMovementCrewList.Count() > 0;//  && Model.ApprovedBy == null && !isForChecking;
 }
 
 <style>
@@ -35,20 +38,16 @@
                     if (Model.MovementStatusID == 1)
                     {
                         @*<div class="md-stepper-horizontal orange">
-                                <div class="md-step active done5">
-                                    <div class="md-step-circle">
-                                    </div>
-                                    <div class="md-step-title">Cancelled</div>
-                                    <div class='md-step-optional'>@Model.Moveme, @String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.CancelledDate)</div>
-                                    <div class="md-step-bar-left"></div>
-                                </div>
-                            </div>*@
+                    <div class="md-step active done5">
+                        <div class="md-step-circle"></div>
+                        <div class="md-step-title">Cancelled</div>
+                        <div class='md-step-optional'>@Model.Moveme, @String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.CancelledDate)</div>
+                        <div class="md-step-bar-left"></div>
+                    </div>
+                </div>*@
                     }
                     else
                     {
-                        var isForChecking = CheckAccess.Approve && Model.MovementStatusID < 3;// Model.CheckedBy == null && Model.ApprovedBy == null;
-                        var isForApproving = ApproveAccess.Approve && Model.MovementStatusID < 4 && !isForChecking;//  && Model.ApprovedBy == null && !isForChecking;
-
                         <div class="md-stepper-horizontal green">
                             <div class="md-step @(Model.MovementStatusID >= 2 ? "active " : "")done1">
                                 <div class="md-step-circle"></div>
@@ -56,17 +55,19 @@
                                 <div class="md-step-title">Created</div>
                                 <div class="md-step-bar-left"></div>
                                 <div class="md-step-bar-right"></div>
-                            </div>                            
+                            </div>
                             <div class="md-step @(Model.MovementStatusID >= 3 ? "active " : "")done2 @Html.Raw(isForChecking ? "btn btn-primary" : "")" @Html.Raw(isForChecking ? "style='cursor: pointer;' action='Check' onclick='CheckApproveVoyage(1);'" : "")>
                                 <div class="md-step-circle"></div>
-                                <div class='md-step-optional'>@Html.Raw(Model.MovementStatusID >= 2 ? Model.Checker : "&nbsp;"), @Html.Raw(Model.MovementStatusID >= 2 ? String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.CheckedDate) + "" : "&nbsp;")</div>
-                                <div class="md-step-title">@Html.Raw(isForChecking ? "For Checking" : "Checked")</div>
+                                <div class='md-step-optional'>
+                                    @Html.Raw($"{(Model.MovementStatusID >= 3 ? $"{Model.Checker} {Model.CheckedDate:MM/dd/yyyy hh:mm tt}" : (!Model.VesselMovementCrewList.Any() ? "No Crews Yet..." : "&nbsp;"))}")
+                                </div>
+                                <div class="md-step-title">@Html.Raw(Model.MovementStatusID >= 3 ? "Checked" : "For Checking")</div>
                                 @Html.Raw(!isForChecking ? "<div class='md-step-bar-left'></div><div class='md-step-bar-right'></div>" : "")
-                            </div>                       
-                            <div class="md-step @(Model.MovementStatusID >= 4 ? "active " : "")done4 @Html.Raw(isForApproving ? "btn btn-primary" : "")" @Html.Raw(isForApproving ? "style='cursor: pointer;' action='Approve' onclick='CheckApproveVoyage(0);'" : "")>
+                            </div>
+                            <div class="md-step @(Model.MovementStatusID == 4 ? "active " : "")done4 @Html.Raw(isForApproving ? "btn btn-primary" : "")" @Html.Raw(isForApproving ? "style='cursor: pointer;' action='Approve' onclick='CheckApproveVoyage(0);'" : "")>
                                 <div class="md-step-circle"></div>
-                                <div class='md-step-optional'>@Html.Raw(Model.MovementStatusID >= 4 ? Model.Approver : "&nbsp;"), @Html.Raw(Model.MovementStatusID >= 4 ? String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.ApprovedDate) + "" : "&nbsp;")</div>
-                                <div class="md-step-title">@Html.Raw(isForChecking || (!isForChecking && isForApproving) ? "For Approving" : "Approved")</div>
+                                <div class='md-step-optional'>@Html.Raw(Model.MovementStatusID == 4 ? Model.Approver : "&nbsp;"), @Html.Raw(Model.MovementStatusID >= 4 ? String.Format("{0:MM/dd/yyyy hh:mm tt}", Model.ApprovedDate) + "" : "&nbsp;")</div>
+                                <div class="md-step-title">@Html.Raw(Model.MovementStatusID == 4 ? "Approved" : "For Approving")</div>
                                 @Html.Raw(!isForApproving ? "<div class='md-step-bar-left'></div><div class='md-step-bar-right'></div>" : "")
                             </div>
                         </div>
@@ -79,7 +80,7 @@
                     @Html.Hidden("model.CreatedDate", Model.CreatedDate, new { @class = "form-control" })
                     @Html.Hidden("model.CheckedDate", Model.CheckedDate, new { @class = "form-control" })
                     @Html.Hidden("model.ApprovedDate", Model.ApprovedDate, new { @class = "form-control" })
-                    <div class="row">
+                    <div class="">
                         <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-3">
                             <label class="control-label">Start Date</label>
                             @Html.TextBox("model.VoyageStartDate", $"{Model.VoyageStartDate:yyyy'-'MM'-'dd}", new { @type = "date", @class = "form-control voyage-main required" })
@@ -89,9 +90,9 @@
                             @Html.TextBox("model.VoyageEndDate", $"{Model.VoyageEndDate ?? DateTime.Now:yyyy'-'MM'-'dd}", new { @type = "date", @class = "form-control voyage-main" })
                         </div>
                         @*<div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-3">
-                                <label class="control-label"></label>
-                                @Html.DropDownList("VoyageStatusID", new SelectList(absenceSubTypes, "Key", "Value", 1), new { @class = "form-control" })
-                            </div>*@
+                    <label class="control-label"></label>
+                    @Html.DropDownList("VoyageStatusID", new SelectList(absenceSubTypes, "Key", "Value", 1), new { @class = "form-control" })
+                </div>*@
                         <div class="form-group col-xs-12 col-sm-12 col-md-3 col-lg-3">
                             <label class="control-label">Origin</label>
                             @Html.DropDownList("model.OriginLocationID", new SelectList(locations, "ID", "Description", Model.OriginLocationID), new { @class = "form-control required" })
@@ -109,7 +110,7 @@
                             @Html.TextBox("model.ETA", $"{Model.ETA:yyyy'-'MM'-'dd}", new { @type = "date", @class = "form-control voyage-main required" })
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="">
                         <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <label class="control-label">Details</label>
                             @Html.TextArea("model.VoyageDetails", new { @class = "form-control voyage-main", @rows = "4", @placeholder = "Details..." })
@@ -118,12 +119,15 @@
                 </fieldset>
                 @if (Model.ID > 0)
                 {
-                    @Html.Partial("~/Views/Movement/VesselMovement/Voyage/_CrewSearch.cshtml", Model)
-                    @Html.Partial("~/Views/Movement/VesselMovement/Voyage/_VesselMovement.cshtml", Model.VesselMovementCrewList)
+                    if (!isForApproving)
+                    {
+                        @Html.Partial("~/Views/Movement/VesselMovement/Voyage/_CrewSearch.cshtml")
+                    }
+                    @Html.Partial("~/Views/Movement/VesselMovement/Voyage/_VesselMovement.cshtml")
                 }
             </div>
             <div class="modal-footer" style=" bottom: 0; position: absolute; width: 100%;">
-                <button id="SaveVesselVoyage" type="button" class="btn btn-primary pull-right" onclick="SaveVesselVoyage(@Model.VesselID);" value="@Model.ID" title="@(Model.ID == 0 ? "Save " : "Update ")Voyage"><i class="fa fa-@(Model.ID == 0 ? "save" : "pencil")"></i> @(Model.ID == 0 ? "Save" : "Update")</button>
+                <button id="SaveVesselVoyage" type="button" class="btn btn-primary pull-right" onclick="SaveVesselVoyage(@Model.VesselID);" value="@Model.ID" title="@(Model.ID == 0 ? "Save " : "Update ")Voyage"><i class="fa fa-@(Model.ID == 0 ? "save" : "save")"></i> @(Model.ID == 0 ? "Save" : "Update")</button>
                 <button type="button" class="btn btn-white pull-right m-r-sm" data-dismiss="modal"><i class="fa fa-ban"></i> Close</button>
             </div>
         </div>

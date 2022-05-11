@@ -108,12 +108,12 @@ namespace WebTemplate.Controllers.Movement
         {
             try
             {
-                model = VesselMovementProcess.CreateOrUpdate(model, User.UserID);
-
                 foreach (var crew in model.VesselMovementCrewList.Where(m => m.Deleted))
                 {
                     VesselMovementProcess.DeleteCrew(crew.ID, User.UserID);
                 }
+
+                model = VesselMovementProcess.CreateOrUpdate(model, User.UserID);
 
                 model.VesselMovementCrewList = VesselMovementProcess.GetMovementCrews(model.ID);
 

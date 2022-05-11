@@ -2,63 +2,73 @@
 @using WebTemplate.Extension
 @using ProcessLayer.Entities
 
-@{
-}
-
 <form>
-    <fieldset>
-        <legend>Add Crews</legend>
-        <div class="row">
-            <div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-push-2 col-lg-4">
-                <div id="SearchPersonnelDiv" class="input-group" style="width: 100%;">
-                    @Html.TextBox("Personnel", "", new { @class = "form-control", @placeholder = "Search Personnel..." })
-                    <span class="input-group-addon" id="SearchPersonnel" style="cursor: pointer;"><i class="fa fa-search"></i></span>
-                </div>
+    <fieldset id="CrewSearchFieldSet">
+        <div class="fieldset-blur-background">
+            <p>Sample message?</p>
+            <div class="btn-group">
+                <div style="flex: 1;"></div><div style="flex: 1;"></div>
+                <button class="btn btn-default btn-w-m" action="cancel" type="button">Cancel</button>
+                <button class="btn btn-primary btn-w-m" action="ok" type="button">OK</button>
+                <div style="flex: 1;"></div><div style="flex: 1;"></div>
             </div>
+        </div>
+        <legend style="display: none;">Add Crews</legend>
+        <button id="AddCrews" type="button" class="btn btn-primary btn-w-m" style="width: 100%;" name="AddCrews" value="0"><i class="fa fa-plus"></i> Add Crews</button>
+        <fieldsets style="display: none;">
+            <div class="row" style="margin-right: 15px; margin-left: 15px;">
+                <div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-push-2 col-lg-4">
+                    <div id="SearchPersonnelDiv" class="input-group" style="width: 100%;">
+                        @Html.TextBox("Personnel", "", new { @class = "form-control", @placeholder = "Search Personnel..." })
+                        <span class="input-group-addon" id="SearchPersonnel" style="cursor: pointer;"><i class="fa fa-search"></i></span>
+                    </div>
+                </div>
 
-            <div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-push-2 col-lg-4">
-                <div id="SearchCrewDiv" class="input-group" style="width: 100%;">
-                    @Html.TextBox("Crew", "", new { @class = "form-control", @placeholder = "Search Crew..." })
-                    <span class="input-group-addon" id="SearchCrew" style="cursor: pointer;"><i class="fa fa-search"></i></span>
+                <div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-push-2 col-lg-4">
+                    <div id="SearchCrewDiv" class="input-group" style="width: 100%;">
+                        @Html.TextBox("Crew", "", new { @class = "form-control", @placeholder = "Search Crew..." })
+                        <span class="input-group-addon" id="SearchCrew" style="cursor: pointer;"><i class="fa fa-search"></i></span>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div id="SearchPersonnelDivResult" class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-push-2 col-lg-4" style="padding-left: 0;">
-                @Html.Partial("~/Views/Movement/VesselMovement/Voyage/_PersonnelList.cshtml", new List<Personnel>())
-            </div>
+            <div class="row" style="margin-right: 15px; margin-left: 15px;">
+                <div id="SearchPersonnelDivResult" class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-push-2 col-lg-4">
+                    @Html.Partial("~/Views/Movement/VesselMovement/Voyage/_PersonnelList.cshtml", new List<Personnel>())
+                </div>
 
-            <div id="SearchCrewDivResult" class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-push-2 col-lg-4" style="padding-right: 0;">
-                <div class="table-responsive" style="max-height: 300px; overflow-y: auto; margin-bottom: 0">
-                    <table id="CrewsTable" class="table table-stripped table-bordered" style="max-height: 500px;">
-                        <thead>
-                            <tr>
-                                <th style="text-align: center;">Crew</th>
-                                <th style="text-align: center; min-width: 70px;" scope="col">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="CrewDiv">
-                            <tr id="Row-Loading-Display" class="hidden">
-                                <td style="text-align: center;" colspan="10">
-                                    <i id="" class="fa fa-rotate-left rotate" style="padding: 8px; font-size: 20px; text-align: right;"></i>
-                                </td>
-                            </tr>
-                            <tr id="No-Row-Display">
-                                <td style="text-align: center;" colspan="10">No Crews found...</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div id="SearchCrewDivResult" class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-push-2 col-lg-4">
+                    <div class="table-responsive" style="max-height: 300px; overflow-y: auto; margin-bottom: 0">
+                        <table id="CrewsTable" class="table table-stripped table-bordered" style="max-height: 500px;">
+                            <thead>
+                                <tr>
+                                    <th style="text-align: center;">Crew</th>
+                                    <th style="text-align: center; min-width: 70px;" scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="CrewDiv">
+                                <tr id="Row-Loading-Display" class="hidden">
+                                    <td style="text-align: center;" colspan="10">
+                                        <i id="" class="fa fa-rotate-left rotate" style="padding: 8px; font-size: 20px; text-align: right;"></i>
+                                    </td>
+                                </tr>
+                                <tr id="No-Row-Display">
+                                    <td style="text-align: center;" colspan="10">No Crews found...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    @*@Html.Partial("~/Views/Movement/VesselMovement/Voyage/_CrewList.cshtml", Model.VesselMovementCrewList)*@
                 </div>
-                @*@Html.Partial("~/Views/Movement/VesselMovement/Voyage/_CrewList.cshtml", Model.VesselMovementCrewList)*@
             </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-push-2 col-lg-8 m-t-md" style="padding-right: 0;">
-                <button id="SaveCrews" type="button" class="btn btn-primary pull-right" onclick="SaveVesselVoyage(@Model.VesselID)" title="Add crews to voyage" value="@Model.VesselID" disabled="disabled">
-                    @(Model.CrewList.Any() ? "Save Changes" : "Save")
-                </button>
+            <div class="row" style="margin-right: 15px; margin-left: 15px;">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-push-2 col-lg-8 m-b-sm" style="padding-right: 0;">
+                    <button id="SaveCrews" type="button" class="btn btn-primary pull-right" onclick="SaveVesselVoyage(@Model.VesselID)" title="Add crews to voyage" value="@Model.VesselID" disabled="disabled">
+                        <i class="fa fa-save"></i> @(Model.CrewList.Any() ? "Save Changes" : "Save")
+                    </button>
+                    <button id="CancelCrews" type="button" class="btn btn-white pull-right m-r-sm"><i class="fa fa-ban"></i> Close</button>
+                </div>
             </div>
-        </div>
+        </fieldsets>
     </fieldset>
 </form>
 

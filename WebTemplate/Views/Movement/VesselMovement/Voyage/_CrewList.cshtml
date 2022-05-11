@@ -45,10 +45,10 @@
                                     <img src="@(String.IsNullOrEmpty(Model[i].Personnel.ImagePath) ? "\\Images\\default.jpg": Model[i].Personnel.ImagePath)" style="height: 50px; width: 50px; min-height: 40px; max-w: 40px; border: 3px solid #eaeaea; margin-right: 10px; border-radius: 50px;" title="" />
                                     <div>
                                         <b class="text-primary">@Model[i].Personnel.FullName</b>
-                                        @*@Html.Raw(!String.IsNullOrEmpty(Model[i].Department.CheckIfNull().ShortDescription) ? $"<br /><text style='text-transform: uppercase; font-weight: 700;'>{Model[i].Department.CheckIfNull().ShortDescription}</text>" : "")*@
-                                        @Html.Raw(!String.IsNullOrEmpty(Model[i].Position.CheckIfNull().Description) ? $"<br /><text style='text-transform: uppercase; font-weight: 700;'>{Model[i].Position.CheckIfNull().Description}</text>" : "")
-                                        @Html.Raw(!String.IsNullOrEmpty(Model[i].Personnel.Email) ? $"<br /><text style='text-transform: uppercase;'><i class='fa fa-envelope'></i> {Model[i].Personnel.Email}</text>" : "")
-                                        @Html.Raw(!String.IsNullOrEmpty(Model[i].Personnel.Address) ? $"<br /><text style='text-transform: uppercase;'><i class='fa fa-map-marker'></i> {Model[i].Personnel.Address}</text>" : "")
+                                        @*@Html.Raw($"<br /><text style='text-transform: uppercase; font-weight: 700;'><i class='fa fa-user'></i>{(Model[i].Departments != null ? Model[i].Departments.Select(x => x._Department.Description).FirstOrDefault() : "")}</text>")*@
+                                        @Html.Raw($"<br /><text style='text-transform: uppercase; font-weight: 700;'><i class='fa fa-group'></i>{(Model[i].Position != null ? Model[i].Position.Description : "")}</text>")
+                                        @*@Html.Raw(!String.IsNullOrEmpty(Model[i].Email) ? $"<br /><text style='text-transform: uppercase;'><i class='fa fa-envelope'></i> {Model[i].Email}</text>" : "")
+        @Html.Raw(!String.IsNullOrEmpty(Model[i].Address) ? $"<br /><text style='text-transform: uppercase;'><i class='fa fa-map-marker'></i> {Model[i].Address}</text>" : "")*@
                                     </div>
                                 </td>
                                 <td class="text-right">@((Model[i].BasicRate ?? 0).ToString("#,###.00##"))</td>

@@ -18,6 +18,7 @@
 
     fieldset {
         margin-bottom: 0.5em;
+        padding: 0;
     }
 </style>
 
@@ -292,9 +293,44 @@
     }
 
     function CheckApproveVoyage(action) {
+        var id = $('#VesselVoyageFieldSet input[id="model_ID"]').val();
+        var zeroDailyRateCrewsLen = $('#VoyageCrewsTable .voyageCrew td.rate input[value="0.00"]').length;
+        var updatedRateslen = $('#ManageVoyageModal .table tbody tr.updated').length;
+
+        if (updatedRateslen > 0) {
+            toastr.warning('There are pending changes in crew DailyRates. Save voyage first.');
+        }
+        else {
+            if (zeroDailyRateCrewsLen > 0) {
+                toastr.warning('There are Zero (0.00) DailyRates in the Voyage Crew List. Edit them it first.');
+            }
+            else {
+                swal({
+                    title: 'Continue to ' + (action == 0 ? 'Approve' : 'Check') + ' voyage?',
+                    text: '', //'Choose from the actions below or<br/>Press Esc to Cancel, Enter to Continue.',
+                    type: 'warning',
+                    showConfirmButton: true,
+                    showCancelButton: true,
+                    confirmButtonColor: "#1ab394",
+                    cancelButtonColor: "#f27474", //"f27474",
+                    confirmButtonText: 'Continue',
+                    cancelButtonText: 'Cancel',
+                    closeOnConfirm: true,
+                    closeOnCancel: true,
+                    html: true
+                },
+                    function (isConfirm) {
+                        if (isConfirm) {
+                            CheckOrApprove(id, action);
+                        }
+                    });
+                }
+            }
+    }
+
+    function CheckOrApprove(id, action) {
         //var action = $(this).attr('action');
         var url = action == 0 ? '@Url.Action("ApprovedMovement", "VesselMovement")' : '@Url.Action("CheckedMovement", "VesselMovement")';
-        var id = $('#VesselVoyageFieldSet input[id="model_ID"]').val();
         var formData = new FormData();
         formData.append('id', id);
         formData.append('__RequestVerificationToken', $('@Html.AntiForgeryToken()').val());
@@ -356,7 +392,8 @@
                 $personnelToAdd.find('.AddCrew').find('i').removeClass().addClass('fa fa-times');
                 $('#CrewsTable tbody').append($personnelToAdd);
                 $(this).closest('tr').addClass('hidden');
-                $('#ManageVoyageModal #VoyageCrewsTable').find('.AddCrew, .RemoveCrew').off('click').on('click', AddRemoveCrew);
+                $('#ManageVoyageModal #VoyageCrewsTable').find('.AddCrew').off('click').on('click', AddRemoveCrew);
+                $('#ManageVoyageModal #VoyageCrewsTable').find('.RemoveCrew').off('click').on('click', AddRemoveCrew);
 
                 $_crewIdsArr.push({ PersonnelID: personnelID, PositionID: positionID, DailyRate: dailyRate, VesselMovementID: vesselVoyageID, Deleted: false });
                 $_personnelIDsArr = $.grep($_personnelIDsArr, function (a) { return a.PersonnelID !== personnelID; });
@@ -473,8 +510,10 @@
         $('#ManageVoyageModal input#Personnel').off('keyup').on('keyup', function (e) {
             SearchPersonnelAction(e);
         });
-        $('#ManageVoyageModal #VoyageCrewsTable').find('.AddCrew, .RemoveCrew').off('click').on('click', AddRemoveCrew);
-        $('#ManageVoyageModal #CrewsTable').find('.AddCrew, .RemoveCrew').off('click').on('click', AddRemoveCrew);
+        $('#ManageVoyageModal #VoyageCrewsTable').find('.AddCrew').off('click').on('click', AddRemoveCrew);
+        $('#ManageVoyageModal #VoyageCrewsTable').find('.RemoveCrew').off('click').on('click', AddRemoveCrew);
+        $('#ManageVoyageModal #CrewsTable').find('.AddCrew').off('click').on('click', AddRemoveCrew);
+        $('#ManageVoyageModal #CrewsTable').find('.RemoveCrew').off('click').on('click', AddRemoveCrew);
         InputCurrency();
 
         $("#VoyageCrewsTable input[type='currency']").on({
@@ -486,6 +525,62 @@
                     $(this).closest('td').find('button[action="Cancel"]').trigger('click');
                 }
             }
+        });
+
+        $('#AddCrews').off('click').on('click', function (e) {
+            var updatedRateslen = $('#ManageVoyageModal .table tbody tr.updated').length;
+            var currEditingRate = $('#VoyageCrewsTable .voyageCrew td.rate .btn.save').is(':visible');
+            if (!currEditingRate) {
+                if (updatedRateslen == 0) {
+                    $fieldset = $(this).closest('fieldset');
+                    $legend = $fieldset.find('legend');
+                    $fieldsets = $fieldset.find('fieldsets');
+                    $(this).hide();
+                    $fieldset.show();
+                    $legend.show();
+                    $fieldsets.show();
+                }
+                else {
+                    toastr.warning('There are pending changes in Crew Rates. Save voyage first.');
+                }
+            }
+            else {
+                toastr.warning('A rate is being edited. save it first.');
+            }
+        });
+
+        $('#CancelCrews').off('click').on('click', function (e) {
+            $fieldset = $(this).closest('fieldset');
+            $legend = $fieldset.find('legend');
+            $fieldsets = $fieldset.find('fieldsets');
+            var selectedCrewLen = $('#CrewsTable tbody tr.crew').length;
+
+            if ($('#CrewsTable').is(':visible') && selectedCrewLen == 0) {
+                //$fieldset.hide();
+                $('#AddCrews').show();
+                $legend.hide();
+                $fieldsets.hide();
+            } else {
+                $('#CrewSearchFieldSet .fieldset-blur-background').addClass('open');
+                //toastr.warning('There is an unsaved selected crew for voyage. Cancel Adding Crew?');
+            }
+        });
+
+        $('#CrewSearchFieldSet .fieldset-blur-background button').off('click').on('click', function () {
+            $fieldset = $(this).closest('fieldset');
+            $legend = $fieldset.find('legend');
+            $fieldsets = $fieldset.find('fieldsets');
+            var action = $(this).attr('action');
+
+            var msg = 'There is an unsaved selected crew for voyage.<br/>Cancel Adding Crew?';
+            $('#CrewSearchFieldSet .fieldset-blur-background p').html(msg);
+
+            if (action == 'ok') {
+                $('#AddCrews').show();
+                $legend.hide();
+                $fieldsets.hide();
+            }
+            $('#CrewSearchFieldSet .fieldset-blur-background').removeClass('open');
         });
 
         $_VoyageCrewRate = '0.00';
@@ -502,6 +597,8 @@
                     $_VoyageCrewRate = $rateInput.val();
                     console.log(action, $_VoyageCrewRate);
                     $('#SaveVesselVoyage').attr('disabled', 'disabled');
+                } else {
+                    toastr.warning('A rate is being edited. save it first.');
                 }
             }
             else {
@@ -651,7 +748,8 @@
                             $('#ManageVoyageModal input#Personnel').off('keyup').on('keyup', function (e) {
                                 SearchPersonnelAction(e);
                             });
-                            $('#ManageVoyageModal #PersonnelsTable').find('.AddCrew, .RemoveCrew').off('click').on('click', AddRemoveCrew);
+                            $('#ManageVoyageModal #PersonnelsTable').find('.AddCrew').off('click').on('click', AddRemoveCrew);
+                            $('#ManageVoyageModal #PersonnelsTable').find('.RemoveCrew').off('click').on('click', AddRemoveCrew);
 
                             BoldMatch();
                         } catch { }
@@ -851,19 +949,21 @@
             }
         });
 
-        $('#CrewsTable tbody tr.crew').each(function (e) {
-            $(this).find('.form-control').each(function (f) {
-                var name = $(this).attr('name');
-                var value = $(this).val();
+        if ($('#CrewsTable').is(':visible')) {
+            $('#CrewsTable tbody tr.crew').each(function (e) {
+                $(this).find('.form-control').each(function (f) {
+                    var name = $(this).attr('name');
+                    var value = $(this).val();
 
-                formData.append('model.VesselMovementCrewList[' + e + '].' + name, value);
+                    formData.append('model.VesselMovementCrewList[' + e + '].' + name, value);
+                });
+                formData.append('model.VesselMovementCrewList[' + e + '].VesselMovementID', $('#ManageVoyageModal #SaveVesselVoyage').val());
             });
-            formData.append('model.VesselMovementCrewList[' + e + '].VesselMovementID', $('#ManageVoyageModal #SaveVesselVoyage').val());
-        });
-        //if ($_crewIdsArr.length > 0) {
-        //    formData.append('crewlist', JSON.stringify($_crewIdsArr));
-        //    //formData.append('CrewList', JSON.stringify($_crewIdsArr)); //$('#CrewsTable tbody tr.crew *').serialize()
-        //}
+            //if ($_crewIdsArr.length > 0) {
+            //    formData.append('crewlist', JSON.stringify($_crewIdsArr));
+            //    //formData.append('CrewList', JSON.stringify($_crewIdsArr)); //$('#CrewsTable tbody tr.crew *').serialize()
+            //}
+        }
 
         $('#ManageVoyageModal .table tbody tr.updated').each(function (e) {
             $(this).find('.form-control').each(function (f) {
