@@ -44,7 +44,8 @@ namespace WebTemplate.Controllers.Movement
                 model.VesselMovements =
                     VesselMovementProcess.GetList(model.VesselID, model.StartingDate, model.EndingDate); 
                 //New vessel voyage addition validation
-                ViewBag.AllowAdd = true;
+
+                ViewBag.AllowAdd = VesselMovementProcess.CanAddNewVesselMovement(model.VesselID);
 
                 ModelState.Clear();
                 return PartialViewCustom("/Voyage/_Search", model);

@@ -617,7 +617,7 @@ namespace ProcessLayer.Processes.CnB
             if (HasCrewPayrollAhead(payrollSheet, payrollBase.StartDate))
                 throw new Exception("Unable to generate payroll");
 
-            if (payrollBase.EndDate > DateTime.Now)
+            if (payrollBase.StartDate > DateTime.Now)
                 throw new Exception("Unable to generate future payroll");
 
 
@@ -648,7 +648,7 @@ namespace ProcessLayer.Processes.CnB
                 start = 1;
                 end = CrewPayrollParameters.Instance.CrewCutOff2;
                 assumeStart = CrewPayrollParameters.Instance.CrewCutOff2 + 1;
-                assumeEnd = new DateTime(month, year, 1).AddMonths(1).AddDays(-1).Day;
+                assumeEnd = new DateTime(year, month, 1).AddMonths(1).AddDays(-1).Day;
             }
             else
             {
