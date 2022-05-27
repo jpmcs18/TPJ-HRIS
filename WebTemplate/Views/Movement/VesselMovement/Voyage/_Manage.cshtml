@@ -4,8 +4,8 @@
 @{
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
     var PageAccess = credential.GetPage("Movement/VesselMovement") ?? new DataAccessLayer.System.Page();
-    var CheckAccess = credential.GetPage("Movement/VesselMovement") ?? new DataAccessLayer.System.Page();
-    var ApproveAccess = credential.GetPage("Movement/VesselMovement") ?? new DataAccessLayer.System.Page();
+    var CheckAccess = credential.GetPage("VesselMovement Checker") ?? new DataAccessLayer.System.Page();
+    var ApproveAccess = credential.GetPage("VesselMovement Approver") ?? new DataAccessLayer.System.Page();
 
     var movementTypes = ProcessLayer.Processes.LookupProcess.GetVesselMovementType().Where(m => m.ID != Model.MovementStatusID);
     //var voyageTypes = ProcessLayer.Processes.LookupProcess.GetVesse
