@@ -4,8 +4,8 @@
 @{
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
     var PageAccess = credential.GetPage("Movement/VesselMovement") ?? new DataAccessLayer.System.Page();
-    var CheckAccess = credential.GetPage("Movement/VesselMovement") ?? new DataAccessLayer.System.Page();
-    var ApproveAccess = credential.GetPage("Movement/VesselMovement") ?? new DataAccessLayer.System.Page();
+    var CheckAccess = credential.GetPage("Vessel Movement Check") ?? new DataAccessLayer.System.Page();
+    var ApproveAccess = credential.GetPage("Approver Vessel Movement") ?? new DataAccessLayer.System.Page();
 
     var crews = Model.VesselMovementCrewList ?? new List<ProcessLayer.Entities.VesselMovementCrews>();
     var isForChecking = CheckAccess.Approve && Model.MovementStatusID < 3 && Model.VesselMovementCrewList.Count() > 0;// Model.CheckedBy == null && Model.ApprovedBy == null;
