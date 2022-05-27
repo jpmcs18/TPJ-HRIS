@@ -79,7 +79,7 @@ namespace WebTemplate.Controllers.Kiosk
         public ActionResult Save(TimeEditRequest model)
         {
             try
-            {
+                {
                 StringBuilder errors = new StringBuilder();
 
                 if (errors.Length > 0)

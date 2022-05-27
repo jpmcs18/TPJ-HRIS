@@ -255,6 +255,14 @@ namespace ProcessLayer.Processes
 
             return vms;
         }
+
+        public static bool CanAddNewVesselMovement(int vesselId)
+        {
+            using (var db = new DBTools())
+            {
+                return db.ExecuteScalar("vessel.CanAddNewVesselMovement", new Dictionary<string, object> { { "@_VesselID", vesselId } }).ToBoolean();
+            }
+        }
         public static List<VesselMovement> GetLastTwoMovement(long vesselID)
         {
             using (var db = new DBTools())

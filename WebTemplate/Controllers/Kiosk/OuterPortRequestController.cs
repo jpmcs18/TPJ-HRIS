@@ -106,6 +106,8 @@ namespace WebTemplate.Controllers.Kiosk
         {
             try
             {
+                if (model.StartDate is null)
+                    throw new Exception("Start Date is Required");
                 model = OuterPortRequestProcess.Instance.CreateOrUpdate(model, User.UserID);
                 ModelState.Clear();
                 return PartialViewCustom("_OuterPortRequestEdit", model);

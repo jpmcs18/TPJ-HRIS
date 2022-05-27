@@ -38,24 +38,17 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="form-group col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                        <div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-6">
                             <label class="control-label">Year</label>
                             <input type="text" id="txt_year" name="year" class="form-control tpj-year" placeholder="Year" value="@($"{DateTime.Now:yyyy}" )" />
                         </div>
-                        <div class="form-group col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                        <div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-6">
                             <label class="control-label">Month</label>
                             <select id="select-month" class="form-control" name="month">
                                 @for (int i = 0; i < months.Count; i++)
                                 {
                                     <option value="@(i+1)" @(i + 1 == monno ? "selected" : "")>@months[i]</option>
                                 }
-                            </select>
-                        </div>
-                        <div class="form-group col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                            <label class="control-label">Cut Off</label>
-                            <select id="select-cutoff" name="cutoff" class="form-control">
-                                <option value="1">1st</option>
-                                <option value="2">2nd</option>
                             </select>
                         </div>
                     </div>
