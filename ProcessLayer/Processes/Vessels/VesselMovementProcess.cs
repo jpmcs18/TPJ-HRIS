@@ -23,20 +23,20 @@ namespace ProcessLayer.Processes
         {
             var v = new VesselMovement {
                 ID = dr["ID"].ToLong(),
-                VesselID = dr["Vessel ID"].ToInt(),
-                VoyageStartDate = dr["Voyage Start Date"].ToDateTime(),
+                VesselID = dr["Vessel ID"].ToNullableInt(),
+                VoyageStartDate = dr["Voyage Start Date"].ToNullableDateTime(),
                 VoyageEndDate = dr["Voyage End Date"].ToNullableDateTime(),
-                OriginLocationID = dr["Origin Location ID"].ToInt(),
+                OriginLocationID = dr["Origin Location ID"].ToNullableInt(),
                 DestinationLocationID = dr["Destination Location ID"].ToNullableInt(),
-                ETA = dr["ETA"].ToDateTime(),
+                ETA = dr["ETA"].ToNullableDateTime(),
                 ETD = dr["ETD"].ToNullableDateTime(),
                 VoyageDetails = dr["Voyage Details"].ToString(),
                 MovementStatusID = dr["Movement Status ID"].ToNullableInt() ?? 0, //1: Cancel, 2: Pending, 3: Checked, 4: Approved
-                CreatedDate = dr["Created Date"].ToDateTime(),
+                CreatedDate = dr["Created Date"].ToNullableDateTime(),
                 ModifiedDate = dr["Modified Date"].ToNullableDateTime(),
 
-                CreatedBy = dr["Created By"].ToInt(),
-                ModifiedBy = dr["Created By"].ToInt(),
+                CreatedBy = dr["Created By"].ToNullableInt(),
+                ModifiedBy = dr["Created By"].ToNullableInt(),
                 //Checker = dr["Checker"].ToString(),
                 CheckedDate = dr["Checked Date"].ToNullableDateTime(),
                 CheckedBy = dr["Checked By"].ToNullableInt(),
@@ -53,7 +53,7 @@ namespace ProcessLayer.Processes
                 v.VesselMovementCrewList = GetMovementCrews(v.ID);
                 if (v.MovementStatusID == 4)
                 {
-                    v.CrewList = GetCrewDetailList(v.VesselID, v.VoyageStartDate, null);
+                    v.CrewList = GetCrewDetailList(v.VesselID ?? 0, v.VoyageStartDate, null);
                 }
             }
             v.Creator = LookupProcess.GetUser(v.CreatedBy);
@@ -68,10 +68,10 @@ namespace ProcessLayer.Processes
             var v = new VesselMovementCrews
             {
                 ID = dr["ID"].ToLong(),
-                VesselMovementID = dr["Vessel Movement ID"].ToLong(),
-                PersonnelID = dr["Personnel ID"].ToLong(),
+                VesselMovementID = dr["Vessel Movement ID"].ToNullableLong(),
+                PersonnelID = dr["Personnel ID"].ToNullableLong(),
                 DepartmentID = dr["Department ID"].ToNullableInt(),
-                PositionID = dr["Position ID"].ToInt(),
+                PositionID = dr["Position ID"].ToNullableInt(),
                 DailyRate = dr["Daily Rate"].ToNullableDecimal(),
                 Remarks = dr["Remarks"].ToString()
             };
@@ -81,13 +81,13 @@ namespace ProcessLayer.Processes
             if (!IsVesselMovementOnly)
             {
                 v.Position = PositionProcess.Instance.Get(v.PositionID);
-                v.Department = DepartmentProcess.Instance.Get(v.DepartmentID ?? fleetDept.FirstOrDefault().ID);
+                v.Department = DepartmentProcess.Instance.Get(v.DepartmentID ?? 0);
                 v.Personnel = PersonnelProcess.Get(v.PersonnelID, true);
             }
 
             if(v.DailyRate == null)
             {
-                v.DailyRate = PositionSalaryProcess.GetByPositionId(v.PositionID)?.Salary;
+                v.DailyRate = PositionSalaryProcess.GetByPositionId(v.PositionID ?? 0)?.Salary;
             }
 
             return v;
@@ -331,7 +331,7 @@ namespace ProcessLayer.Processes
                     db.ExecuteNonQuery(VesselMovementProcedures.CreateOrUpdateCrew, ref outparameters, parameters);
                     crew.ID = outparameters.Get(VesselMovementParameters.ID).ToLong();
 
-                    crew.Personnel = PersonnelProcess.Get(crew.PersonnelID, true);
+                    crew.Personnel = PersonnelProcess.Get(crew.PersonnelID ?? 0, true);
                     crew.Department = DepartmentProcess.Instance.Get(crew.DepartmentID ?? 0);
                     crew.Position = PositionProcess.Instance.Get(crew.PositionID);
                 }

@@ -68,6 +68,7 @@
     <Compile Include="Entities\CnBs\PayrollPeriod.cs" />
     <Compile Include="Entities\CnBs\PersonnelTimesheet.cs" />
     <Compile Include="Entities\CnBs\ComputedTimelog.cs" />
+    <Compile Include="Entities\Common\ToApplyAction.cs" />
     <Compile Include="Entities\HRs\AssumedPersonnelDeduction.cs" />
     <Compile Include="Entities\HRs\Infraction.cs" />
     <Compile Include="Entities\HRs\InfractionContent.cs" />
@@ -95,7 +96,6 @@
     <Compile Include="Entities\Lookups\WhenToDeduct.cs" />
     <Compile Include="Entities\Lookups\WrittenExplanationStatus.cs" />
     <Compile Include="Entities\Reports\PersonnelReport.cs" />
-    <Compile Include="Entities\Common\ToApplyAction.cs" />
     <Compile Include="Entities\HRs\ContactNumber.cs" />
     <Compile Include="Entities\HRs\PersonnelLeaveCredits.cs" />
     <Compile Include="Entities\HRs\PersonnelLoan.cs" />
@@ -374,5 +374,6 @@
     <Content Include="DBUpdates\Update20200615.sql" />
     <Content Include="DBUpdates\UpdateQueries.sql" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
