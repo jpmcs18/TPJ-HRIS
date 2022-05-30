@@ -981,7 +981,7 @@
             var isRequired = $(this).hasClass('required');
 
             if (name != null) {
-                if (isRequired && value) {
+                if (isRequired && !value) {
                     $(this).addClass('input-incomplete');
                     return;
                 }
@@ -1010,7 +1010,7 @@
         }
 
         //Voyage Crews table
-        $('#ManageVoyageModal .table tbody tr').each(function (e) {
+        $('#VoyageCrewDiv tr.voyageCrew').each(function (e) {
             $(this).find('.form-control').each(function (f) {
                 var name = $(this).attr('name');
                 var value = $(this).val();

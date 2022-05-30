@@ -32,15 +32,13 @@ namespace ProcessLayer.Processes
                 ETD = dr["ETD"].ToNullableDateTime(),
                 VoyageDetails = dr["Voyage Details"].ToString(),
                 MovementStatusID = dr["Movement Status ID"].ToNullableInt() ?? 0, //1: Cancel, 2: Pending, 3: Checked, 4: Approved
-                CreatedDate = dr["Created Date"].ToNullableDateTime(),
-                ModifiedDate = dr["Modified Date"].ToNullableDateTime(),
 
+                CreatedDate = dr["Created Date"].ToNullableDateTime(),
                 CreatedBy = dr["Created By"].ToNullableInt(),
-                ModifiedBy = dr["Created By"].ToNullableInt(),
-                //Checker = dr["Checker"].ToString(),
+                ModifiedDate = dr["Modified Date"].ToNullableDateTime(),
+                ModifiedBy = dr["Modified By"].ToNullableInt(),
                 CheckedDate = dr["Checked Date"].ToNullableDateTime(),
                 CheckedBy = dr["Checked By"].ToNullableInt(),
-                //Approver = dr["Approver"].ToString(),
                 ApprovedDate = dr["Approved Date"].ToNullableDateTime(),
                 ApprovedBy = dr["Approved By"].ToNullableInt(),
             };
@@ -76,13 +74,11 @@ namespace ProcessLayer.Processes
                 Remarks = dr["Remarks"].ToString()
             };
 
-            var fleetDept = DepartmentProcess.Instance.GetListOffice().Where(m => m.ShortDescription == "FD") ?? new List<Department>();
-
             if (!IsVesselMovementOnly)
             {
                 v.Position = PositionProcess.Instance.Get(v.PositionID);
-                v.Department = DepartmentProcess.Instance.Get(v.DepartmentID ?? 0);
-                v.Personnel = PersonnelProcess.Get(v.PersonnelID, true);
+                v.Department = DepartmentProcess.Instance.Get(v.DepartmentID ?? 0) ?? DepartmentProcess.Instance.GetListOffice().Where(m => m.ShortDescription == "FD").FirstOrDefault() ?? new Department();
+                v.Personnel = PersonnelProcess.Get(v.PersonnelID ?? 0, true);
             }
 
             if(v.DailyRate == null)
@@ -303,6 +299,11 @@ namespace ProcessLayer.Processes
 
             CreateOrUpdateCrew(vessel.VesselMovementCrewList, userid);
             //vessel = Get(vessel.ID, true) ?? new VesselMovement();
+
+            vessel.Creator = LookupProcess.GetUser(vessel.CreatedBy);
+            vessel.Modifier = LookupProcess.GetUser(vessel.ModifiedBy);
+            vessel.Checker = LookupProcess.GetUser(vessel.CheckedBy);
+            vessel.Approver = LookupProcess.GetUser(vessel.ApprovedBy);
 
             return vessel;
         }

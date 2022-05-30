@@ -109,7 +109,7 @@ namespace WebTemplate.Controllers.Movement
         {
             try
             {
-                foreach (var crew in model.VesselMovementCrewList.Where(m => m.Deleted))
+                foreach (var crew in model.VesselMovementCrewList.Where(m => m.Deleted ?? false))
                 {
                     VesselMovementProcess.DeleteCrew(crew.ID, User.UserID);
                 }

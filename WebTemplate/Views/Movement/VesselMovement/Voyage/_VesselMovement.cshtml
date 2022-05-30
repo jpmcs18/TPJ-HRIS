@@ -61,7 +61,7 @@
                                 @if (Model.MovementStatusID != 4 && !isForApproving)
                                 {
                                     <td class="text-center">
-                                        @Html.DropDownList("PositionID", new SelectList(positionsalary, "Position.ID", "Position.Description"), "N/A", new { @class = "form-control required" })
+                                        @Html.DropDownList("PositionID", new SelectList(positionsalary, "Position.ID", "Position.Description", crews[i].PositionID), "N/A", new { @class = "form-control required" })
                                         @*@Html.Raw(!String.IsNullOrEmpty(crews[i].Position.CheckIfNull().Description) ? $"<br /><text style='text-transform: uppercase; font-weight: 700;'>{crews[i].Position.CheckIfNull().Description}</text>" : "")*@
                                     </td>
                                     <td class="text-right rate">
