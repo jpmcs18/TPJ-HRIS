@@ -11,19 +11,39 @@
 }
 
 <div id="divitems">
-    <div class="form-group">
-        <div class="ol-xs-12 col-sm-12 col-md-3 col-lg-3">
-            @Html.DropDownList("selectitem", new SelectList(selectpages, "ID", "PageName"), "N/A", new { @class = "form-control m-b" })
+    <div id="AddItem" class="form-group">
+        <div class="row">
+            <div class="form-group col-xs-12 col-sm-4 col-md-3 col-lg-3">
+                @Html.DropDownList("SelectedPageAccess.PageID", new SelectList(selectpages, "ID", "PageName"), "N/A", new { @class = "form-control m-b" })
+            </div>
         </div>
-        <div class="col-xs-12 col-sm-10 col-md-7 col-lg-7">
-            <label class="col-lg-2 control-label">@Html.CheckBoxFor(m => m.SelectedPageAccess.EnableView, new { @class = "i-checks" }) View</label>
-            <label class="col-lg-2 control-label">@Html.CheckBoxFor(m => m.SelectedPageAccess.EnableInsert, new { @class = "i-checks" }) Insert</label>
-            <label class="col-lg-2 control-label">@Html.CheckBoxFor(m => m.SelectedPageAccess.EnableUpdate, new { @class = "i-checks" }) Update</label>
-            <label class="col-lg-2 control-label">@Html.CheckBoxFor(m => m.SelectedPageAccess.EnableDelete, new { @class = "i-checks" }) Delete</label>
-            <label class="col-lg-2 control-label">@Html.CheckBoxFor(m => m.SelectedPageAccess.AllAccess, new { @class = "i-checks" }) Approve</label>
+        <div class="row">
+            <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                <label class="control-label" style="margin-bottom: 0.5em !important">@Html.CheckBoxFor(m => m.SelectedPageAccess.EnableView, new { @class = "i-checks form-control" }) View</label>
+            </div>
+            <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                <label class="control-label" style="margin-bottom: 0.5em !important">@Html.CheckBoxFor(m => m.SelectedPageAccess.EnableInsert, new { @class = "i-checks form-control" }) Insert</label>
+            </div>
+            <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                <label class="control-label" style="margin-bottom: 0.5em !important">@Html.CheckBoxFor(m => m.SelectedPageAccess.EnableUpdate, new { @class = "i-checks form-control" }) Update</label>
+            </div>
+            <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                <label class="control-label" style="margin-bottom: 0.5em !important">@Html.CheckBoxFor(m => m.SelectedPageAccess.EnableDelete, new { @class = "i-checks form-control" }) Delete</label>
+            </div>
+            <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                <label class="control-label" style="margin-bottom: 0.5em !important">@Html.CheckBoxFor(m => m.SelectedPageAccess.Approvable, new { @class = "i-checks form-control" }) Approve</label>
+            </div>
+            @*<div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                <label class="control-label" style="margin-bottom: 0.5em !important">@Html.CheckBoxFor(m => m.SelectedPageAccess.RoleApprover, new { @class = "i-checks form-control" }) Role Approver</label>
+            </div>*@
+            <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                <label class="control-label" style="margin-bottom: 0.5em !important">@Html.CheckBoxFor(m => m.SelectedPageAccess.AllAccess, new { @class = "i-checks form-control" }) All Access</label>
+            </div>
         </div>
-        <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
-            <button type="button" id="btnadditem" class="btn btn-w-m btn-primary-red pull-right" @(selectpages.Count < 1 ? "disabled" : "")>Add Page</button>
+        <div class="row">
+            <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <button type="button" id="btnadditem" class="btn btn-w-m btn-primary-red pull-right" @(selectpages.Count < 1 ? "disabled" : "")>Add Page</button>
+            </div>
         </div>
     </div>
     @if (Model.Role.Pages != null && Model.Role.Pages.Count > 0)
@@ -38,7 +58,7 @@
                 </div>
             </div>
         </div>
-        <div class="" style="height: 500px; overflow-y: auto; float: left; width: 100%; ">
+        <div class="" style="height: 430px; overflow-y: auto; float: left; width: 100%; ">
             <table class="table table-hover table-striped" data-page-size="8" data-filter=#txtfilter>
                 <thead>
                     @*@if (Model.Role.Pages.Any())
@@ -57,6 +77,8 @@
                         <th class="text-center" data-sort-ignore="true">Update</th>
                         <th class="text-center" data-sort-ignore="true">Delete</th>
                         <th class="text-center" data-sort-ignore="true">Approve</th>
+                        @*<th class="text-center" data-sort-ignore="true">Role Approver</th>*@
+                        <th class="text-center" data-sort-ignore="true">All Access</th>
                         <th class="text-center" data-sort-ignore="true">Action</th>
                     </tr>
 
@@ -77,13 +99,16 @@
                             <tr class="read" style="cursor: pointer;">
                                 <td class="text-center">@page.Select(p => p.PageName).FirstOrDefault()</td>
                                 <td class="text-center">@page.Select(p => p.URL).FirstOrDefault()</td>
-                                <td class="text-center">@Html.CheckBoxFor(m => m.Role.Pages[i].EnableView, new { @class = "i-checks" })</td>
-                                <td class="text-center">@Html.CheckBoxFor(m => m.Role.Pages[i].EnableInsert, new { @class = "i-checks" })</td>
-                                <td class="text-center">@Html.CheckBoxFor(m => m.Role.Pages[i].EnableUpdate, new { @class = "i-checks" })</td>
-                                <td class="text-center">@Html.CheckBoxFor(m => m.Role.Pages[i].EnableDelete, new { @class = "i-checks" })</td>
-                                <td class="text-center">@Html.CheckBoxFor(m => m.Role.Pages[i].AllAccess, new { @class = "i-checks" })</td>
+                                <td class="text-center">@Html.CheckBoxFor(m => m.Role.Pages[i].EnableView, new { @class = "i-checks form-control" })</td>
+                                <td class="text-center">@Html.CheckBoxFor(m => m.Role.Pages[i].EnableInsert, new { @class = "i-checks form-control" })</td>
+                                <td class="text-center">@Html.CheckBoxFor(m => m.Role.Pages[i].EnableUpdate, new { @class = "i-checks form-control" })</td>
+                                <td class="text-center">@Html.CheckBoxFor(m => m.Role.Pages[i].EnableDelete, new { @class = "i-checks form-control" })</td>
+                                <td class="text-center">@Html.CheckBoxFor(m => m.Role.Pages[i].Approvable, new { @class = "i-checks form-control" })</td>
+                                @*<td class="text-center">@Html.CheckBoxFor(m => m.Role.Pages[i].RoleApprover, new { @class = "i-checks form-control" })</td>*@
+                                <td class="text-center">@Html.CheckBoxFor(m => m.Role.Pages[i].AllAccess, new { @class = "i-checks form-control" })</td>
                                 <td class="text-center">
-                                    <input type="hidden" name="@Html.NameFor(m => m.Role.Pages[i].PageID)" value="@Model.Role.Pages[i].PageID" />
+                                    <input type="hidden" class="form-control" name="@Html.NameFor(m => m.Role.Pages[i].PageID)" value="@Model.Role.Pages[i].PageID" />
+                                    @*<input type="hidden" class="form-control" name="@Html.NameFor(m => m.Role.Pages[i].Deleted)" value="false" />*@
                                     <a class="btn btn-outline btn-primary btn-sm btn-rounded" title="Edit" target="_blank" href="@Url.Action("Index", "Maintenance/Systems/Page", new { uid = Model.Role.Pages[i].PageID })"><i class="fa fa-pencil"></i></a>
                                     <button type="button" value="@Model.Role.Pages[i].PageID" title="Delete" class="btnremoveitem btn btn-outline btn-primary btn-sm btn-rounded"><i class="fa fa-times"></i></button>
                                 </td>

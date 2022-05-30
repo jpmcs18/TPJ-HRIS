@@ -49,9 +49,8 @@
     function manage(id, idx = null) {
         $.ajax({
             url: '@Url.Action("Management", "Maintenance/Systems/Roles")',
-            data: { uid : id },
+            data: { uid: id },
             type: "GET",
-            cache: false,
             beforeSend: function () {
                 ShowLoadingScreen()
             },
@@ -73,17 +72,36 @@
         });
     }
 
+    function AppendFormData($this, formdata) {
+        var name = $this.attr('name');
+        var value = $this.hasClass('i-checks') ? $this.is(':checked') : $this.val();
+
+        if (name && value) formdata.append(name, value);
+
+        return formdata;
+    }
+
     function event_save() {
         Select2Override();
 
         $('#btnsave').click(function () {
-            var params = $('#formpost *').serializeArray();
+            var formdata = new FormData();
+            $('#formpost #divdetails .form-control').each(function (e) {
+                AppendFormData($(this), formdata);
+            });
+            $('#formpost table tbody tr .form-control').each(function (e) {
+                AppendFormData($(this), formdata);
+            });
+            formdata.append('__RequestVerificationToken', $('@Html.AntiForgeryToken()').val());
 
             $.ajax({
                 url: '@Url.Action("Save", "Maintenance/Systems/Roles")',
-                data: params,
+                data: formdata,
                 type: "POST",
+                datatype: 'JSON',
                 cache: false,
+                contentType: false,
+                processData: false,
                 beforeSend: function () {
                     ShowLoadingScreen()
                 },
@@ -196,7 +214,10 @@
             url: '@Url.Action("Index", "Maintenance/Systems/Roles")',
             data: params,
             type: "GET",
+            datatype: 'JSON',
             cache: false,
+            contentType: false,
+            processData: false,
             beforeSend: function () {
                 ShowLoadingScreen();
             },
@@ -219,12 +240,39 @@
             radioClass: 'iradio_square-green',
         });
 
+        $('input.i-checks').off('ifClicked').on('ifClicked', function (e) {
+            $checks = $('#formpost #AddItem .i-checks');
+
+            if ($(this).attr('name') == 'SelectedPageAccess.AllAccess') {
+                $checks.iCheck(($(this).is(':checked') ? 'un' : '') + 'check');
+            }
+            else {
+                $('input[name="SelectedPageAccess.AllAccess"].i-checks').iCheck('uncheck');
+
+                if (!$checks.filter((a, b) => b.name === 'SelectedPageAccess.AllAccess').is(':checked') && $checks.filter((a, b) => b.checked === true).length == $checks.length - 2) {
+                    $('input[name="SelectedPageAccess.AllAccess"].i-checks').iCheck('check');
+                }
+            }
+        });
+
         $('#btnadditem').click(function () {
+            var formdata = new FormData();
+            $('#formpost #AddItem .form-control').each(function (e) {
+                AppendFormData($(this), formdata);
+            });
+            $('#formpost table tbody tr .form-control').each(function (e) {
+                AppendFormData($(this), formdata);
+            });
+            formdata.append('__RequestVerificationToken', $('@Html.AntiForgeryToken()').val());
+
             $.ajax({
                 url: '@Url.Action("AddPage", "Maintenance/Systems/Roles")',
-                data: $('#formpost').serializeArray().concat({ name: 'SelectedPageAccess.PageID', value: $('#selectitem').val() }),
+                data: formdata,
                 type: "POST",
+                datatype: 'JSON',
                 cache: false,
+                contentType: false,
+                processData: false,
                 beforeSend: function () {
                     ShowLoadingScreen();
                 },
@@ -232,7 +280,7 @@
                     RemoveLoadingScreen();
                 },
                 success: function (response) {
-                    $("#divitems").replaceWith(response);
+                    $("#divitems").html(response);
                     event_items();
                 },
                 error: function () {
@@ -242,11 +290,22 @@
         });
 
         $('.btnremoveitem').click(function () {
+           // $(this).closest('tr').find('')
+            var formdata = new FormData();
+            formdata.append('SelectedPageAccess.PageID', $(this).val());
+            $('#formpost table tbody tr .form-control').each(function (e) {
+                AppendFormData($(this), formdata);
+            });
+            formdata.append('__RequestVerificationToken', $('@Html.AntiForgeryToken()').val());
+
             $.ajax({
                 url: '@Url.Action("RemovePage", "Maintenance/Systems/Roles")',
-                data: $('#formpost').serializeArray().concat({ name: 'SelectedPageAccess.PageID', value: $(this).val() }),
+                data: formdata,
                 type: "POST",
+                datatype: 'JSON',
                 cache: false,
+                contentType: false,
+                processData: false,
                 beforeSend: function () {
                     ShowLoadingScreen()
                 },
@@ -254,7 +313,7 @@
                     RemoveLoadingScreen()
                 },
                 success: function (response) {
-                    $("#divitems").replaceWith(response);
+                    $("#divitems").html(response);
                     event_items();
                 },
                 error: function () {
@@ -264,7 +323,7 @@
         });
 
         $('#modal_management select').select2();
-        
+
         $('#txtfilter').keydown(function () {
             var value = $(this).val().toLowerCase();
             $("#modal_management table tbody tr").filter(function () {

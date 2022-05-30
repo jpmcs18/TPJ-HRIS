@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Web.Mvc;
+using System.Linq;
 using DataAccessLayer.System;
 using WebTemplate.Models.Maintenance.Systems.Roles;
 
@@ -39,9 +41,11 @@ namespace WebTemplate.Controllers.Maintenance.Systems
 
         public ActionResult AddPage(Management model)
         {
-            model.Role.AddPage(model.SelectedPageAccess);
+            model.Role.Pages.Insert(0, model.SelectedPageAccess);
+            //model.Role.AddPage(model.SelectedPageAccess);
             return PartialViewCustom("_Pages", model);
         }
+
         public ActionResult RemovePage(Management model)
         {
             model.Role.RemovePage(model.SelectedPageAccess);
@@ -56,10 +60,11 @@ namespace WebTemplate.Controllers.Maintenance.Systems
             {
                 if (!ModelState.IsValid)
                 {
-                    var errors = new System.Collections.Generic.List<string>();
+                    var errors = new List<string>();
                     foreach (ModelState modelState in ModelState.Values)
                         foreach (ModelError error in modelState.Errors)
                             errors.Add(error.ErrorMessage);
+
                     throw new Exception("&middot;" + String.Join("</br>&middot;", errors));
                 }
 
@@ -77,6 +82,11 @@ namespace WebTemplate.Controllers.Maintenance.Systems
                         throw new Exception("Access Denied!");
                     }
                 }
+
+                //foreach (var page in model.Role.Pages.Where(r => r.Deleted == true))
+                //{
+                //    model.Role.RemovePage(page);
+                //}
                 
                 model.Role.Save(GetCredentials());
                 
