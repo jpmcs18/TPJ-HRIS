@@ -10,6 +10,9 @@
     var crews = Model.VesselMovementCrewList ?? new List<ProcessLayer.Entities.VesselMovementCrews>();
     var isForChecking = CheckAccess.Approve && Model.MovementStatusID < 3 && Model.VesselMovementCrewList.Count() > 0;// Model.CheckedBy == null && Model.ApprovedBy == null;
     var isForApproving = ApproveAccess.Approve && Model.MovementStatusID < 4 && !isForChecking && Model.VesselMovementCrewList.Count() > 0;//  && Model.ApprovedBy == null && !isForChecking;
+
+    var positionsalary = ProcessLayer.Processes.PositionSalaryProcess.GetList();
+    //var fleetDept = ProcessLayer.Processes.Lookups.DepartmentProcess.Instance.GetListOffice().Where(m => m.ShortDescription == "FD");
 }
 
 @if (crews.Count > 0)
@@ -21,16 +24,12 @@
                 <table id="VoyageCrewsTable" class="table table-stripped table-bordered" style="margin-bottom: 0px;">
                     <thead>
                         <tr>
-                            @*<th>Seq No.</th>
-        <th>Rank</th>
-        <th>Designation</th>*@
                             <th class="text-center">Employee No</th>
                             <th class="text-left">Employee</th>
+                            <th class="text-left">Position</th>
                             <th class="text-right">Daily Rate</th>
-                            @*<th>Date Embarked</th>
-        <th>Date Disembarked</th>*@
                             <th>Remarks</th>
-                            @if (PageAccess.View && PageAccess.Update && PageAccess.Insert && !isForApproving)
+                            @if (PageAccess.View && PageAccess.Update && PageAccess.Insert && Model.MovementStatusID != 4 && !isForApproving)
                             {
                                 <th class="text-center">Action</th>
                             }
@@ -45,47 +44,54 @@
                         @for (var i = 0; i < crews.Count(); i++)
                         {
                             <tr id="@crews[i].ID" class="voyageCrew Voyage-Crew-@crews[i].ID">
-                                @*<td></td>
-                                    <td></td>*@
                                 <td class="text-center">
                                     <input class="form-control" type="hidden" name="ID" value="@crews[i].ID" />
                                     <input class="form-control" type="hidden" name="VesselMovementID" value="@crews[i].VesselMovementID" />
                                     <input class="form-control" type="hidden" name="PersonnelID" value="@crews[i].Personnel.ID" />
                                     <input class="form-control" type="hidden" name="Deleted" value="false" />@crews[i].Personnel.EmployeeNo
                                     <input class="form-control" type="hidden" name="DepartmentID" value="@crews[i].DepartmentID" />
-                                    <input class="form-control" type="hidden" name="PositionID" value="@crews[i].PositionID" />
                                 </td>
                                 <td class="text-left" style="text-transform: uppercase; display: flex;">
-                                    <img src="@(String.IsNullOrEmpty(crews[i].Personnel.ImagePath) ? "\\Images\\default.jpg": crews[i].Personnel.ImagePath)" style="height: 50px; width: 50px; min-height: 40px; max-w: 40px; border: 3px solid #eaeaea; margin-right: 10px; border-radius: 50px;" title="" />
+                                    <img src="@(String.IsNullOrEmpty(crews[i].Personnel.ImagePath) ? "\\Images\\default.jpg": crews[i].Personnel.ImagePath)" style="height: 50px; width: 50px; min-height: 40px; max-width: 40px; border: 3px solid #eaeaea; margin-right: 10px; border-radius: 50px;" title="" />
                                     <div>
                                         <b class="text-primary">@crews[i].Personnel.FullName</b>
                                         @Html.Raw(!String.IsNullOrEmpty(crews[i].Department.CheckIfNull().Description) ? $"<br /><text style='text-transform: uppercase; font-weight: 700;'>{crews[i].Department.CheckIfNull().Description}</text>" : "")
+                                    </div>
+                                </td>
+                                @if (Model.MovementStatusID != 4 && !isForApproving)
+                                {
+                                    <td class="text-center">
+                                        @Html.DropDownList("PositionID", new SelectList(positionsalary, "Position.ID", "Position.Description"), "N/A", new { @class = "form-control required" })
+                                        @*@Html.Raw(!String.IsNullOrEmpty(crews[i].Position.CheckIfNull().Description) ? $"<br /><text style='text-transform: uppercase; font-weight: 700;'>{crews[i].Position.CheckIfNull().Description}</text>" : "")*@
+                                    </td>
+                                    <td class="text-right rate">
+                                        <div class="rate-group">
+                                            @Html.TextBox("DailyRate", (crews[i].DailyRate ?? 0).ToString("#,##0.00##"), new { @class = "form-control text-right required", @type = "currency" })
+                                            @*@crews[i].BasicRate.Value.ToString("#,###.00##")*@
+                                            @*@if (Model.MovementStatusID < 3)
+                    {
+                        <button id="" class="btn btn-outline btn-info EditDailyRate edit" type="button" action="Edit" title="Edit Daily Rate"><i class="fa fa-pencil"></i></button>
+                        <button id="" class="btn btn-outline btn-warning CancelDailyRate save" type="button" action="Cancel" style="display: none;" title="Cancel editing"><i class="fa fa-ban"></i></button>
+                        <button id="" class="btn btn-outline btn-primary SaveDailyRate save" type="button" action="Save" style="display: none;" title="Ok"><i class="fa fa-thumbs-up"></i></button>
+                    }*@
+                                        </div>
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td class="text-center">
                                         @Html.Raw(!String.IsNullOrEmpty(crews[i].Position.CheckIfNull().Description) ? $"<br /><text style='text-transform: uppercase; font-weight: 700;'>{crews[i].Position.CheckIfNull().Description}</text>" : "")
-                                        @*@Html.Raw(!String.IsNullOrEmpty(crews[i].Personnel.Email) ? $"<br /><text style='text-transform: uppercase;'><i class='fa fa-envelope'></i> {crews[i].Personnel.Email}</text>" : "")*@
-                                        @*@Html.Raw(!String.IsNullOrEmpty(crews[i].Personnel.Address) ? $"<br /><text style='text-transform: uppercase;'><i class='fa fa-map-marker'></i> {crews[i].Personnel.Address}</text>" : "")*@
-                                    </div>
-                                </td>
-                                <td class="text-right rate">
-                                    <div class="rate-group">
-                                        @*@((crews[i].DailyRate ?? 0).ToString("#,##0.00##"))*@
-                                        @Html.TextBox($"DailyRate", (crews[i].DailyRate ?? 0).ToString("#,##0.00##"), new { @class = "form-control display text-right", @type = "currency", @disabled = "disabled" })
-                                        @if (Model.MovementStatusID < 3)
-                                        {
-                                            <button id="" class="btn btn-outline btn-info EditDailyRate edit" type="button" action="Edit" title="Edit Daily Rate"><i class="fa fa-pencil"></i></button>
-                                            <button id="" class="btn btn-outline btn-warning CancelDailyRate save" type="button" action="Cancel" style="display: none;" title="Cancel editing"><i class="fa fa-ban"></i></button>
-                                            <button id="" class="btn btn-outline btn-primary SaveDailyRate save" type="button" action="Save" style="display: none;" title="Ok"><i class="fa fa-thumbs-up"></i></button>
-                                        }
-                                    </div>
-                                </td>
-                                @*<td>@crews[i].DateEmbarked.CheckIfNull().ToString("MMM dd, yyyy")</td>
-                                    <td>@crews[i].DateDisembarked.CheckIfNull().ToString("MMM dd, yyyy")</td>
-                                    <td>@crews[i].BasicRate.Value.ToString("#,###.00##")</td>*@
+                                    </td>
+                                    <td class="text-right rate">
+                                        @crews[i].DailyRate.Value.ToString("#,###.00##")
+                                    </td>
+                                }
                                 <td>@crews[i].Remarks</td>
-                                @if (PageAccess.View && PageAccess.Update && PageAccess.Insert && !isForApproving)
+                                @if (PageAccess.View && PageAccess.Update && PageAccess.Insert && Model.MovementStatusID != 4 && !isForApproving)
                                 {
                                     <td style="text-align: center;">
-                                    <button type="button" name="RemoveCrew" class="btn btn-outline btn-danger btn-sm btn-rounded RemoveCrew" value="@crews[i].PersonnelID" title="Remove crew"><i class="fa fa-times"></i></button>
-                                    <button type="button" name="AddCrew" class="btn btn-default btn-sm btn-rounded AddCrew hidden" value="@crews[i].PersonnelID" title="Undo remove crew"><i class="fa fa-undo"></i></button>
+                                        <button type="button" name="RemoveCrew" class="btn btn-outline btn-danger btn-sm btn-rounded RemoveCrew" value="@crews[i].PersonnelID" title="Remove crew"><i class="fa fa-times"></i></button>
+                                        <button type="button" name="AddCrew" class="btn btn-default btn-sm btn-rounded AddCrew hidden" value="@crews[i].PersonnelID" title="Undo remove crew"><i class="fa fa-undo"></i></button>
                                     </td>
                                 }
                             </tr>

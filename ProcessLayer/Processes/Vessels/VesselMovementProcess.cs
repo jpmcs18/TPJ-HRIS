@@ -76,10 +76,12 @@ namespace ProcessLayer.Processes
                 Remarks = dr["Remarks"].ToString()
             };
 
+            var fleetDept = DepartmentProcess.Instance.GetListOffice().Where(m => m.ShortDescription == "FD") ?? new List<Department>();
+
             if (!IsVesselMovementOnly)
             {
                 v.Position = PositionProcess.Instance.Get(v.PositionID);
-                v.Department = DepartmentProcess.Instance.Get(v.DepartmentID ?? 0);
+                v.Department = DepartmentProcess.Instance.Get(v.DepartmentID ?? fleetDept.FirstOrDefault().ID);
                 v.Personnel = PersonnelProcess.Get(v.PersonnelID, true);
             }
 

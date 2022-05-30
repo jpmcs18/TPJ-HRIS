@@ -56,7 +56,7 @@ function formatCurrency(input, blur) {
     // and puts cursor back in right position.
 
     // get input value
-    var input_val = input.val();
+    var input_val = input.val() || '0.00';
 
     // don't validate empty input
     if (input_val === "") { return; }

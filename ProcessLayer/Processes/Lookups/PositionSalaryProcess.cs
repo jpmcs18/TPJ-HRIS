@@ -12,7 +12,7 @@ namespace ProcessLayer.Processes
 {
     public class PositionSalaryProcess
     {
-        private static PositionSalary Converter(DataRow dr, bool WithLookup = false)
+        private static PositionSalary Converter2(DataRow dr, bool WithLookup = false)
         {
             var ps = Converter(dr);
 
@@ -37,6 +37,7 @@ namespace ProcessLayer.Processes
             {
                 ID = dr["ID"].ToInt(),
                 PositionID = dr["Position ID"].ToInt(),
+                Position = PositionProcess.Instance.Get(dr["Position ID"].ToInt()),
                 Salary = dr["Salary"].ToNullableDecimal()
             };
         }
@@ -149,7 +150,7 @@ namespace ProcessLayer.Processes
             {
                 using (var ds = db.ExecuteReader("lookup.[SearchPositionSalary]", Parameters))
                 {
-                    PositionSalaryList = ds.Tables[0].AsEnumerable().Select(r => Converter(r, true)).ToList();
+                    PositionSalaryList = ds.Tables[0].AsEnumerable().Select(r => Converter2(r, true)).ToList();
                     Count = ds.Tables[1].AsEnumerable().Select(r => r.Field<int>("Count")).FirstOrDefault();
                 }
             }

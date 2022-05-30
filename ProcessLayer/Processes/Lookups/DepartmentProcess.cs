@@ -1,7 +1,6 @@
 ﻿using DBUtilities;
 using ProcessLayer.Entities;
 using ProcessLayer.Helpers;
-using System;
 using System.Collections.Generic;
 using System.Data;
 
@@ -24,7 +23,7 @@ namespace ProcessLayer.Processes.Lookups
             return p;
         }
 
-        public List<Department> GetListOffice(bool HasDefault = false, bool? isOffice = null)
+        public List<Department> GetListOffice(bool? isOffice = null)
         {
             var lookups = new List<Department>();
 
@@ -36,11 +35,6 @@ namespace ProcessLayer.Processes.Lookups
                 {
                     lookups = ds.GetList(Converter);
                 }
-            }
-
-            if (HasDefault)
-            {
-                lookups.Insert(0, new Department() { ID = 0, Description = "N/A" });
             }
 
             return lookups;
@@ -75,7 +69,7 @@ namespace ProcessLayer.Processes.Lookups
 
         public List<Department> GetList(bool hasDefault = false)
         {
-            return GetListOffice(hasDefault);
+            return GetListOffice();
         }
     }
 }
