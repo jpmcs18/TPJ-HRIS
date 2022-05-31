@@ -1478,9 +1478,9 @@
         }
 
         function CheckRequiredFields(isSave) {
-            var i = CheckRequiredInputs();
-            var s = CheckRequiredSelects();
-            var t = CheckRequiredTables();
+            var i = $('.tab-pane.active input.required').map((i, e) => !e.value ? e.closest('.form-group').innerText.split('\n')[0] : null).get(); //CheckRequiredInputs();
+            var s = $('.tab-pane.active select.required').map((i, e) => !e.value ? e.closest('.form-group').innerText.split('\n')[0] : null).get(); //CheckRequiredSelects();
+            var t = CheckRequiredTables(); //$('.tab-pane.active table.required').map((i, e) => !e.value ? e.id.replace('sTable', '') : null).get();
 
             var ret = (i.concat(s)).concat(t);
 
@@ -1544,6 +1544,8 @@
 
         function CheckRequiredSelects() {
             var ret = [];
+
+            //$('.tab-pane.active select.required').map((i, e) => !e.value ? e : null).next('span').find('.select2-selection').addClass('input-incomplete');
 
             if ($('select.required').length > 0) {
                 $('select.required').each(function (e) {
