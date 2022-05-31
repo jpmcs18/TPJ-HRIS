@@ -486,7 +486,7 @@
                 complete: function () {
                     RemoveLoadingScreen()
                 },
-                
+
                 success: function (response) {
                     if (response.msg == null) {
                         try {
@@ -574,88 +574,94 @@
         $('.tab-pane select.required').map((i, e) => !e.value ? e : null).next('span').find('.select2-selection').removeClass('input-incomplete');
         $('.tab-pane table.required').map((i, e) => Array.from(e.rows).map((e) => e.className === 'Row-Display' ? e : null).filter((e) => e).length == 0 ? e : null).removeClass('input-incomplete');
 
-        var formdata = new FormData();
-            //var tabID = $(this).closest('.tab-pane').attr('id');
-            var urlAction = "",
-                tabName = $('ul.nav-tabs').find('li a[href="' + tabID + '"]').text().trim();
-
-            if (tabID == 'tab-1') {
-                if ($("#browseImage")[0].files.length > 0)
-                    formdata.append("fileBase", $("#browseImage")[0].files[0]);
-
-                urlAction = '@Url.Action("SavePersonalInfo", "Personnel")';
-            }
-            if (tabID == 'tab-2') {
-                urlAction = '@Url.Action("SaveEmployementInfo", "Personnel")';
-            }
-            if (tabID == 'tab-5') {
-                urlAction = '@Url.Action("SaveTraining", "Personnel")';
-            }
-
-            $('#' + tabID + ' .panel-body .form-control').each(function (f) {
-                if ($(this).attr('name') && $(this).attr('name').indexOf('.') > -1)
-                    formdata.append($(this).attr('name'), $(this).val());
-            });
-            $('#' + tabID + ' input.i-checks').each(function (f) {
-                if ($(this).attr('name'))
-                    formdata.append($(this).attr('name'), $(this).is(':checked'));
-            });
-            $('#' + tabID + ' input.js-switch').each(function (f) {
-                if ($(this).attr('name'))
-                    formdata.append($(this).attr('name'), $(this).is(':checked'));
-            });
-
-            formdata.append("__RequestVerificationToken", $('@Html.AntiForgeryToken()').val());
-        formdata.append("Personnel.ID", $('#Personnel_ID').val());
+        $('.tab-pane input.required').map((i, e) => !e.value ? e : null).addClass('input-incomplete');
+        $('.tab-pane select.required').map((i, e) => !e.value ? e : null).next('span').find('.select2-selection').addClass('input-incomplete');
+        $('.tab-pane table.required').map((i, e) => Array.from(e.rows).map((e) => e.className === 'Row-Display' ? e : null).filter((e) => e).length == 0 ? e : null).addClass('input-incomplete');
 
         var requiredFields = $('.tab-pane .required').map((i, e) => e.localName == 'table' ? Array.from(e.rows).map((e) => e.className === 'Row-Display' ? e : null).filter((e) => e).length == 0 ? e.id.replace('sTable', '').trim() : null : !e.value ? e.closest('.form-group').innerText.trim().split('\n')[0].trim() : null).get(); // CheckRequiredFields(true).join(', ');
 
-            if ($('#' + tabID + ' .input-incomplete').length == 0) {
-                $.ajax({
-                    data: formdata,
-                    type: 'POST',
-                    datatype: 'JSON',
-                    url: urlAction,
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-                    beforeSend: function() {
-                        ShowLoadingScreen()
-                    },
-                    complete: function() {
-                        RemoveLoadingScreen()
-                    },
-                    success: function(response) {
-                        if (response.msg) {
-                            if (tabID == 'tab-1') {
-                                $('#Personnel_ID').val(response.res);
-                            }
-                            $('.PersonnelID').val(response.res);
-                            //$('#btnNewWorkExp').val(response.res);
-                            //$('#btnNewEducBG').val(response.res);
-                            //$('#btnNewTraining').val(response.res);
-                            //$('#btnNewMemo').val(response.res);
-                            $('#DependentsDiv').removeAttr('hidden');
-                            $('#DetailsDiv').removeAttr('hidden');
-                            $('#ResignationDetailsDiv').removeAttr('hidden');
-                            $('#PositionID').val($("#Personnel_PositionID").val());
+        //$('#' + tabID + ' .input-incomplete').length == 0
+        if (requiredFields.length > 0) {
+            toastr.warning('Please check incomplete fields/tables highlighted in orange. (' + requiredFields + ')', 'Warning');
+            return;
+        }
 
-                            ShowTabs(false);
-                            TabEvents();
+        var formdata = new FormData();
+        //var tabID = $(this).closest('.tab-pane').attr('id');
+        var urlAction = "",
+            tabName = $('ul.nav-tabs').find('li a[href="' + tabID + '"]').text().trim();
 
-                            isPersonnelUpdated = true;
+        if (tabID == 'tab-1') {
+            if ($("#browseImage")[0].files.length > 0)
+                formdata.append("fileBase", $("#browseImage")[0].files[0]);
 
-                            toastr.success(tabName + ' saved!', 'Success');
-                        } else {
-                            toastr.error(response.res);
-                        }
-                    },
-                    error: function(x) {
+            urlAction = '@Url.Action("SavePersonalInfo", "Personnel")';
+        }
+        if (tabID == 'tab-2') {
+            urlAction = '@Url.Action("SaveEmployementInfo", "Personnel")';
+        }
+        if (tabID == 'tab-5') {
+            urlAction = '@Url.Action("SaveTraining", "Personnel")';
+        }
+
+        $('#' + tabID + ' .panel-body .form-control').each(function (f) {
+            if ($(this).attr('name') && $(this).attr('name').indexOf('.') > -1)
+                formdata.append($(this).attr('name'), $(this).val());
+        });
+        $('#' + tabID + ' input.i-checks').each(function (f) {
+            if ($(this).attr('name'))
+                formdata.append($(this).attr('name'), $(this).is(':checked'));
+        });
+        $('#' + tabID + ' input.js-switch').each(function (f) {
+            if ($(this).attr('name'))
+                formdata.append($(this).attr('name'), $(this).is(':checked'));
+        });
+
+        formdata.append("__RequestVerificationToken", $('@Html.AntiForgeryToken()').val());
+        formdata.append("Personnel.ID", $('#Personnel_ID').val());
+
+        $.ajax({
+            data: formdata,
+            type: 'POST',
+            datatype: 'JSON',
+            url: urlAction,
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                ShowLoadingScreen()
+            },
+            complete: function() {
+                RemoveLoadingScreen()
+            },
+            success: function(response) {
+                if (response.msg) {
+                    if (tabID == 'tab-1') {
+                        $('#Personnel_ID').val(response.res);
                     }
-                });
-            } else {
-                toastr.warning('Please check incomplete fields/tables highlighted in orange. (' + requiredFields + ')', 'Warning');
+                    $('.PersonnelID').val(response.res);
+                    //$('#btnNewWorkExp').val(response.res);
+                    //$('#btnNewEducBG').val(response.res);
+                    //$('#btnNewTraining').val(response.res);
+                    //$('#btnNewMemo').val(response.res);
+                    $('#DependentsDiv').removeAttr('hidden');
+                    $('#DetailsDiv').removeAttr('hidden');
+                    $('#ResignationDetailsDiv').removeAttr('hidden');
+                    $('#PositionID').val($("#Personnel_PositionID").val());
+
+                    ShowTabs(false);
+                    TabEvents();
+
+                    isPersonnelUpdated = true;
+
+                    toastr.success(tabName + ' saved!', 'Success');
+                } else {
+                    toastr.error(response.res);
+                }
+            },
+            error: function(x) {
             }
+        });
     }
 
     function TabEvents() {
