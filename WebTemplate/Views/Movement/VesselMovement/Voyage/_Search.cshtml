@@ -60,10 +60,10 @@
             <table class="table table-stripped table-hover table-bordered" style="margin-bottom: 0px;">
                 <thead>
                     <tr>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                        <th>Origin</th>
-                        <th>Destination</th>
+                        <th class="text-center">Start Date</th>
+                        <th class="text-center">End Date</th>
+                        <th class="text-left">Origin</th>
+                        <th class="text-left">Destination</th>
                         @*
                         <th>Crew Count</th><th>ETD</th>
                         <th>ETA</th>
@@ -72,8 +72,9 @@
                         <th>Modified</th>
                         <th>Checker</th>
                         <th>Approved</th>*@
-                        <th>Last Modified</th>
-                        <th>Action</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-left">Last Modified</th>
+                        <th class="text-center">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -100,10 +101,10 @@
                             var movement = Model.VesselMovements[i];
 
                             <tr id="@movement.ID">
-                                <td>@movement.VoyageStartDate.CheckIfNull().ToString("MMM dd, yyyy")</td>
-                                <td>@movement.VoyageEndDate.CheckIfNull().ToString("MMM dd, yyyy")</td>
-                                <td>@movement.OriginLocation.CheckIfNull().Description</td>
-                                <td>@movement.DestinationLocation.CheckIfNull().Description</td>
+                                <td class="text-center">@movement.VoyageStartDate.CheckIfNull().ToString("MMM dd, yyyy")</td>
+                                <td class="text-center">@movement.VoyageEndDate.CheckIfNull().ToString("MMM dd, yyyy")</td>
+                                <td class="text-left">@movement.OriginLocation.CheckIfNull().Description</td>
+                                <td class="text-left">@movement.DestinationLocation.CheckIfNull().Description</td>
                                 @*
                                 <td>@movement.VesselMovementCrewList.Count()</td><td>@movement.ETD</td>
                     <td>@movement.ETA</td>
@@ -112,38 +113,36 @@
                                 <td>@Html.Raw(movement.ModifiedDate != null ? $"{movement.Modifier}<br />{movement.ModifiedDate.CheckIfNull().ToString("MMM dd, yyyy hh:mm:ss")}" : "")</td>
                                 <td>@Html.Raw(movement.CheckedDate != null ? $"{movement.Checker}<br />{movement.CheckedDate.CheckIfNull().ToString("MMM dd, yyyy hh:mm:ss")}" : "")</td>
                                 <td>@Html.Raw(movement.ApprovedDate != null ? $"{movement.Approver}<br />{movement.ApprovedDate.CheckIfNull().ToString("MMM dd, yyyy hh:mm:ss")}" : "")</td>*@
-                                <td>
+                                <td class="text-center">
+                                    <span class="label label-@(movement.ApprovedBy != null ? "primary" : (movement.CheckedBy != null ? "info" : "default"))">
+                                        @(movement.ApprovedBy != null ? "Approved" : (movement.CheckedBy != null ? "Checked" : (movement.ModifiedBy != null ? "Modified" : "Created")))
+                                    </span>
+                                </td>
+                                <td class="text-left">
                                     @{
-                                        if (movement.ApprovedDate != null)
+                                        if (movement.ApprovedBy != null)
                                         {
-                                            <span class="label label-primary">Approved</span><br />
                                             @movement.Approver<br />
-                                            @movement.ApprovedDate.CheckIfNull().ToString("MMM dd, yyyy hh:mm:ss");
+                                            @movement.ApprovedDate.CheckIfNull().ToString("MMM dd, yyyy hh:mm:ss")
                                         }
-                                        else if (movement.CheckedDate != null)
+                                        else if (movement.CheckedBy != null)
                                         {
-                                            <span class="label label-info">Checked</span><br />
                                             @movement.Checker<br />
-                                            @movement.CheckedDate.CheckIfNull().ToString("MMM dd, yyyy hh:mm:ss");
+                                            @movement.CheckedDate.CheckIfNull().ToString("MMM dd, yyyy hh:mm:ss")
                                         }
-                                        else {
-                                            if (movement.ModifiedDate != null)
-                                            {
-                                                <span class="label label-default">Modified</span><br />
-                                                @movement.Modifier<br />
-                                                @movement.ModifiedDate.CheckIfNull().ToString("MMM dd, yyyy hh:mm:ss");
-                                            }
-                                            else
-                                            {
-                                                <span class="label label-default">Created</span><br />
-                                                @movement.Creator<br />
-                                                @movement.CreatedDate.CheckIfNull().ToString("MMM dd, yyyy hh:mm:ss");
-                                            }
+                                        else if (movement.ModifiedBy != null)
+                                        {
+                                            @movement.Modifier<br />
+                                            @movement.ModifiedDate.CheckIfNull().ToString("MMM dd, yyyy hh:mm:ss")
                                         }
-
+                                        else
+                                        {
+                                            @movement.Creator<br />
+                                            @movement.CreatedDate.CheckIfNull().ToString("MMM dd, yyyy hh:mm:ss")
+                                        }
                                     }
                                 </td>
-                                <td>
+                                <td class="text-center">
                                     <div class="btn-group">
                                         @if (PageAccess.Delete)
                                         {

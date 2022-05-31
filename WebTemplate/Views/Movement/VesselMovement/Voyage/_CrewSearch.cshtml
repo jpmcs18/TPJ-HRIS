@@ -63,7 +63,7 @@
             <div class="row" style="margin-right: 15px; margin-left: 15px;">
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-push-2 col-lg-8 m-b-sm" style="padding-right: 0;">
                     <button id="SaveCrews" type="button" class="btn btn-primary pull-right" onclick="SaveVesselVoyage(@Model.VesselID)" title="Add crews to voyage" value="@Model.VesselID" disabled="disabled">
-                        <i class="fa fa-save"></i> @(Model.CrewList.Any() ? "Save Changes" : "Save")
+                        <i class="fa fa-save"></i> @(Model.CrewList.Any() ? "Save Changes" : "Add")
                     </button>
                     <button id="CancelCrews" type="button" class="btn btn-white pull-right m-r-sm"><i class="fa fa-ban"></i> Close</button>
                 </div>

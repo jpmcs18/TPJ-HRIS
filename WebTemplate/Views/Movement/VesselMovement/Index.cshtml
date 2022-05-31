@@ -328,6 +328,12 @@
             return;
         }
 
+        var hasUpdatedRows = $('#ManageVoyageModal .table tbody tr.updated').length > 0;
+        if (hasUpdatedRows) {
+            toastr.warning('There are pending changes in Voyage crew position/rates. Cannot proceed to ' + (action == 0 ? 'Approve' : 'Check'), 'Warning');
+            return;
+        }
+
         swal({
             title: 'Continue to ' + (action == 0 ? 'Approve' : 'Check') + ' voyage?',
             text: '', //'Choose from the actions below or<br/>Press Esc to Cancel, Enter to Continue.',
@@ -344,12 +350,6 @@
         },
             function (isConfirm) {
                 if (isConfirm) {
-                    var hasUpdatedRows = $('#ManageVoyageModal .table tbody tr.updated').length > 0;
-                    if (hasUpdatedRows) {
-                        toastr.warning('There are pending changes in Voyage crew position/rates. Cannot proceed to ' + (action == 0 ? 'Approve' : 'Check'), 'Warning');
-                        return;
-                    }
-
                     //var action = $(this).attr('action');
                     var url = action == 0 ? '@Url.Action("ApprovedMovement", "VesselMovement")' : '@Url.Action("CheckedMovement", "VesselMovement")';
                     var formData = new FormData();
@@ -560,6 +560,7 @@
 
             $tr = $(this).closest('tr');
             $tr.find('.rate input').val(dailyRate).blur().removeClass('input-incomplete');
+            $(this).next('span').find('.select2-selection').removeClass('input-incomplete');
             $tr.addClass('updated');
             //console.log(dailyRate);
         });

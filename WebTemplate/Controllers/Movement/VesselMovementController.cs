@@ -115,6 +115,7 @@ namespace WebTemplate.Controllers.Movement
                 }
 
                 model = VesselMovementProcess.CreateOrUpdate(model, User.UserID);
+                model = VesselMovementProcess.Get(model.ID, true) ?? new VesselMovement();
 
                 model.VesselMovementCrewList = VesselMovementProcess.GetMovementCrews(model.ID);
 
@@ -233,7 +234,7 @@ namespace WebTemplate.Controllers.Movement
                 model.Vessel = VesselProcess.Instance.Get(model.VesselID);
                 model.Crews = VesselMovementProcess.GetCrewDetailList(model.VesselID, model.StartingDate, model.EndingDate);
                 ModelState.Clear();
-                return PartialViewCustom("/Voyage/_Crews", model);
+                return PartialViewCustom("_CrewSearch", model);
             }
             catch (Exception ex)
             {

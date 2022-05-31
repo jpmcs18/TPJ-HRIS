@@ -146,7 +146,7 @@
             <div class="modal-footer" style=" bottom: 0; position: absolute; width: 100%;">
                 @if (Model.MovementStatusID != 4 && !isForApproving)
                 {
-                    <button id="SaveVesselVoyage" type="button" class="btn btn-primary pull-right" onclick="SaveVesselVoyage(@Model.VesselID);" value="@Model.ID" title="@(Model.ID == 0 ? "Save " : "Update ")Voyage"><i class="fa fa-@(Model.ID == 0 ? "save" : "save")"></i> @(Model.ID == 0 ? "Save" : "Update")</button>
+                    <button id="SaveVesselVoyage" type="button" class="btn btn-primary pull-right" onclick="SaveVesselVoyage(@Model.VesselID);" value="@Model.ID" title="Save Voyage"><i class="fa fa-@(Model.ID == 0 ? "save" : "save")"></i> Save</button>
                 }
                 <button type="button" class="btn btn-white pull-right m-r-sm" data-dismiss="modal"><i class="fa fa-ban"></i> Close</button>
             </div>
