@@ -206,8 +206,8 @@
                             SelectedDaysEvents();
 
                             CheckRequiredFields(false);
-                            toastr.info("Click X button on top-left corner to close, or press Escape.", "What's new?", { tapToDismiss: true, timeOut: 10000 });
-                            toastr.info("Click check button on top-right corner to save (Personal/Employment Info), or press Enter.", "What's new?", { tapToDismiss: true, timeOut: 10000 });
+                            //toastr.info("Click X button on top-left corner to close, or press Escape.", "What's new?", { tapToDismiss: true, timeOut: 10000 });
+                            //toastr.info("Click check button on top-right corner to save (Personal/Employment Info), or press Enter.", "What's new?", { tapToDismiss: true, timeOut: 10000 });
                         } catch { }
                     } else {
                         toastr.error(response.res);
@@ -570,60 +570,14 @@
         }
 
     function SaveProfileInfo(tabID) {
+        $('.tab-pane input.required').map((i, e) => !e.value ? e : null).removeClass('input-incomplete');
+        $('.tab-pane select.required').map((i, e) => !e.value ? e : null).next('span').find('.select2-selection').removeClass('input-incomplete');
+        $('.tab-pane table.required').map((i, e) => Array.from(e.rows).map((e) => e.className === 'Row-Display' ? e : null).filter((e) => e).length == 0 ? e : null).removeClass('input-incomplete');
+
         var formdata = new FormData();
             //var tabID = $(this).closest('.tab-pane').attr('id');
             var urlAction = "",
                 tabName = $('ul.nav-tabs').find('li a[href="' + tabID + '"]').text().trim();
-
-            @*switch (tabID) {
-            case 'tab-1':
-                    $("#BasicDiv *").each(function() {
-                        formdata.append($(this).attr('name'), $(this).val());
-                    });
-                    $("#ContactsDiv *").each(function() {
-                        formdata.append($(this).attr('name'), $(this).val());
-                    });
-                    $("#GovtIDsDiv *").each(function() {
-                        formdata.append($(this).attr('name'), $(this).val());
-                    });
-                    $("#EmergencyDiv *").each(function() {
-                        formdata.append($(this).attr('name'), $(this).val());
-                    });
-
-                    $("#DetailsDiv *").each(function () {
-                        formdata.append($(this).attr('name'), $(this).val());
-                    });
-                    $('#DetailsDiv input.i-checks').each(function () {
-                        formdata.append($(this).attr('name'), $(this).is(':checked'));
-                    });
-                    $("#ResignationDetailsDiv *").each(function () {
-                        formdata.append($(this).attr('name'), $(this).val());
-                    });
-                    if ($("#browseImage")[0].files.length > 0)
-                        formdata.append("fileBase", $("#browseImage")[0].files[0])
-
-                    urlAction = '@Url.Action("SavePersonalInfo", "Personnel")';
-                    break;
-            case 'tab-2':
-                    $("#ReferenceDiv *").each(function() {
-                        formdata.append($(this).attr('name'), $(this).val());
-                    });
-
-                    $("#SchedDiv *").each(function () {
-                        formdata.append($(this).attr('name'), $(this).val());
-                    });
-
-                urlAction = '@Url.Action("SaveEmployementInfo", "Personnel")';
-                break;
-            case 'tab-5':
-                $("#tab-5 *").each(function() {
-                    formdata.append($(this).attr('name'), $(this).val());
-                });
-
-                urlAction = '@Url.Action("SaveTraining", "Personnel")';
-                break;
-            }*@
-
 
             if (tabID == 'tab-1') {
                 if ($("#browseImage")[0].files.length > 0)
@@ -652,9 +606,9 @@
             });
 
             formdata.append("__RequestVerificationToken", $('@Html.AntiForgeryToken()').val());
-            formdata.append("Personnel.ID", $('#Personnel_ID').val());
+        formdata.append("Personnel.ID", $('#Personnel_ID').val());
 
-            var requiredFields = CheckRequiredFields(true).join(', ');
+        var requiredFields = $('.tab-pane .required').map((i, e) => e.localName == 'table' ? Array.from(e.rows).map((e) => e.className === 'Row-Display' ? e : null).filter((e) => e).length == 0 ? e.id.replace('sTable', '').trim() : null : !e.value ? e.closest('.form-group').innerText.trim().split('\n')[0].trim() : null).get(); // CheckRequiredFields(true).join(', ');
 
             if ($('#' + tabID + ' .input-incomplete').length == 0) {
                 $.ajax({
@@ -1477,49 +1431,60 @@
             }
         }
 
-        function CheckRequiredFields(isSave) {
-            var i = $('.tab-pane.active input.required').map((i, e) => !e.value ? e.closest('.form-group').innerText.split('\n')[0] : null).get(); //CheckRequiredInputs();
-            var s = $('.tab-pane.active select.required').map((i, e) => !e.value ? e.closest('.form-group').innerText.split('\n')[0] : null).get(); //CheckRequiredSelects();
-            var t = CheckRequiredTables(); //$('.tab-pane.active table.required').map((i, e) => !e.value ? e.id.replace('sTable', '') : null).get();
+    function CheckRequiredFields(isSave) {
+        $('.tab-pane input.required').map((i, e) => !e.value ? e : null).addClass('input-incomplete');
+        $('.tab-pane select.required').map((i, e) => !e.value ? e : null).next('span').find('.select2-selection').addClass('input-incomplete');
+        $('.tab-pane table.required').map((i, e) => Array.from(e.rows).map((e) => e.className === 'Row-Display' ? e : null).filter((e) => e).length == 0 ? e : null).addClass('input-incomplete');
 
-            var ret = (i.concat(s)).concat(t);
+        //var i = $('.tab-pane input.required').map((i, e) => !e.value ? e.closest('.form-group').innerText.trim().split('\n')[0] : null).get(); //CheckRequiredInputs();
+        //var s = $('.tab-pane select.required').map((i, e) => !e.value ? e.closest('.form-group').innerText.trim().split('\n')[0] : null).get(); //CheckRequiredSelects();
+        //var t = $('.tab-pane table.required').map((i, e) => Array.from(e.rows).map((e) => e.className === 'Row-Display' ? e : null).filter((e) => e).length == 0 ? e.id.replace('sTable', '') : null).get(); //CheckRequiredTables();
+        //$('.tab-pane input.required').map((i, e) => !e.value ? '#' + e.closest('.tab-pane').id + '|' + e.closest('.form-group').innerText.trim().split('\n')[0] : null)
+        //arr.sort((i, e) => +e.split('|')[0] - +i.split('|')[0])
+        //$('.tab-pane .required').map((i, e) => e.localName == 'table' ? e.closest('.tab-pane').id.replace(/[^0-9]/g, '') + '|' + Array.from(e.rows).map((e) => e.className === 'Row-Display' ? e : null).filter((e) => e).length == 0 ? e.id.replace('sTable', '') : null : !e.value ? e.closest('.tab-pane').id.replace(/[^0-9]/g, '') + '|' + e.closest('.form-group').innerText.trim().split('\n')[0] : null).get()
+        //arr.sort((i, e) => e.split('|')[0].replace(/[^0-9]/g, '') - i.split('|')[0].replace(/[^0-9]/g, ''))
+        //arr = $('.tab-pane .required').map((i, e) => e.localName == 'table' ? '#' + e.closest('.tab-pane').id + '|' + Array.from(e.rows).map((e) => e.className === 'Row-Display' ? e : null).filter((e) => e).length == 0 ? e.id.replace('sTable', '') : null : !e.value ? '#' + e.closest('.tab-pane').id + '|' + e.closest('.form-group').innerText.trim().split('\n')[0] : null).get()
+        //arr = $('.tab-pane .required').map((i, e) => e.localName == 'table' ? ('#' + e.closest('.tab-pane').id + '|' + Array.from(e.rows).map((e) => e.className === 'Row-Display' ? e : null).filter((e) => e).length == 0 ? e.id.replace('sTable', '').trim() + '|' + e.id : null) : (!e.value ? '#' + e.closest('.tab-pane').id + '|' + e.closest('.form-group').innerText.trim().split('\n')[0].trim() + '|' + e.id : null)).get()
+        //$('#PersonnelProfile ' + arr[0].split('|')[0]).scrollTop($('#' + arr[0].split('|')[2]).offset().top);
 
-            if (ret.length > 0) {
-                var elem = '';
-                ret.forEach(function (e) {
-                    var isActivePaneDivExists = $('#PersonnelProfile .tab-pane.active #' + e + 'sDiv').length > 0;
-                    var isActivePaneElementExists = $('#PersonnelProfile .tab-pane.active label:contains(' + e + ')').closest('.form-control').length > 0;
-                    var isInactivePaneDivExists = $('#PersonnelProfile .tab-pane #' + e + 'sDiv').length > 0;
-                    var isInactivePaneElementExists = $('#PersonnelProfile .tab-pane label:contains(' + e + ')').closest('.form-control').length > 0;
-                    elem = e;
+        var ret = $('.tab-pane .required').map((i, e) => e.localName == 'table' ? Array.from(e.rows).map((e) => e.className === 'Row-Display' ? e : null).filter((e) => e).length == 0 ? e.id.replace('sTable', '').trim() : null : !e.value ? e.closest('.form-group').innerText.trim().split('\n')[0].trim() : null).get(); // (i.concat(s)).concat(t);
 
-                    if (isActivePaneDivExists || isInactivePaneDivExists) {
-                        elem += 'sDiv';
-                    }
-                    if (isActivePaneElementExists) {
-                        elem = $('#PersonnelProfile .tab-pane.active label:contains(' + e + ')').closest('.form-control').attr('id');
-                    }
-                    if (isInactivePaneElementExists) {
-                        elem = $('#PersonnelProfile .tab-pane label:contains(' + e + ')').closest('.form-control').attr('id');
-                    }
+        //if (ret.length > 0) {
+        //    var elem = '';
+        //    ret.forEach(function (e) {
+        //        var isActivePaneDivExists = $('#PersonnelProfile .tab-pane.active #' + e + 'sDiv').length > 0;
+        //        var isActivePaneElementExists = $('#PersonnelProfile .tab-pane.active label:contains(' + e + ')').closest('.form-control').length > 0;
+        //        var isInactivePaneDivExists = $('#PersonnelProfile .tab-pane #' + e + 'sDiv').length > 0;
+        //        var isInactivePaneElementExists = $('#PersonnelProfile .tab-pane label:contains(' + e + ')').closest('.form-control').length > 0;
+        //        elem = e;
 
-                    if (isInactivePaneDivExists || isInactivePaneElementExists) {
-                        //var tab = $('#' + elem).closest('.tab-pane');
-                        //$('#PersonnelProfile .tab-pane').removeClass('active');
-                        //tab.addClass('active');
-                        $('.nav-tabs a[href="#tab-2"]').trigger('click');
-                    }
-                });
+        //        if (isActivePaneDivExists || isInactivePaneDivExists) {
+        //            elem += 'sDiv';
+        //        }
+        //        if (isActivePaneElementExists) {
+        //            elem = $('#PersonnelProfile .tab-pane.active label:contains(' + e + ')').closest('.form-control').attr('id');
+        //        }
+        //        if (isInactivePaneElementExists) {
+        //            elem = $('#PersonnelProfile .tab-pane label:contains(' + e + ')').closest('.form-control').attr('id');
+        //        }
 
-                if (isSave) {
-                    $('#PersonnelProfile .tab-content').animate({
-                        scrollTop: $("#" + elem).offset().top
-                    }, 2000);
-                }
-            }
+        //        if (isInactivePaneDivExists || isInactivePaneElementExists) {
+        //            //var tab = $('#' + elem).closest('.tab-pane');
+        //            //$('#PersonnelProfile .tab-pane').removeClass('active');
+        //            //tab.addClass('active');
+        //            $('.nav-tabs a[href="#tab-2"]').trigger('click');
+        //        }
+        //    });
 
-            return ret;
-        }
+        //    if (isSave) {
+        //        $('#PersonnelProfile .tab-content').animate({
+        //            scrollTop: $("#" + elem).offset().top
+        //        }, 2000);
+        //    }
+        //}
+
+        return ret;
+    }
 
         function CheckRequiredInputs() {
             var ret = [];
