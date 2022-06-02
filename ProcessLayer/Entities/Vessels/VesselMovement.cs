@@ -1,4 +1,5 @@
 ﻿using ProcessLayer.Helpers;
+using ProcessLayer.Helpers.Enumerable;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,14 +29,7 @@ namespace ProcessLayer.Entities
         {
             get
             {
-                switch (MovementStatusID)
-                {
-                    case 1: return "Cancel";
-                    case 2: return "Pending";
-                    case 3: return "Checked";
-                    case 4: return "Approved";
-                    default: return "";
-                }
+                return ((VesselMovementStatus)MovementStatusID).ToString();
             }
         }
 

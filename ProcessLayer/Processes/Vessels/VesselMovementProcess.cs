@@ -1,6 +1,7 @@
 ﻿using DBUtilities;
 using ProcessLayer.Entities;
 using ProcessLayer.Helpers;
+using ProcessLayer.Helpers.Enumerable;
 using ProcessLayer.Helpers.ObjectParameter;
 using ProcessLayer.Helpers.ObjectParameter.Vessel;
 using ProcessLayer.Helpers.ObjectParameter.VesselCrewMovement;
@@ -370,11 +371,25 @@ namespace ProcessLayer.Processes
         {
             var parameters = new Dictionary<string, object> {
                 {"@ID", id}
+                ,{"@StatusId", VesselMovementStatus.Checked }
                 , {"@LogBy", userid}
             };
             using (var db = new DBTools())
             {
-                db.ExecuteNonQuery("vessel.CheckedVesselMovement", parameters);
+                db.ExecuteNonQuery("vessel.UpdateVesselMovementStatus", parameters);
+                return Get(id);
+            }
+        }
+        public static VesselMovement ProceedToChecked(long id, int userid)
+        {
+            var parameters = new Dictionary<string, object> {
+                {"@ID", id}
+                ,{"@StatusId", VesselMovementStatus.Created }
+                , {"@LogBy", userid}
+            };
+            using (var db = new DBTools())
+            {
+                db.ExecuteNonQuery("vessel.UpdateVesselMovementStatus", parameters);
                 return Get(id);
             }
         }
@@ -383,11 +398,12 @@ namespace ProcessLayer.Processes
         {
             var parameters = new Dictionary<string, object> {
                 {"@ID", id}
+                ,{"@StatusId", VesselMovementStatus.Approved }
                 , {"@LogBy", userid}
             };
             using (var db = new DBTools())
             {
-                db.ExecuteNonQuery("vessel.ApprovedVesselMovement", parameters);
+                db.ExecuteNonQuery("vessel.UpdateVesselMovementStatus", parameters);
                 return Get(id);
             }
         }

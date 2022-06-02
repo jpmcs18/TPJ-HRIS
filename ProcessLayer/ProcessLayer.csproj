@@ -164,9 +164,11 @@
     <Compile Include="Helpers\Enumerable\ComputationType.cs" />
     <Compile Include="Helpers\Enumerable\KioskNotificationFilter.cs" />
     <Compile Include="Helpers\Enumerable\KioskNotoficationType.cs" />
+    <Compile Include="Helpers\Enumerable\OTType.cs" />
     <Compile Include="Helpers\Enumerable\PayrollSheet.cs" />
     <Compile Include="Helpers\Enumerable\ReportType.cs" />
     <Compile Include="Helpers\Enumerable\TaxSchedule.cs" />
+    <Compile Include="Helpers\Enumerable\VesselMovementStatus.cs" />
     <Compile Include="Helpers\ExceptionExtension.cs" />
     <Compile Include="Helpers\GlobalHelper.cs" />
     <Compile Include="Helpers\ObjectExtension.cs" />
