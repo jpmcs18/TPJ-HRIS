@@ -271,6 +271,24 @@ namespace WebTemplate.Controllers.Movement
                     ViewBag.Content = report.SaveToPDF();
                 }
                 return View("~/Views/PrintingView.cshtml");
-        }       
+        }
+        [HttpPost]
+        public ActionResult ProceedToChecking(long id)
+        {
+            try
+            {
+                VesselMovement model = VesselMovementProcess.Checked(id, User.UserID);
+                model = VesselMovementProcess.Get(id, true) ?? new VesselMovement();
+                model.VesselMovementCrewList = VesselMovementProcess.GetMovementCrews(model.ID);
+
+                ModelState.Clear();
+                return PartialViewCustom("/Voyage/_Manage", model);
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { msg = false, res = ex.GetActualMessage() });
+            }
+        }
     }
 }
