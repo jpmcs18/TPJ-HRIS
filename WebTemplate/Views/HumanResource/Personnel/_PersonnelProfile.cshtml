@@ -62,7 +62,7 @@
         <i class="fa fa-times"></i>
     </button>
     <h5 class="modal-title">Personnel Profile</h5>
-    <button type="button" class="ok" title="Save (Enter)" tpj-modal-ok-button="tab-1">
+    <button type="button" class="ok" title="Save (Enter)" value="@Model.Personnel.ID" tpj-modal-ok-button="tab-1">
         <i class="fa fa-check"></i>
     </button>
 </div>
@@ -539,7 +539,7 @@
                     @if (PersonnelTabAccess.Update)
                     {
                         @*<div class="save-button-bottom">
-                                <button type="button" class="btn btn-primary btn-w-m font-bold-700 tab-save-btn" id="btnSavePersonalInfo" style="">Save Personal Info</button>
+                                <button type="button" class="btn btn-primary btn-w-m font-bold-700 tab-save-btn" id="btnSavePersonalInfo" value="Model.Personnel.ID" style="">Save Personal Info</button>
                             </div>*@
                     }
                 </div>

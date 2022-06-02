@@ -569,16 +569,17 @@
             });
         }
 
-    function SaveProfileInfo(tabID) {
+    function SaveProfileInfo(tabID, isNew) {
         $('.tab-pane input.required').map((i, e) => !e.value ? e : null).removeClass('input-incomplete');
         $('.tab-pane select.required').map((i, e) => !e.value ? e : null).next('span').find('.select2-selection').removeClass('input-incomplete');
         $('.tab-pane table.required').map((i, e) => Array.from(e.rows).map((e) => e.className === 'Row-Display' ? e : null).filter((e) => e).length == 0 ? e : null).removeClass('input-incomplete');
 
-        $('.tab-pane input.required').map((i, e) => !e.value ? e : null).addClass('input-incomplete');
-        $('.tab-pane select.required').map((i, e) => !e.value ? e : null).next('span').find('.select2-selection').addClass('input-incomplete');
-        $('.tab-pane table.required').map((i, e) => Array.from(e.rows).map((e) => e.className === 'Row-Display' ? e : null).filter((e) => e).length == 0 ? e : null).addClass('input-incomplete');
+        let panes = '.tab-pane' + (isNew ? '.active ' : ' ');
+        $(panes + 'input.required').map((i, e) => !e.value ? e : null).addClass('input-incomplete');
+        $(panes + 'select.required').map((i, e) => !e.value ? e : null).next('span').find('.select2-selection').addClass('input-incomplete');
+        $(panes + 'table.required').map((i, e) => Array.from(e.rows).map((e) => e.className === 'Row-Display' ? e : null).filter((e) => e).length == 0 ? e : null).addClass('input-incomplete');
 
-        var requiredFields = $('.tab-pane .required').map((i, e) => e.localName == 'table' ? Array.from(e.rows).map((e) => e.className === 'Row-Display' ? e : null).filter((e) => e).length == 0 ? e.id.replace('sTable', '').trim() : null : !e.value ? e.closest('.form-group').innerText.trim().split('\n')[0].trim() : null).get(); // CheckRequiredFields(true).join(', ');
+        var requiredFields = $(panes + '.required').map((i, e) => e.localName == 'table' ? Array.from(e.rows).map((e) => e.className === 'Row-Display' ? e : null).filter((e) => e).length == 0 ? e.id.replace('sTable', '').trim() : null : !e.value ? e.closest('.form-group').innerText.trim().split('\n')[0].trim() : null).get(); // CheckRequiredFields(true).join(', ');
 
         //$('#' + tabID + ' .input-incomplete').length == 0
         if (requiredFields.length > 0) {
@@ -2390,11 +2391,13 @@
             $('#PersonnelProfile').appendTo("body").modal('show');
             $('#btnSavePersonalInfo').off('click').on('click', function (e) {
                 var tabID = $(this).closest('.tab-pane').attr('id');
-                SaveProfileInfo(tabID);
+                var isNew = +($(this).val() || '0') > 0;
+                SaveProfileInfo(tabID, isNew);
             });
             $('#btnSaveEmploymentInfo').off('click').on('click', function (e) {
                 var tabID = $(this).closest('.tab-pane').attr('id');
-                SaveProfileInfo(tabID);
+                var isNew = +($(this).val() || '0') > 0;
+                SaveProfileInfo(tabID, isNew);
             });
             //$('#btnSaveEducationalBg').off('click').on('click', SaveProfileInfo);
             //$('#btnSaveWorkExperience').off('click').on('click', SaveProfileInfo);
@@ -2416,7 +2419,8 @@
 
             $('.ok').off('click').on('click', function (e) {
                 var tabID = $(this).attr('tpj-modal-ok-button');
-                SaveProfileInfo(tabID);
+                var isNew = +($(this).val() || '0') === 0;
+                SaveProfileInfo(tabID, isNew);
             });
             $('#form_personelprofile select.form-control').each(SelectChange);
             $('#form_personelprofile select.form-control').off('change').on('change', SelectChange);
