@@ -639,6 +639,7 @@
                 if (response.msg) {
                     if (tabID == 'tab-1') {
                         $('#Personnel_ID').val(response.res);
+                        $('.modal-header .ok').val(response.res);
                     }
                     $('.PersonnelID').val(response.res);
                     //$('#btnNewWorkExp').val(response.res);
