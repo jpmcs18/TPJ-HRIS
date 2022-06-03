@@ -174,7 +174,6 @@ namespace ProcessLayer.Processes
             }
             return crews;
         }
-
         public static List<CrewMovement> GetCrewList(int vesselid, long personnelId, DateTime? startingdate, DateTime? endingdate)
         {
             var crews = new List<CrewMovement>();
@@ -196,7 +195,6 @@ namespace ProcessLayer.Processes
             }
             return crews;
         }
-
         public static CrewMovement GetTransferredVessel(long previouscrewmovementid)
         {
             var crew = new CrewMovement();
@@ -254,7 +252,6 @@ namespace ProcessLayer.Processes
 
             return vms;
         }
-
         public static bool CanAddNewVesselMovement(int vesselId)
         {
             using (var db = new DBTools())
@@ -308,7 +305,6 @@ namespace ProcessLayer.Processes
 
             return vessel;
         }
-
         public static List<VesselMovementCrews> CreateOrUpdateCrew(List<VesselMovementCrews> crews, int userid)
         {
             for (int i = 0; i < crews.Count; i++)
@@ -341,7 +337,6 @@ namespace ProcessLayer.Processes
 
             return crews;
         }
-
         public static void DeleteCrew(long vesselmovementcrewid, int userid)
         {
             var parameters = new Dictionary<string, object> {
@@ -354,7 +349,6 @@ namespace ProcessLayer.Processes
                 db.ExecuteNonQuery(VesselMovementProcedures.CreateOrUpdateCrew, parameters);
             }
         }
-
         public static void Delete(long vesselmovementid, int userid)
         {
             var parameters = new Dictionary<string, object> {
@@ -366,7 +360,6 @@ namespace ProcessLayer.Processes
                 db.ExecuteNonQuery(VesselMovementProcedures.Delete, parameters);
             }
         }
-
         public static VesselMovement Checked(long id, int userid)
         {
             var parameters = new Dictionary<string, object> {
@@ -393,7 +386,6 @@ namespace ProcessLayer.Processes
                 return Get(id);
             }
         }
-
         public static VesselMovement Approved(long id, int userid)
         {
             var parameters = new Dictionary<string, object> {
