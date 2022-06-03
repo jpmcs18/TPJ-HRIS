@@ -229,7 +229,7 @@
         $('#btnsave_dept').click(function () {
             $.ajax({
                 url: '@Url.Action("Save", "Maintenance/Organization/Department")',
-                data: $('#formpost_dept').serializeArray(),
+                data: $('#formpost_dept *').serialize(),
                 type: "POST",
                 cache: false,
                 beforeSend: function () {

@@ -200,7 +200,7 @@
     $('#btnchangepass').click(function () {
         $.ajax({
             url: '@Url.Action("ChangePassword", "Maintenance/Systems/UserProfile")',
-            data: $('#formchangepass').serializeArray(),
+            data: $('#formchangepass *').serialize(),
             type: "POST",
             cache: false,
             beforeSend: function () {

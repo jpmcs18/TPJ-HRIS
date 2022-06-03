@@ -394,7 +394,7 @@
         $('#btn_confirm_verify').click(function () {
             $.ajax({
                 url: '@Url.Action("ConfirmCode", "Maintenance/Systems/User")',
-                data: $('#form_verify').serializeArray(),
+                data: $('#form_verify *').serialize(),
                 type: "GET",
                 cache: false,
                 beforeSend: function () {
@@ -421,7 +421,7 @@
         $('#btn_resend').click(function () {
             $.ajax({
                 url: '@Url.Action("ResendCode", "Maintenance/Systems/User")',
-                data: $('#form_verify').serializeArray(),
+                data: $('#form_verify *').serialize(),
                 type: "GET",
                 cache: false,
                 beforeSend: function () {

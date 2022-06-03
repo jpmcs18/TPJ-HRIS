@@ -713,7 +713,7 @@
         function Search() {
             $.ajax({
                 url: '@Url.Action("Index", "Vessels")',
-                data: $('#form_search').serializeArray(),
+                data: $('#form_search *').serialize(),
                 type: "GET",
                 cache: false,
                 beforeSend: function() {
