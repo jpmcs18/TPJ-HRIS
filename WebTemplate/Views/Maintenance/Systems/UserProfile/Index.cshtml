@@ -1,7 +1,7 @@
 ﻿@model WebTemplate.Models.Maintenance.Systems.UserProfile.Index
 @{
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
-    var PageAccess = credential.GetPage("User Profile") ?? new DataAccessLayer.System.Page();
+    var PageAccess = credential.GetPage("Maintenance/Systems/UserProfile") ?? new DataAccessLayer.System.Page();
 
     ViewBag.title = PageAccess.PageName;
 }
