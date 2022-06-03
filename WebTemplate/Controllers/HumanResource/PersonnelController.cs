@@ -53,6 +53,7 @@ namespace WebTemplate.Controllers.HumanResource
                 };
 
                 ModelState.Clear();
+                ViewBag.ImageFileExist = System.IO.File.Exists(Path.Combine(Server.MapPath(ConfigurationManager.AppSettings["ImageSaveLocation"]), model.Personnel.Image) ?? "");
                 return PartialViewCustom("_PersonnelProfile", model);
             }
             else
