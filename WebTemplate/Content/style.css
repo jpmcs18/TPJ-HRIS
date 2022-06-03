@@ -7253,7 +7253,7 @@ body .md-stepper-horizontal .md-step .md-step-circle {
 }
 @media only screen and (min-width: 0px) {
   .topNavBar #Profile .profile-username {
-    margin: 17px;
+    margin: 0.5em 1.5em;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -7365,6 +7365,7 @@ body .md-stepper-horizontal .md-step .md-step-circle {
     height: 50%;
     position: absolute;
     top: 0;
+    line-height: 1.2;
   }
 }
 @media only screen and (min-width: 0px) {

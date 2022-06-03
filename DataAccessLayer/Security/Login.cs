@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using DataAccessLayer.HR;
+using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ProcessLayer.Processes;
 
 namespace DataAccessLayer.Security
 {
@@ -24,6 +23,8 @@ namespace DataAccessLayer.Security
         public bool ForcePasswordChange { get; set; }
         public string Position { get; set; }
         public string VerificationCode { get; set; }
+
+        public ProcessLayer.Entities.Personnel Personnel { get; set; }
 
         public void IsUserExists()
         {
@@ -64,6 +65,7 @@ namespace DataAccessLayer.Security
                             this.UserID = u.ID;
                             this.FirstName = u.FirstName;
                             this.LastName = u.LastName;
+                            this.Personnel = PersonnelProcess.Get(u.Personnel_ID ?? 0);
                             u.SignOnAttempts = 0;
 
                             this.ForcePasswordChange = u.ForcePasswordChange ?? false;

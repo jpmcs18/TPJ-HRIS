@@ -9,6 +9,7 @@ namespace DataAccessLayer.Security
     public class Credentials
     {
         public int UserID { get; set; }
+        public string UserName { get; set; }
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
         public string LastName { get; set; }
@@ -33,7 +34,8 @@ namespace DataAccessLayer.Security
                              u.LastName,
                              u.ForcePasswordChange,
                              u.EmailAddress,
-                             u.Personnel_ID
+                             u.Personnel_ID,
+                             u.UserName
                          }).FirstOrDefault();
                 if (c != null)
                 {
@@ -44,6 +46,7 @@ namespace DataAccessLayer.Security
                     this.ForcePasswordChange = c.ForcePasswordChange;
                     this.EmailAddress = c.EmailAddress;
                     this.PersonnelID = c.Personnel_ID;
+                    this.UserName = c.UserName;
                 }
             }
         }

@@ -5,6 +5,7 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using WebTemplate.Models;
+using ProcessLayer.Processes;
 
 namespace WebTemplate
 {
@@ -38,8 +39,10 @@ namespace WebTemplate
                         LastName = credentials.LastName,
                         ForcePasswordChange = credentials.ForcePasswordChange,
                         EmailAddress = credentials.EmailAddress,
-                        PersonnelID = credentials.PersonnelID
-                    };
+                        Username = credentials.UserName,
+                        PersonnelID = credentials.PersonnelID,
+                        Personnel = PersonnelProcess.Get(credentials.PersonnelID ?? 0)
+                };
 
                     HttpContext.Current.User = user;
 
