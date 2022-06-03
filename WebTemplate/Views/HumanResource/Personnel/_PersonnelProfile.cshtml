@@ -42,6 +42,8 @@
     var DeductionsTabAccess = credential.GetPage("Deductions") ?? new DataAccessLayer.System.Page();
     var LoansTabAccess = credential.GetPage("Loans") ?? new DataAccessLayer.System.Page();
     var LeaveCreditsTabAccess = credential.GetPage("Leave Credits") ?? new DataAccessLayer.System.Page();
+
+    var ImageFileExist = ViewBag.ImageFileExist ?? false;
 }
 
 @functions{
@@ -145,7 +147,7 @@
                                                 </div>
                                             </div>*@
                                         <div class="">
-                                            <img id="ImageCanvasImg" src="@(System.IO.File.Exists(Model.Personnel.ImagePath) ? Model.Personnel.ImagePath : "\\Images\\default.jpg")" class="m-b-sm" style="width: 200px; height: 200px; border: 1px solid #ddd;" />
+                                            <img id="ImageCanvasImg" src="@(ImageFileExist ? Model.Personnel.ImagePath : "\\Images\\default.jpg")" class="m-b-sm" style="width: 200px; height: 200px; border: 1px solid #ddd;" />
                                             <input type="file" id="browseImage" name="fileBase" class="browsefile form-control">
                                             <input hidden name="Personnel.ImagePath" value="@(Path.GetFileName(Model.Personnel.ImagePath) ?? "")" />
                                         </div>

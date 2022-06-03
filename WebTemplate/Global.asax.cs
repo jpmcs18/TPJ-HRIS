@@ -6,6 +6,8 @@ using System.Web.Optimization;
 using System.Web.Routing;
 using WebTemplate.Models;
 using ProcessLayer.Processes;
+using System.Configuration;
+using System.IO;
 
 namespace WebTemplate
 {
@@ -43,6 +45,7 @@ namespace WebTemplate
                         PersonnelID = credentials.PersonnelID,
                         Personnel = PersonnelProcess.Get(credentials.PersonnelID ?? 0)
                 };
+                    user.ImageFileExist = File.Exists(Path.Combine(Server.MapPath(ConfigurationManager.AppSettings["ImageSaveLocation"]), user.Personnel.Image) ?? "");
 
                     HttpContext.Current.User = user;
 

@@ -13,6 +13,7 @@ namespace WebTemplate.Models
         public long? PersonnelID { get; set; }
         public string EmailAddress { get; set; }
         public ProcessLayer.Entities.Personnel Personnel { get; set; } = new ProcessLayer.Entities.Personnel();
+        public bool? ImageFileExist { get; set; }
 
         public bool? ForcePasswordChange { get; set; }
 

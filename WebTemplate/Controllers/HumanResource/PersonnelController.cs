@@ -45,6 +45,7 @@ namespace WebTemplate.Controllers.HumanResource
         {
             Response.Cache.SetNoStore();
             Response.Cache.SetNoServerCaching();
+
             if (id.HasValue)
             {
                 var model = new Management

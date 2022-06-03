@@ -5,7 +5,6 @@
     var menus = Session["NavMenu"] as List<DataAccessLayer.System.NavMenu>;
 
     var todaysDate = DateTime.Now.ToString("dddd, MMMM dd, yyyy");
-    var physicalPath = System.IO.Path.GetFullPath(c.Personnel.ImagePath);
 }
 <div class="topNavBar">
     <div class="navbar-logo col-xs-8 col-sm-8 col-md-6 col-lg-3">
@@ -29,7 +28,7 @@
             <div class="profile-picture">
                 <span>
                     @* clickable user image *@
-                    <img src="@(c.Personnel.ImagePath ?? "\\Images\\default.jpg")" id="ProfilePic" onclick="$('#ProfileInfo').toggleClass('show').focus()" alt="image" class="img-circle" title="TPJ Domain Account:&#xa;@(string.Format("{0}, {1}", c.LastName, c.FirstName).ToUpper())" />
+                    <img src="@(c.ImageFileExist ?? false ? c.Personnel.ImagePath : "\\Images\\default.jpg")" id="ProfilePic" onclick="$('#ProfileInfo').toggleClass('show').focus()" alt="image" class="img-circle" title="TPJ Domain Account:&#xa;@(string.Format("{0}, {1}", c.LastName, c.FirstName).ToUpper())" />
                 </span>
             </div>
             <div id="ProfileInfo" class="profile-information">
@@ -37,7 +36,7 @@
                 <div class="profile-content">
                     <div class="profile-content-left">
                         @* large user image *@
-                        <span><img id="" alt="image" class="img-circle" src="@(c.Personnel.ImagePath ?? "\\Images\\default.jpg")" title="" /></span>
+                        <span><img id="" alt="image" class="img-circle" src="@(c.ImageFileExist ?? false ? c.Personnel.ImagePath : "\\Images\\default.jpg")" title="" /></span>
                     </div>
                     <div class="profile-content-right">
                         <div class="profile-names">

@@ -23,7 +23,7 @@
     </td>
     <td style="text-align: left; text-transform: uppercase; max-width: 300px; white-space: normal;">
         <div class="clickable-text">
-            <img class="personnel-pic" src="@(String.IsNullOrEmpty(Model.ImagePath) ? "\\Images\\default.jpg": Model.ImagePath)" style="height: 30px; width: 45px; min-height: 45px; min-width: 30px; border: 3px solid #eaeaea; margin-right: 10px; border-radius: 50px;" title="" />
+            <img class="personnel-pic" src="@(Model.ImagePath ?? "\\Images\\default.jpg")" style="height: 30px; width: 45px; min-height: 45px; min-width: 30px; border: 3px solid #eaeaea; margin-right: 10px; border-radius: 50px;" title="" />
             @Html.Raw(String.Format("{0} {1}, <strong>{2}</strong>", Model.FirstName, Model.MiddleName, Model.LastName))
         </div>
     </td>
