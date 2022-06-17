@@ -48,12 +48,12 @@ namespace WebTemplate.Controllers.HumanResource
             if (id.HasValue)
             {
                 var model = new Management
-                {
+                { 
                     Personnel = PersonnelProcess.Get(id.Value)
                 };
 
                 ModelState.Clear();
-                ViewBag.ImageFileExist = System.IO.File.Exists(Path.Combine(Server.MapPath(ConfigurationManager.AppSettings["ImageSaveLocation"]), model.Personnel.Image) ?? "");
+                ViewBag.ImageFileExist = model.Personnel?.Image == null ? false : System.IO.File.Exists(Path.Combine(Server.MapPath(ConfigurationManager.AppSettings["ImageSaveLocation"]), model.Personnel.Image) ?? "");
                 return PartialViewCustom("_PersonnelProfile", model);
             }
             else
