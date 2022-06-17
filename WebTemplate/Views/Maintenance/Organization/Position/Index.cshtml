@@ -76,13 +76,19 @@
         });
 
         $('#btnsave_pos').click(function () {
-            var params = $('#formpost *').serializeArray();
+            var formdata = new FormData();
+            $('#formpost *').each(function () {
+                formdata.append($(this).attr('name'), $(this).val());
+            });
 
             $.ajax({
                 url: '@Url.Action("Save", "Maintenance/Organization/Position")',
-                data: params,
+                data: formdata,
                 type: "POST",
+                datatype: 'JSON',
                 cache: false,
+                contentType: false,
+                processData: false,
                 beforeSend: function () {
                     ShowLoadingScreen()
                 },
@@ -200,13 +206,19 @@
     }
 
     function search() {
-        var params = $('#form_search_params *').serializeArray();
+        var formdata = new FormData();
+        $('#form_search_params *').each(function () {
+            formdata.append($(this).attr('name'), $(this).val());
+        });
 
         $.ajax({
             url: '@Url.Action("Index", "Maintenance/Organization/Position")',
-            data: params,
-            type: "GET",
+            data: formdata,
+            type: "POST",
+            datatype: 'JSON',
             cache: false,
+            contentType: false,
+            processData: false,
             beforeSend: function () {
                 ShowLoadingScreen();
             },

@@ -56,7 +56,7 @@ namespace DataAccessLayer.Security
                     //null status set to active
                     this.UserStatusID = u.UserStatusID ?? 1;
 
-                    if (this.UserStatusID == 1)
+                     if (this.UserStatusID == 1)
                     {
                         string saltedpassword = SecurityLib.SecurityHash.Encrypt(this.Password, u.PasswordSalt);
                         if (u.Password == saltedpassword)
@@ -74,7 +74,6 @@ namespace DataAccessLayer.Security
                         else
                         {
                             string signonattemps = entity.Parameters.Where(sp => sp.ParameterName == "Max Sign On Attemps").Select(up => up.ParameterValue).FirstOrDefault();
-
 
                             u.SignOnAttempts = (u.SignOnAttempts ?? 0) + 1;
 

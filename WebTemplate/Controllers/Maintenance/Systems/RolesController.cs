@@ -23,10 +23,8 @@ namespace WebTemplate.Controllers.Maintenance.Systems
             {
                 return PartialViewCustom("_Search", model);
             }
-            else
-            {
-                return ViewCustom("Index", model);
-            }
+
+            return ViewCustom("Index", model);
         }
 
         public ActionResult Management(int? uid)

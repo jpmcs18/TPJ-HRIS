@@ -208,12 +208,15 @@
     }
 
     function search() {
-        var params = $('#form_search_params *').serializeArray();
+        var formdata = new FormData();
+        $('#form_search_params *').each(function () {
+            formdata.append($(this).attr('name'), $(this).val());
+        });
 
         $.ajax({
             url: '@Url.Action("Index", "Maintenance/Systems/Roles")',
-            data: params,
-            type: "GET",
+            data: formdata,
+            type: "POST",
             datatype: 'JSON',
             cache: false,
             contentType: false,
@@ -344,9 +347,9 @@
             manage();
         });
 
-        @if (ViewBag.uid != null && ViewBag.uid > 0)
+        @*@if (ViewBag.uid != null && ViewBag.uid > 0)
         {
             @:manage('@ViewBag.uid')
-        }
+        }*@
     }
 </script>

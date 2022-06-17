@@ -180,6 +180,7 @@
         formdata.append('__RequestVerificationToken', $('@Html.AntiForgeryToken()').val());
 
         if (xhr) { xhr.abort(); }
+
         xhr = $.ajax({
             url: '@Url.Action("Index", "PersonnelApproval")',
             data: formdata,

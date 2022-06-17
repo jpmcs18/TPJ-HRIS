@@ -118,7 +118,8 @@
         var $_leaveTypeArr = @Html.Raw(Json.Encode(leaveTypes));
         var $_marriedID = @marriedID;
         var $_SelectedRows = [];
-        var isPersonnelUpdated = false;
+    var isPersonnelUpdated = false;
+    var isUpdatedPersonnelUser = false;
 
         $(document).ready(function() {
             Events();
@@ -135,6 +136,9 @@
                         Search();
                     }
                     toastr.clear();
+                    if (isUpdatedPersonnelUser) {
+                        window.location = '/HumanResource/Personnel';//za + '/?' $('#form_search_params *').serialize();
+                    }
                 });
 
             $('select#EmploymentStatusID').off('change').on('change', SelectChange);
@@ -580,10 +584,16 @@
         $(panes + 'table.required').map((i, e) => Array.from(e.rows).map((e) => e.className === 'Row-Display' ? e : null).filter((e) => e).length == 0 ? e : null).addClass('input-incomplete');
 
         var requiredFields = $(panes + '.required').map((i, e) => e.localName == 'table' ? Array.from(e.rows).map((e) => e.className === 'Row-Display' ? e : null).filter((e) => e).length == 0 ? e.id.replace('sTable', '').trim() : null : !e.value ? e.closest('.form-group').innerText.trim().split('\n')[0].trim() : null).get(); // CheckRequiredFields(true).join(', ');
+        var tabPanes = $(panes + '.required').map((i, e) => e.localName == 'table' ? Array.from(e.rows).map((e) => e.className === 'Row-Display' ? e : null).filter((e) => e).length == 0 ? e.closest('.tab-pane').id.trim() : null : !e.value ? e.closest('.tab-pane').id.trim() : null).get(); //.sort((i, e) => e.replace(/[^0-9]/g, '') - i.replace(/[^0-9]/g, ''))
 
         //$('#' + tabID + ' .input-incomplete').length == 0
         if (requiredFields.length > 0) {
             toastr.warning('Please check incomplete fields/tables highlighted in orange. (' + requiredFields + ')', 'Warning');
+
+            if (tabPanes.length > 0) {
+                $('a[href="#' + tabPanes[0] + '"]').trigger('click');
+            }
+
             return;
         }
 
@@ -637,6 +647,8 @@
             },
             success: function(response) {
                 if (response.msg) {
+                    isUpdatedPersonnelUser = +($('#Personnel_ID').val() || 0) == $_UserPersonnelID;
+
                     if (tabID == 'tab-1') {
                         $('#Personnel_ID').val(response.res);
                         $('.modal-header .ok').val(response.res);
