@@ -1,4 +1,6 @@
-﻿@{
+﻿@using WebTemplate.Extension
+
+@{
     var c = User as WebTemplate.Models.CustomPrincipal;
     var menus = Session["NavMenu"] as List<DataAccessLayer.System.NavMenu>;
 
@@ -12,7 +14,7 @@
                 <img src="~/Content/patterns/menu button.png" />
             </a>
             <img class="logo" title="Trans-Pacific Journey Fishing Corporation Logo" src="~/Content/patterns/TPJ Logo copy.png" />
-            <div class="company-name pull-left" title="Trans-Pacific Journey Fishing Corporation"><b>Trans-Pacific Journey</b><br/>Fishing Corporation</div>
+            <div class="company-name pull-left" title="Trans-Pacific Journey Fishing Corporation"><b>Trans-Pacific Journey</b><br />Fishing Corporation</div>
             <div class="navbar-title-short pull-left"></div>
         </div>
     </div>
@@ -22,11 +24,11 @@
         <div id="Profile">
             <h3 class="bg-primary" style="padding: 8px; color: #fff; height: 100%; margin: .3em 0;">@todaysDate</h3>
             @* &#xa; == code for NewLine *@
-            <div class="profile-username"><strong>@(string.Format("{0}, {1}", c.LastName, c.FirstName).ToUpper())</strong></div>
+            <div class="profile-username" title="@(c.Username)"><strong>@Html.Raw($"{c.LastName}, {c.FirstName}<br/>{c.Personnel._Positions.Where(m => m.EndDate == null).Select(m => m._Position.CheckIfNull().Description).FirstOrDefault()}")</strong></div>
             <div class="profile-picture">
                 <span>
                     @* clickable user image *@
-                    <img src="~/Images/default.jpg" id="ProfilePic" onclick="$('#ProfileInfo').toggleClass('show').focus()" alt="image" class="img-circle" title="TPJ Domain Account:&#xa;@(string.Format("{0}, {1}", c.LastName, c.FirstName).ToUpper())" />
+                    <img src="@(c.ImageFileExist ?? false ? c.Personnel.ImagePath : "\\Images\\default.jpg")" id="ProfilePic" onclick="$('#ProfileInfo').toggleClass('show').focus()" alt="image" class="img-circle" title="TPJ Domain Account:&#xa;@(string.Format("{0}, {1}", c.LastName, c.FirstName).ToUpper())" />
                 </span>
             </div>
             <div id="ProfileInfo" class="profile-information">
@@ -34,7 +36,7 @@
                 <div class="profile-content">
                     <div class="profile-content-left">
                         @* large user image *@
-                        <span><img id="" alt="image" class="img-circle" src="~/Images/default.jpg" title="" /></span>
+                        <span><img id="" alt="image" class="img-circle" src="@(c.ImageFileExist ?? false ? c.Personnel.ImagePath : "\\Images\\default.jpg")" title="" /></span>
                     </div>
                     <div class="profile-content-right">
                         <div class="profile-names">
@@ -78,7 +80,7 @@
 
                         @if (n.ChildNavMenu != null && n.ChildNavMenu.Count > 0)
                         {
-                                @DisplayMenus(n.ChildNavMenu, "third", true)
+                            @DisplayMenus(n.ChildNavMenu, "third", true)
                         }
                     </ul>
                 </li>
@@ -90,3 +92,10 @@
         }
     </ul>
 </div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $_UserPersonnelID = @c.PersonnelID;
+    });
+</script>

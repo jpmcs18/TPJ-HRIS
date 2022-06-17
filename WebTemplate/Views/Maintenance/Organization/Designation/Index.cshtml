@@ -170,13 +170,19 @@
     }
     function event_save_pos() {
         $('#btnsave_pos').click(function () {
-            var params = $('#formpost_pos *').serializeArray();
+            var formdata = new FormData();
+            $('#formpost_pos *').each(function () {
+                formdata.append($(this).attr('name'), $(this).val());
+            });
 
             $.ajax({
                 url: '@Url.Action("Save", "Maintenance/Organization/Position")',
-                data: params,
+                data: formdata,
                 type: "POST",
+                datatype: 'JSON',
                 cache: false,
+                contentType: false,
+                processData: false,
                 beforeSend: function () {
                     ShowLoadingScreen()
                 },
@@ -421,13 +427,20 @@
 
         function event_save() {
             var params = $('#formpost *').serializeArray();
+            var formdata = new FormData();
+            $('#formpost *').each(function () {
+                formdata.append($(this).attr('name'), $(this).val());
+            });
 
             $('#btnsave').click(function () {
                 $.ajax({
                     url: '@Url.Action("Save", "Maintenance/Organization/Designation")',
-                    data: params,
+                    data: formdata,
                     type: "POST",
+                    datatype: 'JSON',
                     cache: false,
+                    contentType: false,
+                    processData: false,
                     beforeSend: function () {
                         ShowLoadingScreen()
                     },
@@ -518,13 +531,21 @@
             );
         })
     }
-        function search() {
-            var params = $('#form_search_params *').serializeArray();
+
+    function search() {
+            var formdata = new FormData();
+            $('#form_search_params *').each(function () {
+                formdata.append($(this).attr('name'), $(this).val());
+            });
 
         $.ajax({
             url: '@Url.Action("Index", "Maintenance/Organization/Designation")',
-            data: params,
-            type: "GET",
+            data: formdata,
+            type: "POST",
+            datatype: 'JSON',
+            cache: false,
+            contentType: false,
+            processData: false,
             cache: false,
             beforeSend: function () {
                 ShowLoadingScreen()

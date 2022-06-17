@@ -30,13 +30,19 @@ namespace WebTemplate.Controllers.HumanResource
 
             if (Request.IsAjaxRequest())
             {
+                //if (model.Personnels.Where(m => m.ID == User.PersonnelID).Any())
+                //{
+                //    Response.Cache.SetNoStore();
+                //    Response.Cache.SetNoServerCaching();
+
+                //    return ViewCustom("_PersonnelIndex", model);
+                //}
+
                 ModelState.Clear();
                 return PartialViewCustom(Request.Browser.IsMobileDevice ? "" : "_PersonnelSearch", model);
             }
-            else
-            {
-                return ViewCustom("_PersonnelIndex", model);
-            }
+
+            return ViewCustom("_PersonnelIndex", model);
         }
         #endregion
 
@@ -45,6 +51,7 @@ namespace WebTemplate.Controllers.HumanResource
         {
             Response.Cache.SetNoStore();
             Response.Cache.SetNoServerCaching();
+
             if (id.HasValue)
             {
                 var model = new Management

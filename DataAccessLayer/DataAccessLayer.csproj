@@ -79,6 +79,10 @@
       <Project>{90638138-4bf7-4611-bf2b-01ed8d9a2805}</Project>
       <Name>DataLayer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ProcessLayer\ProcessLayer.csproj">
+      <Project>{6ac531aa-b67a-4a19-a548-054d91c2547f}</Project>
+      <Name>ProcessLayer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SecurityLib\SecurityLib.csproj">
       <Project>{4924dcf5-d758-4d85-9e97-4b67b197a1f5}</Project>
       <Name>SecurityLib</Name>

@@ -34,7 +34,7 @@ namespace WebTemplate.Models
                 //}
 
                 CredentialPages cp = ctx.Session["CredentialPages"] as CredentialPages;
-
+                ctx.Cache.Remove("__AppStartPage__~/_appstart.cshtml");
                 if (Properties.Settings.Default.isDevMode)
                     return true;
 

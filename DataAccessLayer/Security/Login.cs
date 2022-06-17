@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using DataAccessLayer.HR;
+using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ProcessLayer.Processes;
 
 namespace DataAccessLayer.Security
 {
@@ -24,6 +23,8 @@ namespace DataAccessLayer.Security
         public bool ForcePasswordChange { get; set; }
         public string Position { get; set; }
         public string VerificationCode { get; set; }
+
+        public ProcessLayer.Entities.Personnel Personnel { get; set; }
 
         public void IsUserExists()
         {
@@ -55,7 +56,7 @@ namespace DataAccessLayer.Security
                     //null status set to active
                     this.UserStatusID = u.UserStatusID ?? 1;
 
-                    if (this.UserStatusID == 1)
+                     if (this.UserStatusID == 1)
                     {
                         string saltedpassword = SecurityLib.SecurityHash.Encrypt(this.Password, u.PasswordSalt);
                         if (u.Password == saltedpassword)
@@ -64,6 +65,7 @@ namespace DataAccessLayer.Security
                             this.UserID = u.ID;
                             this.FirstName = u.FirstName;
                             this.LastName = u.LastName;
+                            this.Personnel = PersonnelProcess.Get(u.Personnel_ID ?? 0);
                             u.SignOnAttempts = 0;
 
                             this.ForcePasswordChange = u.ForcePasswordChange ?? false;
@@ -72,7 +74,6 @@ namespace DataAccessLayer.Security
                         else
                         {
                             string signonattemps = entity.Parameters.Where(sp => sp.ParameterName == "Max Sign On Attemps").Select(up => up.ParameterValue).FirstOrDefault();
-
 
                             u.SignOnAttempts = (u.SignOnAttempts ?? 0) + 1;
 

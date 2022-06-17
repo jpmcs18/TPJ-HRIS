@@ -167,7 +167,7 @@ body.modal-open {
 .login .login-body {
   padding: 10px;
   width: 400px;
-  height: 550px;
+  height: 605px;
   background-color: #ffe6e6;
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
@@ -7253,7 +7253,7 @@ body .md-stepper-horizontal .md-step .md-step-circle {
 }
 @media only screen and (min-width: 0px) {
   .topNavBar #Profile .profile-username {
-    margin: 17px;
+    margin: 0.5em 1.5em;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -7365,6 +7365,7 @@ body .md-stepper-horizontal .md-step .md-step-circle {
     height: 50%;
     position: absolute;
     top: 0;
+    line-height: 1.2;
   }
 }
 @media only screen and (min-width: 0px) {
