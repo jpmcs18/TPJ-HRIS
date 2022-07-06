@@ -87,7 +87,7 @@
                     var title = $('#TimeEditRequestModal .modal-title').text();
 
                     if (title.indexOf('View') == -1)
-                        SearchTimeEditRequests();
+                        SearchRequests();
                 });
             });
 
@@ -109,7 +109,7 @@
 
                 $('.pages').off('click').on('click', function () {
                     $('#hid_page').val($(this).val())
-                    SearchTimeEditRequests();
+                    SearchRequests();
                 });
 
                $(document).off('keydown').on('keydown', function () {
@@ -133,7 +133,7 @@
                 //$('#btn_search').off('click').on('click', function () {
                 //    $('#hid_search').val($('.txt_search').val());
                 //    $('#hid_page').val(1);
-                //    SearchTimeEditRequests();
+                //    SearchRequests();
                 //});
 
                 $('.clearInput').off('click').on('click', ClearField);
@@ -144,7 +144,7 @@
                     }
                 });
 
-                $('ul.nav-tabs li a[href="#tab-2"]').off('click').on('click', SearchTimeEditRequests);
+                $('ul.nav-tabs li a[href="#tab-2"]').off('click').on('click', SearchRequests);
 
                 InitDateTimePicker();
                 SearchTabEvents();
@@ -178,9 +178,11 @@
                 else {
                     $('.status-checkbox[name="All"]').iCheck('uncheck');
                 }
+
+                setTimeout(SearchRequests, 500);
             }
 
-            function SearchTimeEditRequests() {
+            @*function SearchRequest() {
                 $('#form_search_params input[name="Page"]').val(1);
 
                 var params = $('#form_search_params *').serialize() +
@@ -216,11 +218,11 @@
                         toastr.error(response.res);
                     }
                 });
-            }
+            }*@
 
             function SearchTabEvents() {
                 $('#form_search_params input.form-control').off('keydown').on('keydown', SearchOnKeyDown);
-                $('#btn_search').off('click').on('click', SearchTimeEditRequests);
+                $('#btn_search').off('click').on('click', SearchRequests);
                 $('.ApproveTimeEditRequest').off('click').on('click', ApproveTimeEditRequest);
                 $('.CancelTimeEditRequest').off('click').on('click', CancelTimeEditRequest);
 
@@ -233,7 +235,7 @@
 
             function SearchOnKeyDown(e) {
                 if (e.keyCode === 13)
-                    SearchTimeEditRequests();
+                    SearchRequest();
             }
 
             function ShowCreateTimeEditRequest() {
@@ -253,7 +255,7 @@
                     NewTimeEditRequest();
                 }
                 else if (tabID == '#tab-2') {
-                    SearchTimeEditRequests();
+                    SearchRequests();
                 }
                 else if (tabID == '#tab-3') {
                     EditOrNewTimeEditRequest(id);
@@ -294,8 +296,8 @@
                 });
             }
 
-            function SearchTimeEditRequests() {
-                $('#form_search_params input[name="Page"]').val(1);
+            function SearchRequests() {
+                //$('#form_search_params input[name="Page"]').val(1);
 
                 var params = $('#form_search_params *').serialize() +
                     '&All=' + $('#All').is(':checked') +
@@ -430,7 +432,7 @@
                             $('#ApprovalModal').modal('hide');
                             toastr.success('Time Edit Request Approved!');
 
-                            SearchTimeEditRequests();
+                            SearchRequests();
                         } else {
                             toastr.error(response.res);
                         }
@@ -495,7 +497,7 @@
                                 $('#CancellationModal').modal('hide');
                                 toastr.success('Time Edit Request cancelled!');
 
-                                SearchTimeEditRequests();
+                                SearchRequests();
                             } else {
                                 toastr.error(response.res);
                             }
@@ -565,7 +567,7 @@
                             success: function(response) {
                                 if (response.msg) {
                                     toastr.success(message + ' ' + action.toLowerCase() + 'd !');
-                                    SearchTimeEditRequests();
+                                    SearchRequests();
                                 } else {
                                     toastr.error(response.res);
                                 }
