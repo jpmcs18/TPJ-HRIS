@@ -8677,12 +8677,6 @@ body.skin-3 {
     display: inline-block;
   }
 }
-table.loading tr #Row-Loading-Display {
-  display: block !important;
-}
-table tr#Row-Loading-Display {
-  display: none;
-}
 table tr#Row-Loading-Display td {
   text-align: center;
 }
@@ -8926,6 +8920,9 @@ h3 {
 }
 .table {
   margin-bottom: 0px;
+}
+.table tr[onclick] {
+  cursor: pointer !important;
 }
 .text-light-gray {
   color: #ffffff;

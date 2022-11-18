@@ -54,7 +54,7 @@
                     <h5 class="modal-title" style="text-align: center;">New Leave Request</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
                 </div>
-                <div id="LeaveRequestForm" class="modal-body" style="max-height: 750px; background-color: #fff; overflow: hidden;">
+                <div id="LeaveRequestForm" class="modal-body" style="max-height: 750px; background-color: #fff; overflow: auto;">
                 </div>
             </div>
         </div>
@@ -71,7 +71,7 @@
                         <h5 class="modal-title">Upload Document</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
                     </div>
-                    <div class="modal-body" style="max-height: 750px; background-color: #fff; overflow: hidden;">-->
+                    <div class="modal-body" style="max-height: 750px; background-color: #fff; overflow: auto;">-->
                         @*<label id="filename" class="control-label"></label>*@
                         <!--<input id="browseFile" type="file" class="btn btn-default" />
                         Html.Hidden("leaveRequestId", 0)
@@ -106,6 +106,8 @@
 
         SetRowLoadingDisplayColSpan();
         SearchTabEvents();
+
+        $('.status-checkbox').off('ifClicked').on('ifClicked', StatusFilter);
 
         $(document).off('keydown').on('keydown', function () {
             if (event.keyCode == 13) {
@@ -272,7 +274,7 @@
         $("#ValidateFile").attr("disabled", hasFile);
     }
 
-    function UploadDocument(leaveReqID, filename) {
+    function UploadDocument(e, leaveReqID, filename) {
         e.preventDefault();
         $tr = $('#LeaveRequestForm tr#Row-Display-LeaveRequests-' + leaveReqID);
         filename = $tr.find('td button').attr('title');

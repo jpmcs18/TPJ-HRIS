@@ -11,7 +11,7 @@ namespace ProcessLayer.Entities.Kiosk
         public float? NoofDays { get; set; }
         public DateTime? RequestedDate { get; set; }
         public string File { get; set; }
-        public string FilePath { get; set; }
+        public string FilePath { get; set; } = "";
         public bool IsExpired { get { return Approved != true && Cancelled != true && CreatedOn != null && ((DateTime.Now - CreatedOn).Value.TotalHours >= 48) && false; } }
         public int? NotedBy { get; set; }
         public DateTime? NotedOn { get; set; }

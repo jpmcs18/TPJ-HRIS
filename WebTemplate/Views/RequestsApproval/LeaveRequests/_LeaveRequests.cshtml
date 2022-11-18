@@ -1,11 +1,19 @@
 ﻿@model WebTemplate.Models.RequestsApproval.Leave_Request.Index
+@using WebTemplate.Extension
 
-@{ 
+@{
     var credential = (Session["CredentialPages"] as DataAccessLayer.Security.CredentialPages);
     var PageAccess = credential.GetPage("RequestsApproval/LeaveRequests") ?? new DataAccessLayer.System.Page();
     var ApproverAccess = credential.GetPage("Approver Leave Request") ?? new DataAccessLayer.System.Page();
     var UploadDocumentAccess = credential.GetPage("Kiosk Upload Document") ?? new DataAccessLayer.System.Page();
     var IsBulkUse = Model.LeaveTypes.Where(m => m.ID == Model.LeaveTypeID).Select(m => m.BulkUse).FirstOrDefault() ?? false;
+}
+@functions{
+    public bool IsImage(string str)
+    {
+        var imageExtensions = new string[] { ".jpg", ".jpeg", ".bmp", ".gif", ".png" };
+        return imageExtensions.Contains(Path.GetExtension(str));
+    }
 }
 
 @if (PageAccess.View)
@@ -104,10 +112,10 @@
                     <tr>
                         <td class="text-right" colspan="10" style="background-color: white;">
                             @*<div class="pull-left m-r-md">
-                                <button type="button" id="MultipleDelete" class="btn btn-danger btn-lg" data-toggle="tooltip" data-placement="top" title="Delete selected rows" disabled>
-                                    <i class="fa fa-trash-o"></i>
-                                </button>
-                            </div>*@
+                                    <button type="button" id="MultipleDelete" class="btn btn-danger btn-lg" data-toggle="tooltip" data-placement="top" title="Delete selected rows" disabled>
+                                        <i class="fa fa-trash-o"></i>
+                                    </button>
+                                </div>*@
 
                             <div class="btn-group pull-left">
                                 @if (Model.Page > 0)
@@ -131,7 +139,7 @@
                             </div>
                         </td>
                     </tr>
-}
+                }
                 <tr>
                     <th class="text-left">Personnel</th>
                     <th class="text-left">Type/Requested Date/Days</th>
@@ -144,9 +152,9 @@
                     @if (ApproverAccess.Approve)
                     {
                         @*if (UploadDocumentAccess.View)
-                        {
-                        <th class="text-left">Document</th>
-                        }*@
+                            {
+                            <th class="text-left">Document</th>
+                            }*@
                         <th style="text-align: center; min-width: 10%;" scope="col">Action</th>
                     }
                 </tr>
@@ -177,7 +185,7 @@
                             <td class="text-left">
                                 <b>@Model.LeaveRequests[i]._LeaveType.Description</b><br />
                                 @Html.Raw(String.Format("{0:MMM dd, yyyy}", Model.LeaveRequests[i].RequestedDate))<br />
-                                @($"{(Model.LeaveRequests[i].NoofDays ?? 0)} Days")
+                                @($"{(Model.LeaveRequests[i].NoofDays ?? 0)} Day{((Model.LeaveRequests[i].NoofDays ?? 0) > 1 ? "s" : "")}")
                             </td>
                             <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
                                 <text class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@Model.LeaveRequests[i].Reasons">
@@ -185,7 +193,7 @@
                                 </text>
                             </td>
                             <td class="text-left">
-                                @Html.Raw(LastStatus)<br/>
+                                @Html.Raw(LastStatus)<br />
                                 @Html.Raw(String.Format("{0}<br/>{1:MM/dd/yyyy hh:mm tt}", LastUser ?? "", LastDate))
                             </td>
                             <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
@@ -198,21 +206,29 @@
                                     @Model.LeaveRequests[i].CancellationRemarks
                                 </text>
                             </td>
-                            <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
+                            <td style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; display: flex; flex-direction: column;">
                                 @if (UploadDocumentAccess.View)
                                 {
                                     if (Approved && (Model.LeaveRequests[i]._LeaveType.HasDocumentNeeded ?? false))
                                     {
-                                        <button type="button" name="" class="btn btn-default btn-md" onclick="UploadDocument(@Model.LeaveRequests[i].ID, '')" title="@(!string.IsNullOrEmpty(filename) ? filename : "Upload Document")" value="@filename"><i class="fa fa-paperclip"></i>@Html.Raw(!string.IsNullOrEmpty(filename) ? " <span class='label label-info'>1</span>" : "")</button>
+                                        <button type="button" name="" class="btn btn-default btn-md" onclick="UploadDocument(@Model.LeaveRequests[i].ID, '')" title="@(!string.IsNullOrEmpty(filename) ? filename : "Upload Document")" value="@filename">
+                                            <i class="fa fa-paperclip"></i>@Html.Raw(!string.IsNullOrEmpty(filename) ? " <span class='label label-info'>1</span>" : "")
+                                        </button>
                                     }
-                                    else if (Model.LeaveRequests[i].ApprovedLeaveCredits > 0)
-                                    {
-                                        <span class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@(filename)">@Html.Raw(filename)</span>
-                                    }
+                                    @*else if (Model.LeaveRequests[i].ApprovedLeaveCredits > 0)
+            {
+                //<span class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@(filename)">@Html.Raw(filename)</span>
+                <a href="@Model.LeaveRequests[i].FilePath" target="_blank" title="@filename" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; ">@filename</a>
+            }*@
                                 }
                                 @if (Model.LeaveRequests[i].ApprovedLeaveCredits > 0)
                                 {
-                                    <span class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@(filename)">@Html.Raw(filename)</span>
+                                    if (!String.IsNullOrEmpty(Model.LeaveRequests[i].FilePath))
+                                    {
+                                        var path = Path.GetDirectoryName(Model.LeaveRequests[i].FilePath).Replace("~", "") + "\\" + filename;
+                                        //<span class="font-bold-500" style="text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;" title="@(filename)">@Html.Raw(filename)</span>
+                                        <a href="@path" target="_blank" title="@filename" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; ">@filename</a>
+                                    }
                                 }
                             </td>
                             <td style="width: 160px;" class="row-actions">
